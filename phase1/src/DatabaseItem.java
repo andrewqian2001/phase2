@@ -9,6 +9,7 @@ public abstract class DatabaseItem implements Serializable {
     }
     public int getId(){
         return thisId;
+
     }
 
 }

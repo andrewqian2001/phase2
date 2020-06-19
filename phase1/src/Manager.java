@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 /**
  * This class is used to store a list of items with methods provided to update entries of that list.
+ * The list of items is stored using a Linked List in .ser files. Any object being stored must be serializable.
  *
  * @param <T> the entry must have an id to identify different entries
  */
@@ -88,6 +89,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
             LOGGER.log(Level.SEVERE, "Input could not be read.", ex);
         }
         throw new EntryNotFoundException("Could not delete item #" + id);
+
     }
 
     /**
