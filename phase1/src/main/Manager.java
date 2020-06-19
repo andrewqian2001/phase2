@@ -1,3 +1,5 @@
+package main;
+
 import exceptions.EntryNotFoundException;
 
 import java.io.*;

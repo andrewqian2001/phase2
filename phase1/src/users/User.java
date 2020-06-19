@@ -1,4 +1,8 @@
 package users;
 
-public class User {
+import main.DatabaseItem;
+
+import java.io.Serializable;
+
+public abstract class User extends DatabaseItem implements Serializable {
 }
