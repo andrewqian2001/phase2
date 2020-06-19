@@ -3,6 +3,7 @@ package main;
 import exceptions.EntryNotFoundException;
 
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.LinkedList;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
@@ -49,13 +50,18 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
         T oldItem = newItem;
         try {
             allItems = getItems();
+            if (allItems.size() == 0){
+                allItems.add(newItem);
+                save(allItems);
+                return oldItem;
+            }
             for (int i = 0; i < allItems.size(); i++) {
                 T currItem = allItems.get(i);
                 if (currItem.getId() == newItem.getId()) {
                     allItems.set(i, newItem);
                     oldItem = currItem;
                     break;
-                } else if (i == allItems.size() - 1) allItems.set(i, newItem);
+                } else if (i == allItems.size() - 1) allItems.add(newItem);
             }
             save(allItems);
         } catch (IOException ex) {
@@ -104,25 +110,28 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      */
     public T populate(int id) throws ClassNotFoundException, EntryNotFoundException {
         LinkedList<T> allItems;
-        try {
-            allItems = getItems();
-            for (int i = 0; i < allItems.size(); i++) {
-                T currItem = allItems.get(i);
-                if (currItem.getId() == id)
-                    return currItem;
-            }
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Input could not be read.", ex);
+        allItems = getItems();
+        for (int i = 0; i < allItems.size(); i++) {
+            T currItem = allItems.get(i);
+            if (currItem.getId() == id)
+                return currItem;
         }
+
         throw new EntryNotFoundException("Could not find item #" + id);
     }
 
-    private LinkedList<T> getItems() throws ClassNotFoundException, IOException {
-        InputStream buffer = new BufferedInputStream(new FileInputStream(this.filePath));
-        ObjectInput input = new ObjectInputStream(buffer);
-        LinkedList<T> items = (LinkedList<T>) input.readObject();
-        input.close();
-        return items;
+    private LinkedList<T> getItems() throws ClassNotFoundException {
+        try {
+            InputStream buffer = new BufferedInputStream(new FileInputStream(this.filePath));
+            ObjectInput input = new ObjectInputStream(buffer);
+            LinkedList<T> items = (LinkedList<T>) input.readObject();
+            input.close();
+            return items;
+        }
+        catch(IOException e) {
+            LOGGER.log(Level.INFO, "Empty file was used.");
+            return new LinkedList<T>();
+        }
     }
 
     private void save(LinkedList<T> items) throws IOException {
