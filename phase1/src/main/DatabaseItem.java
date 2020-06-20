@@ -12,7 +12,7 @@ public abstract class DatabaseItem implements Serializable {
     /**
      * Generates random id
      */
-    public DatabaseItem()   {
+    public DatabaseItem() {
         this.thisId = UUID.randomUUID().toString();
     }
 
