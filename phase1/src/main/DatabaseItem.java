@@ -1,15 +1,22 @@
 package main;
 
 import java.io.Serializable;
+import java.util.UUID;
 
+/**
+ * Provides for a way to keep track of all items with each having a unique id
+ */
 public abstract class DatabaseItem implements Serializable {
-    private static int id = 0;
-    private int thisId;
-    public DatabaseItem(){
-        this.thisId = id;
-        id++;
+    private String thisId;
+
+    public DatabaseItem()   {
+        this.thisId = UUID.randomUUID().toString();
     }
-    public int getId(){
+
+    /**
+     * @return the id of this item
+     */
+    public String getId() {
         return thisId;
 
     }

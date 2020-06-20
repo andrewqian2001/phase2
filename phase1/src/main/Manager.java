@@ -57,7 +57,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
             }
             for (int i = 0; i < allItems.size(); i++) {
                 T currItem = allItems.get(i);
-                if (currItem.getId() == newItem.getId()) {
+                if (currItem.getId().equals(newItem.getId())) {
                     allItems.set(i, newItem);
                     oldItem = currItem;
                     break;
@@ -79,14 +79,14 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      * @throws ClassNotFoundException if items in the list has an unknown class
      * @throws EntryNotFoundException if the entry id doesn't exist in the list
      */
-    public T delete(int id) throws ClassNotFoundException, EntryNotFoundException {
+    public T delete(String id) throws ClassNotFoundException, EntryNotFoundException {
         LinkedList<T> allItems;
         T oldItem;
         try {
             allItems = getItems();
             for (int i = 0; i < allItems.size(); i++) {
                 T currItem = allItems.get(i);
-                if (currItem.getId() == id) {
+                if (currItem.getId().equals(id)) {
                     oldItem = currItem;
                     allItems.remove(i);
                     save(allItems);
@@ -108,12 +108,12 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      * @throws ClassNotFoundException if the list of items contains a class that is unknown
      * @throws EntryNotFoundException if the id given does not exist in the list of items
      */
-    public T populate(int id) throws ClassNotFoundException, EntryNotFoundException {
+    public T populate(String id) throws ClassNotFoundException, EntryNotFoundException {
         LinkedList<T> allItems;
         allItems = getItems();
         for (int i = 0; i < allItems.size(); i++) {
             T currItem = allItems.get(i);
-            if (currItem.getId() == id)
+            if (currItem.getId().equals(id))
                 return currItem;
         }
 
