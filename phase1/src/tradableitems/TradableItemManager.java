@@ -11,14 +11,19 @@ public class TradableItemManager extends Manager<TradableItem> implements Serial
         super(filePath);
     }
 
+    /**
+     * Creates a new TradableItem.
+     * @param name of the TradableItem to be added
+     * @param description of the TradableItem to be added
+     * @return id of the item added
+     */
     public int addItem(String name, String description){
         TradableItem item = new TradableItem(name, description);
         try{
             update(item);
         }
         catch (ClassNotFoundException e) {
-            System.err.println("Class TradableItem is not found.");
-            return -1;
+            System.err.println("Class not found.");
         }
         return item.getId();
     }
