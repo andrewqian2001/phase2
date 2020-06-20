@@ -45,12 +45,12 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      * @return the old item in the entry, if it doesn't exist then the new item is returned
      * @throws ClassNotFoundException if the file contains a class that is not found
      */
-    public T update(T newItem)  {
+    public T update(T newItem) {
         LinkedList<T> allItems;
         T oldItem = newItem;
         try {
             allItems = getItems();
-            if (allItems.size() == 0){
+            if (allItems.size() == 0) {
                 allItems.add(newItem);
                 save(allItems);
                 return oldItem;
@@ -124,35 +124,47 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
         throw new EntryNotFoundException("Could not find item " + id);
     }
 
-    private LinkedList<T> getItems() throws ClassNotFoundException, FileNotFoundException {
+    /**
+     * @return LinkedList containing all the items in the file
+     * @throws ClassNotFoundException if there is a class that is not defined
+     * @throws FileNotFoundException  if the file doesn't exist
+     */
+    protected LinkedList<T> getItems() throws ClassNotFoundException, FileNotFoundException {
         if (!new File(this.filePath).exists()) {
             LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
             throw new FileNotFoundException();
-        };
+        }
+        ;
         try {
             InputStream buffer = new BufferedInputStream(new FileInputStream(this.filePath));
             ObjectInput input = new ObjectInputStream(buffer);
             LinkedList<T> items = (LinkedList<T>) input.readObject();
             input.close();
             return items;
-        }
-        catch(IOException e) {
+        } catch (IOException e) {
             LOGGER.log(Level.INFO, "Empty file was used.");
             return new LinkedList<T>();
         }
     }
 
-    private void save(LinkedList<T> items) throws FileNotFoundException {
+    /**
+     * Overwrites the file and saves something new to it
+     *
+     * @param items the items that are being saved to the file
+     * @throws FileNotFoundException if the file doesn't exist
+     */
+    protected void save(LinkedList<T> items) throws FileNotFoundException {
         if (!new File(this.filePath).exists()) {
             LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
             throw new FileNotFoundException();
-        };
+        }
+        ;
         try {
             OutputStream buffer = new BufferedOutputStream(new FileOutputStream(filePath));
             ObjectOutput output = new ObjectOutputStream(buffer);
             output.writeObject(items);
             output.close();
-        } catch (IOException e){
+        } catch (IOException e) {
             LOGGER.log(Level.WARNING, "Unable to save.", e);
         }
     }
