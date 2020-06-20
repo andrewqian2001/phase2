@@ -1,5 +1,6 @@
 package tradableitems;
 
+import exceptions.EntryNotFoundException;
 import main.Manager;
 
 import java.io.IOException;
@@ -19,12 +20,17 @@ public class TradableItemManager extends Manager<TradableItem> implements Serial
      */
     public String addItem(String name, String description){
         TradableItem item = new TradableItem(name, description);
-        try{
-            update(item);
-        }
-        catch (ClassNotFoundException e) {
-            System.err.println("Class not found.");
-        }
+        update(item);
         return item.getId();
+    }
+
+    /**
+     * Removes an item from storage
+     * @param id the item's id that is being removed
+     * @return the item that got deleted
+     * @throws EntryNotFoundException if the id doesn't refer to anything
+     */
+    public TradableItem deleteItem(String id) throws EntryNotFoundException {
+        return super.delete(id);
     }
 }

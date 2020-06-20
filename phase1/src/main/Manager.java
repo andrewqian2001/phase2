@@ -42,7 +42,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      * Updates the list with a new entry for the same id, if that entry exists
      *
      * @param newItem the item to replace to existing entry (if it exists)
-     * @return the old item in the entry or the new item if the old item doesn't exist
+     * @return the old item in the entry, if it doesn't exist then the new item is returned
      * @throws ClassNotFoundException if the file contains a class that is not found
      */
     public T update(T newItem)  {
@@ -65,7 +65,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
             }
             save(allItems);
         } catch (IOException | ClassNotFoundException e) {
-            LOGGER.log(Level.SEVERE, "Input could not be read.", e);
+            LOGGER.log(Level.SEVERE, "Input could not be read. Failed to update.", e);
         }
         return oldItem;
 
