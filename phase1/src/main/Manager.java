@@ -45,7 +45,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      * @return the old item in the entry or the new item if the old item doesn't exist
      * @throws ClassNotFoundException if the file contains a class that is not found
      */
-    public T update(T newItem) throws ClassNotFoundException {
+    public T update(T newItem)  {
         LinkedList<T> allItems;
         T oldItem = newItem;
         try {
@@ -64,8 +64,8 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
                 } else if (i == allItems.size() - 1) allItems.add(newItem);
             }
             save(allItems);
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Input could not be read.", ex);
+        } catch (IOException | ClassNotFoundException e) {
+            LOGGER.log(Level.SEVERE, "Input could not be read.", e);
         }
         return oldItem;
 
@@ -79,7 +79,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      * @throws ClassNotFoundException if items in the list has an unknown class
      * @throws EntryNotFoundException if the entry id doesn't exist in the list
      */
-    public T delete(String id) throws ClassNotFoundException, EntryNotFoundException {
+    public T delete(String id) throws EntryNotFoundException {
         LinkedList<T> allItems;
         T oldItem;
         try {
@@ -93,10 +93,10 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
                     return oldItem;
                 }
             }
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, "Input could not be read.", ex);
+        } catch (IOException | ClassNotFoundException e) {
+            LOGGER.log(Level.SEVERE, "Input could not be read.", e);
         }
-        throw new EntryNotFoundException("Could not delete item #" + id);
+        throw new EntryNotFoundException("Could not delete item " + id);
 
     }
 
@@ -108,19 +108,27 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      * @throws ClassNotFoundException if the list of items contains a class that is unknown
      * @throws EntryNotFoundException if the id given does not exist in the list of items
      */
-    public T populate(String id) throws ClassNotFoundException, EntryNotFoundException {
+    public T populate(String id) throws EntryNotFoundException {
         LinkedList<T> allItems;
-        allItems = getItems();
-        for (int i = 0; i < allItems.size(); i++) {
-            T currItem = allItems.get(i);
-            if (currItem.getId().equals(id))
-                return currItem;
+        try {
+            allItems = getItems();
+            for (int i = 0; i < allItems.size(); i++) {
+                T currItem = allItems.get(i);
+                if (currItem.getId().equals(id))
+                    return currItem;
+            }
+        } catch (FileNotFoundException | ClassNotFoundException e) {
+            LOGGER.log(Level.SEVERE, "Input could not be read.", e);
         }
 
-        throw new EntryNotFoundException("Could not find item #" + id);
+        throw new EntryNotFoundException("Could not find item " + id);
     }
 
-    private LinkedList<T> getItems() throws ClassNotFoundException {
+    private LinkedList<T> getItems() throws ClassNotFoundException, FileNotFoundException {
+        if (!new File(this.filePath).exists()) {
+            LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
+            throw new FileNotFoundException();
+        };
         try {
             InputStream buffer = new BufferedInputStream(new FileInputStream(this.filePath));
             ObjectInput input = new ObjectInputStream(buffer);
@@ -134,11 +142,19 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
         }
     }
 
-    private void save(LinkedList<T> items) throws IOException {
-        OutputStream buffer = new BufferedOutputStream(new FileOutputStream(filePath));
-        ObjectOutput output = new ObjectOutputStream(buffer);
-        output.writeObject(items);
-        output.close();
+    private void save(LinkedList<T> items) throws FileNotFoundException {
+        if (!new File(this.filePath).exists()) {
+            LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
+            throw new FileNotFoundException();
+        };
+        try {
+            OutputStream buffer = new BufferedOutputStream(new FileOutputStream(filePath));
+            ObjectOutput output = new ObjectOutputStream(buffer);
+            output.writeObject(items);
+            output.close();
+        } catch (IOException e){
+            LOGGER.log(Level.WARNING, "Unable to save.", e);
+        }
     }
 }
 
