@@ -9,6 +9,9 @@ import java.util.UUID;
 public abstract class DatabaseItem implements Serializable {
     private String thisId;
 
+    /**
+     * Generates random id
+     */
     public DatabaseItem()   {
         this.thisId = UUID.randomUUID().toString();
     }
