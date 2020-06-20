@@ -20,29 +20,30 @@ public class Trade extends DatabaseItem implements Serializable {
     private boolean isSecondUserConfirmed1 = false;
     private boolean isFirstUserConfirmed2 = false;
     private boolean isSecondUserConfirmed2 = false;
-    private String firstUserId, secondUserId;
+    private final String FIRST_USER_ID, SECOND_USER_ID;
     private final int MAX_ALLOWED_NUM_EDITS;
 
     private String userTurnToEdit;
 
     /**
-     /**
+     * /**
      * Saves user ids
-     * @param firstUserId  the user id of the person initializing the trade
-     * @param secondUserId the user id of the person the trade is being sent to
-     * @param meetingTime when the meeting takes place
+     *
+     * @param firstUserId       the user id of the person initializing the trade
+     * @param secondUserId      the user id of the person the trade is being sent to
+     * @param meetingTime       when the meeting takes place
      * @param secondMeetingTime when the second meeting takes place
-     * @param meetingLocation where the meeting takes place
-     * @param firstUserOffer the item id that the user who initialized the trade is willing to offer
-     * @param secondUserOffer the item id that the user who got sent the trade is willing to offer
-     * @param allowedEdits number of edits allowed before the trade is cancelled
+     * @param meetingLocation   where the meeting takes place
+     * @param firstUserOffer    the item id that the user who initialized the trade is willing to offer
+     * @param secondUserOffer   the item id that the user who got sent the trade is willing to offer
+     * @param allowedEdits      number of edits allowed before the trade is cancelled
      */
     public Trade(String firstUserId, String secondUserId,
                  Date meetingTime, Date secondMeetingTime,
                  String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
         super();
-        this.firstUserId = firstUserId;
-        this.secondUserId = secondUserId;
+        this.FIRST_USER_ID = firstUserId;
+        this.SECOND_USER_ID = secondUserId;
         this.MAX_ALLOWED_NUM_EDITS = allowedEdits * 2;
         this.userTurnToEdit = secondUserId;
         this.meetingTime = meetingTime;
@@ -55,8 +56,8 @@ public class Trade extends DatabaseItem implements Serializable {
     public void editTrade(Date meetingTime, Date secondMeetingTime, String meetingLocation,
                           String firstUserOffer, String secondUserOffer) throws CannotTradeException {
         if (this.numEdits >= MAX_ALLOWED_NUM_EDITS) throw new CannotTradeException("Too many edits");
-        if (this.userTurnToEdit.equals(firstUserId)) this.userTurnToEdit = secondUserId;
-        else this.userTurnToEdit = firstUserId;
+        if (this.userTurnToEdit.equals(FIRST_USER_ID)) this.userTurnToEdit = SECOND_USER_ID;
+        else this.userTurnToEdit = FIRST_USER_ID;
         this.meetingTime = meetingTime;
         this.secondMeetingTime = secondMeetingTime;
         this.meetingLocation = meetingLocation;
@@ -125,14 +126,14 @@ public class Trade extends DatabaseItem implements Serializable {
      * @return the user id of the person initializing the trade
      */
     public String getFirstUserId() {
-        return firstUserId;
+        return FIRST_USER_ID;
     }
 
     /**
      * @return the user id of the person the trade is being sent to
      */
     public String getSecondUserId() {
-        return secondUserId;
+        return SECOND_USER_ID;
     }
 
     /**
@@ -155,6 +156,7 @@ public class Trade extends DatabaseItem implements Serializable {
     public Date getSecondMeetingTime() {
         return secondMeetingTime;
     }
+
     /**
      * @return where the trade is taking place
      */
@@ -175,7 +177,6 @@ public class Trade extends DatabaseItem implements Serializable {
     public String getSecondUserOffer() {
         return secondUserOffer;
     }
-
 
 
     /**
