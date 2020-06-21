@@ -2,6 +2,8 @@ package trades;
 
 import exceptions.EntryNotFoundException;
 import main.Manager;
+import users.NormalUser;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
@@ -23,8 +25,8 @@ public class TradeManager extends Manager<Trade> implements Serializable {
     /**
      * Creates a new Trade
      *
-     * @param firstUserId       the user id of the person initializing the trade
-     * @param secondUserId      the user id of the person the trade is being sent to
+     * @param firstUser         the user of the person initializing the trade
+     * @param secondUser        the user of the person the trade is being sent to
      * @param meetingTime       when the meeting takes place
      * @param secondMeetingTime when the second meeting takes place
      * @param meetingLocation   where the meeting takes place
@@ -33,12 +35,14 @@ public class TradeManager extends Manager<Trade> implements Serializable {
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      * @return the object added
      */
-    public Trade addTrade(String firstUserId, String secondUserId,
-                           Date meetingTime, Date secondMeetingTime,
-                           String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
-        Trade trade = new Trade(firstUserId, secondUserId,
+    public Trade addTrade(NormalUser firstUser, NormalUser secondUser,
+                          Date meetingTime, Date secondMeetingTime,
+                          String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
+        Trade trade = new Trade(firstUser, secondUser,
                 meetingTime, secondMeetingTime,
                 meetingLocation, firstUserOffer, secondUserOffer, allowedEdits);
+//        firstUser.updateTradeList() or something
+//        secondUser.updateTradeList() or something
         return update(trade);
     }
 
