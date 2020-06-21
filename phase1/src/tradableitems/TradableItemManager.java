@@ -25,12 +25,11 @@ public class TradableItemManager extends Manager<TradableItem> implements Serial
      *
      * @param name        name of the TradableItem to be added
      * @param description description of the TradableItem to be added
-     * @return id of the item added
+     * @return the object added
      */
-    public String addItem(String name, String description) {
+    public TradableItem addItem(String name, String description) {
         TradableItem item = new TradableItem(name, description);
-        update(item);
-        return item.getId();
+        return update(item);
     }
 
     /**

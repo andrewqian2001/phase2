@@ -31,16 +31,15 @@ public class TradeManager extends Manager<Trade> implements Serializable {
      * @param firstUserOffer    the item id that the user who initialized the trade is willing to offer
      * @param secondUserOffer   the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
-     * @return the id of the new Trade object
+     * @return the object added
      */
-    public String addTrade(String firstUserId, String secondUserId,
+    public Trade addTrade(String firstUserId, String secondUserId,
                            Date meetingTime, Date secondMeetingTime,
                            String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
         Trade trade = new Trade(firstUserId, secondUserId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, firstUserOffer, secondUserOffer, allowedEdits);
-        update(trade);
-        return trade.getId();
+        return update(trade);
     }
 
     /**
