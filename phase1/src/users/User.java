@@ -11,6 +11,17 @@ public abstract class User extends DatabaseItem implements Serializable {
     private boolean isUnfrozenRequested;
 
     /**
+     * Constructs a user with a given username and password.
+     * @param username the user's username.
+     * @param password the user's password.
+     */
+    public User(String username, String password){
+        super();
+        this.username = username;
+        this.password = password;
+    }
+
+    /**
      *
      * @return this user's username.
      */
