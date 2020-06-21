@@ -2,7 +2,7 @@ package trades;
 
 import exceptions.EntryNotFoundException;
 import main.Manager;
-import users.NormalUser;
+import users.Trader;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -35,7 +35,7 @@ public class TradeManager extends Manager<Trade> implements Serializable {
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      * @return the object added
      */
-    public Trade addTrade(NormalUser firstUser, NormalUser secondUser,
+    public Trade addTrade(Trader firstUser, Trader secondUser,
                           Date meetingTime, Date secondMeetingTime,
                           String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
         Trade trade = new Trade(firstUser, secondUser,

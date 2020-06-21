@@ -2,7 +2,7 @@ package trades;
 
 import exceptions.CannotTradeException;
 import main.DatabaseItem;
-import users.NormalUser;
+import users.Trader;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -39,7 +39,7 @@ public class Trade extends DatabaseItem implements Serializable {
      * @param secondUserOffer   the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      */
-    public Trade(NormalUser firstUser, NormalUser secondUser,
+    public Trade(Trader firstUser, Trader secondUser,
                  Date meetingTime, Date secondMeetingTime,
                  String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
         super();
