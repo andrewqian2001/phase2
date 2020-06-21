@@ -3,7 +3,6 @@ package main;
 import exceptions.EntryNotFoundException;
 
 import java.io.*;
-import java.sql.SQLOutput;
 import java.util.LinkedList;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
