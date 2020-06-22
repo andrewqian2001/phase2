@@ -82,4 +82,9 @@ public abstract class User extends DatabaseItem implements Serializable {
     public void setUnfrozenRequested(boolean unfrozenRequested) {
         isUnfrozenRequested = unfrozenRequested;
     }
+
+    /**
+     * @return if this user has permission
+     */
+    public boolean hasPermission() {return false;}
 }
