@@ -1,5 +1,6 @@
 package users;
 
+import exceptions.UserNotFoundException;
 import main.Manager;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class UserManager extends Manager<User> implements Serializable {
     }
 
     //Takes in username and password, return user, if user doesn't exist, throw UserNotFoundException
-    public User login(String username, String password) {
+    public User login(String username, String password) throws UserNotFoundException {
         return null;
     }
 }
