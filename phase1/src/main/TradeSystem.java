@@ -14,6 +14,7 @@ import java.io.*;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class TradeSystem implements Serializable {
@@ -25,27 +26,59 @@ public class TradeSystem implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(Manager.class.getName());
     private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
 
-    private boolean isAdmin;
-
+    /**
+     * Stores the file paths to the .ser files of all users and initial admin
+     *
+     * @param filepath .ser file of all users
+     * @param adminFilepath .ser file of initial admin
+     * @throws IOException
+     */
     public TradeSystem(String filepath, String adminFilepath) throws IOException {
         this.adminUserManager = new UserManager(adminFilepath);
         this.userManager = new UserManager(filepath);
     }
 
+    /**
+     * Registers a new trader account
+     *
+     * @param username
+     * @param password
+     * @return the User object
+     * @throws UserAlreadyExistsException
+     * @throws UserNotFoundException
+     */
     public User register(String username, String password) throws UserAlreadyExistsException, UserNotFoundException {
-        if(checkOriginalAdmin(username, password)) {
-            userManager.registerUser(username, password, true);
-        } else {
-            userManager.registerUser(username, password, false);
-        }
+        userManager.registerUser(username, password, false);
         return login(username, password);
     }
 
-    public User login(String username, String password) throws UserNotFoundException {
-        return userManager.login(username, password);
+    /**
+     * Registers a new admin account
+     *
+     * @param username
+     * @param password
+     * @throws UserAlreadyExistsException
+     */
+    public void registerAdmin(String username, String password) throws UserAlreadyExistsException{
+        userManager.registerUser(username, password, true);
     }
 
-    private boolean checkOriginalAdmin(String username, String password) {
-        return(adminUserManager.login(username, password).hasPermission());
+    /**
+     * Find the user object and returns it
+     *
+     * @param username
+     * @param password
+     * @return User object
+     * @throws UserNotFoundException
+     */
+    public User login(String username, String password) throws UserNotFoundException {
+        //Check if the account is the initial admin
+        try {
+            return adminUserManager.login(username, password);
+        } catch(UserNotFoundException e) {
+            LOGGER.log(Level.FINE, "User is not the initial admin.", e);
+        }
+
+        return userManager.login(username, password);
     }
 }
