@@ -4,6 +4,9 @@ import main.DatabaseItem;
 
 import java.io.Serializable;
 
+/**
+ * Represents a typical account
+ */
 public abstract class User extends DatabaseItem implements Serializable {
     private String username;
     private String password;
@@ -12,17 +15,17 @@ public abstract class User extends DatabaseItem implements Serializable {
 
     /**
      * Constructs a user with a given username and password.
+     *
      * @param username the user's username.
      * @param password the user's password.
      */
-    public User(String username, String password){
+    public User(String username, String password) {
         super();
         this.username = username;
         this.password = password;
     }
 
     /**
-     *
      * @return this user's username.
      */
     public String getUsername() {
@@ -30,7 +33,6 @@ public abstract class User extends DatabaseItem implements Serializable {
     }
 
     /**
-     *
      * @param username to be set to this user.
      */
     public void setUsername(String username) {
@@ -38,7 +40,6 @@ public abstract class User extends DatabaseItem implements Serializable {
     }
 
     /**
-     *
      * @return this user's password
      */
     public String getPassword() {
@@ -46,7 +47,6 @@ public abstract class User extends DatabaseItem implements Serializable {
     }
 
     /**
-     *
      * @param password to be set to this user.
      */
     public void setPassword(String password) {
@@ -55,15 +55,13 @@ public abstract class User extends DatabaseItem implements Serializable {
 
 
     /**
-     *
      * @return if this user is frozen.
      */
-    public boolean isFrozen(){
+    public boolean isFrozen() {
         return isFrozen;
     }
 
     /**
-     *
      * @param frozen if this user is now frozen.
      */
     public void setFrozen(boolean frozen) {
@@ -72,7 +70,6 @@ public abstract class User extends DatabaseItem implements Serializable {
 
 
     /**
-     *
      * @return if this user requested to be unfrozen
      */
     public boolean isUnfrozenRequested() {
@@ -80,7 +77,6 @@ public abstract class User extends DatabaseItem implements Serializable {
     }
 
     /**
-     *
      * @param unfrozenRequested if this user requested to be unfrozen
      */
     public void setUnfrozenRequested(boolean unfrozenRequested) {
