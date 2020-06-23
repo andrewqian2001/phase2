@@ -34,6 +34,10 @@ public class TradeSystem implements Serializable {
      * @throws IOException
      */
     public TradeSystem(String filepath, String adminFilepath) throws IOException {
+        LOGGER.setLevel(Level.ALL);
+        CONSOLE_HANDLER.setLevel(Level.WARNING);
+        LOGGER.addHandler(CONSOLE_HANDLER);
+
         this.adminUserManager = new UserManager(adminFilepath);
         this.userManager = new UserManager(filepath);
     }
@@ -47,9 +51,8 @@ public class TradeSystem implements Serializable {
      * @throws UserAlreadyExistsException
      * @throws UserNotFoundException
      */
-    public User register(String username, String password) throws UserAlreadyExistsException, UserNotFoundException {
-        userManager.registerUser(username, password, false);
-        return login(username, password);
+    public User register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+        return userManager.registerUser(username, password, "Trader");
     }
 
     /**
@@ -59,8 +62,8 @@ public class TradeSystem implements Serializable {
      * @param password
      * @throws UserAlreadyExistsException
      */
-    public void registerAdmin(String username, String password) throws UserAlreadyExistsException{
-        userManager.registerUser(username, password, true);
+    public void registerAdmin(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+        userManager.registerUser(username, password, "Admin");
     }
 
     /**
@@ -71,12 +74,11 @@ public class TradeSystem implements Serializable {
      * @return User object
      * @throws UserNotFoundException
      */
-    public User login(String username, String password) throws UserNotFoundException {
+    public User login(String username, String password) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
         //Check if the account is the initial admin
         try {
             return adminUserManager.login(username, password);
         } catch(UserNotFoundException e) {
-            LOGGER.log(Level.FINE, "User is not the initial admin.", e);
         }
 
         return userManager.login(username, password);

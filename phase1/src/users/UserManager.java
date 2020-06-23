@@ -1,4 +1,5 @@
 package users;
+import exceptions.UserAlreadyExistsException;
 import main.Manager;
 import exceptions.UserNotFoundException;
 import trades.Trade;
@@ -31,24 +32,30 @@ public class UserManager extends Manager<User> implements Serializable {
      * else, create new User.
      * @param username the new user's username
      * @param password the new user's password
-     * @param isAdmin whether or not the new user is an admin
+     * @param userType the specific type of User to be added
      * @return true if the user was added, false otherwise
      * @throws FileNotFoundException if the specified file path was not found
      * @throws ClassNotFoundException if there is a class that is not defined
+     * @throws UserAlreadyExistsException if a user with the same username exists
      */
-    public boolean registerUser(String username, String password, boolean isAdmin) throws FileNotFoundException, ClassNotFoundException {
+    public User registerUser(String username, String password, String userType) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
         LinkedList<User> users = getItems();
         for (User user : users){
             if (user.getUsername().equals(username)){
-                return false;
+                throw new UserAlreadyExistsException("User already exists.");
             }
         }
-        if (isAdmin)
-            users.add(new Admin(username, password));
-        else
-            users.add(new Trader(username, password));
+        User newUser;
+        switch (userType){
+            case "Admin":
+                newUser = new Admin(username, password);
+                break;
+            default:
+                newUser = new Trader(username, password);
+        }
+        users.add(newUser);
         save(users);
-        return true;
+        return newUser;
     }
 
 
