@@ -51,11 +51,8 @@ public class TradeSystem implements Serializable {
      * @throws UserAlreadyExistsException
      * @throws UserNotFoundException
      */
-    public User register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserNotFoundException, UserAlreadyExistsException {
-        if(!userManager.registerUser(username, password, false)) {
-            throw new UserAlreadyExistsException("Username already exists.");
-        }
-        return login(username, password);
+    public User register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+        return userManager.registerUser(username, password, "Trader");
     }
 
     /**
@@ -66,9 +63,7 @@ public class TradeSystem implements Serializable {
      * @throws UserAlreadyExistsException
      */
     public void registerAdmin(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
-        if(!userManager.registerUser(username, password, true)) {
-            throw new UserAlreadyExistsException("Username already exists.");
-        }
+        userManager.registerUser(username, password, "Admin");
     }
 
     /**
