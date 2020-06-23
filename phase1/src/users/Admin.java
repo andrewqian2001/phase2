@@ -7,12 +7,14 @@ public class Admin extends User implements Serializable {
     /**
      * @return if this user has permission
      */
-    public Admin(String name, String password){
-        super(name,password);
-    }
     public boolean hasPermission() {
         return true;
     }
-    public boolean isFrozen(){ return false;}
 
+    /**
+     * @return if the user is frozen (always false since admins do not participate in trades)
+     */
+    public boolean isFrozen() {
+        return false;
+    }
 }
