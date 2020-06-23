@@ -45,6 +45,12 @@ public class Trader extends User implements Serializable {
     public void SetAcceptedTrades(ArrayList<String> AcceptedTrades){
         this.AcceptedTrades = AcceptedTrades;
     }
+    public ArrayList<String> GetRequestedTrades(){
+        return RequestedTrades;
+    }
+    public void SetRequestedTrades(ArrayList<String> RequestedTrades){
+        this.RequestedTrades = RequestedTrades;
+    }
     public int GetTradeLimit(){
         return TradeLimit;
     }
