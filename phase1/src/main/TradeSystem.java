@@ -51,8 +51,10 @@ public class TradeSystem implements Serializable {
      * @throws UserAlreadyExistsException
      * @throws UserNotFoundException
      */
-    public User register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserNotFoundException {
-        userManager.registerUser(username, password, false);
+    public User register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserNotFoundException, UserAlreadyExistsException {
+        if(!userManager.registerUser(username, password, false)) {
+            throw new UserAlreadyExistsException("Username already exists.");
+        }
         return login(username, password);
     }
 
@@ -63,8 +65,10 @@ public class TradeSystem implements Serializable {
      * @param password
      * @throws UserAlreadyExistsException
      */
-    public void registerAdmin(String username, String password) throws UserAlreadyExistsException, FileNotFoundException, ClassNotFoundException {
-        userManager.registerUser(username, password, true);
+    public void registerAdmin(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+        if(!userManager.registerUser(username, password, true)) {
+            throw new UserAlreadyExistsException("Username already exists.");
+        }
     }
 
     /**
@@ -79,8 +83,7 @@ public class TradeSystem implements Serializable {
         //Check if the account is the initial admin
         try {
             return adminUserManager.login(username, password);
-        } catch(UserNotFoundException | FileNotFoundException | ClassNotFoundException e) {
-            LOGGER.log(Level.FINE, "User is not the initial admin.", e);
+        } catch(UserNotFoundException e) {
         }
 
         return userManager.login(username, password);

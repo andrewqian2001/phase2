@@ -45,7 +45,7 @@ public class TextInterface {
                 System.out.print("Enter Password for " + userString + ":");
                 userPaString = sc.nextLine();
                 user = userChoice == 1 ? tSystem.login(userString, userPaString) : tSystem.register(userString, userPaString);
-            } catch(UserNotFoundException | UserAlreadyExistsException e) {
+            } catch(UserNotFoundException | ClassNotFoundException | UserAlreadyExistsException e) {
                 System.out.println(e.getMessage());
             }
         } while(user == null);
