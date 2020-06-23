@@ -2,6 +2,7 @@ package users;
 import main.Manager;
 import exceptions.UserNotFoundException;
 import trades.Trade;
+import exceptions.UserNotFoundException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -24,7 +25,6 @@ public class UserManager extends Manager<User> implements Serializable {
         super(filePath);
     }
 
-    //
     /**
      * Takes in username and password, checks if the username exists
      * if it exists already, return false
@@ -51,8 +51,24 @@ public class UserManager extends Manager<User> implements Serializable {
         return true;
     }
 
-    //Takes in username and password, return user, if user doesn't exist, throw UserNotFoundException
-    public User login(String username, String password) throws UserNotFoundException {
-        return null;
+
+    /**
+     * Returns a user in the system with the given username and password.
+     * Throws an error if the user is not found.
+     * @param username the username of the user
+     * @param password the password of the user
+     * @return the user if the user was found.
+     * @throws UserNotFoundException if the user was not found
+     * @throws FileNotFoundException if the specified file path could not be found
+     * @throws ClassNotFoundException if there is a class that is not defined
+     */
+    public User login(String username, String password) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
+        LinkedList<User> users = getItems();
+        for (User user : users){
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)){
+                return user;
+            }
+        }
+        throw new UserNotFoundException("Could not find user in the system.");
     }
 }
