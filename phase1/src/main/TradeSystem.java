@@ -138,22 +138,22 @@ public class TradeSystem implements Serializable {
     public void requestItem(String ID, TradableItem item) {
         Trader user = (Trader) getLoggedInUser(ID);
 
-        ArrayList<String> List = user.getRequestedItems();
-        List.add(item.getId());
-        user.setRequestedItems(List);
-        userManager.update(user);
+            ArrayList<String> List = user.getRequestedItems();
+            List.add(item.getId());
+            user.setRequestedItems(List);
+            userManager.update(user);
 
     }
 
     public void addItem(String ID, TradableItem item) {
         Trader user = (Trader) getLoggedInUser(ID);
         if(user.hasPermission(Permission.CONFIRM_ADDED_ITEM)){
-            ArrayList<String> inventory = user.getAvalibleItems();
+            ArrayList<String> inventory = user.getAvailableItems();
             ArrayList<String> reqList = user.getRequestedItems();
 
             if(reqList.contains(item.getId())){
                 inventory.add(item.getId());
-                user.setAvalibleItems(inventory);
+                user.setAvailableItems(inventory);
                 reqList.remove(item.getId());
                 user.setRequestedItems(reqList);
                 userManager.update(user);
@@ -178,12 +178,12 @@ public class TradeSystem implements Serializable {
 
     }
 
-    public void printInventory(String ID) {
+    public void printInventory(String ID) throws EntryNotFoundException {
         Trader user = (Trader) getLoggedInUser(ID);
-        ArrayList<String> Inventory = user.getAvalibleItems();
-        System.out.println("User " + user.getUsername() + "'s avalible items");
+        ArrayList<String> Inventory = user.getAvailableItems();
+        System.out.println("User " + user.getUsername() + "'s available items");
         for(int i = 0; i < Inventory.size(); i++){
-            String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
+            String item =Inventory.get(i);  //this is just the ID, how do you get the actual item name?
             System.out.println(item);
         }
 
