@@ -18,12 +18,22 @@ public class TextInterface {
     private static final Logger LOGGER = Logger.getLogger(TextInterface.class.getName());
     private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
 
+    /**
+     * Constructor for TextInterface
+     *
+     * @throws IOException
+     */
     public TextInterface() {
         LOGGER.setLevel(Level.ALL);
         CONSOLE_HANDLER.setLevel(Level.WARNING);
         LOGGER.addHandler(CONSOLE_HANDLER);
     }
 
+    /**
+     * Visual Presenter for the application
+     *
+     * @throws IOException
+     */
     public void run() throws IOException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         TradeSystem tSystem = new TradeSystem();
@@ -95,22 +105,14 @@ public class TextInterface {
                         System.out.println("Enter the username of the Trader you would like to freeze");
                         System.out.print("=> ");
                         frozenUser = sc.nextLine();
-                        try {
-                            tSystem.freezeUser(frozenUser);
-                        } catch (UserNotFoundException e) {
-                            System.out.println("No User found, please try again.");
-                        }
+                         tSystem.freezeUser(frozenUser);
                         System.out.println("Done! User "+ frozenUser + "is now frozen");
                         break;
                     case 2:
                         System.out.println("Enter the username of the frozen Trader");
                         System.out.print("=> ");
                         frozenUser = sc.nextLine();
-                        try {
-                            tSystem.unfreezeUser(frozenUser);
-                        } catch (UserNotFoundException e) {
-                            System.out.println("No User found, please try again.");
-                        }
+                        tSystem.unfreezeUser(frozenUser);
                         System.out.println("Done! User " + frozenUser + "is now unfrozen");
                         break;
                     case 3:
