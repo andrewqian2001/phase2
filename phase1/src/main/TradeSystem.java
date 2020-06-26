@@ -1,23 +1,27 @@
 package main;
 
 import com.sun.deploy.security.SelectableSecurityManager;
+import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserNotFoundException;
 import tradableitems.TradableItem;
 import tradableitems.TradableItemManager;
 import trades.TradeManager;
+import users.Permission;
+import users.Trader;
 import users.User;
 import users.UserManager;
 
 import javax.jws.soap.SOAPBinding;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TradeSystem implements Serializable {
+public class TradeSystem<T extends DatabaseItem> implements Serializable {
 
     private UserManager userManager;
     private UserManager adminUserManager;
@@ -107,11 +111,40 @@ public class TradeSystem implements Serializable {
         user.setFrozen(false);
     }
 
-    public void addItem() {
+    public User getLoggedInUser(String ID){
+        User loggedInUser = null;
+        try {
+            loggedInUser = userManager.populate(ID);
+            return loggedInUser;
+        } catch (EntryNotFoundException e) {
+            LOGGER.log(Level.INFO, "No user found with ID " + ID, e);
+        }
+        return loggedInUser;
 
     }
+    public void addItem(String ID, T item) {
+        Trader user = (Trader) getLoggedInUser(ID);
+        if(user.hasPermission(Permission.ADD_ITEM)){
+            ArrayList<String> inventory = user.getInventory();
+            inventory.add(item.getId());
+            user.setInventory(inventory);
+            userManager.update(user);
+        }
+    }
 
-    public void printTrades() {
+    public void printTrades(String ID) {
+        Trader user = (Trader) getLoggedInUser(ID);
+        ArrayList<String> AccTrades = user.getAcceptedTrades();
+        ArrayList<String> ReqTrades = user.getRequestedTrades();
+        System.out.println("User " + user.getUsername() + "'s accepted trades");
+        for(int i = 0; i < AccTrades.size(); i++){
+            String item = AccTrades.get(i);
+            System.out.println(item);
+        }
+        for(int i = 0; i < ReqTrades.size(); i++){
+            String item = ReqTrades.get(i);
+            System.out.println(item);
+        }
 
     }
 
