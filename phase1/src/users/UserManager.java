@@ -104,4 +104,10 @@ public class UserManager extends Manager<User> implements Serializable {
         }
         throw new UserNotFoundException("Could not find user in the system.");
     }
+
+    public void deleteUser(String username) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
+        User deleteUser = find(username);
+        LinkedList<User> users = getItems();
+        users.remove(deleteUser);
+    }
 }
