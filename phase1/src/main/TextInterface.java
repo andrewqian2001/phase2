@@ -24,7 +24,7 @@ public class TextInterface {
         LOGGER.addHandler(CONSOLE_HANDLER);
     }
 
-    public void run() throws IOException {
+    public void run() throws IOException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         TradeSystem tSystem = new TradeSystem();
 
@@ -95,14 +95,22 @@ public class TextInterface {
                         System.out.println("Enter the username of the Trader you would like to freeze");
                         System.out.print("=> ");
                         frozenUser = sc.nextLine();
-                         tSystem.freezeUser(frozenUser);
+                        try {
+                            tSystem.freezeUser(frozenUser);
+                        } catch (UserNotFoundException e) {
+                            System.out.println("No User found, please try again.");
+                        }
                         System.out.println("Done! User "+ frozenUser + "is now frozen");
                         break;
                     case 2:
                         System.out.println("Enter the username of the frozen Trader");
                         System.out.print("=> ");
                         frozenUser = sc.nextLine();
-                        tSystem.unfreezeUser(frozenUser);
+                        try {
+                            tSystem.unfreezeUser(frozenUser);
+                        } catch (UserNotFoundException e) {
+                            System.out.println("No User found, please try again.");
+                        }
                         System.out.println("Done! User " + frozenUser + "is now unfrozen");
                         break;
                     case 3:
