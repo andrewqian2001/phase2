@@ -7,11 +7,11 @@ import java.util.ArrayList;
 
 public class Trader extends User implements Serializable {
 
-    ArrayList<String> wishList = new ArrayList<String>(); // I assume TradableItems ID are strings?
-    ArrayList<String> inventory = new ArrayList<String>();
-    ArrayList<String> unconfirmedInv = new ArrayList<String>();
-    ArrayList<String> acceptedTrades = new ArrayList<String>();
-    ArrayList<String> requestedTrades = new ArrayList<String>();
+    ArrayList<String> wishList = new ArrayList<>(); // Ids
+    ArrayList<String> inventory = new ArrayList<>();
+    ArrayList<String> unconfirmedInv = new ArrayList<>();
+    ArrayList<String> acceptedTrades = new ArrayList<>();
+    ArrayList<String> requestedTrades = new ArrayList<>();
     int tradeLimit;
     int incompleteTradeLim;
     int totalItemsBorrowed;
@@ -49,18 +49,9 @@ public class Trader extends User implements Serializable {
         return acceptedTrades;
     }
 
-    public void setAcceptedTrades(ArrayList<String> acceptedTrades) {
-        this.acceptedTrades = acceptedTrades;
-    }
-
     public ArrayList<String> getRequestedTrades() {
         return requestedTrades;
     }
-
-    public void setRequestedTrades(ArrayList<String> requestedTrades) {
-        this.requestedTrades = requestedTrades;
-    }
-
     public int getTradeLimit() {
         return tradeLimit;
     }
