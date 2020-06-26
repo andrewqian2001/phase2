@@ -3,9 +3,14 @@ package main;
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserNotFoundException;
+import users.Permission;
 import users.User;
 
 public class TextInterface {
@@ -13,7 +18,16 @@ public class TextInterface {
     private static final String filePath = "src/users/users.ser";
     private static final String adminFilePath = "src/users/admin.ser";
 
-    public static void run() throws IOException {
+    private static final Logger LOGGER = Logger.getLogger(TextInterface.class.getName());
+    private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
+
+    public TextInterface() {
+        LOGGER.setLevel(Level.ALL);
+        CONSOLE_HANDLER.setLevel(Level.WARNING);
+        LOGGER.addHandler(CONSOLE_HANDLER);
+    }
+
+    public void run() throws IOException {
         Scanner sc = new Scanner(System.in);
         TradeSystem tSystem = new TradeSystem(filePath, adminFilePath);
 
@@ -54,9 +68,11 @@ public class TextInterface {
         System.out.printf("Welcome, %s!\n", user.getUsername());
         if(user.isFrozen()) System.out.println("Your account is currently FROZEN");
         System.out.println(lineBreak);
-        System.out.println((user.hasPermission() ? "ADMIN " : "TRADER ") + "MAIN MENU");
+        System.out.println((user.hasPermission(Permission.REGISTER_ADMIN) ? "ADMIN " : "TRADER ") + "MAIN MENU");
 
-        if (user.hasPermission()) {
+        if (user.hasPermission(Permission.REGISTER_ADMIN)) {
+            String frozenUser = "";
+
             do {
                 System.out.println(lineBreak);
                 System.out.println("1. Freeze Trader");
@@ -74,10 +90,28 @@ public class TextInterface {
                 }
                 switch(userChoice) {
                     case 1:
+                        System.out.println("Enter the username of the Trader you would like to freeze");
+                        System.out.print("=> ");
+                        frozenUser = sc.nextLine();
+                         // tSystem.freezeUser(frozenUser);
+                        System.out.println("Done! User "+ frozenUser + "is now frozen");
                         break;
                     case 2:
+                        System.out.println("Enter the username of the frozen Trader");
+                        System.out.print("=> ");
+                        frozenUser = sc.nextLine();
+                        // tSystem.unfreezeUser(frozenUser);
+                        System.out.println("Done! User " + frozenUser + "is now unfrozen");
                         break;
                     case 3:
+                        System.out.println("What username would you like this admin to have?");
+                        System.out.print("=> ");
+                        String newAdminUserString = sc.nextLine();
+                        System.out.println("What password would you like "+ newAdminUserString +" to have?");
+                        System.out.print("=> ");
+                        String newAdminPaString = sc.nextLine();
+                        // tSystem.makeadmin(newAdminUserString, newAdminPaString);
+                        System.out.println("Done! The following user is registered as Admin:\nUsername:\t"+newAdminPaString+"\nPassword:\t" + newAdminPaString);
                         break;
                     case 4:
                         break;
