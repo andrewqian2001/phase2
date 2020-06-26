@@ -124,7 +124,7 @@ public class TradeSystem implements Serializable {
         wantToUnFreezeUser.setFrozen(false);
     }
 
-    public User getLoggedInUser(String ID){
+    public User getLoggedInUser(String ID){ //Not sure if I handled the exception correctly
         User loggedInUser = null;
         try {
             loggedInUser = userManager.populate(ID);
@@ -133,14 +133,24 @@ public class TradeSystem implements Serializable {
             LOGGER.log(Level.INFO, "No user found with ID " + ID, e);
         }
         return loggedInUser;
+    }
+
+    public void requestItem(String ID, TradableItem item) {
+        Trader user = (Trader) getLoggedInUser(ID);
+
+        ArrayList<String> List = user.getRequestedItems();
+        List.add(item.getId());
+        user.setRequestedItems(List);
+        userManager.update(user);
 
     }
-    public void addItem(String ID, T item) {
+
+    public void addItem(String ID, TradableItem item) {
         Trader user = (Trader) getLoggedInUser(ID);
         if(user.hasPermission(Permission.ADD_ITEM)){
-            ArrayList<String> inventory = user.getInventory();
+            ArrayList<String> inventory = user.getAvalibleItems();
             inventory.add(item.getId());
-            user.setInventory(inventory);
+            user.setAvalibleItems(inventory);
             userManager.update(user);
         }
     }
@@ -164,7 +174,7 @@ public class TradeSystem implements Serializable {
 
     public void printInventory(String ID) {
         Trader user = (Trader) getLoggedInUser(ID);
-        ArrayList<String> Inventory = user.getInventory();
+        ArrayList<String> Inventory = user.getAvalibleItems();
         System.out.println("User " + user.getUsername() + "'s inventory");
         for(int i = 0; i < Inventory.size(); i++){
             String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
@@ -175,7 +185,7 @@ public class TradeSystem implements Serializable {
 
     public void printWishlist(String ID) {
         Trader user = (Trader) getLoggedInUser(ID);
-        ArrayList<String> Inventory = user.getInventory();
+        ArrayList<String> Inventory = user.getAvalibleItems();
         System.out.println("User " + user.getUsername() + "'s inventory");
         for(int i = 0; i < Inventory.size(); i++){
             String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?

@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class Trader extends User implements Serializable {
 
     ArrayList<String> wishList = new ArrayList<>(); // Ids
-    ArrayList<String> inventory = new ArrayList<>();
-    ArrayList<String> unconfirmedInv = new ArrayList<>();
+    ArrayList<String> avalibleItems = new ArrayList<>();
+    ArrayList<String> requestedItems = new ArrayList<>();
     ArrayList<String> acceptedTrades = new ArrayList<>();
     ArrayList<String> requestedTrades = new ArrayList<>();
     int tradeLimit;
@@ -29,20 +29,20 @@ public class Trader extends User implements Serializable {
         this.wishList = wishlist;
     }
 
-    public ArrayList<String> getInventory() {
-        return inventory;
+    public ArrayList<String> getAvalibleItems() {
+        return avalibleItems;
     }
 
-    public void setInventory(ArrayList<String> inventory) {
-        this.inventory = inventory;
+    public void setAvalibleItems(ArrayList<String> inventory) {
+        this.avalibleItems = inventory;
     }
 
-    public ArrayList<String> getUnconfirmedInv() {
-        return unconfirmedInv;
+    public ArrayList<String> getRequestedItems() {
+        return requestedItems;
     }
 
-    public void setUnconfirmedInv(ArrayList<String> unconfirmedInv) {
-        this.unconfirmedInv = unconfirmedInv;
+    public void setRequestedItems(ArrayList<String> requestedItems) {
+        this.requestedItems = requestedItems;
     }
 
     public ArrayList<String> getAcceptedTrades() {
