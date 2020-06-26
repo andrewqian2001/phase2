@@ -83,4 +83,32 @@ public class TradeSystem implements Serializable {
 
         return userManager.login(username, password);
     }
+
+    public void freezeUser(User user) {
+        user.setFrozen(true);
+    }
+
+    public void unfreezeUser(User user) {
+        user.setFrozen(false);
+    }
+
+    public void addItem(User user) {
+
+    }
+
+    public void printTrades(User user) {
+
+    }
+
+    public void printInventory(User user) {
+
+    }
+
+    public void printWishlist(User user) {
+
+    }
+
+    public void requestUnfreeze(User user) {
+
+    }
 }
