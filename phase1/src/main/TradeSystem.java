@@ -21,7 +21,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TradeSystem<T extends DatabaseItem> implements Serializable {
+public class TradeSystem implements Serializable {
 
     private UserManager userManager;
     private UserManager adminUserManager;
@@ -32,6 +32,9 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
     private User user;
     private String username;
 
+    private static final String filePath = "src/users/users.ser";
+    private static final String adminFilePath = "src/users/admin.ser";
+
     /**
      * Stores the file paths to the .ser files of all users and initial admin
      *
@@ -39,27 +42,28 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
      * @param adminFilepath .ser file of initial admin
      * @throws IOException
      */
-    public TradeSystem(String filepath, String adminFilepath) throws IOException {
+    public TradeSystem() throws IOException {
         LOGGER.setLevel(Level.ALL);
         CONSOLE_HANDLER.setLevel(Level.WARNING);
         LOGGER.addHandler(CONSOLE_HANDLER);
 
-        this.adminUserManager = new UserManager(adminFilepath);
-        this.userManager = new UserManager(filepath);
+        this.adminUserManager = new UserManager(adminFilePath);
+        this.userManager = new UserManager(filePath);
     }
 
     /**
-     * Registers a new trader account
+     * Registers a new trader account, and gets "logged in"
      *
      * @param username
      * @param password
-     * @return the User object
+     * @return ID of the newly registered user
      * @throws UserAlreadyExistsException
      * @throws UserNotFoundException
      */
-    public User register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+    public String register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
         this.username = username;
-        return userManager.registerUser(username, password, "Trader");
+        this.user = userManager.registerUser(username, password, "Trader");
+        return user.getId();
     }
 
     /**
@@ -74,14 +78,14 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
     }
 
     /**
-     * Find the user object and returns it
+     * Finds the User given its username and password, and returns the User's ID
      *
      * @param username
      * @param password
-     * @return User object
+     * @return ID of the user
      * @throws UserNotFoundException
      */
-    public User login(String username, String password) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
+    public String login(String username, String password) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
         //Check if the account is the initial admin
         try {
             this.user = adminUserManager.login(username, password);
@@ -89,7 +93,7 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
         }
 
         this.user = userManager.login(username, password);
-        return user;
+        return user.getId();
     }
 
     public User find() {
@@ -101,14 +105,23 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
         return user;
     }
 
-    public void freezeUser() {
-        user = find();
-        user.setFrozen(true);
+    public User find(String username) {
+        try {
+            return userManager.find(username);
+        } catch (UserNotFoundException | FileNotFoundException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return user;
     }
 
-    public void unfreezeUser() {
-        user = find();
-        user.setFrozen(false);
+    public void freezeUser(String username) {
+        User wantToFreezeUser = find(username);
+        wantToFreezeUser.setFrozen(true);
+    }
+
+    public void unfreezeUser(String username) {
+        User wantToUnFreezeUser = find(username);
+        wantToUnFreezeUser.setFrozen(false);
     }
 
     public User getLoggedInUser(String ID){
@@ -170,7 +183,7 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
         }
     }
 
-    public void requestUnfreeze() {
+    public void requestUnfreeze(String userID) {
 
     }
 }
