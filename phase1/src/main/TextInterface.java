@@ -20,9 +20,9 @@ public class TextInterface {
 
     /**
      * Constructor for TextInterface
-     * 
+     *
      * @throws IOException
-     */ 
+     */
     public TextInterface() {
         LOGGER.setLevel(Level.ALL);
         CONSOLE_HANDLER.setLevel(Level.WARNING);
@@ -31,10 +31,10 @@ public class TextInterface {
 
     /**
      * Visual Presenter for the application
-     * 
+     *
      * @throws IOException
      */
-    public void run() throws IOException {
+    public void run() throws IOException, ClassNotFoundException {
         Scanner sc = new Scanner(System.in);
         TradeSystem tSystem = new TradeSystem();
 
@@ -90,8 +90,7 @@ public class TextInterface {
                 System.out.println("1. Freeze Trader");
                 System.out.println("2. Un-Freeze Trader");
                 System.out.println("3. Add new Administrator");
-                System.out.println("4. Add new item to Trader's inventory");
-                System.out.println("5. ");
+                System.out.println("4. Add new items to Trader's inventory");
                 System.out.println("0. LOG OUT");
                 System.out.println();
                 try {
@@ -106,14 +105,22 @@ public class TextInterface {
                         System.out.println("Enter the username of the Trader you would like to freeze");
                         System.out.print("=> ");
                         frozenUser = sc.nextLine();
-                         tSystem.freezeUser(frozenUser);
+                        try {
+                            tSystem.freezeUser(frozenUser);
+                        } catch (UserNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        }
                         System.out.println("Done! User "+ frozenUser + "is now frozen");
                         break;
                     case 2:
                         System.out.println("Enter the username of the frozen Trader");
                         System.out.print("=> ");
                         frozenUser = sc.nextLine();
-                        tSystem.unfreezeUser(frozenUser);
+                        try {
+                            tSystem.unfreezeUser(frozenUser);
+                        } catch (UserNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        }
                         System.out.println("Done! User " + frozenUser + "is now unfrozen");
                         break;
                     case 3:
@@ -132,6 +139,8 @@ public class TextInterface {
                         break;
                     case 4:
                         break;
+                    case 5:
+                        break;
                     default:
                         System.out.println("Invalid Entry , please try again");
                 }
@@ -142,7 +151,6 @@ public class TextInterface {
                 System.out.println("1. View Ongoing trade(s)");
                 System.out.println("2. View Inventory");
                 System.out.println("3. View Wishlist");
-                System.out.println("4. Add Item to Inventory");
                 if (loggedInUser.isFrozen() && !loggedInUser.isUnfrozenRequested()) {
                     System.out.println("10. Request Un-Freeze");
                 }
@@ -157,7 +165,6 @@ public class TextInterface {
                 }
                 switch (userChoice) {
                     case 1:
-                        tSystem.printTrades(userID);
                         break;
                     case 2:
                         tSystem.printInventory(userID);
