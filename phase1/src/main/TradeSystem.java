@@ -125,9 +125,9 @@ public class TradeSystem implements Serializable {
     public void requestItem(String ID, TradableItem item) {
         Trader user = (Trader) getLoggedInUser(ID);
 
-        ArrayList<String> List = user.getUnconfirmedInv();
+        ArrayList<String> List = user.getRequestedItems();
         List.add(item.getId());
-        user.setUnconfirmedInv(List);
+        user.setRequestedItems(List);
         userManager.update(user);
 
     }
