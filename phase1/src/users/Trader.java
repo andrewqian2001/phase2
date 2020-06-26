@@ -9,7 +9,7 @@ public class Trader extends User implements Serializable {
 
     ArrayList<String> wishList = new ArrayList<>(); // Ids
     ArrayList<String> inventory = new ArrayList<>();
-    ArrayList<String> unconfirmedInv = new ArrayList<>();
+    ArrayList<String> requestedItems = new ArrayList<>();
     ArrayList<String> acceptedTrades = new ArrayList<>();
     ArrayList<String> requestedTrades = new ArrayList<>();
     int tradeLimit;
@@ -37,12 +37,12 @@ public class Trader extends User implements Serializable {
         this.inventory = inventory;
     }
 
-    public ArrayList<String> getUnconfirmedInv() {
-        return unconfirmedInv;
+    public ArrayList<String> getRequestedItems() {
+        return requestedItems;
     }
 
-    public void setUnconfirmedInv(ArrayList<String> unconfirmedInv) {
-        this.unconfirmedInv = unconfirmedInv;
+    public void setRequestedItems(ArrayList<String> requestedItems) {
+        this.requestedItems = requestedItems;
     }
 
     public ArrayList<String> getAcceptedTrades() {

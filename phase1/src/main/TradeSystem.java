@@ -21,7 +21,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TradeSystem<T extends DatabaseItem> implements Serializable {
+public class TradeSystem implements Serializable {
 
     private UserManager userManager;
     private UserManager adminUserManager;
@@ -111,7 +111,7 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
         user.setFrozen(false);
     }
 
-    public User getLoggedInUser(String ID){
+    public User getLoggedInUser(String ID){ //Not sure if I handled the exception correctly
         User loggedInUser = null;
         try {
             loggedInUser = userManager.populate(ID);
@@ -120,9 +120,19 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
             LOGGER.log(Level.INFO, "No user found with ID " + ID, e);
         }
         return loggedInUser;
+    }
+
+    public void requestItem(String ID, TradableItem item) {
+        Trader user = (Trader) getLoggedInUser(ID);
+
+        ArrayList<String> List = user.getUnconfirmedInv();
+        List.add(item.getId());
+        user.setUnconfirmedInv(List);
+        userManager.update(user);
 
     }
-    public void addItem(String ID, T item) {
+
+    public void addItem(String ID, TradableItem item) {
         Trader user = (Trader) getLoggedInUser(ID);
         if(user.hasPermission(Permission.ADD_ITEM)){
             ArrayList<String> inventory = user.getInventory();
