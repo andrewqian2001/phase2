@@ -135,9 +135,9 @@ public class TradeSystem implements Serializable {
     public void addItem(String ID, TradableItem item) {
         Trader user = (Trader) getLoggedInUser(ID);
         if(user.hasPermission(Permission.ADD_ITEM)){
-            ArrayList<String> inventory = user.getInventory();
+            ArrayList<String> inventory = user.getAvalibleItems();
             inventory.add(item.getId());
-            user.setInventory(inventory);
+            user.setAvalibleItems(inventory);
             userManager.update(user);
         }
     }
@@ -161,7 +161,7 @@ public class TradeSystem implements Serializable {
 
     public void printInventory(String ID) {
         Trader user = (Trader) getLoggedInUser(ID);
-        ArrayList<String> Inventory = user.getInventory();
+        ArrayList<String> Inventory = user.getAvalibleItems();
         System.out.println("User " + user.getUsername() + "'s inventory");
         for(int i = 0; i < Inventory.size(); i++){
             String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
@@ -172,7 +172,7 @@ public class TradeSystem implements Serializable {
 
     public void printWishlist(String ID) {
         Trader user = (Trader) getLoggedInUser(ID);
-        ArrayList<String> Inventory = user.getInventory();
+        ArrayList<String> Inventory = user.getAvalibleItems();
         System.out.println("User " + user.getUsername() + "'s inventory");
         for(int i = 0; i < Inventory.size(); i++){
             String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
