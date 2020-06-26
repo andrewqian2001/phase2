@@ -119,7 +119,6 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
         } catch (FileNotFoundException | ClassNotFoundException e) {
             LOGGER.log(Level.SEVERE, "Input could not be read.", e);
         }
-
         throw new EntryNotFoundException("Could not find item " + id);
     }
 
