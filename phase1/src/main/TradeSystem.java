@@ -150,7 +150,7 @@ public class TradeSystem implements Serializable {
 
     }
 
-    public void printInventory(String ID) throws EntryNotFoundException {
+    public void printInventory(String ID) {
         Trader user = (Trader) getLoggedInUser(ID);
         ArrayList<String> Inventory = user.getAvailableItems();
         System.out.println("User " + user.getUsername() + "'s available items");
