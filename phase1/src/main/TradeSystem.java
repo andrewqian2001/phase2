@@ -138,22 +138,36 @@ public class TradeSystem<T extends DatabaseItem> implements Serializable {
         ArrayList<String> ReqTrades = user.getRequestedTrades();
         System.out.println("User " + user.getUsername() + "'s accepted trades");
         for(int i = 0; i < AccTrades.size(); i++){
-            String item = AccTrades.get(i);
+            String item = AccTrades.get(i);  //this is just the ID, how do you get the actual item name?
             System.out.println(item);
         }
+        System.out.println("User " + user.getUsername() + "'s requested trades");
         for(int i = 0; i < ReqTrades.size(); i++){
-            String item = ReqTrades.get(i);
+            String item = ReqTrades.get(i); //this is just the ID, how do you get the actual item name?
             System.out.println(item);
         }
 
     }
 
-    public void printInventory() {
+    public void printInventory(String ID) {
+        Trader user = (Trader) getLoggedInUser(ID);
+        ArrayList<String> Inventory = user.getInventory();
+        System.out.println("User " + user.getUsername() + "'s inventory");
+        for(int i = 0; i < Inventory.size(); i++){
+            String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
+            System.out.println(item);
+        }
 
     }
 
-    public void printWishlist() {
-
+    public void printWishlist(String ID) {
+        Trader user = (Trader) getLoggedInUser(ID);
+        ArrayList<String> Inventory = user.getInventory();
+        System.out.println("User " + user.getUsername() + "'s inventory");
+        for(int i = 0; i < Inventory.size(); i++){
+            String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
+            System.out.println(item);
+        }
     }
 
     public void requestUnfreeze() {
