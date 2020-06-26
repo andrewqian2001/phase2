@@ -18,7 +18,6 @@ public class TextInterface {
     private static final Logger LOGGER = Logger.getLogger(TextInterface.class.getName());
     private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
 
-
     /**
      * Constructor for TextInterface
      * 
@@ -92,6 +91,7 @@ public class TextInterface {
                 System.out.println("2. Un-Freeze Trader");
                 System.out.println("3. Add new Administrator");
                 System.out.println("4. Add new item to Trader's inventory");
+                System.out.println("5. ");
                 System.out.println("0. LOG OUT");
                 System.out.println();
                 try {
@@ -142,6 +142,7 @@ public class TextInterface {
                 System.out.println("1. View Ongoing trade(s)");
                 System.out.println("2. View Inventory");
                 System.out.println("3. View Wishlist");
+                System.out.println("4. Add Item to Inventory");
                 if (loggedInUser.isFrozen() && !loggedInUser.isUnfrozenRequested()) {
                     System.out.println("10. Request Un-Freeze");
                 }
