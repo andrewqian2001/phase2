@@ -41,8 +41,6 @@ public class TradeManager extends Manager<Trade> implements Serializable {
         Trade trade = new Trade(firstUser, secondUser,
                 meetingTime, secondMeetingTime,
                 meetingLocation, firstUserOffer, secondUserOffer, allowedEdits);
-        firstUser.getRequestedTrades().add(trade.getId());
-        secondUser.getRequestedTrades().add(trade.getId());
         return update(trade);
     }
 
