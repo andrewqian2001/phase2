@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Trader extends User implements Serializable {
 
     ArrayList<String> wishList = new ArrayList<>(); // Ids
-    ArrayList<String> avalibleItems = new ArrayList<>();
+    ArrayList<String> availableItems = new ArrayList<>();
     ArrayList<String> requestedItems = new ArrayList<>();
     ArrayList<String> acceptedTrades = new ArrayList<>();
     ArrayList<String> requestedTrades = new ArrayList<>();
@@ -29,12 +29,12 @@ public class Trader extends User implements Serializable {
         this.wishList = wishlist;
     }
 
-    public ArrayList<String> getAvalibleItems() {
-        return avalibleItems;
+    public ArrayList<String> getAvailableItems() {
+        return availableItems;
     }
 
-    public void setAvalibleItems(ArrayList<String> inventory) {
-        this.avalibleItems = inventory;
+    public void setAvailableItems(ArrayList<String> inventory) {
+        this.availableItems = inventory;
     }
 
     public ArrayList<String> getRequestedItems() {
