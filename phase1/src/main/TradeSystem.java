@@ -1,6 +1,5 @@
 package main;
 
-import com.sun.deploy.security.SelectableSecurityManager;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserNotFoundException;
@@ -12,10 +11,8 @@ import users.Trader;
 import users.User;
 import users.UserManager;
 
-import javax.jws.soap.SOAPBinding;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;

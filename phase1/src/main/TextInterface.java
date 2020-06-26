@@ -18,12 +18,23 @@ public class TextInterface {
     private static final Logger LOGGER = Logger.getLogger(TextInterface.class.getName());
     private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
 
+
+    /**
+     * Constructor for TextInterface
+     * 
+     * @throws IOException
+     */ 
     public TextInterface() {
         LOGGER.setLevel(Level.ALL);
         CONSOLE_HANDLER.setLevel(Level.WARNING);
         LOGGER.addHandler(CONSOLE_HANDLER);
     }
 
+    /**
+     * Visual Presenter for the application
+     * 
+     * @throws IOException
+     */
     public void run() throws IOException {
         Scanner sc = new Scanner(System.in);
         TradeSystem tSystem = new TradeSystem();
@@ -80,7 +91,7 @@ public class TextInterface {
                 System.out.println("1. Freeze Trader");
                 System.out.println("2. Un-Freeze Trader");
                 System.out.println("3. Add new Administrator");
-                System.out.println("4. Add new items to Trader's inventory");
+                System.out.println("4. Add new item to Trader's inventory");
                 System.out.println("0. LOG OUT");
                 System.out.println();
                 try {
@@ -121,8 +132,6 @@ public class TextInterface {
                         break;
                     case 4:
                         break;
-                    case 5:
-                        break;
                     default:
                         System.out.println("Invalid Entry , please try again");
                 }
@@ -147,6 +156,7 @@ public class TextInterface {
                 }
                 switch (userChoice) {
                     case 1:
+                        tSystem.printTrades(userID);
                         break;
                     case 2:
                         tSystem.printInventory(userID);
