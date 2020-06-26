@@ -85,6 +85,20 @@ public class UserManager extends Manager<User> implements Serializable {
     }
 
     /**
+     * Deletes a user with the given username.
+     * @param username the username of the user to be deleted
+     * @throws UserNotFoundException if the user was not found
+     * @throws FileNotFoundException if the specified file path could not be found
+     * @throws ClassNotFoundException if there is a class that is not defined
+     */
+    public void deleteUser(String username) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
+        User deleteUser = find(username);
+        LinkedList<User> users = getItems();
+        users.remove(deleteUser);
+        save(users);
+    }
+
+    /**
      * Helper function to return a user in the system with a specific username (and password if desired).
      * Throws an error if the user is not found.
      * @param username the username of the user
@@ -105,9 +119,5 @@ public class UserManager extends Manager<User> implements Serializable {
         throw new UserNotFoundException("Could not find user in the system.");
     }
 
-    public void deleteUser(String username) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
-        User deleteUser = find(username);
-        LinkedList<User> users = getItems();
-        users.remove(deleteUser);
-    }
+
 }
