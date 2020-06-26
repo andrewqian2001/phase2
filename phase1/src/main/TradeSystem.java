@@ -25,6 +25,8 @@ public class TradeSystem implements Serializable {
     private TradableItemManager tradableItemManager;
     private static final Logger LOGGER = Logger.getLogger(Manager.class.getName());
     private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
+    private User user;
+    private String username;
 
     /**
      * Stores the file paths to the .ser files of all users and initial admin
@@ -52,6 +54,7 @@ public class TradeSystem implements Serializable {
      * @throws UserNotFoundException
      */
     public User register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+        this.username = username;
         return userManager.registerUser(username, password, "Trader");
     }
 
@@ -77,38 +80,50 @@ public class TradeSystem implements Serializable {
     public User login(String username, String password) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
         //Check if the account is the initial admin
         try {
-            return adminUserManager.login(username, password);
+            this.user = adminUserManager.login(username, password);
         } catch(UserNotFoundException e) {
         }
 
-        return userManager.login(username, password);
+        this.user = userManager.login(username, password);
+        return user;
     }
 
-    public void freezeUser(User user) {
+    public User find() {
+        try {
+            return userManager.find(username);
+        } catch(UserNotFoundException | FileNotFoundException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        return user;
+    }
+
+    public void freezeUser() {
+        user = find();
         user.setFrozen(true);
     }
 
-    public void unfreezeUser(User user) {
+    public void unfreezeUser() {
+        user = find();
         user.setFrozen(false);
     }
 
-    public void addItem(User user) {
+    public void addItem() {
 
     }
 
-    public void printTrades(User user) {
+    public void printTrades() {
 
     }
 
-    public void printInventory(User user) {
+    public void printInventory() {
 
     }
 
-    public void printWishlist(User user) {
+    public void printWishlist() {
 
     }
 
-    public void requestUnfreeze(User user) {
+    public void requestUnfreeze() {
 
     }
 }
