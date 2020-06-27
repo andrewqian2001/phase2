@@ -18,45 +18,49 @@ public class TraderManager extends UserManager {
         super(filePath);
     }
 
-    public String registerUser(String username, String password) throws UserAlreadyExistsException, FileNotFoundException, ClassNotFoundException {
+    public String registerUser(String username, String password) throws UserAlreadyExistsException {
         if (isUsernameUnique(username)) return update(new Trader(username, password)).getId();
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
     }
 
 
-    public String acceptTrade(String userId, String tradeId) throws EntryNotFoundException, FileNotFoundException, ClassNotFoundException {
-        Trader trader = findUserById(userId);
-        if (trader.isFrozen()){
+    public String acceptTrade(String user1, String user2, String tradeId) throws EntryNotFoundException{
+        Trader trader1 = findUserById(user1);
+        Trader trader2 = findUserById(user2);
+        if (trader1.isFrozen() || trader2.isFrozen()){
 
         }
-        trader.requestedTrades.remove(tradeId);
-        trader.acceptedTrades.add(tradeId);
-        update(trader);
-        return userId;
+        trader1.getRequestedTrades().remove(tradeId);
+        trader1.getAcceptedTrades().add(tradeId);
+        trader2.getRequestedTrades().remove(tradeId);
+        trader2.getAcceptedTrades().add(tradeId);
+        update(trader1);
+        update(trader2);
+        return user1;
     }
 
-    public String denyTrade(String userId, String tradeId) throws EntryNotFoundException, FileNotFoundException, ClassNotFoundException {
+    public String denyTrade(String userId, String tradeId) throws EntryNotFoundException{
         Trader trader = findUserById(userId);
         trader.requestedTrades.remove(tradeId);
         update(trader);
         return userId;
     }
 
-    public String addRequestItem(String userId, String itemId) throws EntryNotFoundException, FileNotFoundException, ClassNotFoundException {
+    public String addRequestItem(String userId, String itemId) throws EntryNotFoundException{
         Trader trader = findUserById(userId);
         trader.requestedItems.add(itemId);
         update(trader);
         return userId;
     }
 
-    public String acceptRequestItem(String userId, String itemId) throws EntryNotFoundException, FileNotFoundException, ClassNotFoundException {
+    public String acceptRequestItem(String userId, String itemId) throws EntryNotFoundException {
         Trader trader = findUserById(userId);
         trader.availableItems.add(itemId);
         update(trader);
         return userId;
     }
 
-    public String borrowItem(String user1, String user2, String itemId) throws FileNotFoundException, ClassNotFoundException, EntryNotFoundException {
+    public String borrowItem(String user1, String user2, String itemId) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
         if (!trader2.availableItems.remove(itemId)) {
@@ -70,7 +74,7 @@ public class TraderManager extends UserManager {
         return user1;
     }
 
-    public String lendItem(String user1, String user2, String itemId) throws FileNotFoundException, ClassNotFoundException, EntryNotFoundException {
+    public String lendItem(String user1, String user2, String itemId) throws  EntryNotFoundException {
         return borrowItem(user2, user1, itemId);
     }
 
@@ -82,7 +86,7 @@ public class TraderManager extends UserManager {
      * @param item2
      * @return
      */
-    public String trade(String user1, String item1, String user2, String item2) throws FileNotFoundException, ClassNotFoundException, EntryNotFoundException {
+    public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
         if (!trader1.availableItems.remove(item1)) {
@@ -99,7 +103,7 @@ public class TraderManager extends UserManager {
         return user1;
     }
 
-    private Trader findUserById(String id) throws EntryNotFoundException, FileNotFoundException, ClassNotFoundException {
+    private Trader findUserById(String id) throws EntryNotFoundException {
         User user = populate(id);
         if (user instanceof Trader){
             return (Trader) user;

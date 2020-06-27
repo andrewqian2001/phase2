@@ -5,16 +5,16 @@ import java.util.ArrayList;
 
 public class Trader extends User implements Serializable {
 
-    ArrayList<String> wishList = new ArrayList<>(); // Ids
-    ArrayList<String> availableItems = new ArrayList<>();
-    ArrayList<String> requestedItems = new ArrayList<>();
-    ArrayList<String> acceptedTrades = new ArrayList<>();
-    ArrayList<String> requestedTrades = new ArrayList<>();
-    ArrayList<Permission> permissions = new ArrayList<>();
-    int tradeLimit;
-    int incompleteTradeLim;
-    int totalItemsBorrowed;
-    int totalItemsLent;
+    private ArrayList<String> wishList = new ArrayList<>(); // Ids
+    private ArrayList<String> availableItems = new ArrayList<>();
+    private ArrayList<String> requestedItems = new ArrayList<>();
+    private ArrayList<String> acceptedTrades = new ArrayList<>();
+    private ArrayList<String> requestedTrades = new ArrayList<>();
+    private ArrayList<Permission> permissions = new ArrayList<>();
+    private int tradeLimit;
+    private int incompleteTradeLim;
+    private int totalItemsBorrowed;
+    private int totalItemsLent;
 
     public Trader(String name, String password) {
         super(name, password);

@@ -25,7 +25,7 @@ public class UserManager extends Manager<User> implements Serializable {
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
     }
 
-    protected boolean isUsernameUnique(String username) throws FileNotFoundException, ClassNotFoundException {
+    protected boolean isUsernameUnique(String username) {
         for (User user : getItems())
             if (user.getUsername().equals(username))
                 return false;
