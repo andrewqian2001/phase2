@@ -40,13 +40,7 @@ public class UserManager extends Manager<User> implements Serializable {
         for (User user : getItems())
             if (user.getUsername().equals(username))
                 throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
-        switch (userType) {
-            case "Admin":
-                return update(new Admin(username, password)).getId();
-            case "Trader":
-            default:
-                return update(new Trader(username, password)).getId();
-        }
+        return update(new User(username, password)).getId();
     }
 
     /**
