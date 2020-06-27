@@ -1,5 +1,6 @@
 package users;
 
+import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import main.Manager;
@@ -13,7 +14,7 @@ import java.util.LinkedList;
 /**
  * Used to manage and store Users.
  */
-public abstract class UserManager extends Manager<User> implements Serializable {
+public class UserManager extends Manager<User> implements Serializable {
 
     /**
      * For storing the file path of the .ser file
@@ -25,7 +26,10 @@ public abstract class UserManager extends Manager<User> implements Serializable 
         super(filePath);
     }
 
-    public abstract String registerUser(String username, String password) throws UserAlreadyExistsException, FileNotFoundException, ClassNotFoundException;
+    public String registerUser(String username, String password) throws UserAlreadyExistsException, FileNotFoundException, ClassNotFoundException{
+        if (isUsernameUnique(username)) return update(new User(username, password)).getId();
+        throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
+    }
 
     protected boolean isUsernameUnique(String username) throws FileNotFoundException, ClassNotFoundException {
         for (User user : getItems())
@@ -57,13 +61,17 @@ public abstract class UserManager extends Manager<User> implements Serializable 
     /**
      * Freezes the user
      *
+     * @param loggedInUserId the user calling the action
      * @param userId       the user being mutated
      * @param frozenStatus whether the user is frozen or not
      * @throws UserNotFoundException  if the user id is bad
      * @throws ClassNotFoundException if there is a class that is not defined
      */
-    public void freezeUser(String userId, boolean frozenStatus) throws UserNotFoundException, ClassNotFoundException {
+    public void freezeUser(String loggedInUserId, String userId, boolean frozenStatus) throws UserNotFoundException, AuthorizationException {
         try {
+            User userCallingAction = populate(loggedInUserId);
+            if (!userCallingAction.hasPermission((Permission.FREEZE_USER)) || userCallingAction.isFrozen())
+                throw new AuthorizationException(loggedInUserId + " has no permission.");
             User user = populate(userId);
             user.setFrozen(frozenStatus);
             update(user);

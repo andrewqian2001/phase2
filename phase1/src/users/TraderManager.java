@@ -6,8 +6,6 @@ import exceptions.UserNotFoundException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Map;
 
 public class TraderManager extends UserManager {
 
@@ -21,7 +19,6 @@ public class TraderManager extends UserManager {
         super(filePath);
     }
 
-    @Override
     public String registerUser(String username, String password) throws UserAlreadyExistsException, FileNotFoundException, ClassNotFoundException {
         if (isUsernameUnique(username)) return update(new Trader(username, password)).getId();
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
