@@ -8,7 +8,7 @@ public class Main {
         try {
             tInterface.run();
         } catch(IOException | ClassNotFoundException e) {
-            System.out.println("frick");
+            System.out.println("Ruh Roh!");
         }
     }
 }
