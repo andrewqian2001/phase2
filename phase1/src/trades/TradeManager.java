@@ -25,8 +25,8 @@ public class TradeManager extends Database<Trade> implements Serializable {
     /**
      * Creates a new Trade
      *
-     * @param firstUser         the user of the person initializing the trade
-     * @param secondUser        the user of the person the trade is being sent to
+     * @param firstUserId         the user of the person initializing the trade
+     * @param secondUserId        the user of the person the trade is being sent to
      * @param meetingTime       when the meeting takes place
      * @param secondMeetingTime when the second meeting takes place
      * @param meetingLocation   where the meeting takes place
@@ -35,10 +35,10 @@ public class TradeManager extends Database<Trade> implements Serializable {
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      * @return the object added
      */
-    public Trade addTrade(Trader firstUser, Trader secondUser,
+    public Trade addTrade(String firstUserId, String secondUserId,
                           Date meetingTime, Date secondMeetingTime,
                           String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
-        Trade trade = new Trade(firstUser, secondUser,
+        Trade trade = new Trade(firstUserId, secondUserId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, firstUserOffer, secondUserOffer, allowedEdits);
         return update(trade);

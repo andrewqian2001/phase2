@@ -2,7 +2,6 @@ package trades;
 
 import exceptions.CannotTradeException;
 import main.DatabaseItem;
-import users.Trader;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,8 +29,8 @@ public class Trade extends DatabaseItem implements Serializable {
      * /**
      * Saves user ids
      *
-     * @param firstUser       the user id of the person initializing the trade
-     * @param secondUser     the user id of the person the trade is being sent to
+     * @param firstUserId       the user id of the person initializing the trade
+     * @param secondUserId     the user id of the person the trade is being sent to
      * @param meetingTime       when the meeting takes place
      * @param secondMeetingTime when the second meeting takes place
      * @param meetingLocation   where the meeting takes place
@@ -39,14 +38,14 @@ public class Trade extends DatabaseItem implements Serializable {
      * @param secondUserOffer   the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      */
-    public Trade(Trader firstUser, Trader secondUser,
+    public Trade(String firstUserId, String secondUserId,
                  Date meetingTime, Date secondMeetingTime,
                  String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
         super();
-        this.FIRST_USER_ID = firstUser.getId();
-        this.SECOND_USER_ID = secondUser.getId();
+        this.FIRST_USER_ID = firstUserId;
+        this.SECOND_USER_ID = secondUserId;
         this.MAX_ALLOWED_NUM_EDITS = allowedEdits * 2;
-        this.userTurnToEdit = secondUser.getId();
+        this.userTurnToEdit = secondUserId;
         this.meetingTime = meetingTime;
         this.secondMeetingTime = secondMeetingTime;
         this.meetingLocation = meetingLocation;
