@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Represents a typical account
  */
-public class User extends DatabaseItem implements Serializable, Permissible {
+public abstract class User extends DatabaseItem implements Serializable, Permissible {
     private String username;
     private String password;
     private boolean isFrozen;

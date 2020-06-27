@@ -13,7 +13,7 @@ import java.util.LinkedList;
 /**
  * Used to manage and store Users.
  */
-public class UserManager extends Manager<User> implements Serializable {
+public abstract class UserManager extends Manager<User> implements Serializable {
 
     /**
      * For storing the file path of the .ser file
@@ -25,20 +25,7 @@ public class UserManager extends Manager<User> implements Serializable {
         super(filePath);
     }
 
-    /**
-     * Saves a new user if the username is unique
-     *
-     * @param username the new user's username
-     * @param password the new user's password
-     * @return the new user that was added
-     * @throws FileNotFoundException      if the specified file path was not found
-     * @throws ClassNotFoundException     if there is a class that is not defined
-     * @throws UserAlreadyExistsException if a user with the same username exists
-     */
-    public String registerUser(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
-        if (isUsernameUnique(username)) return update(new User(username, password)).getId();
-        throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
-    }
+    public abstract String registerUser(String username, String password) throws UserAlreadyExistsException, FileNotFoundException, ClassNotFoundException;
 
     protected boolean isUsernameUnique(String username) throws FileNotFoundException, ClassNotFoundException {
         for (User user : getItems())
