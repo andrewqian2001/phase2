@@ -30,13 +30,12 @@ public class UserManager extends Manager<User> implements Serializable {
      *
      * @param username the new user's username
      * @param password the new user's password
-     * @param userType the specific type of User to be added
      * @return the new user that was added
      * @throws FileNotFoundException      if the specified file path was not found
      * @throws ClassNotFoundException     if there is a class that is not defined
      * @throws UserAlreadyExistsException if a user with the same username exists
      */
-    public String registerUser(String username, String password, String userType) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+    public String registerUser(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
         for (User user : getItems())
             if (user.getUsername().equals(username))
                 throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
