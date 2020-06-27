@@ -48,13 +48,4 @@ public class UserManager extends Manager<User> implements Serializable {
         user.setFrozen(frozenStatus);
         update(user);
     }
-
-    public void deleteUser(String loggedInUserId, String userId) throws AuthorizationException, FileNotFoundException, ClassNotFoundException, EntryNotFoundException {
-        User userCallingAction = populate(loggedInUserId);
-        if (!userCallingAction.hasPermission((Permission.DELETE_USER)) || userCallingAction.isFrozen())
-            throw new AuthorizationException(loggedInUserId + " has no permission.");
-        LinkedList<User> users = getItems();
-        users.remove(populate(userId));
-        save(users);
-    }
 }
