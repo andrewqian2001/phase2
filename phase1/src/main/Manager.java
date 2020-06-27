@@ -42,7 +42,6 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      *
      * @param newItem the item to replace to existing entry (if it exists)
      * @return the old item in the entry, if it doesn't exist then the new item is returned
-     * @throws ClassNotFoundException if the file contains a class that is not found
      */
     public T update(T newItem) {
         LinkedList<T> allItems;
@@ -63,7 +62,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
                 } else if (i == allItems.size() - 1) allItems.add(newItem);
             }
             save(allItems);
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Input could not be read. Failed to update.", e);
         }
         return oldItem;
@@ -75,7 +74,6 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      *
      * @param id the entry id
      * @return the deleted item
-     * @throws ClassNotFoundException if items in the list has an unknown class
      * @throws EntryNotFoundException if the entry id doesn't exist in the list
      */
     public T delete(String id) throws EntryNotFoundException {
@@ -92,7 +90,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
                     return oldItem;
                 }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Input could not be read.", e);
         }
         throw new EntryNotFoundException("Could not delete item " + id);
@@ -104,35 +102,28 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      *
      * @param id the id of the object that is requested
      * @return the object instance of the id
-     * @throws ClassNotFoundException if the list of items contains a class that is unknown
      * @throws EntryNotFoundException if the id given does not exist in the list of items
      */
     public T populate(String id) throws EntryNotFoundException {
         LinkedList<T> allItems;
-        try {
-            allItems = getItems();
-            for (int i = 0; i < allItems.size(); i++) {
-                T currItem = allItems.get(i);
-                if (currItem.getId().equals(id))
-                    return currItem;
-            }
-        } catch (FileNotFoundException | ClassNotFoundException e) {
-            LOGGER.log(Level.SEVERE, "Input could not be read.", e);
+        allItems = getItems();
+        for (int i = 0; i < allItems.size(); i++) {
+            T currItem = allItems.get(i);
+            if (currItem.getId().equals(id))
+                return currItem;
         }
         throw new EntryNotFoundException("Could not find item " + id);
     }
 
     /**
      * @return LinkedList containing all the items in the file
-     * @throws ClassNotFoundException if there is a class that is not defined
-     * @throws FileNotFoundException  if the file doesn't exist
      */
-    protected LinkedList<T> getItems() throws ClassNotFoundException, FileNotFoundException {
+    protected LinkedList<T> getItems() {
         if (!new File(this.filePath).exists()) {
             LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
-            throw new FileNotFoundException();
+            return new LinkedList<T>();
         }
-        ;
+
         try {
             InputStream buffer = new BufferedInputStream(new FileInputStream(this.filePath));
             ObjectInput input = new ObjectInputStream(buffer);
@@ -141,8 +132,11 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
             return items;
         } catch (IOException e) {
             LOGGER.log(Level.INFO, "Empty file was used.");
-            return new LinkedList<T>();
+        } catch (ClassNotFoundException e) {
+            LOGGER.log(Level.SEVERE, "Input could not be read.", e);
         }
+        return new LinkedList<T>();
+
     }
 
     /**
@@ -156,7 +150,6 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
             LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
             throw new FileNotFoundException();
         }
-        ;
         try {
             OutputStream buffer = new BufferedOutputStream(new FileOutputStream(filePath));
             ObjectOutput output = new ObjectOutputStream(buffer);
