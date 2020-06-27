@@ -36,10 +36,15 @@ public class UserManager extends Manager<User> implements Serializable {
      * @throws UserAlreadyExistsException if a user with the same username exists
      */
     public String registerUser(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+        if (isUsernameUnique(username)) return update(new User(username, password)).getId();
+        throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
+    }
+
+    protected boolean isUsernameUnique(String username) throws FileNotFoundException, ClassNotFoundException {
         for (User user : getItems())
             if (user.getUsername().equals(username))
-                throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
-        return update(new User(username, password)).getId();
+                return false;
+        return true;
     }
 
     /**

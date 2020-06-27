@@ -23,13 +23,8 @@ public class TraderManager extends UserManager {
 
     @Override
     public String registerUser(String username, String password) throws UserAlreadyExistsException, FileNotFoundException, ClassNotFoundException {
-        LinkedList<User> users = getItems();
-        for (User user : users){
-            if (user.getUsername().equals(username)){
-                throw new UserAlreadyExistsException("User with username " + username + " already exists");
-            }
-        }
-        return update(new Trader(username, password)).getId();
+        if (isUsernameUnique(username)) return update(new Trader(username, password)).getId();
+        throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
     }
 
 
