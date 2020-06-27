@@ -15,10 +15,10 @@ import java.util.logging.Logger;
  *
  * @param <T> the entry must have an id to identify different entries
  */
-public abstract class Manager<T extends DatabaseItem> implements Serializable {
+public abstract class Database<T extends DatabaseItem> implements Serializable {
     private String filePath;
 
-    private static final Logger LOGGER = Logger.getLogger(Manager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Database.class.getName());
     private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
 
     /**
@@ -27,7 +27,7 @@ public abstract class Manager<T extends DatabaseItem> implements Serializable {
      * @param filePath must take in .ser file
      * @throws IOException if creating a file causes issues
      */
-    public Manager(String filePath) throws IOException {
+    public Database(String filePath) throws IOException {
         LOGGER.setLevel(Level.ALL);
         CONSOLE_HANDLER.setLevel(Level.WARNING);
         LOGGER.addHandler(CONSOLE_HANDLER);

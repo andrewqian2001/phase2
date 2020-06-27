@@ -3,9 +3,8 @@ package users;
 import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-import main.Manager;
+import main.Database;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -13,7 +12,7 @@ import java.util.LinkedList;
 /**
  * Used to manage and store Users.
  */
-public class UserManager extends Manager<User> implements Serializable {
+public class UserManager extends Database<User> implements Serializable {
 
 
     public UserManager(String filePath) throws IOException {

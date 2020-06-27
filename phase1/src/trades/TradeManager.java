@@ -1,7 +1,7 @@
 package trades;
 
 import exceptions.EntryNotFoundException;
-import main.Manager;
+import main.Database;
 import users.Trader;
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * Used to manage and store all trades
  */
-public class TradeManager extends Manager<Trade> implements Serializable {
+public class TradeManager extends Database<Trade> implements Serializable {
     /**
      * For storing the file path of the .ser file
      *

@@ -1,7 +1,7 @@
 package tradableitems;
 
 import exceptions.EntryNotFoundException;
-import main.Manager;
+import main.Database;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Used to manage and store items that are tradable
  */
-public class TradableItemManager extends Manager<TradableItem> implements Serializable {
+public class TradableItemManager extends Database<TradableItem> implements Serializable {
     /**
      * For storing the file path of the .ser file
      *
