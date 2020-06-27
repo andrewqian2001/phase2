@@ -49,13 +49,23 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
-    public String login(String username, String password) throws IOException, EntryNotFoundException {
+    public String login(String username, String password) throws EntryNotFoundException {
         this.loggedInUserId = userManager.login(username, password);
 
         // THIS IS NOT DONE NEED TO CHANGE THE TYPE OF MANAGER BY USING POPULATE AND INSTANCE OF
         // THIS IS NOT DONE NEED TO CHANGE THE TYPE OF MANAGER BY USING POPULATE AND INSTANCE OF
         // THIS IS NOT DONE NEED TO CHANGE THE TYPE OF MANAGER BY USING POPULATE AND INSTANCE OF
-
+        User loggedInUser = userManager.populate(loggedInUserId);
+        try {
+            if (loggedInUser instanceof Admin){
+                    registerAdmin(username, password);
+            }
+            else{
+                registerTrader(username, password);
+            }
+        } catch (IOException | UserAlreadyExistsException e) {
+            LOGGER.log(Level.SEVERE, "Problem in accessing specified file path");
+        }
         return this.loggedInUserId;
     }
 

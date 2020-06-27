@@ -24,18 +24,14 @@ public class TraderManager extends UserManager {
     }
 
 
-    public String acceptTrade(String user1, String user2, String tradeId) throws EntryNotFoundException{
+    public String acceptTrade(String user1, String tradeId) throws EntryNotFoundException{
         Trader trader1 = findUserById(user1);
-        Trader trader2 = findUserById(user2);
-        if (trader1.isFrozen() || trader2.isFrozen()){
+        if (trader1.isFrozen()){
 
         }
         trader1.getRequestedTrades().remove(tradeId);
         trader1.getAcceptedTrades().add(tradeId);
-        trader2.getRequestedTrades().remove(tradeId);
-        trader2.getAcceptedTrades().add(tradeId);
         update(trader1);
-        update(trader2);
         return user1;
     }
 
@@ -43,6 +39,7 @@ public class TraderManager extends UserManager {
         Trader trader = findUserById(userId);
         trader.getRequestedTrades().remove(tradeId);
         update(trader);
+        //other classes would need to modify the trade object (i.e. make sure to
         return userId;
     }
 
@@ -116,5 +113,4 @@ public class TraderManager extends UserManager {
     }
 
 
-    //
 }
