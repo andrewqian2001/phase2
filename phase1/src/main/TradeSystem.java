@@ -10,27 +10,24 @@ import users.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TradeSystem implements Serializable {
 
     private static final String USERS_FILE_PATH = "src/users/users.ser";
+    private static final String TRADE_FILE_PATH = "src/users/trades.ser";
+    private static final String TRADABLE_ITEM_FILE_PATH = "src/users/tradableitems.ser";
 
-    private UserManager userManager = new UserManager(USERS_FILE_PATH);
+    private UserManager userManager;
     private TradeManager tradeManager;
     private TradableItemManager tradableItemManager;
-    private static final Logger LOGGER = Logger.getLogger(Manager.class.getName());
-    private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
     private String loggedInUserId;
 
 
     public TradeSystem() throws IOException {
-        LOGGER.setLevel(Level.ALL);
-        CONSOLE_HANDLER.setLevel(Level.WARNING);
-        LOGGER.addHandler(CONSOLE_HANDLER);
+        userManager = new UserManager(USERS_FILE_PATH);
+        tradeManager = new TradeManager(TRADE_FILE_PATH);
+        tradableItemManager = new TradableItemManager((TRADABLE_ITEM_FILE_PATH));
         loggedInUserId = "";
     }
 
