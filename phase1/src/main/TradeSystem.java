@@ -1,5 +1,6 @@
 package main;
 
+import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import tradableitems.TradableItem;
@@ -49,27 +50,19 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
-    public String login(String username, String password) throws EntryNotFoundException {
+    public String login(String username, String password) throws EntryNotFoundException, IOException {
         this.loggedInUserId = userManager.login(username, password);
 
-        // THIS IS NOT DONE NEED TO CHANGE THE TYPE OF MANAGER BY USING POPULATE AND INSTANCE OF
-        // THIS IS NOT DONE NEED TO CHANGE THE TYPE OF MANAGER BY USING POPULATE AND INSTANCE OF
-        // THIS IS NOT DONE NEED TO CHANGE THE TYPE OF MANAGER BY USING POPULATE AND INSTANCE OF
         User loggedInUser = userManager.populate(loggedInUserId);
-        try {
-            if (loggedInUser instanceof Admin){
-                    registerAdmin(username, password);
-            }
-            else{
-                registerTrader(username, password);
-            }
-        } catch (IOException | UserAlreadyExistsException e) {
-            LOGGER.log(Level.SEVERE, "Problem in accessing specified file path");
-        }
+        if (loggedInUser instanceof Admin)
+            userManager = new AdminManager(USERS_FILE_PATH);
+        else
+            userManager = new TraderManager(USERS_FILE_PATH);
+
         return this.loggedInUserId;
     }
 
-    public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException {
+    public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException, AuthorizationException {
         userManager.freezeUser(loggedInUserId, userId, freezeStatus);
     }
 

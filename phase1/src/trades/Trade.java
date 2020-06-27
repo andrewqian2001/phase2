@@ -12,7 +12,6 @@ import java.util.Date;
 public class Trade extends DatabaseItem implements Serializable {
     private Date meetingTime = null;
     private Date secondMeetingTime = null;
-
     private String meetingLocation = "";
     private int numEdits = 0;
     private String firstUserOffer = "", secondUserOffer = "";
