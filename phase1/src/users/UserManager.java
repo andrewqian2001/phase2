@@ -26,9 +26,7 @@ public class UserManager extends Manager<User> implements Serializable {
     }
 
     /**
-     * Takes in username and password, checks if the username exists
-     * if it exists already, return false
-     * else, create new User.
+     * Saves a new user if the username is unique
      *
      * @param username the new user's username
      * @param password the new user's password
@@ -38,34 +36,37 @@ public class UserManager extends Manager<User> implements Serializable {
      * @throws ClassNotFoundException     if there is a class that is not defined
      * @throws UserAlreadyExistsException if a user with the same username exists
      */
-    public User registerUser(String username, String password, String userType) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
+    public String registerUser(String username, String password, String userType) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
         for (User user : getItems())
             if (user.getUsername().equals(username))
                 throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
-        User newUser;
         switch (userType) {
             case "Admin":
-                return update(new Admin(username, password));
+                return update(new Admin(username, password)).getId();
             case "Trader":
             default:
-                return update(new Trader(username, password));
+                return update(new Trader(username, password)).getId();
         }
     }
 
-
     /**
      * Returns a user in the system with the given username and password.
-     * Throws an error if the user is not found.
      *
      * @param username the username of the user
      * @param password the password of the user
-     * @return the user if the user was found.
+     * @return the user id
      * @throws UserNotFoundException  if the user was not found
      * @throws FileNotFoundException  if the specified file path could not be found
      * @throws ClassNotFoundException if there is a class that is not defined
      */
-    public User login(String username, String password) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
-        return findUser(username, password, false);
+    public String login(String username, String password) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
+        LinkedList<User> users = getItems();
+        for (User user : users) {
+            if (user.getUsername().equals(username) && (user.getPassword().equals(password))) {
+                return user.getId();
+            }
+        }
+        throw new UserNotFoundException("Bad credentials.");
     }
 
     /**
@@ -87,55 +88,20 @@ public class UserManager extends Manager<User> implements Serializable {
     }
 
     /**
-     * Returns a user in the system with the given username.
-     * Throws an error if the user is not found.
-     *
-     * @param username the username of the user
-     * @return the user if the user was found.
-     * @throws UserNotFoundException  if the user was not found
-     * @throws FileNotFoundException  if the specified file path could not be found
-     * @throws ClassNotFoundException if there is a class that is not defined
-     */
-    public User find(String username) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
-        return findUser(username, "", true);
-    }
-
-    /**
      * Deletes a user with the given username.
      *
-     * @param username the username of the user to be deleted
+     * @param userId the user id
      * @throws UserNotFoundException  if the user was not found
      * @throws FileNotFoundException  if the specified file path could not be found
      * @throws ClassNotFoundException if there is a class that is not defined
      */
-    public void deleteUser(String username) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
-        User deleteUser = find(username);
+    public void deleteUser(String userId) throws FileNotFoundException, ClassNotFoundException, UserNotFoundException {
         LinkedList<User> users = getItems();
-        users.remove(deleteUser);
+        try {
+            users.remove(populate(userId));
+        } catch (EntryNotFoundException e) {
+            throw new UserNotFoundException((userId + " not found."));
+        }
         save(users);
     }
-
-    /**
-     * Helper function to return a user in the system with a specific username (and password if desired).
-     * Throws an error if the user is not found.
-     *
-     * @param username   the username of the user
-     * @param password   the password of the user
-     * @param ignorePass whether to consider the password when finding a user
-     * @return the user if the user was found.
-     * @throws UserNotFoundException  if the user was not found
-     * @throws FileNotFoundException  if the specified file path could not be found
-     * @throws ClassNotFoundException if there is a class that is not defined
-     */
-    private User findUser(String username, String password, boolean ignorePass) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
-        LinkedList<User> users = getItems();
-        for (User user : users) {
-            if (user.getUsername().equals(username) && (user.getPassword().equals(password) || ignorePass)) {
-                return user;
-            }
-        }
-        throw new UserNotFoundException("Could not find user in the system.");
-    }
-
-
 }

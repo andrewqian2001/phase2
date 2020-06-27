@@ -1,6 +1,6 @@
 package exceptions;
 
-public class UserNotFoundException extends Exception {
+public class UserNotFoundException extends EntryNotFoundException {
     public UserNotFoundException(String errMsg){
         super(errMsg);
     }

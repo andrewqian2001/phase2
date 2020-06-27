@@ -20,11 +20,9 @@ import java.util.logging.Logger;
 
 public class TradeSystem implements Serializable {
 
-    private static final String filePath = "src/users/users.ser";
-    private static final String adminFilePath = "src/users/admin.ser";
+    private static final String USERS_FILE_PATH = "src/users/users.ser";
 
-    private UserManager userManager = new UserManager(filePath);
-    private UserManager adminUserManager = new UserManager(adminFilePath);
+    private UserManager userManager = new UserManager(USERS_FILE_PATH);
     private TradeManager tradeManager;
     private TradableItemManager tradableItemManager;
     private static final Logger LOGGER = Logger.getLogger(Manager.class.getName());
@@ -51,7 +49,7 @@ public class TradeSystem implements Serializable {
      * @throws UserNotFoundException
      */
     public String register(String username, String password) throws FileNotFoundException, ClassNotFoundException, UserAlreadyExistsException {
-        return userManager.registerUser(username, password, "Trader").getId();
+        return userManager.registerUser(username, password, "Trader");
     }
 
     /**
@@ -74,12 +72,7 @@ public class TradeSystem implements Serializable {
      * @throws UserNotFoundException
      */
     public String login(String username, String password) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {
-        //Check if the account is the initial admin
-        try {
-            return adminUserManager.login(username, password).getId();
-        } catch(UserNotFoundException e) {}
-
-        return userManager.login(username, password).getId();
+        return userManager.login(username, password);
     }
 
     public User find(String username) throws UserNotFoundException, FileNotFoundException, ClassNotFoundException {

@@ -1,7 +1,5 @@
 package users;
 
-import tradableitems.TradableItem;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
