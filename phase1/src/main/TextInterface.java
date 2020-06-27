@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import exceptions.UserAlreadyExistsException;
-import exceptions.UserNotFoundException;
 import users.Permission;
 import users.User;
 

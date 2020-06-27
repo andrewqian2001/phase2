@@ -2,7 +2,6 @@ package users;
 
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-import exceptions.UserNotFoundException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -105,7 +104,7 @@ public class TraderManager extends UserManager {
         if (user instanceof Trader){
             return (Trader) user;
         }
-        throw new UserNotFoundException("Could not find user in the system.");
+        throw new EntryNotFoundException("Could not find user in the system.");
     }
 
 

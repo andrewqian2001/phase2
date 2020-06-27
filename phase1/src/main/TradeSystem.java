@@ -2,7 +2,6 @@ package main;
 
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-import exceptions.UserNotFoundException;
 import tradableitems.TradableItem;
 import tradableitems.TradableItemManager;
 import trades.TradeManager;
@@ -50,7 +49,7 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
-    public String login(String username, String password) throws IOException, UserNotFoundException, ClassNotFoundException {
+    public String login(String username, String password) throws IOException, EntryNotFoundException, ClassNotFoundException {
         this.loggedInUserId = userManager.login(username, password);
 
         // THIS IS NOT DONE NEED TO CHANGE THE TYPE OF MANAGER BY USING POPULATE AND INSTANCE OF
@@ -60,7 +59,7 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
-    public void freezeUser(String userId, boolean freezeStatus) throws UserNotFoundException, ClassNotFoundException {
+    public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException, ClassNotFoundException {
         userManager.freezeUser(loggedInUserId, userId, freezeStatus);
     }
 

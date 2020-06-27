@@ -2,7 +2,7 @@ package users;
 
 import java.io.Serializable;
 
-public class Admin extends User implements Serializable {
+public class Admin extends User implements Serializable, Permissible{
 
 
     public Admin(String name, String password){
