@@ -64,46 +64,7 @@ public class TradeSystem implements Serializable {
     }
 
 
-    public void requestItem(String ID, TradableItem item) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            //Not sure what im supposed to do when I get an exception
-        }finally {
-            ArrayList<String> List = user.getRequestedItems();
-            List.add(item.getId());
-            user.setRequestedItems(List);
-            userManager.update(user);
-        }
 
-
-
-    }
-
-    public void addItem(String ID, TradableItem item) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            //Not sure what im supposed to do when I get an exception
-        }finally {
-            if (user != null && user.hasPermission(Permission.CONFIRM_ADDED_ITEM)) {
-                ArrayList<String> inventory = user.getAvailableItems();
-                ArrayList<String> reqList = user.getRequestedItems();
-
-                if (reqList.contains(item.getId())) {
-                    inventory.add(item.getId());
-                    user.setAvailableItems(inventory);
-                    reqList.remove(item.getId());
-                    user.setRequestedItems(reqList);
-                    userManager.update(user);
-                }
-            }
-        }
-
-
-    }
 
     public void printTrades(String ID) {
         Trader user = null;
