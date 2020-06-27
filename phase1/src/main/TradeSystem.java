@@ -65,66 +65,103 @@ public class TradeSystem implements Serializable {
 
 
     public void requestItem(String ID, TradableItem item) {
-        Trader user = (Trader) getLoggedInUser(ID);
+        Trader user = null;
+        try {
+            user = (Trader) userManager.populate(ID);
+        } catch (EntryNotFoundException e) {
+            //Not sure what im supposed to do when I get an exception
+        }finally {
+            ArrayList<String> List = user.getRequestedItems();
+            List.add(item.getId());
+            user.setRequestedItems(List);
+            userManager.update(user);
+        }
 
-        ArrayList<String> List = user.getRequestedItems();
-        List.add(item.getId());
-        user.setRequestedItems(List);
-        userManager.update(user);
+
 
     }
 
     public void addItem(String ID, TradableItem item) {
-        Trader user = (Trader) getLoggedInUser(ID);
-        if (user.hasPermission(Permission.CONFIRM_ADDED_ITEM)) {
-            ArrayList<String> inventory = user.getAvailableItems();
-            ArrayList<String> reqList = user.getRequestedItems();
+        Trader user = null;
+        try {
+            user = (Trader) userManager.populate(ID);
+        } catch (EntryNotFoundException e) {
+            //Not sure what im supposed to do when I get an exception
+        }finally {
+            if (user != null && user.hasPermission(Permission.CONFIRM_ADDED_ITEM)) {
+                ArrayList<String> inventory = user.getAvailableItems();
+                ArrayList<String> reqList = user.getRequestedItems();
 
-            if (reqList.contains(item.getId())) {
-                inventory.add(item.getId());
-                user.setAvailableItems(inventory);
-                reqList.remove(item.getId());
-                user.setRequestedItems(reqList);
-                userManager.update(user);
+                if (reqList.contains(item.getId())) {
+                    inventory.add(item.getId());
+                    user.setAvailableItems(inventory);
+                    reqList.remove(item.getId());
+                    user.setRequestedItems(reqList);
+                    userManager.update(user);
+                }
             }
         }
+
+
     }
 
     public void printTrades(String ID) {
-        Trader user = (Trader) getLoggedInUser(ID);
-        ArrayList<String> AccTrades = user.getAcceptedTrades();
-        ArrayList<String> ReqTrades = user.getRequestedTrades();
-        System.out.println("User " + user.getUsername() + "'s accepted trades");
-        for (int i = 0; i < AccTrades.size(); i++) {
-            String item = AccTrades.get(i); //this is just the ID, how do you get the actual item name?
-            System.out.println(item);
+        Trader user = null;
+        try {
+            user = (Trader) userManager.populate(ID);
+        } catch (EntryNotFoundException e) {
+            //not sure what to do when i catch exceptions
+        }finally {
+            ArrayList<String> AccTrades = user.getAcceptedTrades();
+            ArrayList<String> ReqTrades = user.getRequestedTrades();
+            System.out.println("User " + user.getUsername() + "'s accepted trades");
+            for (int i = 0; i < AccTrades.size(); i++) {
+                String item = AccTrades.get(i); //this is just the ID, how do you get the actual item name?
+                System.out.println(item);
+            }
+            System.out.println("User " + user.getUsername() + "'s requested trades");
+            for (int i = 0; i < ReqTrades.size(); i++) {
+                String item = ReqTrades.get(i); //this is just the ID, how do you get the actual item name?
+                System.out.println(item);
+            }
         }
-        System.out.println("User " + user.getUsername() + "'s requested trades");
-        for (int i = 0; i < ReqTrades.size(); i++) {
-            String item = ReqTrades.get(i); //this is just the ID, how do you get the actual item name?
-            System.out.println(item);
-        }
+
 
     }
 
     public void printInventory(String ID) {
-        Trader user = (Trader) getLoggedInUser(ID);
-        ArrayList<String> Inventory = user.getAvailableItems();
-        System.out.println("User " + user.getUsername() + "'s available items");
-        for (int i = 0; i < Inventory.size(); i++) {
-            String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
-            System.out.println(item);
+        Trader user = null;
+        try {
+            user = (Trader) userManager.populate(ID);
+        } catch (EntryNotFoundException e) {
+            //not sure what to do when i catch exceptions
+        }finally {
+            ArrayList<String> Inventory = user.getAvailableItems();
+            System.out.println("User " + user.getUsername() + "'s available items");
+            for (int i = 0; i < Inventory.size(); i++) {
+                String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
+                System.out.println(item);
+            }
         }
+
+
     }
 
     public void printWishlist(String ID) {
-        Trader user = (Trader) getLoggedInUser(ID);
-        ArrayList<String> list = user.getWishlist();
-        System.out.println("User " + user.getUsername() + "'s wishlist");
-        for (int i = 0; i < list.size(); i++) {
-            String item = list.get(i);  //this is just the ID, how do you get the actual item name?
-            System.out.println(item);
+        Trader user = null;
+        try {
+            user = (Trader) userManager.populate(ID);
+        } catch (EntryNotFoundException e) {
+            //not sure what to do when i catch exceptions
+        }finally {
+            ArrayList<String> list = user.getWishlist();
+            System.out.println("User " + user.getUsername() + "'s wishlist");
+            for (int i = 0; i < list.size(); i++) {
+                String item = list.get(i);  //this is just the ID, how do you get the actual item name?
+                System.out.println(item);
+            }
         }
+
     }
 
     public void requestUnfreeze(String ID) {
