@@ -37,19 +37,19 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
-    public String registerTrader(String username, String password) throws IOException, ClassNotFoundException, UserAlreadyExistsException {
+    public String registerTrader(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new TraderManager(USERS_FILE_PATH);
         this.loggedInUserId = userManager.registerUser(username, password);
         return this.loggedInUserId;
     }
 
-    public String registerAdmin(String username, String password) throws IOException, ClassNotFoundException, UserAlreadyExistsException {
+    public String registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
         this.loggedInUserId = userManager.registerUser(username, password);
         return this.loggedInUserId;
     }
 
-    public String login(String username, String password) throws IOException, EntryNotFoundException, ClassNotFoundException {
+    public String login(String username, String password) throws IOException, EntryNotFoundException {
         this.loggedInUserId = userManager.login(username, password);
 
         // THIS IS NOT DONE NEED TO CHANGE THE TYPE OF MANAGER BY USING POPULATE AND INSTANCE OF
@@ -59,7 +59,7 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
-    public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException, ClassNotFoundException {
+    public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException {
         userManager.freezeUser(loggedInUserId, userId, freezeStatus);
     }
 

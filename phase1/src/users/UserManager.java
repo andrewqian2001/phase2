@@ -20,7 +20,7 @@ public class UserManager extends Manager<User> implements Serializable {
         super(filePath);
     }
 
-    public String registerUser(String username, String password) throws UserAlreadyExistsException, FileNotFoundException, ClassNotFoundException {
+    public String registerUser(String username, String password) throws UserAlreadyExistsException {
         if (isUsernameUnique(username)) return update(new User(username, password)).getId();
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
     }
@@ -32,7 +32,7 @@ public class UserManager extends Manager<User> implements Serializable {
         return true;
     }
 
-    public String login(String username, String password) throws EntryNotFoundException, FileNotFoundException, ClassNotFoundException {
+    public String login(String username, String password) throws EntryNotFoundException {
         LinkedList<User> users = getItems();
         for (User user : users)
             if (user.getUsername().equals(username) && (user.getPassword().equals(password)))
