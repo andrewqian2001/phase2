@@ -41,21 +41,25 @@ public class TraderManager extends UserManager {
 
     public String denyTrade(String userId, String tradeId) throws EntryNotFoundException{
         Trader trader = findUserById(userId);
-        trader.requestedTrades.remove(tradeId);
+        trader.getRequestedTrades().remove(tradeId);
         update(trader);
         return userId;
     }
 
     public String addRequestItem(String userId, String itemId) throws EntryNotFoundException{
         Trader trader = findUserById(userId);
-        trader.requestedItems.add(itemId);
+        trader.getRequestedItems().add(itemId);
         update(trader);
         return userId;
     }
 
     public String acceptRequestItem(String userId, String itemId) throws EntryNotFoundException {
         Trader trader = findUserById(userId);
-        trader.availableItems.add(itemId);
+        if (!trader.getRequestedItems().remove(itemId)){
+            throw new EntryNotFoundException("Could not find item " + itemId);
+        }
+        trader.getAvailableItems().add(itemId);
+
         update(trader);
         return userId;
     }
@@ -63,10 +67,10 @@ public class TraderManager extends UserManager {
     public String borrowItem(String user1, String user2, String itemId) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
-        if (!trader2.availableItems.remove(itemId)) {
+        if (!trader2.getAvailableItems().remove(itemId)) {
             throw new EntryNotFoundException("Item " + itemId + " not found");
         }
-        trader1.availableItems.add(itemId);
+        trader1.getAvailableItems().add(itemId);
         trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed() + 1);
         trader2.setTotalItemsLent(trader2.getTotalItemsLent() + 1);
         update(trader2);
@@ -89,15 +93,15 @@ public class TraderManager extends UserManager {
     public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
-        if (!trader1.availableItems.remove(item1)) {
+        if (!trader1.getAvailableItems().remove(item1)) {
             throw new EntryNotFoundException("Item " + item1 + " not found");
         }
-        if (!trader2.availableItems.remove(item2)){
-            trader1.availableItems.add(item1);
+        if (!trader2.getAvailableItems().remove(item2)){
+            trader1.getAvailableItems().add(item1);
             throw new EntryNotFoundException("Item " + item2 + " not found");
         }
-        trader1.availableItems.add(item2);
-        trader2.availableItems.add(item1);
+        trader1.getAvailableItems().add(item2);
+        trader2.getAvailableItems().add(item1);
         update(trader1);
         update(trader2);
         return user1;
