@@ -5,6 +5,8 @@ import exceptions.UserAlreadyExistsException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class TraderManager extends UserManager {
 
@@ -48,6 +50,10 @@ public class TraderManager extends UserManager {
         trader.getRequestedItems().add(itemId);
         update(trader);
         return userId;
+    }
+
+    public ArrayList<String> getRequestedItems(String userId) throws EntryNotFoundException {
+        return findUserById(userId).getRequestedItems();
     }
 
     public String acceptRequestItem(String userId, String itemId) throws EntryNotFoundException {
