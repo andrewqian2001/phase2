@@ -35,16 +35,15 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
-    public String registerTrader(String username, String password) throws IOException, UserAlreadyExistsException {
-        userManager = new TraderManager(USERS_FILE_PATH);
+    public String registerTrader(String username, String password) throws EntryNotFoundException, IOException, UserAlreadyExistsException {
         this.loggedInUserId = userManager.registerUser(username, password);
-        return this.loggedInUserId;
+        return login(username, password);
     }
 
-    public String registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
-        userManager = new AdminManager(USERS_FILE_PATH);
+    public String registerAdmin(String username, String password) throws EntryNotFoundException, IOException, UserAlreadyExistsException {
         this.loggedInUserId = userManager.registerUser(username, password);
-        return this.loggedInUserId;
+        return login(username, password);
+
     }
 
     public String login(String username, String password) throws EntryNotFoundException, IOException {
