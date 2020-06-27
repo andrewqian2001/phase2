@@ -10,6 +10,7 @@ public class Trader extends User implements Serializable {
     ArrayList<String> requestedItems = new ArrayList<>();
     ArrayList<String> acceptedTrades = new ArrayList<>();
     ArrayList<String> requestedTrades = new ArrayList<>();
+    ArrayList<Permission> permissions = new ArrayList<>();
     int tradeLimit;
     int incompleteTradeLim;
     int totalItemsBorrowed;
@@ -17,6 +18,8 @@ public class Trader extends User implements Serializable {
 
     public Trader(String name, String password) {
         super(name, password);
+        permissions.add(Permission.ADD_ITEM);
+        permissions.add(Permission.TRADE);
     }
 
     public ArrayList<String> getWishlist() {
@@ -80,6 +83,15 @@ public class Trader extends User implements Serializable {
 
     public void setTotalItemsLent(int totalItemsLent) {
         this.totalItemsLent = totalItemsLent;
+    }
+
+    public boolean hasPermission(Permission permission){
+        for (Permission p : permissions){
+            if (p == permission){
+                return true;
+            }
+        }
+        return false;
     }
 
 
