@@ -45,7 +45,7 @@ public class TextInterface {
      * @throws IOException
      */
     public void run() throws IOException {
-
+        boolean isAdmin = false;
         System.out.println("tRaDeMaStEr 9000");
         System.out.println(lineBreak);
         do {
@@ -54,10 +54,18 @@ public class TextInterface {
             promptChoice();
         } while (!(userChoice == 1 || userChoice == 2 || userChoice == 0));
 
+        // since this valid userID would be returned from a logged in user...
+        // the exception will never be thrown
+        try {
+            isAdmin = tSystem.checkAdmin(this.userID);
+        } catch (EntryNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+
         if (userChoice != 0) {
             login();
 
-            if (tSystem.checkAdmin(this.userID)) // TO-DO: ADD
+            if (isAdmin)
                 adminMenu();
             else
                 traderMenu();
@@ -140,11 +148,17 @@ public class TextInterface {
      * and executes said selection
      */
     private void traderMenu() {
-        boolean isFrozen;
+        boolean isFrozen = false;
         System.out.println("TRADER MAIN MENU");
         System.out.println(lineBreak);
         do {
-            isFrozen = checkFrozen(this.userID); // TO-DO: ADD
+            try {
+                // since this valid userID would be returned from a logged in user...
+                // the exception will never be thrown
+                isFrozen = tSystem.checkFrozen(this.userID);
+            } catch (EntryNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
             System.out.println("1. View Trades");
             System.out.println("2. View Inventory");
             System.out.println("3. View Wishlist");
@@ -168,8 +182,14 @@ public class TextInterface {
                     break;
                 case 10:
                     if (isFrozen) {
-                        tSystem.requestUnfreeze(this.userID);
-                        System.out.println("Done! Now please be patient while an admin un-freezes your account");
+                        // since this valid userID would be returned from a logged in user...
+                        // the exception will never be thrown
+                        try {
+                            tSystem.requestUnfreeze(this.userID);
+                            System.out.println("Done! Now please be patient while an admin un-freezes your account");
+                        } catch (EntryNotFoundException e) {
+                            System.out.println(e.getMessage());
+                        }
                     } else
                         System.out.println("Your account is not frozen!");
                     break;
@@ -195,7 +215,7 @@ public class TextInterface {
         do {
             try {
                 wantToFreeze = sc.nextLine();
-                tSystem.freezeUser(wantToFreeze, freezeStatus); // TO-DO: change input parameters in TradeSystem.java
+                tSystem.freezeUser(wantToFreeze, freezeStatus);
                 success = true;
             } catch (EntryNotFoundException | AuthorizationException e) {
                 success = false;
@@ -221,7 +241,7 @@ public class TextInterface {
             System.out.printf("Enter a password for %s", newAdminString);
             newAdminPaString = sc.nextLine();
             try {
-                tSystem.registerAdmin(newAdminString, newAdminPaString); // TO-DO: Make this method `void`
+                tSystem.registerAdmin(newAdminString, newAdminPaString);
                 success = true;
             } catch (UserAlreadyExistsException | IOException e) {
                 success = false;

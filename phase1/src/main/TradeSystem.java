@@ -59,19 +59,11 @@ public class TradeSystem implements Serializable {
      * Registers a new Admin into the system
      * @param username username of new admin
      * @param password password for new admin
-     * @return id of the newly registered admin
      * @throws IOException
      * @throws UserAlreadyExistsException
      */
-    public String registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
+    public void registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
-        /**
-         * REMOVE THIS COMMENT AFTER YOU READ THIS
-         * 
-         * Motivation behind removing this line: this.loggedInUserId = userManager.registerUser(username, password);
-         * If I am an admin and I decide to add a new admin, I still need to be able to do other admin stuff after
-         */
-        return this.loggedInUserId;
     }
 
     /**
@@ -95,14 +87,38 @@ public class TradeSystem implements Serializable {
     }
 
     /**
+     * Check if a User, given their ID, is frozen 
+     * NOTE: This method is not for Admins since their accounts cannot be frozen
+     * 
+     * @param ID id of the user
+     * @return true if the user is frozen, false else
+     * @throws EntryNotFoundException
+     */
+    public boolean checkFrozen(String ID) throws EntryNotFoundException {
+        return userManager.populate(ID).isFrozen();
+    }
+
+    /**
+     * Check if a User, given their ID, is an Admin
+     * 
+     * @param ID
+     * @return true if the User is of type Admin, false else
+     * @throws EntryNotFoundException
+     */
+    public boolean checkAdmin(String ID) throws EntryNotFoundException {
+       return userManager.populate(ID).hasPermission(Permission.REGISTER_ADMIN);
+    }
+
+    /**
      * Freezes/Unfreezes a Trader given their username
      * Requirement: Only an Admin Account can preform this action
-     * @param userId id of the Trader than needs to be (un-)frozen
+     * @param username the username of the Trader that needs to be (un-)frozen
      * @param freezeStatus if true, method will freeze the Trader, else it will unFreeze
      * @throws EntryNotFoundException
      * @throws AuthorizationException
      */
-    public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException, AuthorizationException {
+    public void freezeUser(String username, boolean freezeStatus) throws EntryNotFoundException, AuthorizationException {
+        String userId = getIdFromUsername(username);
         userManager.freezeUser(loggedInUserId, userId, freezeStatus);
     }
 
@@ -125,9 +141,24 @@ public class TradeSystem implements Serializable {
     public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException {
         return tradableItemManager.getDesc(tradableItemId);
     }
+
+    /**
+     * Gets the username of a User given their ID
+     * NOTE: This will most likely be deleted before rollout since theres no use for this
+     * @param userId id of the User
+     * @return username of the User
+     * @throws EntryNotFoundException
+     */
     public String getUsername(String userId) throws EntryNotFoundException {
         return userManager.getUsername(userId);
     }
+
+    /**
+     * Gets the id of a User given their username
+     * @param username username of the User
+     * @return id of the User
+     * @throws EntryNotFoundException
+     */
     public String getIdFromUsername(String username) throws EntryNotFoundException{
         return userManager.getUserId(username);
     }
@@ -170,20 +201,43 @@ public class TradeSystem implements Serializable {
 
     }
 
+    /**
+     * Prints the Trader's Trades given their ID
+     * NOTE: This method will not be called by an Admin ever
+     * @param ID the id of the Trader
+     */    
     public void printTrades(String ID) {
        printList(ID, "Accepted", "Trade");
        System.out.println();
        printList(ID, "Requested", "Trade");
     }
 
+    /**
+     * Prints the Trader's Inventory given their ID
+     * NOTE: This method will not be called by an Admin ever
+     * @param ID the id of the Trader
+     */
     public void printInventory(String ID) {
         printList(ID, "Inventory", "Item");
     }
 
+    /**
+     * Prints the Trader's WishList given their ID
+     * NOTE: This method will not be called by an Admin ever
+     * @param ID the id of the Trader
+     */        
     public void printWishlist(String ID) {
         printList(ID, "Wishlist", "Item");
     }
 
+    /**
+     * Prints a list given the Trader's ID, Type of List, and Item type
+     * NOTE: This is method is not called by an Admin ever
+     * NOTE: This method is just a helper for the other print__ methods
+     * @param ID
+     * @param listType
+     * @param itemType
+     */
     private void printList(String ID, String listType, String itemType) {
         try {
             Trader user = (Trader) userManager.populate(ID);
@@ -203,7 +257,12 @@ public class TradeSystem implements Serializable {
         }
     }
 
-    public void requestUnfreeze(String ID) {
-        Trader user = (Trader) getLoggedInUser(ID);
+    /**
+     * Given a Trader ID, the system will request the account to be unfrozen
+     * @param ID the id of the Trader that requests to be unfrozen
+     * @throws EntryNotFoundException
+     */
+    public void requestUnfreeze(String ID) throws EntryNotFoundException {
+        userManager.populate(ID).setUnfrozenRequested(true);
     }
 }
