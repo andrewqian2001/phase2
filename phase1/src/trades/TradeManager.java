@@ -1,9 +1,7 @@
 package trades;
 
-import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import main.Database;
-import users.Trader;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -26,8 +24,8 @@ public class TradeManager extends Database<Trade> implements Serializable {
     /**
      * Creates a new Trade
      *
-     * @param firstUserId       the user of the person initializing the trade
-     * @param secondUserId      the user of the person the trade is being sent to
+     * @param firstUserId         the user of the person initializing the trade
+     * @param secondUserId        the user of the person the trade is being sent to
      * @param meetingTime       when the meeting takes place
      * @param secondMeetingTime when the second meeting takes place (make this time to be the same or earlier
      *                          than the first meeting time for a permanent trade)
@@ -57,38 +55,32 @@ public class TradeManager extends Database<Trade> implements Serializable {
         return super.delete(tradeId);
     }
 
-    public String[] getItemsFromTrade(String tradeId) throws EntryNotFoundException {
+    public String[] getItemsFromTrade(String tradeId) throws EntryNotFoundException{
         Trade trade = populate(tradeId);
         return new String[]{trade.getFirstUserOffer(), trade.getSecondUserOffer()};
     }
-
-    public void confirmFirstMeeting(String tradeId, String userId, boolean status) throws EntryNotFoundException {
+    public void confirmFirstMeeting(String tradeId, String userId, boolean status) throws EntryNotFoundException{
         Trade trade = populate(tradeId);
         if (userId.equals(trade.getFirstUserId())) trade.setFirstUserConfirmed1(status);
         else if (userId.equals(trade.getSecondUserId())) trade.setSecondUserConfirmed1(status);
         else throw new EntryNotFoundException("The user " + userId + " was not found.");
         update(trade);
     }
-
-    public void confirmSecondMeeting(String tradeId, String userId, boolean status) throws EntryNotFoundException {
+    public void confirmSecondMeeting(String tradeId, String userId, boolean status) throws EntryNotFoundException{
         Trade trade = populate(tradeId);
         if (userId.equals(trade.getFirstUserId())) trade.setFirstUserConfirmed2(status);
         else if (userId.equals(trade.getSecondUserId())) trade.setSecondUserConfirmed2(status);
         else throw new EntryNotFoundException("The user " + userId + " was not found.");
         update(trade);
     }
+    public String getUserThatTradeSentTo (String tradeID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        return trade.getSecondUserId();
+    }
 
-    public void editTrade(String tradeId, Date meetingTime, Date secondMeetingTime, String meetingLocation,
-                          String firstUserOfferId, String secondUserOfferId) throws CannotTradeException, EntryNotFoundException {
-        Trade trade = populate(tradeId);
-        if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) throw new CannotTradeException("Too many edits");
-        if (trade.getUserTurnToEdit().equals(trade.getFirstUserId())) trade.changeUserTurn();
-        trade.setMeetingTime(meetingTime);
-        trade.setSecondMeetingTime(secondMeetingTime);
-        trade.setMeetingLocation(meetingLocation);
-        trade.setFirstUserOffer(firstUserOfferId);
-        trade.setSecondUserOffer(secondUserOfferId);
-        trade.setNumEdits(trade.getNumEdits() + 1);
+    public Date getFirstMeetingTime (String tradeID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        return trade.getMeetingTime();
     }
 
     public boolean isTradeInProgress(String tradeId) throws EntryNotFoundException {
@@ -98,6 +90,11 @@ public class TradeManager extends Database<Trade> implements Serializable {
                 trade.getSecondMeetingTime().equals(trade.getMeetingTime()))
             return true;
         return trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2();
+    }
+
+    public Date getSecondMeetingTime (String tradeID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        return trade.getSecondMeetingTime();
     }
 
 }
