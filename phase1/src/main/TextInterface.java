@@ -191,7 +191,7 @@ public class TextInterface {
                         // since this valid userID would be returned from a logged in user...
                         // the exception will never be thrown
                         try {
-                            tSystem.requestUnfreeze(this.userID);
+                            tSystem.requestUnfreeze(this.userID, true);
                             System.out.println("Done! Now please be patient while an admin un-freezes your account");
                         } catch (EntryNotFoundException e) {
                             System.out.println(e.getMessage());
