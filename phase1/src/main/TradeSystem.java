@@ -68,6 +68,9 @@ public class TradeSystem implements Serializable {
     public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException {
         return tradableItemManager.getDesc(tradableItemId);
     }
+    public String getUsername(String userId) throws EntryNotFoundException {
+        return userManager.getUsername(userId);
+    }
 
     public void requestItem(String ID, TradableItem item) {
         Trader user = null;

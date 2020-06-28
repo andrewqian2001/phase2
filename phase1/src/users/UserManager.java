@@ -47,4 +47,8 @@ public class UserManager extends Database<User> implements Serializable {
         user.setFrozen(frozenStatus);
         update(user);
     }
+    public String getUsername(String userId) throws EntryNotFoundException{
+        User user = super.populate(userId);
+        return user.getUsername();
+    }
 }
