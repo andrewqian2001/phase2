@@ -228,22 +228,41 @@ public class TraderManager extends UserManager {
         return allTraders;
     }
 
-    public ArrayList<String> getRequestedTrades(String userId) throws EntryNotFoundException {
+
+    /**
+     * Gets an arraylist of requested trades of the specified trader
+     * @param userId the id of the trader
+     * @return an arraylist of requested trades of the specified trader
+     * @throws EntryNotFoundException if the trader with the given userId is not found
+     */
+    public ArrayList<String> getRequestedTrades(String userId) throws EntryNotFoundException{
         return findUserById(userId).getRequestedTrades();
     }
 
-    public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException {
+    /**
+     * Gets an arraylist of accepted trades of the specified trader
+     * @param userId the id of the trader
+     * @return an arraylist of accepted trades of the specified trader
+     * @throws EntryNotFoundException if the trader with the given userId is not found
+     */
+    public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException{
         return findUserById(userId).getAcceptedTrades();
     }
 
-    public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException {
+    /**
+     * Adds an item to this trader's wishlist
+     * @param userId the trader's id
+     * @param tradableItemId the item to be added to this user's wishlist
+     * @throws EntryNotFoundException if the trader with the given userId is not found
+     */
+    public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException{
         Trader trader = findUserById(userId);
         trader.getWishlist().add(tradableItemId);
         update(trader);
     }
 
     /**
-     * helper function to find a trader by id
+     * Helper function to find a trader by id
      * 
      * @param userId the id of the trader to find
      * @return the trader that was found
