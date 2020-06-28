@@ -64,6 +64,7 @@ public class TradeSystem implements Serializable {
      */
     public void registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
+        ((AdminManager)userManager).registerUser(username, password);
     }
 
     /**
