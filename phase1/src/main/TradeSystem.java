@@ -91,23 +91,23 @@ public class TradeSystem implements Serializable {
      * Check if a User, given their ID, is frozen 
      * NOTE: This method is not for Admins since their accounts cannot be frozen
      * 
-     * @param ID id of the user
+     * @param userID id of the user
      * @return true if the user is frozen, false else
      * @throws EntryNotFoundException
      */
-    public boolean checkFrozen(String ID) throws EntryNotFoundException {
-        return userManager.populate(ID).isFrozen();
+    public boolean checkFrozen(String userID) throws EntryNotFoundException {
+        return userManager.isFrozen(userID);
     }
 
     /**
      * Check if a User, given their ID, is an Admin
      * 
-     * @param ID
+     * @param userID the id of the user
      * @return true if the User is of type Admin, false else
      * @throws EntryNotFoundException
      */
-    public boolean checkAdmin(String ID) throws EntryNotFoundException {
-       return userManager.populate(ID).hasPermission(Permission.REGISTER_ADMIN);
+    public boolean checkAdmin(String userID) throws EntryNotFoundException {
+        return userManager.isAdmin(userID);
     }
 
     /**
@@ -165,20 +165,20 @@ public class TradeSystem implements Serializable {
         return userManager.getUserId(username);
     }
 
-    public ArrayList<String> getWishlist(String ID) throws EntryNotFoundException {
-        return ((Trader) userManager.populate(ID)).getWishlist();
+    public ArrayList<String> getWishlist(String userID) throws EntryNotFoundException {
+        return ((Trader) userManager.populate(userID)).getWishlist();
     }
 
-    public ArrayList<String> getAvailableItems(String ID) throws EntryNotFoundException {
-        return ((Trader) userManager.populate(ID)).getAvailableItems();
+    public ArrayList<String> getAvailableItems(String userID) throws EntryNotFoundException {
+        return ((Trader) userManager.populate(userID)).getAvailableItems();
     }
     
-    public ArrayList<String> getAcceptedTrades(String ID) throws EntryNotFoundException {
-        return ((Trader) userManager.populate(ID)).getAcceptedTrades();
+    public ArrayList<String> getAcceptedTrades(String userID) throws EntryNotFoundException {
+        return ((Trader) userManager.populate(userID)).getAcceptedTrades();
     }
     
-    public ArrayList<String> getRequestedTrades(String ID) throws EntryNotFoundException {
-        return ((Trader) userManager.populate(ID)).getRequestedTrades();
+    public ArrayList<String> getRequestedTrades(String userID) throws EntryNotFoundException {
+        return ((Trader) userManager.populate(userID)).getRequestedTrades();
     }
 
     public ArrayList<String> getAllTraders() {
@@ -187,12 +187,12 @@ public class TradeSystem implements Serializable {
 
     /**
      * Requests that the item be added to the user's iventory
-     * @param ID user ID
+     * @param userID user ID
      * @param item item object
      * @throws EntryNotFoundException
      */
-    public void requestItem(String ID, TradableItem item) throws EntryNotFoundException {
-        ((TraderManager)userManager).addRequestItem(ID, item.getId());
+    public void requestItem(String userID, TradableItem item) throws EntryNotFoundException {
+        ((TraderManager)userManager).addRequestItem(userID, item.getId());
     }
 
     /**
