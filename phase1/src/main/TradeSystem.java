@@ -10,6 +10,7 @@ import users.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TradeSystem implements Serializable {
 
@@ -171,6 +172,25 @@ public class TradeSystem implements Serializable {
      */
     public void requestItem(String ID, TradableItem item) throws EntryNotFoundException {
         ((TraderManager)userManager).addRequestItem(ID, item.getId());
+    }
+
+    /**
+     * get all items in all user's inventories
+     * @return hash map of the items
+     * @throws EntryNotFoundException
+     */
+    public HashMap<String, ArrayList<String>> getAllAvailableItems() throws EntryNotFoundException {
+        return ((TraderManager)userManager).getAllItemsInInventories();
+    }
+
+    /**
+     * add item to wish list
+     * @param userID user ID
+     * @param item item object
+     * @throws EntryNotFoundException
+     */
+    public void addToWishList(String userID, TradableItem item) throws EntryNotFoundException {
+        ((TraderManager)userManager).addToWishList(userID, item.getId());
     }
 
     /*
