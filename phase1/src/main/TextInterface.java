@@ -25,7 +25,7 @@ public class TextInterface {
     private String userID;
 
     /**
-     * Constructor for TextInterface
+     * Constructor for TextInterface - Initializes TradeSystem, Scanner and UserID
      *
      * @throws IOException
      */
@@ -49,20 +49,27 @@ public class TextInterface {
         System.out.println("tRaDeMaStEr 9000");
         System.out.println(lineBreak);
         do {
-            System.out.println("Enter a number:\n1.\tLogin using an existing account\n2.\tRegister for a new account");
+            System.out.println(
+                    "Enter a number:\n1.\tLogin using an existing account\n2.\tRegister for a new account\n0.\tEXIT\n");
             promptChoice();
-        } while (!(userChoice == 1 || userChoice == 2));
+        } while (!(userChoice == 1 || userChoice == 2 || userChoice == 0));
 
-        login();
+        if (userChoice != 0) {
+            login();
 
-        if (tSystem.checkAdmin(this.userID)) // TO-DO: ADD
-            adminMenu();
-        else
-            traderMenu();
-
+            if (tSystem.checkAdmin(this.userID)) // TO-DO: ADD
+                adminMenu();
+            else
+                traderMenu();
+        }
+        System.out.println("Thank you for using tRaDeMaStEr 9000!");
         sc.close();
     }
 
+    /**
+     * Prompts user for an integer, and sets userChoice to it. Handles any incorrect
+     * input
+     */
     private void promptChoice() {
         try {
             System.out.print("=> ");
@@ -73,6 +80,10 @@ public class TextInterface {
         }
     }
 
+    /**
+     * Login Helper Method - Displays prompts to login, and sets the userID to the
+     * loggedInUser's ID Also handles registering a user
+     */
     private void login() {
         String userString = "";
         String userPaString = "";
@@ -90,6 +101,10 @@ public class TextInterface {
         } while (this.userID.equals(""));
     }
 
+    /**
+     * Admin Main Menu Helper Method - Displays choices for Admin to select from, and
+     * executes said selection
+     */
     private void adminMenu() {
         System.out.println("ADMIN MAIN MENU");
         do {
@@ -116,6 +131,10 @@ public class TextInterface {
         } while (userChoice != 0);
     }
 
+    /**
+     * Trader Main Menu Helper Method - Displays choices for Trader to select from,
+     * and executes said selection
+     */
     private void traderMenu() {
         boolean isFrozen;
         System.out.println("TRADER MAIN MENU");
@@ -153,21 +172,37 @@ public class TextInterface {
         } while (userChoice != 0);
     }
 
+    /**
+     * Freeze Helper Method Prompts the Admin to enter the username of the Trader to
+     * (un-)freeze And (un-)freezes the inputted Trader
+     * 
+     * @param freezeStatus if true, the method will freeze the given Trader, else it
+     *                     will un-freeze
+     */
     private void freeze(boolean freezeStatus) {
         String wantToFreeze = "";
+        boolean success = false;
         System.out.printf("Enter the username of the Trader you would like to %s\n",
                 freezeStatus ? "freeze" : "un-freeze");
         System.out.print("=> ");
         do {
             try {
                 wantToFreeze = sc.nextLine();
-                tSystem.freezeUser(wantToFreeze, freezeStatus); // TO-DO: change input parameters in tradesystem.java
+                tSystem.freezeUser(wantToFreeze, freezeStatus); // TO-DO: change input parameters in TradeSystem.java
+                success = true;
             } catch (EntryNotFoundException | AuthorizationException e) {
+                success = false;
                 System.out.println(e.getMessage());
             }
-        } while (wantToFreeze.equals(""));
+        } while (!success);
+        System.out.printf("Done! Trader \"%s\" has now been %s\n", wantToFreeze, freezeStatus ? "un-frozen" : "frozen");
     }
 
+    /**
+     * Helper Method to create a new Admin account Prompts the Admin to enter a
+     * username and password for a new Admin account And will then register a new
+     * Admin Account
+     */
     private void addNewAdmin() {
         String newAdminString = "";
         String newAdminPaString = "";
@@ -179,9 +214,10 @@ public class TextInterface {
             System.out.printf("Enter a password for %s", newAdminString);
             newAdminPaString = sc.nextLine();
             try {
-                tSystem.registerAdmin(newAdminString, newAdminPaString);
+                tSystem.registerAdmin(newAdminString, newAdminPaString); // TO-DO: Make this method `void` in
+                                                                         // TradeSystem.java
                 success = true;
-            } catch (Exception e) {
+            } catch (UserAlreadyExistsException | IOException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
