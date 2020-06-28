@@ -296,11 +296,18 @@ public class TradeSystem implements Serializable {
         return frequentTraders;
     }
 
+    /**
+     *
+     * @param userId user ID
+     * @return a hashset of Trade IDs representing items the user has recently traded
+     * @throws EntryNotFoundException
+     */
     public Set<String> getRecentTradeItems(String userId) throws EntryNotFoundException {
         ArrayList<String> acceptedTrades = ((TraderManager) userManager).getAcceptedTrades(userId);
         Set<String> recentTradeItemNames = new HashSet<>();
         for (String tradeID : acceptedTrades) {
             // TO-DO: ADD IN TRADERMANAGER
+
             String[] tradeableItemIDs = ((TraderManager) userManager).getItemsFromTrade(tradeID);
             recentTradeItemNames.add(getTradableItemName(tradeableItemIDs[0]));
             if (!tradeableItemIDs[1].equals(""))
@@ -309,6 +316,11 @@ public class TradeSystem implements Serializable {
         return recentTradeItemNames;
     }
 
+    /**
+     *
+     * @return All unfreeze requests
+     * @throws EntryNotFoundException
+     */
     public ArrayList<String> getAllUnfreezeRequests() throws EntryNotFoundException {
         return ((AdminManager) userManager).getAllUnFreezeRequests();
     }
