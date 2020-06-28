@@ -163,21 +163,17 @@ public class TradeSystem implements Serializable {
         return userManager.getUserId(username);
     }
 
-    public void requestItem(String ID, TradableItem item) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            // Not sure what im supposed to do when I get an exception
-        } finally {
-            ArrayList<String> List = user.getRequestedItems();
-            List.add(item.getId());
-            user.setRequestedItems(List);
-            userManager.update(user);
-        }
-
+    /**
+     * Requests that the item be added to the user's iventory
+     * @param ID user ID
+     * @param item item object
+     * @throws EntryNotFoundException
+     */
+    public void requestItem(String ID, TradableItem item) throws EntryNotFoundException {
+        ((TraderManager)userManager).addRequestItem(ID, item.getId());
     }
 
+    /*
     public void addItem(String ID, TradableItem item) {
         Trader user = null;
         try {
@@ -199,7 +195,7 @@ public class TradeSystem implements Serializable {
             }
         }
 
-    }
+    }*/
 
     /**
      * Prints the Trader's Trades given their ID

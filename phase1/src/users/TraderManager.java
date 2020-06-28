@@ -6,6 +6,7 @@ import exceptions.UserAlreadyExistsException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class TraderManager extends UserManager {
@@ -83,6 +84,15 @@ public class TraderManager extends UserManager {
 
     public String lendItem(String user1, String user2, String itemId) throws  EntryNotFoundException {
         return borrowItem(user2, user1, itemId);
+    }
+    public HashMap<String, ArrayList<String>> getAllItems() throws EntryNotFoundException{
+        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+
+        for (User user: getItems()){
+            if (user instanceof Trader)
+            allItems.put(user.getId(), ((Trader) user).getAvailableItems());
+        }
+        return allItems;
     }
 
     /**
