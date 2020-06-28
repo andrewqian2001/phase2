@@ -85,7 +85,7 @@ public class TraderManager extends UserManager {
     public String lendItem(String user1, String user2, String itemId) throws  EntryNotFoundException {
         return borrowItem(user2, user1, itemId);
     }
-    public HashMap<String, ArrayList<String>> getAllItems() throws EntryNotFoundException{
+    public HashMap<String, ArrayList<String>> getAllItemsInInventories() throws EntryNotFoundException{
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
         for (User user: getItems()){
@@ -94,6 +94,7 @@ public class TraderManager extends UserManager {
         }
         return allItems;
     }
+
 
     /**
      *
