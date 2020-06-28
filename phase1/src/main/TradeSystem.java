@@ -22,7 +22,10 @@ public class TradeSystem implements Serializable {
     private TradableItemManager tradableItemManager;
     private String loggedInUserId;
 
-
+    /**
+     * Constructor for TradeSystem, initializes managers
+     * @throws IOException
+     */
     public TradeSystem() throws IOException {
         userManager = new UserManager(USERS_FILE_PATH);
         tradeManager = new TradeManager(TRADE_FILE_PATH);
@@ -30,22 +33,47 @@ public class TradeSystem implements Serializable {
         loggedInUserId = "";
     }
 
+    /**
+     * Getter method for userID
+     * @return the id of the loggedInUser
+     */
     public String getLoggedInUserId() {
         return this.loggedInUserId;
     }
 
+    /**
+     * Registers a new trader into the system
+     * @param username username of new trader
+     * @param password password for new trader
+     * @return id of the newly registered trader
+     * @throws IOException
+     * @throws UserAlreadyExistsException
+     */
     public String registerTrader(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new TraderManager(USERS_FILE_PATH);
         this.loggedInUserId = userManager.registerUser(username, password);
         return this.loggedInUserId;
     }
 
-    public String registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
+    /**
+     * Registers a new Admin into the system
+     * @param username username of new admin
+     * @param password password for new admin
+     * @throws IOException
+     * @throws UserAlreadyExistsException
+     */
+    public void registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
-        this.loggedInUserId = userManager.registerUser(username, password);
-        return this.loggedInUserId;
     }
 
+    /**
+     * Logs-in a current user into the system
+     * @param username username of existing user
+     * @param password password of existing user
+     * @return id of newly logged in user
+     * @throws EntryNotFoundException
+     * @throws IOException
+     */
     public String login(String username, String password) throws EntryNotFoundException, IOException {
         this.loggedInUserId = userManager.login(username, password);
 
@@ -58,79 +86,183 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
-    public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException, AuthorizationException {
+    /**
+     * Check if a User, given their ID, is frozen 
+     * NOTE: This method is not for Admins since their accounts cannot be frozen
+     * 
+     * @param ID id of the user
+     * @return true if the user is frozen, false else
+     * @throws EntryNotFoundException
+     */
+    public boolean checkFrozen(String ID) throws EntryNotFoundException {
+        return userManager.populate(ID).isFrozen();
+    }
+
+    /**
+     * Check if a User, given their ID, is an Admin
+     * 
+     * @param ID
+     * @return true if the User is of type Admin, false else
+     * @throws EntryNotFoundException
+     */
+    public boolean checkAdmin(String ID) throws EntryNotFoundException {
+       return userManager.populate(ID).hasPermission(Permission.REGISTER_ADMIN);
+    }
+
+    /**
+     * Freezes/Unfreezes a Trader given their username
+     * Requirement: Only an Admin Account can preform this action
+     * @param username the username of the Trader that needs to be (un-)frozen
+     * @param freezeStatus if true, method will freeze the Trader, else it will unFreeze
+     * @throws EntryNotFoundException
+     * @throws AuthorizationException
+     */
+    public void freezeUser(String username, boolean freezeStatus) throws EntryNotFoundException, AuthorizationException {
+        String userId = getIdFromUsername(username);
         userManager.freezeUser(loggedInUserId, userId, freezeStatus);
     }
-    public String getTradableItemName(String tradableItemId) throws EntryNotFoundException{
+
+    /**
+     * Gets the name of the tradable item given its id
+     * @param tradableItemId id of the tradable item
+     * @return name of the tradable item
+     * @throws EntryNotFoundException
+     */
+    public String getTradableItemName(String tradableItemId) throws EntryNotFoundException {
         return tradableItemManager.getName(tradableItemId);
     }
-    public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException{
+
+    /**
+     * Gets the description of the tradable item given its id
+     * @param tradableItemId id of the tradable item
+     * @return description of the tradable item
+     * @throws EntryNotFoundException
+     */
+    public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException {
         return tradableItemManager.getDesc(tradableItemId);
     }
 
+    /**
+     * Gets the username of a User given their ID
+     * NOTE: This will most likely be deleted before rollout since theres no use for this
+     * @param userId id of the User
+     * @return username of the User
+     * @throws EntryNotFoundException
+     */
+    public String getUsername(String userId) throws EntryNotFoundException {
+        return userManager.getUsername(userId);
+    }
 
+    /**
+     * Gets the id of a User given their username
+     * @param username username of the User
+     * @return id of the User
+     * @throws EntryNotFoundException
+     */
+    public String getIdFromUsername(String username) throws EntryNotFoundException{
+        return userManager.getUserId(username);
+    }
 
+    public void requestItem(String ID, TradableItem item) {
+        Trader user = null;
+        try {
+            user = (Trader) userManager.populate(ID);
+        } catch (EntryNotFoundException e) {
+            // Not sure what im supposed to do when I get an exception
+        } finally {
+            ArrayList<String> List = user.getRequestedItems();
+            List.add(item.getId());
+            user.setRequestedItems(List);
+            userManager.update(user);
+        }
 
+    }
+
+    public void addItem(String ID, TradableItem item) {
+        Trader user = null;
+        try {
+            user = (Trader) userManager.populate(ID);
+        } catch (EntryNotFoundException e) {
+            // Not sure what im supposed to do when I get an exception
+        } finally {
+            if (user != null && user.hasPermission(Permission.CONFIRM_ADDED_ITEM)) {
+                ArrayList<String> inventory = user.getAvailableItems();
+                ArrayList<String> reqList = user.getRequestedItems();
+
+                if (reqList.contains(item.getId())) {
+                    inventory.add(item.getId());
+                    user.setAvailableItems(inventory);
+                    reqList.remove(item.getId());
+                    user.setRequestedItems(reqList);
+                    userManager.update(user);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Prints the Trader's Trades given their ID
+     * NOTE: This method will not be called by an Admin ever
+     * @param ID the id of the Trader
+     */    
     public void printTrades(String ID) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            //not sure what to do when i catch exceptions
-        }finally {
-            ArrayList<String> AccTrades = user.getAcceptedTrades();
-            ArrayList<String> ReqTrades = user.getRequestedTrades();
-            System.out.println("User " + user.getUsername() + "'s accepted trades");
-            for (int i = 0; i < AccTrades.size(); i++) {
-                String item = AccTrades.get(i); //this is just the ID, how do you get the actual item name?
-                System.out.println(item);
-            }
-            System.out.println("User " + user.getUsername() + "'s requested trades");
-            for (int i = 0; i < ReqTrades.size(); i++) {
-                String item = ReqTrades.get(i); //this is just the ID, how do you get the actual item name?
-                System.out.println(item);
-            }
-        }
-
-
+       printList(ID, "Accepted", "Trade");
+       System.out.println();
+       printList(ID, "Requested", "Trade");
     }
 
+    /**
+     * Prints the Trader's Inventory given their ID
+     * NOTE: This method will not be called by an Admin ever
+     * @param ID the id of the Trader
+     */
     public void printInventory(String ID) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            //not sure what to do when i catch exceptions
-        }finally {
-            ArrayList<String> Inventory = user.getAvailableItems();
-            System.out.println("User " + user.getUsername() + "'s available items");
-            for (int i = 0; i < Inventory.size(); i++) {
-                String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
-                System.out.println(item);
-            }
-        }
-
-
+        printList(ID, "Inventory", "Item");
     }
 
+    /**
+     * Prints the Trader's WishList given their ID
+     * NOTE: This method will not be called by an Admin ever
+     * @param ID the id of the Trader
+     */        
     public void printWishlist(String ID) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            //not sure what to do when i catch exceptions
-        }finally {
-            ArrayList<String> list = user.getWishlist();
-            System.out.println("User " + user.getUsername() + "'s wishlist");
-            for (int i = 0; i < list.size(); i++) {
-                String item = list.get(i);  //this is just the ID, how do you get the actual item name?
-                System.out.println(item);
-            }
-        }
-
+        printList(ID, "Wishlist", "Item");
     }
 
-    public void requestUnfreeze(String ID) {
-        Trader user = (Trader) getLoggedInUser(ID);
+    /**
+     * Prints a list given the Trader's ID, Type of List, and Item type
+     * NOTE: This is method is not called by an Admin ever
+     * NOTE: This method is just a helper for the other print__ methods
+     * @param ID
+     * @param listType
+     * @param itemType
+     */
+    private void printList(String ID, String listType, String itemType) {
+        try {
+            Trader user = (Trader) userManager.populate(ID);
+            ArrayList<String> list = null;
+            String itemID = "";
+            if(listType.equals("Wishlist")) list = user.getWishlist();
+            else if(listType.equals("Inventory")) list = user.getAvailableItems();
+            else if(listType.equals("Accepted")) list = user.getAcceptedTrades();
+            else if(listType.equals("Requested")) list = user.getRequestedTrades();
+            System.out.printf("%s's %s %ss\n***************\n", user.getUsername(), listType, itemType);
+            for(int i = 0; i < list.size(); i++) {
+                itemID = list.get(i);
+                System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, getTradableItemName(itemID), getTradableItemDesc(itemID));
+            }
+        } catch (EntryNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Given a Trader ID, the system will request the account to be unfrozen
+     * @param ID the id of the Trader that requests to be unfrozen
+     * @throws EntryNotFoundException
+     */
+    public void requestUnfreeze(String ID) throws EntryNotFoundException {
+        userManager.populate(ID).setUnfrozenRequested(true);
     }
 }
