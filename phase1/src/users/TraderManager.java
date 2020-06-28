@@ -6,6 +6,7 @@ import exceptions.UserAlreadyExistsException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class TraderManager extends UserManager {
@@ -155,6 +156,41 @@ public class TraderManager extends UserManager {
         update(trader1);
         update(trader2);
         return user1;
+    }
+    public HashMap<String, ArrayList<String>> getAllItemsInInventories() throws EntryNotFoundException {
+        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+
+        for (User user : getItems()) {
+            if (user instanceof Trader)
+                allItems.put(user.getId(), ((Trader) user).getAvailableItems());
+        }
+        return allItems;
+    }
+
+    public HashMap<String, ArrayList<String>> getAllRequestedItems() throws EntryNotFoundException {
+        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+
+        for (User user : getItems()) {
+            if (user instanceof Trader) {
+                ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
+                if (requestedItems.size() > 0)
+                    allItems.put(user.getId(), requestedItems);
+            }
+        }
+        return allItems;
+    }
+    public ArrayList<String> getRequestedTrades(String userId) throws EntryNotFoundException{
+        return findUserById(userId).getRequestedTrades();
+    }
+
+    public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException{
+        return findUserById(userId).getAcceptedTrades();
+    }
+
+    public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException{
+        Trader trader = findUserById(userId);
+        trader.getWishlist().add(tradableItemId);
+        update(trader);
     }
 
     /**
