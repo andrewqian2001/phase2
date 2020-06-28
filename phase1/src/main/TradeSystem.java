@@ -281,7 +281,7 @@ public class TradeSystem implements Serializable {
     /**
      * return the 3 most traded with Traders
      * @param userID user Id
-     * @return a String array of the user Ids of the 3 most traded with Traders
+     * @return a String array of the usernames of the 3 most traded with Traders
      * @throws EntryNotFoundException
      */
     public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
@@ -296,6 +296,9 @@ public class TradeSystem implements Serializable {
                 }
             }
             distinct.remove(frequentTraders[i]);
+        }
+        for(int i = 0; i < 3; i++){
+            frequentTraders[i] = userManager.getUserId(frequentTraders[i]);
         }
         return frequentTraders;
     }
