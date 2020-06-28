@@ -22,6 +22,10 @@ public class TradeSystem implements Serializable {
     private TradableItemManager tradableItemManager;
     private String loggedInUserId;
 
+    /**
+     * Constructor for TradeSystem, initializes managers
+     * @throws IOException
+     */
     public TradeSystem() throws IOException {
         userManager = new UserManager(USERS_FILE_PATH);
         tradeManager = new TradeManager(TRADE_FILE_PATH);
@@ -29,22 +33,55 @@ public class TradeSystem implements Serializable {
         loggedInUserId = "";
     }
 
+    /**
+     * Getter method for userID
+     * @return the id of the loggedInUser
+     */
     public String getLoggedInUserId() {
         return this.loggedInUserId;
     }
 
+    /**
+     * Registers a new trader into the system
+     * @param username username of new trader
+     * @param password password for new trader
+     * @return id of the newly registered trader
+     * @throws IOException
+     * @throws UserAlreadyExistsException
+     */
     public String registerTrader(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new TraderManager(USERS_FILE_PATH);
         this.loggedInUserId = userManager.registerUser(username, password);
         return this.loggedInUserId;
     }
 
+    /**
+     * Registers a new Admin into the system
+     * @param username username of new admin
+     * @param password password for new admin
+     * @return id of the newly registered admin
+     * @throws IOException
+     * @throws UserAlreadyExistsException
+     */
     public String registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
-        this.loggedInUserId = userManager.registerUser(username, password);
+        /**
+         * REMOVE THIS COMMENT AFTER YOU READ THIS
+         * 
+         * Motivation behind removing this line: this.loggedInUserId = userManager.registerUser(username, password);
+         * If I am an admin and I decide to add a new admin, I still need to be able to do other admin stuff after
+         */
         return this.loggedInUserId;
     }
 
+    /**
+     * Logs-in a current user into the system
+     * @param username username of existing user
+     * @param password password of existing user
+     * @return id of newly logged in user
+     * @throws EntryNotFoundException
+     * @throws IOException
+     */
     public String login(String username, String password) throws EntryNotFoundException, IOException {
         this.loggedInUserId = userManager.login(username, password);
 
@@ -57,14 +94,34 @@ public class TradeSystem implements Serializable {
         return this.loggedInUserId;
     }
 
+    /**
+     * Freezes/Unfreezes a Trader given their username
+     * Requirement: Only an Admin Account can preform this action
+     * @param userId id of the Trader than needs to be (un-)frozen
+     * @param freezeStatus if true, method will freeze the Trader, else it will unFreeze
+     * @throws EntryNotFoundException
+     * @throws AuthorizationException
+     */
     public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException, AuthorizationException {
         userManager.freezeUser(loggedInUserId, userId, freezeStatus);
     }
 
+    /**
+     * Gets the name of the tradable item given its id
+     * @param tradableItemId id of the tradable item
+     * @return name of the tradable item
+     * @throws EntryNotFoundException
+     */
     public String getTradableItemName(String tradableItemId) throws EntryNotFoundException {
         return tradableItemManager.getName(tradableItemId);
     }
 
+    /**
+     * Gets the description of the tradable item given its id
+     * @param tradableItemId id of the tradable item
+     * @return description of the tradable item
+     * @throws EntryNotFoundException
+     */
     public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException {
         return tradableItemManager.getDesc(tradableItemId);
     }
