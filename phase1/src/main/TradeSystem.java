@@ -13,9 +13,9 @@ import java.util.ArrayList;
 
 public class TradeSystem implements Serializable {
 
-    private static final String USERS_FILE_PATH = "src/users/users.ser";
-    private static final String TRADE_FILE_PATH = "src/users/trades.ser";
-    private static final String TRADABLE_ITEM_FILE_PATH = "src/users/tradableitems.ser";
+    private static final String USERS_FILE_PATH = "users.ser";
+    private static final String TRADE_FILE_PATH = "trades.ser";
+    private static final String TRADABLE_ITEM_FILE_PATH = "tradableitems.ser";
 
     private UserManager userManager;
     private TradeManager tradeManager;
