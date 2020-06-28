@@ -9,12 +9,11 @@ import java.util.ArrayList;
 
 public class Trader extends User implements Serializable {
 
-    private ArrayList<String> wishList = new ArrayList<>(); // Ids
-    private ArrayList<String> availableItems = new ArrayList<>();
-    private ArrayList<String> requestedItems = new ArrayList<>();
-    private ArrayList<String> acceptedTrades = new ArrayList<>();
-    private ArrayList<String> requestedTrades = new ArrayList<>();
-    private ArrayList<Permission> permissions = new ArrayList<>();
+    private final ArrayList<String> wishList = new ArrayList<>(); // Ids
+    private final ArrayList<String> availableItems = new ArrayList<>();
+    private final ArrayList<String> requestedItems = new ArrayList<>();
+    private final ArrayList<String> acceptedTrades = new ArrayList<>();
+    private final ArrayList<String> requestedTrades = new ArrayList<>();
     private int tradeLimit;
     private int incompleteTradeLim;
     private int totalItemsBorrowed;
@@ -29,15 +28,13 @@ public class Trader extends User implements Serializable {
 
     public Trader(String name, String password) {
         super(name, password);
-        permissions.add(Permission.ADD_ITEM);
-        permissions.add(Permission.TRADE);
     }
 
     /**
      * @return the trader's wishlist
      */
 
-    public ArrayList<String> getWishlist() {
+    ArrayList<String> getWishlist() {
         return wishList;
     }
 
@@ -45,43 +42,27 @@ public class Trader extends User implements Serializable {
      * @return list of available items this trader has
      */
 
-    public ArrayList<String> getAvailableItems() {
+    ArrayList<String> getAvailableItems() {
         return availableItems;
     }
 
-    /**
-     * @param inventory list of available items this trader has
-     */
-
-
-    public void setAvailableItems(ArrayList<String> inventory) {
-        this.availableItems = inventory;
-    }
 
     /**
      * @return list of items this trader requested to borrow/trade
      */
 
 
-    public ArrayList<String> getRequestedItems() {
+    ArrayList<String> getRequestedItems() {
         return requestedItems;
     }
 
-    /**
-     * @param requestedItems list of items this trader requested to borrow/trade
-     */
-
-
-    public void setRequestedItems(ArrayList<String> requestedItems) {
-        this.requestedItems = requestedItems;
-    }
 
     /**
      * @return list of trades accepted
      */
 
 
-    public ArrayList<String> getAcceptedTrades() {
+    ArrayList<String> getAcceptedTrades() {
         return acceptedTrades;
     }
 
@@ -90,7 +71,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public ArrayList<String> getRequestedTrades() {
+    ArrayList<String> getRequestedTrades() {
         return requestedTrades;
     }
 
@@ -98,7 +79,7 @@ public class Trader extends User implements Serializable {
      * @return how many transactions this trader can conduct in 1 week
      */
 
-    public int getTradeLimit() {
+    int getTradeLimit() {
         return tradeLimit;
     }
 
@@ -107,7 +88,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public void setTradeLimit(int tradeLimit) {
+    void setTradeLimit(int tradeLimit) {
         this.tradeLimit = tradeLimit;
     }
 
@@ -116,7 +97,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public int getIncompleteTradeLim() {
+    int getIncompleteTradeLim() {
         return incompleteTradeLim;
     }
 
@@ -125,7 +106,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public void setIncompleteTradeLim(int incompleteTradeLim) {
+    void setIncompleteTradeLim(int incompleteTradeLim) {
         this.incompleteTradeLim = incompleteTradeLim;
     }
 
@@ -134,7 +115,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public int getTotalItemsBorrowed() {
+    int getTotalItemsBorrowed() {
         return totalItemsBorrowed;
     }
 
@@ -143,7 +124,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public void setTotalItemsBorrowed(int totalItemsBorrowed) {
+    void setTotalItemsBorrowed(int totalItemsBorrowed) {
         this.totalItemsBorrowed = totalItemsBorrowed;
     }
 
@@ -152,7 +133,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public int getTotalItemsLent() {
+    int getTotalItemsLent() {
         return totalItemsLent;
     }
 
@@ -161,7 +142,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public void setTotalItemsLent(int totalItemsLent) {
+    void setTotalItemsLent(int totalItemsLent) {
         this.totalItemsLent = totalItemsLent;
     }
 
@@ -172,6 +153,7 @@ public class Trader extends User implements Serializable {
 
 
     public boolean hasPermission(Permission permission) {
+        Permission permissions[] = {Permission.ADD_ITEM, Permission.TRADE};
         for (Permission p : permissions) {
             if (p == permission) {
                 return true;

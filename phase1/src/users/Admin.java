@@ -24,7 +24,7 @@ public class Admin extends User implements Serializable{
     /**
      * @return if the user is frozen (always false since admins do not participate in trades)
      */
-    public boolean isFrozen() {
+    boolean isFrozen() {
         return false;
     }
 
