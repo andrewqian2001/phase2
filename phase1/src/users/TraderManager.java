@@ -288,4 +288,26 @@ public class TraderManager extends UserManager implements Serializable {
         throw new EntryNotFoundException("Could not find " + userId + " + in the system.");
     }
 
+    /**
+     * get all available items
+     * @param userID user Id
+     * @return arraylist of all items in all inventories
+     * @throws EntryNotFoundException
+     */
+    public ArrayList<String> getAvailableItems(String userID) throws EntryNotFoundException {
+        Trader user = (Trader)populate(userID);
+        return user.getAvailableItems();
+    }
+
+    /**
+     * gett all wish list items
+     * @param userID user Id
+     * @return arraylist of all wish list item
+     * @throws EntryNotFoundException
+     */
+    public ArrayList<String> getWishlist(String userID) throws EntryNotFoundException {
+        Trader user = (Trader)populate(userID);
+        return user.getWishlist();
+    }
+
 }
