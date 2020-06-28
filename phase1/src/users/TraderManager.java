@@ -2,12 +2,9 @@ package users;
 
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class TraderManager extends UserManager {
 
@@ -21,6 +18,7 @@ public class TraderManager extends UserManager {
         super(filePath);
     }
 
+    @Override
     public String registerUser(String username, String password) throws UserAlreadyExistsException {
         if (isUsernameUnique(username)) return update(new Trader(username, password)).getId();
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
@@ -124,7 +122,7 @@ public class TraderManager extends UserManager {
     }
 
 
-    public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
+    public void trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
         if (!trader1.getAvailableItems().remove(item1)) {
@@ -139,7 +137,15 @@ public class TraderManager extends UserManager {
         update(trader1);
         update(trader2);
     }
-
+    public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException{
+        User user = populate(userId);
+        if (user instanceof Trader){
+             Trader trader = ((Trader) user);
+             trader.getWishlist().add(tradableItemId);
+             update(trader);
+        }
+        throw new EntryNotFoundException("The user " + userId + " was not found");
+    }
     private Trader findUserById(String userId) throws EntryNotFoundException {
         User user = populate(userId);
         if (user instanceof Trader) {
@@ -147,6 +153,4 @@ public class TraderManager extends UserManager {
         }
         throw new EntryNotFoundException("Could not find " + userId + " + in the system.");
     }
-
-
 }
