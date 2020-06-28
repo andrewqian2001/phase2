@@ -278,7 +278,12 @@ public class TradeSystem implements Serializable {
         userManager.setRequestFrozenStatus(userId, status);
     }
 
-    //TO-DO: FINISH
+    /**
+     * return the 3 most traded with Traders
+     * @param userID user Id
+     * @return a String array of the user Ids of the 3 most traded with Traders
+     * @throws EntryNotFoundException
+     */
     public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
         String[] frequentTraders = new String[3];
         ArrayList<String> acceptedTrades = ((TraderManager)userManager).getAcceptedTrades(userID); // Trade IDs
