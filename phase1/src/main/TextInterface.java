@@ -55,16 +55,16 @@ public class TextInterface {
             promptChoice();
         } while (!(userChoice == 1 || userChoice == 2 || userChoice == 0));
 
-        // since this valid userID would be returned from a logged in user...
-        // the exception will never be thrown
-        try {
-            isAdmin = tSystem.checkAdmin(this.userID);
-        } catch (EntryNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
         if (userChoice != 0) {
             login();
+
+            // since this valid userID would be returned from a logged in user...
+            // the exception will never be thrown
+            try {
+                isAdmin = tSystem.checkAdmin(this.userID);
+            } catch (EntryNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
 
             if (isAdmin)
                 adminMenu();
