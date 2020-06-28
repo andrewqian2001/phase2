@@ -130,11 +130,14 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the itemId or one of the two user IDs were
      *                                not found.
      */
-    public String borrowItem(String user1, String user2, String itemId) throws EntryNotFoundException {
+    public String borrowItem(String user1, String user2, String itemId, int threshold) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
         if (!trader2.getAvailableItems().remove(itemId)) {
             throw new EntryNotFoundException("Item " + itemId + " not found");
+        }
+        if (trader1.getTotalItemsBorrowed() < threshold) {
+            return user1;
         }
         trader1.getAvailableItems().add(itemId);
         trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed() + 1);
@@ -154,8 +157,8 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the itemId or one of the two user IDs were
      *                                not found.
      */
-    public String lendItem(String user1, String user2, String itemId) throws EntryNotFoundException {
-        return borrowItem(user2, user1, itemId);
+    public String lendItem(String user1, String user2, String itemId, int threshold) throws EntryNotFoundException {
+        return borrowItem(user2, user1, itemId, threshold);
     }
 
     /**
