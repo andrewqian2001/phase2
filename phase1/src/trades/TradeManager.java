@@ -83,6 +83,11 @@ public class TradeManager extends Database<Trade> implements Serializable {
         return trade.getMeetingTime();
     }
 
+    public Date getSecondMeetingTime (String tradeID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        return trade.getSecondMeetingTime();
+    }
+
     public boolean isTradeInProgress(String tradeId) throws EntryNotFoundException {
         Trade trade = populate(tradeId);
         if (!trade.isFirstUserConfirmed1() || !trade.isFirstUserConfirmed2()) return false;
@@ -91,10 +96,9 @@ public class TradeManager extends Database<Trade> implements Serializable {
             return true;
         return trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2();
     }
-
-    public Date getSecondMeetingTime (String tradeID) throws EntryNotFoundException {
+    public String getUserTurnToEdit (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
-        return trade.getSecondMeetingTime();
+        return trade.getUserTurnToEdit();
     }
 
 }
