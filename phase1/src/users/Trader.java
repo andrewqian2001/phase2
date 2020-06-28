@@ -47,13 +47,6 @@ public class Trader extends User implements Serializable {
     }
 
     /**
-     * Increments incompleteTradeCount by one
-     */
-    public void addToIncompleteTradeCount(){
-        incompleteTradeCount++;
-    }
-
-    /**
      * @return total completed trade count
      */
     public int getTradeCount(){
@@ -68,12 +61,6 @@ public class Trader extends User implements Serializable {
         this.tradeCount = tradeCount;
     }
 
-    /**
-     * increments tradeCount by one
-     */
-    public void addToTradeCount(){
-        tradeCount++;
-    }
 
     /**
      * @return the trader's wishlist
