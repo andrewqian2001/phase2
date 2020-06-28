@@ -7,6 +7,7 @@ import main.Database;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -85,4 +86,18 @@ public class UserManager extends Database<User> implements Serializable {
         User user = populate(userId);
         return user instanceof Admin;
     }
+
+    /**
+     * Gets the IDs of all Users in the database
+     * 
+     * @return An arraylist of User IDs
+     * @throws EntryNotFoundException
+     */
+    public ArrayList<String> getAllUsers() {
+        ArrayList<String> allUsers = new ArrayList<>();
+        for (User user : getItems())
+                allUsers.add(user.getId());
+        return allUsers;
+    }
+
 }
