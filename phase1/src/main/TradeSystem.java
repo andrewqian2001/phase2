@@ -9,8 +9,7 @@ import trades.TradeManager;
 import users.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class TradeSystem implements Serializable {
 
@@ -281,13 +280,19 @@ public class TradeSystem implements Serializable {
 
     //TO-DO: FINISH
     public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
+        String[] frequentTraders = new String[3];
         ArrayList<String> acceptedTrades = ((TraderManager)userManager).getAcceptedTrades(userID); // Trade IDs
-        String[] freqTraders = new String[3];
-        freqTraders[0] = "yo mama so fat, when she does a 360, a whole year passes";
-        for(String trade : acceptedTrades) {
-            
+        Set<String> distinct =  new HashSet<>(acceptedTrades);
+        int highest = 0;
+        for(int i = 0; i < 3; i++) {
+            for (String s : distinct) {
+                if (Collections.frequency(acceptedTrades, s) > highest) {
+                    frequentTraders[i] = s;
+                }
+            }
+            distinct.remove(frequentTraders[i]);
         }
-        return freqTraders;
+        return frequentTraders;
     }
 
     public ArrayList<String> getAllUnfreezeRequests() throws EntryNotFoundException{
