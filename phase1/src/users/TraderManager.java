@@ -110,13 +110,14 @@ public class TraderManager extends UserManager {
         return user1;
     }
 
-    private Trader findUserById(String id) throws EntryNotFoundException {
-        User user = populate(id);
+    private Trader findUserById(String userId) throws EntryNotFoundException {
+        User user = populate(userId);
         if (user instanceof Trader){
             return (Trader) user;
         }
-        throw new EntryNotFoundException("Could not find user in the system.");
+        throw new EntryNotFoundException("Could not find " + userId + " + in the system.");
     }
+
 
 
 }
