@@ -52,19 +52,6 @@ public class Trade extends DatabaseItem implements Serializable {
         this.secondUserOffer = secondUserOffer;
     }
 
-    public void editTrade(Date meetingTime, Date secondMeetingTime, String meetingLocation,
-                          String firstUserOffer, String secondUserOffer) throws CannotTradeException {
-        if (this.numEdits >= MAX_ALLOWED_NUM_EDITS) throw new CannotTradeException("Too many edits");
-        if (this.userTurnToEdit.equals(FIRST_USER_ID)) this.userTurnToEdit = SECOND_USER_ID;
-        else this.userTurnToEdit = FIRST_USER_ID;
-        this.meetingTime = meetingTime;
-        this.secondMeetingTime = secondMeetingTime;
-        this.meetingLocation = meetingLocation;
-        this.firstUserOffer = firstUserOffer;
-        this.secondUserOffer = secondUserOffer;
-        this.numEdits++;
-    }
-
     /**
      * @return if the user that initialized the trade confirmed the first meeting
      */
