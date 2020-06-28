@@ -47,12 +47,32 @@ public class TradeManager extends Database<Trade> implements Serializable {
     /**
      * Removes a Trade from storage
      *
-     * @param id the item's id that is being removed
+     * @param tradeId the trade id that is being removed
      * @return the Trade that got deleted
      * @throws EntryNotFoundException if the id doesn't refer to anything
      */
-    public Trade deleteTrade(String id) throws EntryNotFoundException {
-        return super.delete(id);
+    public Trade deleteTrade(String tradeId) throws EntryNotFoundException {
+        return super.delete(tradeId);
     }
+
+    public String[] getItemsFromTrade(String tradeId) throws EntryNotFoundException{
+        Trade trade = populate(tradeId);
+        return new String[]{trade.getFirstUserOffer(), trade.getSecondUserOffer()};
+    }
+    public void confirmFirstMeeting(String tradeId, String userId, boolean status) throws EntryNotFoundException{
+        Trade trade = populate(tradeId);
+        if (userId.equals(trade.getFirstUserId())) trade.setFirstUserConfirmed1(status);
+        else if (userId.equals(trade.getSecondUserId())) trade.setSecondUserConfirmed1(status);
+        else throw new EntryNotFoundException("The user " + userId + " was not found.");
+        update(trade);
+    }
+    public void confirmSecondMeeting(String tradeId, String userId, boolean status) throws EntryNotFoundException{
+        Trade trade = populate(tradeId);
+        if (userId.equals(trade.getFirstUserId())) trade.setFirstUserConfirmed2(status);
+        else if (userId.equals(trade.getSecondUserId())) trade.setSecondUserConfirmed2(status);
+        else throw new EntryNotFoundException("The user " + userId + " was not found.");
+        update(trade);
+    }
+
 
 }
