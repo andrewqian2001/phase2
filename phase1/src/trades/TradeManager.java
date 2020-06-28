@@ -73,7 +73,6 @@ public class TradeManager extends Database<Trade> implements Serializable {
         else throw new EntryNotFoundException("The user " + userId + " was not found.");
         update(trade);
     }
-
     public String getUserThatTradeSentTo (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getSecondUserId();
