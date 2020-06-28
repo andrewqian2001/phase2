@@ -55,16 +55,16 @@ public class TextInterface {
             promptChoice();
         } while (!(userChoice == 1 || userChoice == 2 || userChoice == 0));
 
-        // since this valid userID would be returned from a logged in user...
-        // the exception will never be thrown
-        try {
-            isAdmin = tSystem.checkAdmin(this.userID);
-        } catch (EntryNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-
         if (userChoice != 0) {
             login();
+
+            // since this valid userID would be returned from a logged in user...
+            // the exception will never be thrown
+            try {
+                isAdmin = tSystem.checkAdmin(this.userID);
+            } catch (EntryNotFoundException e) {
+                System.out.println(e.getMessage());
+            }
 
             if (isAdmin)
                 adminMenu();
@@ -83,10 +83,9 @@ public class TextInterface {
     private void promptChoice() {
         try {
             System.out.print("=> ");
-            this.userChoice = sc.nextInt();
+            this.userChoice = Integer.parseInt(sc.nextLine());
         } catch (InputMismatchException e) {
             System.out.println("Invalid Input, please try again");
-            sc.nextLine();
         }
     }
 
@@ -99,9 +98,9 @@ public class TextInterface {
         String userPaString = "";
         do {
             try {
-                System.out.print("Enter" + (this.userChoice == 2 ? " a new " : " ") + "Username: ");
+                System.out.println("Enter" + (this.userChoice == 2 ? " a new " : " ") + "Username: ");
                 userString = sc.nextLine();
-                System.out.print("Enter Password for " + userString + ":");
+                System.out.println("Enter Password for " + userString + ":");
                 userPaString = sc.nextLine();
                 this.userID = this.userChoice == 1 ? tSystem.login(userString, userPaString)
                         : tSystem.registerTrader(userString, userPaString);
@@ -191,7 +190,7 @@ public class TextInterface {
                         // since this valid userID would be returned from a logged in user...
                         // the exception will never be thrown
                         try {
-                            tSystem.requestUnfreeze(this.userID);
+                            tSystem.requestUnfreeze(this.userID, true);
                             System.out.println("Done! Now please be patient while an admin un-freezes your account");
                         } catch (EntryNotFoundException e) {
                             System.out.println(e.getMessage());
@@ -264,7 +263,6 @@ public class TextInterface {
      * Prints the Trader's Trades given their ID NOTE: This method will not be
      * called by an Admin ever
      * 
-     * @param ID the id of the Trader
      */
     public void printTrades() {
         printList(this.userID, "Accepted", "Trade");
@@ -283,7 +281,6 @@ public class TextInterface {
      * Prints the Trader's Inventory given their ID NOTE: This method will not be
      * called by an Admin ever
      * 
-     * @param ID the id of the Trader
      */
     public void printInventory() {
         printList(this.userID, "Inventory", "Item");
@@ -293,7 +290,6 @@ public class TextInterface {
      * Prints the Trader's WishList given their ID NOTE: This method will not be
      * called by an Admin ever
      * 
-     * @param ID the id of the Trader
      */
     public void printWishlist() {
         printList(this.userID, "Wishlist", "Item");

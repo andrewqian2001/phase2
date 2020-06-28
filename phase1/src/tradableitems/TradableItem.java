@@ -11,17 +11,20 @@ public class TradableItem extends DatabaseItem implements Serializable {
 
     /**
      * Constructs a tradable item.
-     * @param name The name of the TradableItem
+     *
+     * @param name        The name of the TradableItem
      * @param description The description of the TradableItem
      */
-    public TradableItem(String name, String description){
+    public TradableItem(String name, String description) {
         this.name = name;
         this.description = description;
     }
-    public String getName(){
+
+    String getName() {
         return name;
     }
-    public String getDesc(){
+
+    String getDesc() {
         return description;
     }
 }
