@@ -220,7 +220,7 @@ public class TraderManager extends UserManager {
      * @return An arraylist of Trader IDs
      * @throws EntryNotFoundException
      */
-    public ArrayList<String> getAllTraders() throws EntryNotFoundException {
+    public ArrayList<String> getAllTraders() {
         ArrayList<String> allTraders = new ArrayList<>();
         for (User user : getItems())
             allTraders.add(user.getId());

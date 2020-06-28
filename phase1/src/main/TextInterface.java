@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.logging.ConsoleHandler;
@@ -174,20 +175,16 @@ public class TextInterface {
                     System.out.println("Logging Out...");
                     break;
                 case 1:
-                    tSystem.printTrades(this.userID);
+                    printTrades();
                     break;
                 case 2:
-                    tSystem.printInventory(this.userID);
+                    printInventory();
                     break;
                 case 3:
-                    tSystem.printWishlist(this.userID);
+                    printWishlist();
                     break;
                 case 4:
-                    try {
-                        tSystem.printDatabase();
-                    } catch (EntryNotFoundException e) {
-                        System.out.println(e.getMessage());
-                    }
+                    printDatabase();
                     break;
                 case 10:
                     if (isFrozen) {
@@ -260,5 +257,76 @@ public class TextInterface {
         System.out.println("Done! A new Admin has been created with the following details:");
         System.out.println(lineBreak);
         System.out.printf("Username:\t%s\nPassword:\t%s\n", newAdminString, newAdminPaString);
+    }
+
+
+    /**
+     * Prints the Trader's Trades given their ID NOTE: This method will not be
+     * called by an Admin ever
+     * 
+     * @param ID the id of the Trader
+     */
+    public void printTrades() {
+        printList(this.userID, "Accepted", "Trade");
+        System.out.println();
+        printList(this.userID, "Requested", "Trade");
+    }
+
+    public void printDatabase() {
+        ArrayList<String> allTraders = tSystem.getAllTraders();
+        for (String userID : allTraders) {
+            printList(userID, "Inventory", "Item");
+        }
+    }
+
+    /**
+     * Prints the Trader's Inventory given their ID NOTE: This method will not be
+     * called by an Admin ever
+     * 
+     * @param ID the id of the Trader
+     */
+    public void printInventory() {
+        printList(this.userID, "Inventory", "Item");
+    }
+
+    /**
+     * Prints the Trader's WishList given their ID NOTE: This method will not be
+     * called by an Admin ever
+     * 
+     * @param ID the id of the Trader
+     */
+    public void printWishlist() {
+        printList(this.userID, "Wishlist", "Item");
+    }
+
+    /**
+     * Prints a list given the Trader's ID, Type of List, and Item type NOTE: This
+     * is method is not called by an Admin ever NOTE: This method is just a helper
+     * for the other print__ methods
+     * 
+     * @param listType
+     * @param itemType
+     */
+    private void printList(String ID, String listType, String itemType) {
+        try {
+            ArrayList<String> list = null;
+            String itemID = "";
+            if (listType.equals("Wishlist"))
+                list = tSystem.getWishlist(ID);
+            else if (listType.equals("Inventory"))
+                list = tSystem.getAvailableItems(ID);
+            else if (listType.equals("Accepted"))
+                list = tSystem.getAcceptedTrades(ID);
+            else if (listType.equals("Requested"))
+                list = tSystem.getRequestedTrades(ID);
+            System.out.printf("%s's %s %ss\n***************\n", tSystem.getUsername(ID), listType, itemType);
+            for (int i = 0; i < list.size(); i++) {
+                itemID = list.get(i);
+                System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, tSystem.getTradableItemName(itemID),
+                        tSystem.getTradableItemDesc(itemID));
+            }
+        } catch (EntryNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
