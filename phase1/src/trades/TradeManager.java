@@ -89,6 +89,4 @@ public class TradeManager extends Database<Trade> implements Serializable {
     }
 
 
-
-
 }
