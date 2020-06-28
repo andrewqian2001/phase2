@@ -18,6 +18,7 @@ public class Trader extends User implements Serializable {
     private int incompleteTradeLim;
     private int totalItemsBorrowed;
     private int totalItemsLent;
+    private int tradeCount;
 
     /**
      * Constructs a trader with its own username and password, with permissions to add item in their list and trade items.
@@ -28,6 +29,28 @@ public class Trader extends User implements Serializable {
 
     public Trader(String name, String password) {
         super(name, password);
+    }
+
+    /**
+     * @return total completed trade count
+     */
+    public int getTradeCount(){
+        return tradeCount;
+    }
+
+    /**
+     * Sets the value of this user's tradeCount
+     * @param tradeCount the new value of this user's tradeCount
+     */
+    public void setTradeCount(int tradeCount){
+        this.tradeCount = tradeCount;
+    }
+
+    /**
+     * increments tradeCount by one
+     */
+    public void addToTradeCount(){
+        tradeCount++;
     }
 
     /**
