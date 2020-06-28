@@ -246,4 +246,14 @@ public class TradeSystem implements Serializable {
     public void requestUnfreeze(String userId, boolean status) throws EntryNotFoundException {
         userManager.setRequestFrozenStatus(userId, status);
     }
+
+    public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
+        ArrayList<String> acceptedTrades = ((TraderManager)userManager).getAcceptedTrades(userID); // Trade IDs
+        String[] freqTraders = new String[3];
+        freqTraders[0] = "yo mama so fat, when she does a 360, a whole year passes";
+        for(String trade : acceptedTrades) {
+            
+        }
+        return freqTraders;
+    }
 }
