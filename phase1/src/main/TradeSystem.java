@@ -10,7 +10,6 @@ import users.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 public class TradeSystem implements Serializable {
 
@@ -61,6 +60,12 @@ public class TradeSystem implements Serializable {
 
     public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException, AuthorizationException {
         userManager.freezeUser(loggedInUserId, userId, freezeStatus);
+    }
+    public String getTradableItemName(String tradableItemId) throws EntryNotFoundException{
+        return tradableItemManager.getName(tradableItemId);
+    }
+    public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException{
+        return tradableItemManager.getDesc(tradableItemId);
     }
 
 

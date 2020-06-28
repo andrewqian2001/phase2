@@ -35,11 +35,19 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
     /**
      * Removes a TradableItem from storage
      *
-     * @param id the item's id that is being removed
+     * @param tradableItemId the item's id that is being removed
      * @return the TradableItem that got deleted
      * @throws EntryNotFoundException if the id doesn't refer to anything
      */
-    public TradableItem deleteItem(String id) throws EntryNotFoundException {
-        return super.delete(id);
+    public TradableItem deleteItem(String tradableItemId) throws EntryNotFoundException {
+        return super.delete(tradableItemId);
+    }
+    public String getName (String tradableItemId) throws EntryNotFoundException{
+        TradableItem item = super.populate(tradableItemId);
+        return item.getName();
+    }
+    public String getDesc (String tradableItemId) throws EntryNotFoundException{
+        TradableItem item = super.populate(tradableItemId);
+        return item.getDesc();
     }
 }

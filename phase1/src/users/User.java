@@ -53,7 +53,6 @@ public class User extends DatabaseItem implements Serializable, Permissible {
         this.password = password;
     }
 
-
     /**
      * @return if this user is frozen.
      */
