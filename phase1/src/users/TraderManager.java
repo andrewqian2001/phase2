@@ -62,6 +62,20 @@ public class TraderManager extends UserManager {
     }
 
     /**
+     * Adds a trade to the specified user requested trades
+     * @param userId id of user
+     * @param tradeId id of the trade to add to requested trades
+     * @return id of the user
+     * @throws EntryNotFoundException if the user was not found
+     */
+    public String addRequestTrade(String userId, String tradeId) throws EntryNotFoundException{
+        Trader trader =  findUserById(userId);
+        trader.getRequestedTrades().add(tradeId);
+        update(trader);
+        return userId;
+    }
+
+    /**
      * Makes this user request an item
      * 
      * @param userId id of the user
@@ -170,7 +184,11 @@ public class TraderManager extends UserManager {
         return user1;
     }
 
-    public HashMap<String, ArrayList<String>> getAllItemsInInventories() throws EntryNotFoundException {
+    /**
+     * Gets a hashmap of trader ids to an arraylist of their available items
+     * @return a hashmap of trader ids to an arraylist of their available items
+     */
+    public HashMap<String, ArrayList<String>> getAllItemsInInventories() {
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
         for (User user : getItems()) {
@@ -180,7 +198,11 @@ public class TraderManager extends UserManager {
         return allItems;
     }
 
-    public HashMap<String, ArrayList<String>> getAllRequestedItems() throws EntryNotFoundException {
+    /**
+     * Gets a hashmap of trader ids to an arraylist of their requested items
+     * @return a hashmap of trader ids to an arraylist of their requested items
+     */
+    public HashMap<String, ArrayList<String>> getAllRequestedItems() {
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
         for (User user : getItems()) {
