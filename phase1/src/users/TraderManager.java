@@ -126,6 +126,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @param user1  the id of the user borrowing an item
      * @param user2  the id of the user lending the item
      * @param itemId the id of the item
+     * @param threshold the value for how many items can be borrowed before starting to lend
      * @return user1's id
      * @throws EntryNotFoundException if the itemId or one of the two user IDs were
      *                                not found.
@@ -153,6 +154,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @param user1  the id of the user lending an item
      * @param user2  the id of the user borrowing the item
      * @param itemId the id of the item
+     * @param threshold the value for how many items can be borrowed before starting to lend
      * @return user1's id
      * @throws EntryNotFoundException if the itemId or one of the two user IDs were
      *                                not found.
