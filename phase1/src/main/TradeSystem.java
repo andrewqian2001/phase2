@@ -128,6 +128,9 @@ public class TradeSystem implements Serializable {
     public String getUsername(String userId) throws EntryNotFoundException {
         return userManager.getUsername(userId);
     }
+    public String getIdFromUsername(String username) throws EntryNotFoundException{
+        return userManager.getUserId(username);
+    }
 
     public void requestItem(String ID, TradableItem item) {
         Trader user = null;
