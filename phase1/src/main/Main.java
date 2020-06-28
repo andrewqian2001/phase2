@@ -7,8 +7,8 @@ public class Main {
         TextInterface tInterface = new TextInterface();
         try {
             tInterface.run();
-        } catch(IOException | ClassNotFoundException e) {
-            System.out.println("frick");
+        } catch(IOException e) {
+            System.out.println("Ruh Roh!");
         }
     }
 }

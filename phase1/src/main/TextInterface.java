@@ -8,24 +8,35 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import exceptions.AuthorizationException;
+import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-import users.Permission;
-import users.User;
 
 public class TextInterface {
 
     private static final Logger LOGGER = Logger.getLogger(TextInterface.class.getName());
     private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
 
+    private static String lineBreak = "--------------------------------------------------";
+
+    private Scanner sc;
+    private TradeSystem tSystem;
+    private int userChoice;
+    private String userID;
+
     /**
-     * Constructor for TextInterface
+     * Constructor for TextInterface - Initializes TradeSystem, Scanner and UserID
      *
      * @throws IOException
      */
-    public TextInterface() {
+    public TextInterface() throws IOException {
         LOGGER.setLevel(Level.ALL);
         CONSOLE_HANDLER.setLevel(Level.WARNING);
         LOGGER.addHandler(CONSOLE_HANDLER);
+
+        tSystem = new TradeSystem();
+        sc = new Scanner(System.in);
+        this.userID = "";
     }
 
     /**
@@ -33,152 +44,186 @@ public class TextInterface {
      *
      * @throws IOException
      */
-    public void run() throws IOException, ClassNotFoundException {
-        Scanner sc = new Scanner(System.in);
-        TradeSystem tSystem = new TradeSystem();
+    public void run() throws IOException {
 
-        String lineBreak = "--------------------------------------------------";
+        System.out.println("tRaDeMaStEr 9000");
+        System.out.println(lineBreak);
+        do {
+            System.out.println(
+                    "Enter a number:\n1.\tLogin using an existing account\n2.\tRegister for a new account\n0.\tEXIT\n");
+            promptChoice();
+        } while (!(userChoice == 1 || userChoice == 2 || userChoice == 0));
 
-        int userChoice = 0;
-        
-        String userID = "";
+        if (userChoice != 0) {
+            login();
+
+            if (tSystem.checkAdmin(this.userID)) // TO-DO: ADD
+                adminMenu();
+            else
+                traderMenu();
+        }
+        System.out.println("Thank you for using tRaDeMaStEr 9000!");
+        sc.close();
+    }
+
+    /**
+     * Prompts user for an integer, and sets userChoice to it. Handles any incorrect
+     * input
+     */
+    private void promptChoice() {
+        try {
+            System.out.print("=> ");
+            this.userChoice = sc.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid Input, please try again");
+            sc.nextLine();
+        }
+    }
+
+    /**
+     * Login Helper Method - Displays prompts to login, and sets the userID to the
+     * loggedInUser's ID Also handles registering a user
+     */
+    private void login() {
         String userString = "";
         String userPaString = "";
-
-        User loggedInUser = null;
-
-        do {
-            System.out.println("Enter a number:\n1. Login\n2. Register");
-            try {
-                System.out.print("=> ");
-                userChoice = sc.nextInt();
-                if(userChoice != 1 && userChoice != 2) System.out.println("Invalid Entry, please try again");
-            } catch (InputMismatchException e) {
-                System.out.println("Invalid Input, please try again");
-                sc.nextLine();
-            }
-        } while (userChoice != 1 && userChoice != 2);
-
-        System.out.println(lineBreak);
-
         do {
             try {
-                System.out.print("Enter" + (userChoice == 2 ? " a new " : " ")  + "Username: ");
+                System.out.print("Enter" + (this.userChoice == 2 ? " a new " : " ") + "Username: ");
                 userString = sc.nextLine();
                 System.out.print("Enter Password for " + userString + ":");
                 userPaString = sc.nextLine();
-                userID = userChoice == 1 ? tSystem.login(userString, userPaString) : tSystem.register(userString, userPaString);
-            } catch(UserNotFoundException | ClassNotFoundException | UserAlreadyExistsException e) {
+                this.userID = this.userChoice == 1 ? tSystem.login(userString, userPaString)
+                        : tSystem.registerTrader(userString, userPaString);
+            } catch (UserAlreadyExistsException | EntryNotFoundException | IOException e) {
                 System.out.println(e.getMessage());
             }
-        } while(userID.equals(""));
+        } while (this.userID.equals(""));
+    }
 
-        // Just for getting properties of the user (isFrozen, hasPermission, etc.)
-        loggedInUser = tSystem.getLoggedInUser(userID);
+    /**
+     * Admin Main Menu Helper Method - Displays choices for Admin to select from, and
+     * executes said selection
+     */
+    private void adminMenu() {
+        System.out.println("ADMIN MAIN MENU");
+        do {
+            System.out.println(lineBreak);
+            System.out.println("1. Freeze Trader");
+            System.out.println("2. Un-Freeze Trader");
+            System.out.println("3. Add new Administrator");
+            System.out.println("0. LOG OUT");
+            promptChoice();
+            System.out.println(lineBreak);
+            switch (this.userChoice) {
+                case 1:
+                    freeze(true);
+                    break;
+                case 2:
+                    freeze(false);
+                    break;
+                case 3:
+                    addNewAdmin();
+                    break;
+                default:
+                    System.out.println("Invalid Selection, please try again");
+            }
+        } while (userChoice != 0);
+    }
 
+    /**
+     * Trader Main Menu Helper Method - Displays choices for Trader to select from,
+     * and executes said selection
+     */
+    private void traderMenu() {
+        boolean isFrozen;
+        System.out.println("TRADER MAIN MENU");
         System.out.println(lineBreak);
-        System.out.printf("Welcome, %s!\n", userString);
-        if(loggedInUser.isFrozen()) System.out.println("Your account is currently FROZEN");
-        System.out.println(lineBreak);
-        System.out.println((loggedInUser.hasPermission(Permission.REGISTER_ADMIN) ? "ADMIN " : "TRADER ") + "MAIN MENU");
+        do {
+            isFrozen = checkFrozen(this.userID); // TO-DO: ADD
+            System.out.println("1. View Trades");
+            System.out.println("2. View Inventory");
+            System.out.println("3. View Wishlist");
+            if (isFrozen)
+                System.out.println("10. Request Un-Freeze Account");
+            System.out.println("0. LOG OUT");
+            promptChoice();
+            System.out.println(lineBreak);
+            switch (this.userChoice) {
+                case 1:
+                    tSystem.printTrades(this.userID);
+                    break;
+                case 2:
+                    tSystem.printInventory(this.userID);
+                    break;
+                case 3:
+                    tSystem.printWishlist(this.userID);
+                    break;
+                case 10:
+                    if (isFrozen) {
+                        tSystem.requestUnfreeze(this.userID);
+                        System.out.println("Done! Now please be patient while an admin un-freezes your account");
+                    } else
+                        System.out.println("Your account is not frozen!");
+                    break;
+                default:
+                    System.out.println("Invalid Selection, please try again");
+            }
+        } while (userChoice != 0);
+    }
 
-        if (loggedInUser.hasPermission(Permission.REGISTER_ADMIN)) {
-            String frozenUser = "";
-            do {
-                System.out.println(lineBreak);
-                System.out.println("1. Freeze Trader");
-                System.out.println("2. Un-Freeze Trader");
-                System.out.println("3. Add new Administrator");
-                System.out.println("4. Add new items to Trader's inventory");
-                System.out.println("0. LOG OUT");
-                System.out.println();
-                try {
-                    System.out.print("=> ");
-                    userChoice = sc.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid Input, please try again");
-                    sc.nextLine();
-                }
-                switch(userChoice) {
-                    case 1:
-                        System.out.println("Enter the username of the Trader you would like to freeze");
-                        System.out.print("=> ");
-                        frozenUser = sc.nextLine();
-                        try {
-                            tSystem.freezeUser(frozenUser);
-                        } catch (UserNotFoundException e) {
-                            System.out.println(e.getMessage());
-                        }
-                        System.out.println("Done! User "+ frozenUser + "is now frozen");
-                        break;
-                    case 2:
-                        System.out.println("Enter the username of the frozen Trader");
-                        System.out.print("=> ");
-                        frozenUser = sc.nextLine();
-                        try {
-                            tSystem.unfreezeUser(frozenUser);
-                        } catch (UserNotFoundException e) {
-                            System.out.println(e.getMessage());
-                        }
-                        System.out.println("Done! User " + frozenUser + "is now unfrozen");
-                        break;
-                    case 3:
-                        System.out.println("What username would you like this admin to have?");
-                        System.out.print("=> ");
-                        String newAdminUserString = sc.nextLine();
-                        System.out.println("What password would you like "+ newAdminUserString +" to have?");
-                        System.out.print("=> ");
-                        String newAdminPaString = sc.nextLine();
-                        try {
-                            tSystem.registerAdmin(newAdminUserString, newAdminPaString);
-                        } catch (UserAlreadyExistsException | ClassNotFoundException e) {
-                            System.out.println(e.getMessage());
-                        }
-                        System.out.println("Done! The following user is registered as Admin:\nUsername:\t"+newAdminPaString+"\nPassword:\t" + newAdminPaString);
-                        break;
-                    case 4:
-                        break;
-                    case 5:
-                        break;
-                    default:
-                        System.out.println("Invalid Entry , please try again");
-                }
-            } while (userChoice != 0);
-        } else {
-            do {
-                System.out.println(lineBreak);
-                System.out.println("1. View Ongoing trade(s)");
-                System.out.println("2. View Inventory");
-                System.out.println("3. View Wishlist");
-                if (loggedInUser.isFrozen() && !loggedInUser.isUnfrozenRequested()) {
-                    System.out.println("10. Request Un-Freeze");
-                }
-                System.out.println("0. LOG OUT");
-                System.out.println();
-                try {
-                    System.out.print("=> ");
-                    userChoice = sc.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println("Invalid Input, please try again");
-                    sc.nextLine();
-                }
-                switch (userChoice) {
-                    case 1:
-                        break;
-                    case 2:
-                        tSystem.printInventory(userID);
-                        break;
-                    case 3:
-                        tSystem.printWishlist(userID);
-                        break;
-                    case 10:
-                        tSystem.requestUnfreeze(userID);
-                        break;
-                    default:
-                        System.out.println("Invalid Entry, please try again");
-                }
-            } while (userChoice != 0);
-        }
-        sc.close();
+    /**
+     * Freeze Helper Method Prompts the Admin to enter the username of the Trader to
+     * (un-)freeze And (un-)freezes the inputted Trader
+     * 
+     * @param freezeStatus if true, the method will freeze the given Trader, else it
+     *                     will un-freeze
+     */
+    private void freeze(boolean freezeStatus) {
+        String wantToFreeze = "";
+        boolean success = false;
+        System.out.printf("Enter the username of the Trader you would like to %s\n",
+                freezeStatus ? "freeze" : "un-freeze");
+        System.out.print("=> ");
+        do {
+            try {
+                wantToFreeze = sc.nextLine();
+                tSystem.freezeUser(wantToFreeze, freezeStatus); // TO-DO: change input parameters in TradeSystem.java
+                success = true;
+            } catch (EntryNotFoundException | AuthorizationException e) {
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.printf("Done! Trader \"%s\" has now been %s\n", wantToFreeze, freezeStatus ? "un-frozen" : "frozen");
+    }
+
+    /**
+     * Helper Method to create a new Admin account Prompts the Admin to enter a
+     * username and password for a new Admin account And will then register a new
+     * Admin Account
+     */
+    private void addNewAdmin() {
+        String newAdminString = "";
+        String newAdminPaString = "";
+        boolean success = false;
+        do {
+            System.out.println("Enter a username for this new Admin");
+            System.out.print("=> ");
+            newAdminString = sc.nextLine();
+            System.out.printf("Enter a password for %s", newAdminString);
+            newAdminPaString = sc.nextLine();
+            try {
+                tSystem.registerAdmin(newAdminString, newAdminPaString); // TO-DO: Make this method `void` in
+                                                                         // TradeSystem.java
+                success = true;
+            } catch (UserAlreadyExistsException | IOException e) {
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.println("Done! A new Admin has been created with the following details:");
+        System.out.println(lineBreak);
+        System.out.printf("Username:\t%s\nPassword:\t%s\n", newAdminString, newAdminPaString);
     }
 }
