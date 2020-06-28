@@ -108,15 +108,22 @@ public class TraderManager extends UserManager {
         }
         return allItems;
     }
+    public ArrayList<String> getRequestedTrades(String userId) throws EntryNotFoundException{
+        User user = populate(userId);
+        if (user instanceof Trader){
+            return ((Trader) user).getRequestedTrades();
+        }
+        throw new EntryNotFoundException("The user " + userId + " was not found");
+    }
+    public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException{
+        User user = populate(userId);
+        if (user instanceof Trader){
+            return ((Trader) user).getAcceptedTrades();
+        }
+        throw new EntryNotFoundException("The user " + userId + " was not found");
+    }
 
 
-    /**
-     * @param user1 the first user's id
-     * @param item1 the id of the item first user is offering to trade
-     * @param user2
-     * @param item2
-     * @return
-     */
     public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
@@ -131,7 +138,6 @@ public class TraderManager extends UserManager {
         trader2.getAvailableItems().add(item1);
         update(trader1);
         update(trader2);
-        return user1;
     }
 
     private Trader findUserById(String userId) throws EntryNotFoundException {
