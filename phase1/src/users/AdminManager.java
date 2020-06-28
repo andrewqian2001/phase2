@@ -4,8 +4,9 @@ import exceptions.UserAlreadyExistsException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class AdminManager extends UserManager {
+public class AdminManager extends UserManager implements Serializable {
     public AdminManager(String filePath) throws IOException {
         super(filePath);
     }
