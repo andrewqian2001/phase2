@@ -41,15 +41,6 @@ public class Trader extends User implements Serializable {
         return wishList;
     }
 
-    /**
-     *
-     * @param wishlist to be set to the trader
-     */
-
-    public void setWishlist(ArrayList<String> wishlist) {
-        this.wishList = wishlist;
-    }
-
 /**
  *
  * @return list of available items this trader has

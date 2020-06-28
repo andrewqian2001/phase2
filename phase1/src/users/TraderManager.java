@@ -2,12 +2,9 @@ package users;
 
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class TraderManager extends UserManager {
 
@@ -21,15 +18,16 @@ public class TraderManager extends UserManager {
         super(filePath);
     }
 
+    @Override
     public String registerUser(String username, String password) throws UserAlreadyExistsException {
         if (isUsernameUnique(username)) return update(new Trader(username, password)).getId();
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
     }
 
 
-    public String acceptTrade(String user1, String tradeId) throws EntryNotFoundException{
+    public String acceptTrade(String user1, String tradeId) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
-        if (trader1.isFrozen()){
+        if (trader1.isFrozen()) {
 
         }
         trader1.getRequestedTrades().remove(tradeId);
@@ -38,7 +36,7 @@ public class TraderManager extends UserManager {
         return user1;
     }
 
-    public String denyTrade(String userId, String tradeId) throws EntryNotFoundException{
+    public String denyTrade(String userId, String tradeId) throws EntryNotFoundException {
         Trader trader = findUserById(userId);
         trader.getRequestedTrades().remove(tradeId);
         update(trader);
@@ -46,7 +44,7 @@ public class TraderManager extends UserManager {
         return userId;
     }
 
-    public String addRequestItem(String userId, String itemId) throws EntryNotFoundException{
+    public String addRequestItem(String userId, String itemId) throws EntryNotFoundException {
         Trader trader = findUserById(userId);
         trader.getRequestedItems().add(itemId);
         update(trader);
@@ -59,7 +57,7 @@ public class TraderManager extends UserManager {
 
     public String acceptRequestItem(String userId, String itemId) throws EntryNotFoundException {
         Trader trader = findUserById(userId);
-        if (!trader.getRequestedItems().remove(itemId)){
+        if (!trader.getRequestedItems().remove(itemId)) {
             throw new EntryNotFoundException("Could not find item " + itemId);
         }
         trader.getAvailableItems().add(itemId);
@@ -82,34 +80,55 @@ public class TraderManager extends UserManager {
         return user1;
     }
 
-    public String lendItem(String user1, String user2, String itemId) throws  EntryNotFoundException {
+    public String lendItem(String user1, String user2, String itemId) throws EntryNotFoundException {
         return borrowItem(user2, user1, itemId);
     }
-    public HashMap<String, ArrayList<String>> getAllItems() throws EntryNotFoundException{
+
+    public HashMap<String, ArrayList<String>> getAllItemsInInventories() throws EntryNotFoundException {
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
-        for (User user: getItems()){
+        for (User user : getItems()) {
             if (user instanceof Trader)
-            allItems.put(user.getId(), ((Trader) user).getAvailableItems());
+                allItems.put(user.getId(), ((Trader) user).getAvailableItems());
         }
         return allItems;
     }
 
-    /**
-     *
-     * @param user1 the first user's id
-     * @param item1 the id of the item first user is offering to trade
-     * @param user2
-     * @param item2
-     * @return
-     */
-    public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
+    public HashMap<String, ArrayList<String>> getAllRequestedItems() throws EntryNotFoundException {
+        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+
+        for (User user : getItems()) {
+            if (user instanceof Trader) {
+                ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
+                if (requestedItems.size() > 0)
+                    allItems.put(user.getId(), requestedItems);
+            }
+        }
+        return allItems;
+    }
+    public ArrayList<String> getRequestedTrades(String userId) throws EntryNotFoundException{
+        User user = populate(userId);
+        if (user instanceof Trader){
+            return ((Trader) user).getRequestedTrades();
+        }
+        throw new EntryNotFoundException("The user " + userId + " was not found");
+    }
+    public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException{
+        User user = populate(userId);
+        if (user instanceof Trader){
+            return ((Trader) user).getAcceptedTrades();
+        }
+        throw new EntryNotFoundException("The user " + userId + " was not found");
+    }
+
+
+    public void trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
         if (!trader1.getAvailableItems().remove(item1)) {
             throw new EntryNotFoundException("Item " + item1 + " not found");
         }
-        if (!trader2.getAvailableItems().remove(item2)){
+        if (!trader2.getAvailableItems().remove(item2)) {
             trader1.getAvailableItems().add(item1);
             throw new EntryNotFoundException("Item " + item2 + " not found");
         }
@@ -117,17 +136,21 @@ public class TraderManager extends UserManager {
         trader2.getAvailableItems().add(item1);
         update(trader1);
         update(trader2);
-        return user1;
     }
-
-    private Trader findUserById(String userId) throws EntryNotFoundException {
+    public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException{
         User user = populate(userId);
         if (user instanceof Trader){
+             Trader trader = ((Trader) user);
+             trader.getWishlist().add(tradableItemId);
+             update(trader);
+        }
+        throw new EntryNotFoundException("The user " + userId + " was not found");
+    }
+    private Trader findUserById(String userId) throws EntryNotFoundException {
+        User user = populate(userId);
+        if (user instanceof Trader) {
             return (Trader) user;
         }
         throw new EntryNotFoundException("Could not find " + userId + " + in the system.");
     }
-
-
-
 }
