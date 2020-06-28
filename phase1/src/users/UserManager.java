@@ -58,4 +58,9 @@ public class UserManager extends Database<User> implements Serializable {
                 return user.getId();
         throw new EntryNotFoundException("User with the username " + username + " not found.");
     }
+    public void setRequestFrozenStatus(String userId, boolean status) throws EntryNotFoundException{
+        User user = populate(userId);
+        user.setUnfrozenRequested(status);
+        update(user);
+    }
 }

@@ -254,11 +254,10 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * Given a Trader ID, the system will request the account to be unfrozen
-     * @param ID the id of the Trader that requests to be unfrozen
+     * @param userId the user that wants to be unfrozen
      * @throws EntryNotFoundException
      */
-    public void requestUnfreeze(String ID) throws EntryNotFoundException {
-        userManager.populate(ID).setUnfrozenRequested(true);
+    public void requestUnfreeze(String userId) throws EntryNotFoundException {
+        userManager.setRequestFrozenStatus(userId, true);
     }
 }
