@@ -226,8 +226,8 @@ public class TraderManager extends UserManager implements Serializable {
     public ArrayList<String> getAllTraders() {
         ArrayList<String> allTraders = new ArrayList<>();
         for (User user : getItems())
-            allTraders.add(user.getId());
-
+            if(user instanceof Trader)
+                allTraders.add(user.getId());
         return allTraders;
     }
 
