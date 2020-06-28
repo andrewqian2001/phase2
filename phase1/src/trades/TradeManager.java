@@ -2,7 +2,6 @@ package trades;
 
 import exceptions.EntryNotFoundException;
 import main.Database;
-import users.Trader;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -28,7 +27,8 @@ public class TradeManager extends Database<Trade> implements Serializable {
      * @param firstUserId         the user of the person initializing the trade
      * @param secondUserId        the user of the person the trade is being sent to
      * @param meetingTime       when the meeting takes place
-     * @param secondMeetingTime when the second meeting takes place
+     * @param secondMeetingTime when the second meeting takes place (make this time to be the same or earlier
+     *                          than the first meeting time for a permanent trade)
      * @param meetingLocation   where the meeting takes place
      * @param firstUserOffer    the item id that the user who initialized the trade is willing to offer
      * @param secondUserOffer   the item id that the user who got sent the trade is willing to offer
@@ -83,10 +83,18 @@ public class TradeManager extends Database<Trade> implements Serializable {
         return trade.getMeetingTime();
     }
 
+    public boolean isTradeInProgress(String tradeId) throws EntryNotFoundException {
+        Trade trade = populate(tradeId);
+        if (!trade.isFirstUserConfirmed1() || !trade.isFirstUserConfirmed2()) return false;
+        if (trade.getSecondMeetingTime().before(trade.getMeetingTime()) ||
+                trade.getSecondMeetingTime().equals(trade.getMeetingTime()))
+            return true;
+        return trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2();
+    }
+
     public Date getSecondMeetingTime (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getSecondMeetingTime();
     }
-
 
 }
