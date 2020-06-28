@@ -5,11 +5,12 @@ import exceptions.UserAlreadyExistsException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class TraderManager extends UserManager {
+public class TraderManager extends UserManager implements Serializable {
 
     /**
      * For storing the file path of the .ser file
