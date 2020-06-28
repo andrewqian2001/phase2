@@ -111,17 +111,17 @@ public class TextInterface {
     }
 
     /**
-     * Admin Main Menu Helper Method - Displays choices for Admin to select from, and
-     * executes said selection
+     * Admin Main Menu Helper Method - Displays choices for Admin to select from,
+     * and executes said selection
      */
     private void adminMenu() {
         System.out.println("ADMIN MAIN MENU");
         do {
             System.out.println(lineBreak);
-            System.out.println("1. Freeze Trader");
-            System.out.println("2. Un-Freeze Trader");
-            System.out.println("3. Add new Administrator");
-            System.out.println("0. LOG OUT");
+            System.out.println("1.\tFreeze Trader");
+            System.out.println("2.\tUn-Freeze Trader");
+            System.out.println("3.\tAdd new Administrator");
+            System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
             switch (this.userChoice) {
@@ -159,12 +159,14 @@ public class TextInterface {
             } catch (EntryNotFoundException e) {
                 System.out.println(e.getMessage());
             }
-            System.out.println("1. View Trades");
-            System.out.println("2. View Inventory");
-            System.out.println("3. View Wishlist");
+            System.out.println("1.\tView Trades");
+            System.out.println("2.\tView Inventory");
+            System.out.println("3.\tView Wishlist");
+            System.out.println("4.\tView All Items in Database");
+            System.out.println("5.\tRequest to add item to Inventory");
             if (isFrozen)
-                System.out.println("10. Request Un-Freeze Account");
-            System.out.println("0. LOG OUT");
+                System.out.println("10.\tRequest Un-Freeze Account");
+            System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
             switch (this.userChoice) {
@@ -179,6 +181,13 @@ public class TextInterface {
                     break;
                 case 3:
                     tSystem.printWishlist(this.userID);
+                    break;
+                case 4:
+                    try {
+                        tSystem.printDatabase();
+                    } catch (EntryNotFoundException e) {
+                        System.out.println(e.getMessage());
+                    }
                     break;
                 case 10:
                     if (isFrozen) {

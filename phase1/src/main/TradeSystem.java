@@ -14,10 +14,9 @@ import java.util.HashMap;
 
 public class TradeSystem implements Serializable {
 
-    private static final String USERS_FILE_PATH = "src/users/users.ser";
-    private static final String TRADE_FILE_PATH = "src/users/trades.ser";
-    private static final String TRADABLE_ITEM_FILE_PATH = "src/users/tradableitems.ser";
-
+    private static final String USERS_FILE_PATH = "./phase1/src/users/users.ser";
+    private static final String TRADE_FILE_PATH = "./phase1/src/trades/trades.ser";
+    private static final String TRADABLE_ITEM_FILE_PATH = "./phase1/src/tradableitems/tradableitems.ser";
     private UserManager userManager;
     private TradeManager tradeManager;
     private TradableItemManager tradableItemManager;
@@ -228,6 +227,13 @@ public class TradeSystem implements Serializable {
        printList(ID, "Requested", "Trade");
     }
 
+    public void printDatabase() throws EntryNotFoundException {
+        ArrayList<String> allTraders = ((TraderManager) userManager).getAllTraders();
+        for(String userID : allTraders) {
+            printList(userID, "Inventory", "Item");
+        }
+    }
+
     /**
      * Prints the Trader's Inventory given their ID
      * NOTE: This method will not be called by an Admin ever
@@ -274,11 +280,10 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * Given a Trader ID, the system will request the account to be unfrozen
-     * @param ID the id of the Trader that requests to be unfrozen
+     * @param userId the user that wants to be unfrozen
      * @throws EntryNotFoundException
      */
-    public void requestUnfreeze(String ID) throws EntryNotFoundException {
-        userManager.populate(ID).setUnfrozenRequested(true);
+    public void requestUnfreeze(String userId) throws EntryNotFoundException {
+        userManager.setRequestFrozenStatus(userId, true);
     }
 }

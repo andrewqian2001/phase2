@@ -31,7 +31,6 @@ public abstract class Database<T extends DatabaseItem> implements Serializable {
         LOGGER.setLevel(Level.ALL);
         CONSOLE_HANDLER.setLevel(Level.WARNING);
         LOGGER.addHandler(CONSOLE_HANDLER);
-
         this.filePath = filePath;
         File file = new File(filePath);
         if (!file.exists()) file.createNewFile();
