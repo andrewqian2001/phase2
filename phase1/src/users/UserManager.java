@@ -63,4 +63,26 @@ public class UserManager extends Database<User> implements Serializable {
         user.setUnfrozenRequested(status);
         update(user);
     }
+
+    /**
+     * return if the user is frozen
+     * @param userId user Id
+     * @return
+     * @throws EntryNotFoundException
+     */
+    public boolean isFrozen(String userId) throws EntryNotFoundException {
+        User user = populate(userId);
+        return user.isFrozen();
+    }
+
+    /**
+     * return if the user is an admin
+     * @param userId user Id
+     * @return
+     * @throws EntryNotFoundException
+     */
+    public boolean isAdmin(String userId) throws EntryNotFoundException {
+        User user = populate(userId);
+        return user instanceof Admin;
+    }
 }
