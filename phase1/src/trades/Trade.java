@@ -14,7 +14,8 @@ public class Trade extends DatabaseItem implements Serializable {
     private Date secondMeetingTime = null;
     private String meetingLocation = "";
     private int numEdits = 0;
-    private String firstUserOffer = "", secondUserOffer = "";
+    private String firstUserOffer = "";
+    private String secondUserOffer = "";
     private boolean isFirstUserConfirmed1 = false;
     private boolean isSecondUserConfirmed1 = false;
     private boolean isFirstUserConfirmed2 = false;
@@ -130,6 +131,19 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * @param meetingTime the new meeting time for the first meeting
+     */
+    void setMeetingTime(Date meetingTime){
+        this.meetingTime = meetingTime;
+    }
+
+    /**
+     * @param meetingTime the new meeting time for the second meeting
+     */
+    void setSecondMeetingTime(Date meetingTime){
+        secondMeetingTime = meetingTime;
+    }
+    /**
      * @return when the first trade is taking place
      */
     Date getMeetingTime() {
@@ -151,6 +165,13 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * @param location new meeting location
+     */
+    void setMeetingLocation(String location){
+        meetingLocation = location;
+    }
+
+    /**
      * @return the id of the item that the user that initialized the trade is willing to offer
      */
     String getFirstUserOffer() {
@@ -164,6 +185,23 @@ public class Trade extends DatabaseItem implements Serializable {
         return secondUserOffer;
     }
 
+    /**
+     * @param firstUserOffer what the first user gives away (id)
+     */
+     void setFirstUserOffer(String firstUserOffer) {
+        this.firstUserOffer = firstUserOffer;
+    }
+
+    /**
+     * @param secondUserOffer what the second user gives away (id)
+     */
+     void setSecondUserOffer(String secondUserOffer) {
+        this.secondUserOffer = secondUserOffer;
+    }
+
+    int getMaxAllowedEdits() {
+        return MAX_ALLOWED_NUM_EDITS;
+    }
 
     /**
      * @return the user id of the person's turn to edit the trade
@@ -172,4 +210,15 @@ public class Trade extends DatabaseItem implements Serializable {
         return userTurnToEdit;
     }
 
+
+    /**
+     * Change user's turn to edit trade
+     */
+    void changeUserTurn() {
+        if (userTurnToEdit.equals(FIRST_USER_ID)) userTurnToEdit = SECOND_USER_ID;
+        else userTurnToEdit = FIRST_USER_ID;
+    }
+    void setNumEdits(int num){
+        this.numEdits = num;
+    }
 }
