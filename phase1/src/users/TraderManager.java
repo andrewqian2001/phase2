@@ -58,6 +58,20 @@ public class TraderManager extends UserManager {
     }
 
     /**
+     * Adds a trade to the specified user requested trades
+     * @param userId id of user
+     * @param tradeId id of the trade to add to requested trades
+     * @return id of the user
+     * @throws EntryNotFoundException if the user was not found
+     */
+    public String addRequestTrade(String userId, String tradeId) throws EntryNotFoundException{
+        Trader trader =  findUserById(userId);
+        trader.getRequestedTrades().add(tradeId);
+        update(trader);
+        return userId;
+    }
+
+    /**
      * Makes this user request an item
      * @param userId id of the user
      * @param itemId id of the item to add
