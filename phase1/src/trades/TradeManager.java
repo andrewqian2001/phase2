@@ -74,5 +74,22 @@ public class TradeManager extends Database<Trade> implements Serializable {
         update(trade);
     }
 
+    public String getUserThatTradeSentTo (String tradeID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        return trade.getSecondUserId();
+    }
+
+    public Date getFirstMeetingTime (String tradeID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        return trade.getMeetingTime();
+    }
+
+    public Date getSecondMeetingTime (String tradeID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        return trade.getSecondMeetingTime();
+    }
+
+
+
 
 }
