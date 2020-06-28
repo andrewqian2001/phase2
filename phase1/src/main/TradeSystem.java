@@ -153,6 +153,7 @@ public class TradeSystem implements Serializable {
         return userManager.getUsername(userId);
     }
 
+
     /**
      * Gets the id of a User given their username
      * @param username username of the User
@@ -161,6 +162,26 @@ public class TradeSystem implements Serializable {
      */
     public String getIdFromUsername(String username) throws EntryNotFoundException{
         return userManager.getUserId(username);
+    }
+
+    public ArrayList<String> getWishlist(String ID) throws EntryNotFoundException {
+        return ((Trader) userManager.populate(ID)).getWishlist();
+    }
+
+    public ArrayList<String> getAvailableItems(String ID) throws EntryNotFoundException {
+        return ((Trader) userManager.populate(ID)).getAvailableItems();
+    }
+    
+    public ArrayList<String> getAcceptedTrades(String ID) throws EntryNotFoundException {
+        return ((Trader) userManager.populate(ID)).getAcceptedTrades();
+    }
+    
+    public ArrayList<String> getRequestedTrades(String ID) throws EntryNotFoundException {
+        return ((Trader) userManager.populate(ID)).getRequestedTrades();
+    }
+
+    public ArrayList<String> getAllTraders() {
+        return ((TraderManager) userManager).getAllTraders();
     }
 
     /**
@@ -196,69 +217,6 @@ public class TradeSystem implements Serializable {
         }
 
     }*/
-
-    /**
-     * Prints the Trader's Trades given their ID
-     * NOTE: This method will not be called by an Admin ever
-     * @param ID the id of the Trader
-     */    
-    public void printTrades(String ID) {
-       printList(ID, "Accepted", "Trade");
-       System.out.println();
-       printList(ID, "Requested", "Trade");
-    }
-
-    public void printDatabase() throws EntryNotFoundException {
-        ArrayList<String> allTraders = ((TraderManager) userManager).getAllTraders();
-        for(String userID : allTraders) {
-            printList(userID, "Inventory", "Item");
-        }
-    }
-
-    /**
-     * Prints the Trader's Inventory given their ID
-     * NOTE: This method will not be called by an Admin ever
-     * @param ID the id of the Trader
-     */
-    public void printInventory(String ID) {
-        printList(ID, "Inventory", "Item");
-    }
-
-    /**
-     * Prints the Trader's WishList given their ID
-     * NOTE: This method will not be called by an Admin ever
-     * @param ID the id of the Trader
-     */        
-    public void printWishlist(String ID) {
-        printList(ID, "Wishlist", "Item");
-    }
-
-    /**
-     * Prints a list given the Trader's ID, Type of List, and Item type
-     * NOTE: This is method is not called by an Admin ever
-     * NOTE: This method is just a helper for the other print__ methods
-     * @param ID
-     * @param listType
-     * @param itemType
-     */
-    private void printList(String ID, String listType, String itemType) {
-        try {
-            Trader user = (Trader) userManager.populate(ID);
-            ArrayList<String> list = null;
-            String itemID = "";
-            if(listType.equals("Wishlist")) list = user.getWishlist();
-            else if(listType.equals("Inventory")) list = user.getAvailableItems();
-            else if(listType.equals("Accepted")) list = user.getAcceptedTrades();
-            else if(listType.equals("Requested")) list = user.getRequestedTrades();
-            System.out.printf("%s's %s %ss\n***************\n", user.getUsername(), listType, itemType);
-            for(int i = 0; i < list.size(); i++) {
-                itemID = list.get(i);
-                System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, getTradableItemName(itemID), getTradableItemDesc(itemID));
-            }
-        } catch (EntryNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     /**
      * @param userId the user that wants to be unfrozen
