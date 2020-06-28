@@ -22,7 +22,6 @@ public class TradeSystem implements Serializable {
     private TradableItemManager tradableItemManager;
     private String loggedInUserId;
 
-
     public TradeSystem() throws IOException {
         userManager = new UserManager(USERS_FILE_PATH);
         tradeManager = new TradeManager(TRADE_FILE_PATH);
@@ -61,28 +60,27 @@ public class TradeSystem implements Serializable {
     public void freezeUser(String userId, boolean freezeStatus) throws EntryNotFoundException, AuthorizationException {
         userManager.freezeUser(loggedInUserId, userId, freezeStatus);
     }
-    public String getTradableItemName(String tradableItemId) throws EntryNotFoundException{
+
+    public String getTradableItemName(String tradableItemId) throws EntryNotFoundException {
         return tradableItemManager.getName(tradableItemId);
     }
-    public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException{
+
+    public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException {
         return tradableItemManager.getDesc(tradableItemId);
     }
-
 
     public void requestItem(String ID, TradableItem item) {
         Trader user = null;
         try {
             user = (Trader) userManager.populate(ID);
         } catch (EntryNotFoundException e) {
-            //Not sure what im supposed to do when I get an exception
-        }finally {
+            // Not sure what im supposed to do when I get an exception
+        } finally {
             ArrayList<String> List = user.getRequestedItems();
             List.add(item.getId());
             user.setRequestedItems(List);
             userManager.update(user);
         }
-
-
 
     }
 
@@ -91,8 +89,8 @@ public class TradeSystem implements Serializable {
         try {
             user = (Trader) userManager.populate(ID);
         } catch (EntryNotFoundException e) {
-            //Not sure what im supposed to do when I get an exception
-        }finally {
+            // Not sure what im supposed to do when I get an exception
+        } finally {
             if (user != null && user.hasPermission(Permission.CONFIRM_ADDED_ITEM)) {
                 ArrayList<String> inventory = user.getAvailableItems();
                 ArrayList<String> reqList = user.getRequestedItems();
@@ -107,66 +105,39 @@ public class TradeSystem implements Serializable {
             }
         }
 
-
     }
 
     public void printTrades(String ID) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            //not sure what to do when i catch exceptions
-        }finally {
-            ArrayList<String> AccTrades = user.getAcceptedTrades();
-            ArrayList<String> ReqTrades = user.getRequestedTrades();
-            System.out.println("User " + user.getUsername() + "'s accepted trades");
-            for (int i = 0; i < AccTrades.size(); i++) {
-                String item = AccTrades.get(i); //this is just the ID, how do you get the actual item name?
-                System.out.println(item);
-            }
-            System.out.println("User " + user.getUsername() + "'s requested trades");
-            for (int i = 0; i < ReqTrades.size(); i++) {
-                String item = ReqTrades.get(i); //this is just the ID, how do you get the actual item name?
-                System.out.println(item);
-            }
-        }
-
-
+       printList(ID, "Accepted", "Trade");
+       System.out.println();
+       printList(ID, "Requested", "Trade");
     }
 
     public void printInventory(String ID) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            //not sure what to do when i catch exceptions
-        }finally {
-            ArrayList<String> Inventory = user.getAvailableItems();
-            System.out.println("User " + user.getUsername() + "'s available items");
-            for (int i = 0; i < Inventory.size(); i++) {
-                String item = Inventory.get(i);  //this is just the ID, how do you get the actual item name?
-                System.out.println(item);
-            }
-        }
-
-
+        printList(ID, "Inventory", "Item");
     }
 
     public void printWishlist(String ID) {
-        Trader user = null;
-        try {
-            user = (Trader) userManager.populate(ID);
-        } catch (EntryNotFoundException e) {
-            //not sure what to do when i catch exceptions
-        }finally {
-            ArrayList<String> list = user.getWishlist();
-            System.out.println("User " + user.getUsername() + "'s wishlist");
-            for (int i = 0; i < list.size(); i++) {
-                String item = list.get(i);  //this is just the ID, how do you get the actual item name?
-                System.out.println(item);
-            }
-        }
+        printList(ID, "Wishlist", "Item");
+    }
 
+    private void printList(String ID, String listType, String itemType) {
+        try {
+            Trader user = (Trader) userManager.populate(ID);
+            ArrayList<String> list = null;
+            String itemID = "";
+            if(listType.equals("Wishlist")) list = user.getWishlist();
+            else if(listType.equals("Inventory")) list = user.getAvailableItems();
+            else if(listType.equals("Accepted")) list = user.getAcceptedTrades();
+            else if(listType.equals("Requested")) list = user.getRequestedTrades();
+            System.out.printf("%s's %s %ss\n***************\n", user.getUsername(), listType, itemType);
+            for(int i = 0; i < list.size(); i++) {
+                itemID = list.get(i);
+                System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, getTradableItemName(itemID), getTradableItemDesc(itemID));
+            }
+        } catch (EntryNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void requestUnfreeze(String ID) {

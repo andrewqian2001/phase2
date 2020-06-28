@@ -63,6 +63,7 @@ public class TextInterface {
                 traderMenu();
         }
         System.out.println("Thank you for using tRaDeMaStEr 9000!");
+        userID = "";
         sc.close();
     }
 
@@ -116,6 +117,9 @@ public class TextInterface {
             promptChoice();
             System.out.println(lineBreak);
             switch (this.userChoice) {
+                case 0:
+                    System.out.println("Logging Out...");
+                    break;
                 case 1:
                     freeze(true);
                     break;
@@ -150,6 +154,9 @@ public class TextInterface {
             promptChoice();
             System.out.println(lineBreak);
             switch (this.userChoice) {
+                case 0:
+                    System.out.println("Logging Out...");
+                    break;
                 case 1:
                     tSystem.printTrades(this.userID);
                     break;
@@ -214,8 +221,7 @@ public class TextInterface {
             System.out.printf("Enter a password for %s", newAdminString);
             newAdminPaString = sc.nextLine();
             try {
-                tSystem.registerAdmin(newAdminString, newAdminPaString); // TO-DO: Make this method `void` in
-                                                                         // TradeSystem.java
+                tSystem.registerAdmin(newAdminString, newAdminPaString); // TO-DO: Make this method `void`
                 success = true;
             } catch (UserAlreadyExistsException | IOException e) {
                 success = false;
