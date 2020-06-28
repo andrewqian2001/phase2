@@ -165,22 +165,54 @@ public class TradeSystem implements Serializable {
         return userManager.getUserId(username);
     }
 
+    /**
+     * Gets a list of a given user's WishList
+     * 
+     * @param userID the id of the user
+     * @return a list of id's of wishlist items
+     * @throws EntryNotFoundException
+     */
     public ArrayList<String> getWishlist(String userID) throws EntryNotFoundException {
-        return ((Trader) userManager.populate(userID)).getWishlist();
+        return ((TraderManager)userManager).getWishlist(userID);
     }
-
+    
+    /**
+     * Gets a list of a given user's Available Items
+     * 
+     * @param userID the id of the user
+     * @return a list of id's of available Items
+     * @throws EntryNotFoundException
+     */
     public ArrayList<String> getAvailableItems(String userID) throws EntryNotFoundException {
-        return ((Trader) userManager.populate(userID)).getAvailableItems();
+        return ((TraderManager)userManager).getAvailableItems(userID);
     }
     
+    /**
+     * Gets a list of a given user's Accepted Trades
+     * 
+     * @param userID the id of the user
+     * @return a list of id's of Accepted Trades
+     * @throws EntryNotFoundException
+     */
     public ArrayList<String> getAcceptedTrades(String userID) throws EntryNotFoundException {
-        return ((Trader) userManager.populate(userID)).getAcceptedTrades();
+        return ((TraderManager)userManager).getAcceptedTrades(userID);
     }
     
+    /**
+     * Gets a list of a given user's Requested Trades
+     * @param userID the id of the user
+     * @return a list of id's of Requested Trades
+     * @throws EntryNotFoundException
+     */
     public ArrayList<String> getRequestedTrades(String userID) throws EntryNotFoundException {
-        return ((Trader) userManager.populate(userID)).getRequestedTrades();
+        return ((TraderManager)userManager).getRequestedTrades(userID);
     }
 
+    /**
+     * Gets a list of all traders in the database
+     * @return A list of all traders in the database
+     * @throws EntryNotFoundException
+     */
     public ArrayList<String> getAllTraders() {
         return ((TraderManager) userManager).getAllTraders();
     }
