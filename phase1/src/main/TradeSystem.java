@@ -10,6 +10,7 @@ import users.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class TradeSystem implements Serializable {
 
@@ -205,6 +206,13 @@ public class TradeSystem implements Serializable {
        printList(ID, "Accepted", "Trade");
        System.out.println();
        printList(ID, "Requested", "Trade");
+    }
+
+    public void printDatabase() throws EntryNotFoundException {
+        ArrayList<String> allTraders = ((TraderManager) userManager).getAllTraders();
+        for(String userID : allTraders) {
+            printList(userID, "Inventory", "Item");
+        }
     }
 
     /**
