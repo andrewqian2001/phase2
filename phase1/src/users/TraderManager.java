@@ -29,8 +29,7 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
-     * Adds one of user1's requested trades to user1's accepted trades
-     * 
+     * Adds one of user1's requested trades to user1's accepted trade
      * @param user1   id of user
      * @param tradeId id of trade to accept
      * @return true if the trade was successfully accepted
@@ -262,6 +261,17 @@ public class TraderManager extends UserManager implements Serializable {
         update(trader);
     }
 
+
+    /**
+     * Changes the specified user's trade limit
+     * @param userId the user who's trade limit will be changed
+     * @param newLimit the new trade limit
+     * @throws EntryNotFoundException if the trader could not be found
+     */
+    public void changeTraderLimits(String userId, int newLimit) throws EntryNotFoundException {
+        Trader trader = findUserById(userId);
+        trader.setIncompleteTradeLim(newLimit);
+    }
     /**
      * Helper function to find a trader by id
      * 
