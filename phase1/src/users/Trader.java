@@ -15,6 +15,7 @@ public class Trader extends User implements Serializable {
     private final ArrayList<String> acceptedTrades = new ArrayList<>();
     private final ArrayList<String> requestedTrades = new ArrayList<>();
     private int tradeLimit;
+    private int incompleteTradeCount;
     private int incompleteTradeLim;
     private int totalItemsBorrowed;
     private int totalItemsLent;
@@ -32,6 +33,20 @@ public class Trader extends User implements Serializable {
     }
 
     /**
+     * @return the number of incompleted trades this trader has done
+     */
+    public int getIncompleteTradeCount(){
+        return incompleteTradeCount;
+    }
+
+    /**
+     * @param incompleteTradeCount the new value of incompleteTradeCount
+     */
+    public void setIncompleteTradeCount(int incompleteTradeCount){
+        this.incompleteTradeCount = incompleteTradeCount;
+    }
+
+    /**
      * @return total completed trade count
      */
     public int getTradeCount(){
@@ -46,12 +61,6 @@ public class Trader extends User implements Serializable {
         this.tradeCount = tradeCount;
     }
 
-    /**
-     * increments tradeCount by one
-     */
-    public void addToTradeCount(){
-        tradeCount++;
-    }
 
     /**
      * @return the trader's wishlist
