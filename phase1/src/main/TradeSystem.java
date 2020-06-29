@@ -233,11 +233,12 @@ public class TradeSystem implements Serializable {
      * Requests that the item be added to the user's iventory
      * 
      * @param userID user ID
-     * @param item   item object
+     * @param itemName  name of tradable item
      * @throws EntryNotFoundException
      */
-    public void requestItem(String userID, TradableItem item) throws EntryNotFoundException {
-        ((TraderManager) userManager).addRequestItem(userID, item.getId());
+    public void requestItem(String userID, String itemName) throws EntryNotFoundException {
+        String itemID = tradableItemManager.getIdWithName(itemName).get(0);
+        ((TraderManager) userManager).addRequestItem(userID, itemID);
     }
 
     /**
