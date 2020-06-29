@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AdminManager extends UserManager implements Serializable {
     public AdminManager(String filePath) throws IOException {
@@ -23,5 +24,17 @@ public class AdminManager extends UserManager implements Serializable {
             if(populate(userID).isUnfrozenRequested()) allUnFrozenList.add(userID);
         }
         return allUsers;
+    }
+
+    public HashMap<String, ArrayList<String>> getAllItemRequests() throws EntryNotFoundException {
+        HashMap<String, ArrayList<String>> itemRequests = new HashMap<>();
+        ArrayList<String> allUsers = getAllUsers();
+        for(String userID : allUsers) {
+            User user = populate(userID);
+            if(user instanceof Trader) {
+                itemRequests.put(userID, ((Trader) user).getRequestedItems());
+            }
+        }
+        return itemRequests;
     }
 }

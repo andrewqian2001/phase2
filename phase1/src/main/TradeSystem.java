@@ -290,18 +290,24 @@ public class TradeSystem implements Serializable {
             }
             distinct.remove(frequentTraders[i]);
         }
-        for(int i = 0; i < 3; i++){
+        for (int i = 0; i < 3; i++) {
             frequentTraders[i] = userManager.getUserId(frequentTraders[i]);
         }
         return frequentTraders;
     }
 
+    /**
+     * Gets a list of the items used in trades
+     * 
+     * @param userId id of the user
+     * @return list of unique items that the user has traded/recieved from a trade
+     * @throws EntryNotFoundException
+     */
     public Set<String> getRecentTradeItems(String userId) throws EntryNotFoundException {
         ArrayList<String> acceptedTrades = ((TraderManager) userManager).getAcceptedTrades(userId);
         Set<String> recentTradeItemNames = new HashSet<>();
         for (String tradeID : acceptedTrades) {
-            // TO-DO: ADD IN TRADERMANAGER
-            String[] tradeableItemIDs = ((TraderManager) userManager).getItemsFromTrade(tradeID);
+            String[] tradeableItemIDs = tradeManager.getItemsFromTrade(tradeID);
             recentTradeItemNames.add(getTradableItemName(tradeableItemIDs[0]));
             if (!tradeableItemIDs[1].equals(""))
                 recentTradeItemNames.add(getTradableItemName(tradeableItemIDs[1]));
@@ -309,7 +315,17 @@ public class TradeSystem implements Serializable {
         return recentTradeItemNames;
     }
 
+    /**
+     * Gets a list of all Unfreeze Request
+     * 
+     * @return a list of all unfreeze requests
+     * @throws EntryNotFoundException
+     */
     public ArrayList<String> getAllUnfreezeRequests() throws EntryNotFoundException {
         return ((AdminManager) userManager).getAllUnFreezeRequests();
+    }
+
+    public HashMap<String, ArrayList<String>> getAllItemRequests() throws EntryNotFoundException {
+        return ((AdminManager) userManager).getAllItemRequests();
     }
 }
