@@ -364,9 +364,11 @@ public class TextInterface {
         try {
             HashMap<String, ArrayList<String>> itemRequests = tSystem.getAllItemRequests();
             for(String userID : itemRequests.keySet()) {
-                System.out.println(tSystem.getUsername(userID) + " :");
-                for(String itemID : itemRequests.get(userID)) {
-                    System.out.printf("\t%s\n", tSystem.getTradableItemName(itemID));
+                if(itemRequests.get(userID).size() > 0) {
+                    System.out.println(tSystem.getUsername(userID) + " :");
+                    for (String itemID : itemRequests.get(userID)) {
+                        System.out.printf("\t%s\n", tSystem.getTradableItemName(itemID));
+                    }
                 }
             }
         } catch (EntryNotFoundException e) {
