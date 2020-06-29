@@ -161,7 +161,7 @@ public class TraderManager extends UserManager implements Serializable {
         if (!trader2.getAvailableItems().remove(itemId)) {
             throw new EntryNotFoundException("Item " + itemId + " not found");
         }
-        if (trader1.getTotalItemsBorrowed() < threshold) {
+        if (trader1.getTotalItemsLent() - trader1.getTotalItemsBorrowed() < threshold) {
             return false;
         }
         trader1.getAvailableItems().add(itemId);
