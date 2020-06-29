@@ -230,7 +230,7 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * Requests that the item be added to the user's iventory
+     * Requests that the item be added to the user's inventory
      * 
      * @param userID user ID
      * @param itemName  name of tradable item
@@ -337,5 +337,15 @@ public class TradeSystem implements Serializable {
      */
     public HashMap<String, ArrayList<String>> getAllItemRequests() throws EntryNotFoundException {
         return ((AdminManager) userManager).getAllItemRequests();
+    }
+
+    //TO-DO: FINISH
+    public void processItemRequest(String traderName, String itemName, boolean isAccepted) throws EntryNotFoundException {
+        String traderID = userManager.getUserId(traderName);
+        if(isAccepted) {
+            // Accept Item Request
+        } else {
+            // Reject Item Request
+        }
     }
 }

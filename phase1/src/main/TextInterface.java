@@ -151,10 +151,10 @@ public class TextInterface {
                     printAllItemRequests();
                     break;
                 case 6:
-                    approveItemRequest();
+                    processItemRequest(true);
                     break;
                 case 7:
-                    rejectItemRequest();
+                    processItemRequest(false);
                     break;
                 default:
                     System.out.println("Invalid Selection, please try again");
@@ -430,8 +430,7 @@ public class TextInterface {
         System.out.printf("Done! %s is now in your Wishlist.", itemName);
     }
 
-    //TO-DO: FINISH
-    private void approveItemRequest() {
+    private void processItemRequest(boolean isAccepted) {
         String traderName = "";
         String itemName = "";
         boolean success = false;
@@ -440,32 +439,14 @@ public class TextInterface {
                 System.out.println("Enter the name of the Trader");
                 System.out.print("=> ");
                 traderName = sc.nextLine();
-                success = true;
-            } catch (Exception e) {
+                System.out.println("Enter the name of the Item");
+                itemName = sc.nextLine();
+                tSystem.processItemRequest(traderName, itemName, isAccepted); //TO-DO: Add in TradeSystem
+            } catch (EntryNotFoundException e) {
                 System.out.println(e.getMessage());
                 success = false;
             }
         } while (!success);
-        System.out.println("Done!");
-    }
-    }   
-
-    //TO-DO: FINISH
-    private void rejectItemRequest() {
-        String traderName = "";
-        String itemName = "";
-        boolean success = false;
-        do {
-            try {
-                System.out.println("Enter the name of the Trader");
-                System.out.print("=> ");
-                traderName = sc.nextLine();
-                success = true;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                success = false;
-            }
-        } while (!success);
-        System.out.println("Done!");
+        System.out.printf("Done! %s's request for item '%s' has now been %s\n", traderName, itemName, isAccepted ? "accepted" : "rejected");
     }
 }
