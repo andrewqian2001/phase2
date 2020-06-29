@@ -126,6 +126,8 @@ public class TextInterface {
             System.out.println("3.\tAdd new Administrator");
             System.out.println("4.\tView all Un-freeze Requests");
             System.out.println("5.\tView all Item Requests");
+            System.out.println("6.\tApprove Item Request");
+            System.out.println("7.\tReject Item Request");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -147,6 +149,12 @@ public class TextInterface {
                     break;
                 case 5:
                     printAllItemRequests();
+                    break;
+                case 6:
+                    approveItemRequest();
+                    break;
+                case 7:
+                    rejectItemRequest();
                     break;
                 default:
                     System.out.println("Invalid Selection, please try again");
@@ -401,6 +409,9 @@ public class TextInterface {
         System.out.printf("Done! Your request to add %s has now been processed.", itemName);
     }
 
+    /**
+     * Prompts user to enter the item name and adds the item to the users Wishlist
+     */
     private void addItemToWishList() {
         String itemName = "";
         boolean success = false;
@@ -417,5 +428,44 @@ public class TextInterface {
             }
         } while (!success);
         System.out.printf("Done! %s is now in your Wishlist.", itemName);
+    }
+
+    //TO-DO: FINISH
+    private void approveItemRequest() {
+        String traderName = "";
+        String itemName = "";
+        boolean success = false;
+        do {
+            try {
+                System.out.println("Enter the name of the Trader");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
+                success = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                success = false;
+            }
+        } while (!success);
+        System.out.println("Done!");
+    }
+    }   
+
+    //TO-DO: FINISH
+    private void rejectItemRequest() {
+        String traderName = "";
+        String itemName = "";
+        boolean success = false;
+        do {
+            try {
+                System.out.println("Enter the name of the Trader");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
+                success = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                success = false;
+            }
+        } while (!success);
+        System.out.println("Done!");
     }
 }
