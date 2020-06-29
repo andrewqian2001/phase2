@@ -5,6 +5,7 @@ import main.Database;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Used to manage and store items that are tradable
@@ -49,5 +50,18 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
     public String getDesc (String tradableItemId) throws EntryNotFoundException{
         TradableItem item = super.populate(tradableItemId);
         return item.getDesc();
+    }
+
+    /**
+     * @param name the name to check for
+     * @return a list of all ids that have that name
+     */
+    public ArrayList<String> getIdsWithName(String name) {
+        ArrayList<String> items = new ArrayList<>();
+        for (TradableItem item : getItems()){
+            if (item.getName().equals(name))
+                items.add(item.getId());
+        }
+        return items;
     }
 }

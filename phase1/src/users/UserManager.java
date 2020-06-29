@@ -100,4 +100,15 @@ public class UserManager extends Database<User> implements Serializable {
         return allUsers;
     }
 
+    /**
+     * Helper function to find a User by id
+     *
+     * @param userId the id of the trader to find
+     * @return the User that was found
+     * @throws EntryNotFoundException if user was not found
+     */
+    public User findUserById(String userId) throws EntryNotFoundException {
+        return populate(userId);
+    }
+
 }
