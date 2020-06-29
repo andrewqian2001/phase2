@@ -380,9 +380,20 @@ public class TextInterface {
     //TO-DO: FINISH
     private void requestItem() {
         String itemName = "";
-        System.out.println("Enter the name of an item you would like to store");
-        System.out.print("=> ");
-        itemName = sc.nextLine();
+        boolean success = false;
+        do {
+            System.out.println("Enter the name of an item you would like to store");
+            System.out.print("=> ");
+            itemName = sc.nextLine();
+            try {
+                tSystem.requestItem(this.userID, itemName);
+                success = true;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                success = false;
+            }
+        } while (!success);
+        System.out.printf("Done! Your request to add %s has now been processed.", itemName);
         System.out.println(itemName);
     }
 }
