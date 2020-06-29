@@ -58,9 +58,9 @@ public class TraderManager extends UserManager implements Serializable {
      * @return true if the trade was successfully accepted
      * @throws EntryNotFoundException if the user was not found
      */
-    public boolean acceptTrade(String user1, String tradeId) throws EntryNotFoundException {
+    public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
-        if (trader1.isFrozen() || trader1.getTradeLimit() == trader1.getTradeCount()) {
+        if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
             return false;
         }
         trader1.getRequestedTrades().remove(tradeId);
@@ -158,12 +158,13 @@ public class TraderManager extends UserManager implements Serializable {
     public boolean borrowItem(String user1, String user2, String itemId, int threshold) throws EntryNotFoundException {
         Trader trader1 = findUserById(user1);
         Trader trader2 = findUserById(user2);
-        if (!trader2.getAvailableItems().remove(itemId)) {
-            throw new EntryNotFoundException("Item " + itemId + " not found");
-        }
         if (trader1.getTotalItemsLent() - trader1.getTotalItemsBorrowed() < threshold) {
             return false;
         }
+        if (!trader2.getAvailableItems().remove(itemId)) {
+            throw new EntryNotFoundException("Item " + itemId + " not found");
+        }
+
         trader1.getAvailableItems().add(itemId);
         trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed() + 1);
         trader2.setTotalItemsLent(trader2.getTotalItemsLent() + 1);
