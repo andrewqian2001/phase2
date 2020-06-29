@@ -237,12 +237,13 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException
      */
     public void requestItem(String userID, String itemName) throws EntryNotFoundException {
-        String itemID = tradableItemManager.getIdWithName(itemName).get(0);
-        ((TraderManager) userManager).addRequestItem(userID, itemID);
+        ArrayList<String> itemIDs = tradableItemManager.getIdsWithName(itemName);
+        if(itemIDs.size() == 0) throw new EntryNotFoundException("No items found with name " + itemName);
+        ((TraderManager) userManager).addRequestItem(userID, itemIDs.get(0));
     }
 
     /**
-     * get all items in all user's inventories
+     * get all items in all user's inventories 
      * 
      * @return hash map of the items
      * @throws EntryNotFoundException
@@ -252,14 +253,17 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * add item to wish list
+     * Adds item to wishList
      * 
-     * @param userID user ID
-     * @param item   item object
+     * @param userID   user ID
+     * @param itemName name of tradable item
      * @throws EntryNotFoundException
      */
-    public void addToWishList(String userID, TradableItem item) throws EntryNotFoundException {
-        ((TraderManager) userManager).addToWishList(userID, item.getId());
+    public void addToWishList(String userID, String itemName) throws EntryNotFoundException {
+        ArrayList<String> itemIDs = tradableItemManager.getIdsWithName(itemName);
+        if (itemIDs.size() == 0)
+            throw new EntryNotFoundException("No items found with name " + itemName);
+        ((TraderManager) userManager).addToWishList(userID, itemIDs.get(0));
     }
 
     /**

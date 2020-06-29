@@ -71,6 +71,18 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
+     * Removes a specified trade from a user's accepted trades
+     * @param user1 the id of the user
+     * @param tradeId the id of the trade to be removed
+     * @return true if the trade was removed, false otherwise
+     * @throws EntryNotFoundException if the user can not be found
+     */
+    public boolean removeAcceptedTrade(String user1, String tradeId) throws EntryNotFoundException{
+        Trader trader1 = findUserById(user1);
+        return trader1.getAcceptedTrades().remove(tradeId);
+    }
+
+    /**
      * Removes a trade from the user's requested trades
      * 
      * @param userId  id of user
