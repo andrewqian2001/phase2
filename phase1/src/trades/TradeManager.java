@@ -55,10 +55,24 @@ public class TradeManager extends Database<Trade> implements Serializable {
         return super.delete(tradeId);
     }
 
+    /**
+     * Gets the items from a trade
+     * @param tradeId ID of the trade
+     * @return an array of itemIDs of the two items that were involved in the trade
+     * @throws EntryNotFoundException
+     */
     public String[] getItemsFromTrade(String tradeId) throws EntryNotFoundException{
         Trade trade = populate(tradeId);
         return new String[]{trade.getFirstUserOffer(), trade.getSecondUserOffer()};
     }
+
+    /**
+     * Confirms the first meeting
+     * @param tradeId id of the trade
+     * @param userId id of the user
+     * @param status status of the meeting
+     * @throws EntryNotFoundException
+     */
     public void confirmFirstMeeting(String tradeId, String userId, boolean status) throws EntryNotFoundException{
         Trade trade = populate(tradeId);
         if (userId.equals(trade.getFirstUserId())) trade.setFirstUserConfirmed1(status);
@@ -66,6 +80,14 @@ public class TradeManager extends Database<Trade> implements Serializable {
         else throw new EntryNotFoundException("The user " + userId + " was not found.");
         update(trade);
     }
+
+    /**
+     * Confirms the second meeting, if there was a second meeting
+     * @param tradeId id of the trade
+     * @param userId id of the user
+     * @param status status of the meeting
+     * @throws EntryNotFoundException
+     */
     public void confirmSecondMeeting(String tradeId, String userId, boolean status) throws EntryNotFoundException{
         Trade trade = populate(tradeId);
         if (userId.equals(trade.getFirstUserId())) trade.setFirstUserConfirmed2(status);
@@ -73,21 +95,46 @@ public class TradeManager extends Database<Trade> implements Serializable {
         else throw new EntryNotFoundException("The user " + userId + " was not found.");
         update(trade);
     }
+
+    /**
+     * Gets the user that the trade was sent to
+     * @param tradeID id of the trade
+     * @return the user id of the user that the trade was sent to
+     * @throws EntryNotFoundException
+     */
     public String getUserThatTradeSentTo (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getSecondUserId();
     }
 
+    /**
+     * Gets the first meeting time
+     * @param tradeID id of the trade
+     * @return the Date of the first meeting time
+     * @throws EntryNotFoundException
+     */
     public Date getFirstMeetingTime (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getMeetingTime();
     }
 
+    /**
+     * Gets the second meeting time
+     * @param tradeID id of the trade
+     * @return the Date of the second meeting time
+     * @throws EntryNotFoundException
+     */
     public Date getSecondMeetingTime (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getSecondMeetingTime();
     }
 
+    /**
+     * Checks if trade is in progress
+     * @param tradeId id of the trade
+     * @return true if the trade is in progress, false else
+     * @throws EntryNotFoundException
+     */
     public boolean isTradeInProgress(String tradeId) throws EntryNotFoundException {
         Trade trade = populate(tradeId);
         if (!trade.isFirstUserConfirmed1() || !trade.isFirstUserConfirmed2()) return false;
@@ -96,6 +143,13 @@ public class TradeManager extends Database<Trade> implements Serializable {
             return true;
         return trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2();
     }
+
+    /**
+     * Gets the user turn to edit
+     * @param tradeID id of the trade
+     * @return the user turn to edit
+     * @throws EntryNotFoundException
+     */
     public String getUserTurnToEdit (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getUserTurnToEdit();
