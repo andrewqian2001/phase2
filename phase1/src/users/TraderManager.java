@@ -32,7 +32,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the user can not be found
      */
     public void addToIncompleteTradeCount(String userId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
+        Trader trader = findTraderById(userId);
         trader.setIncompleteTradeCount(trader.getIncompleteTradeCount() + 1);
         update(trader);
     }
@@ -44,7 +44,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the user can not be found
      */
     public boolean shouldBeFrozen(String userId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
+        Trader trader = findTraderById(userId);
         return trader.getIncompleteTradeCount() > trader.getIncompleteTradeLim();
     }
 
@@ -57,7 +57,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the user was not found
      */
     public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
-        Trader trader1 = findTraderbyId(user1);
+        Trader trader1 = findTraderById(user1);
         if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
             return false;
         }
@@ -76,7 +76,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the user can not be found
      */
     public boolean removeAcceptedTrade(String user1, String tradeId) throws EntryNotFoundException{
-        Trader trader1 = findTraderbyId(user1);
+        Trader trader1 = findTraderById(user1);
         return trader1.getAcceptedTrades().remove(tradeId);
     }
 
@@ -89,7 +89,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the user was not found
      */
     public boolean denyTrade(String userId, String tradeId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
+        Trader trader = findTraderById(userId);
         boolean removed = trader.getRequestedTrades().remove(tradeId);
         update(trader);
         return removed;
