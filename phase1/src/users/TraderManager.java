@@ -103,7 +103,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the user was not found
      */
     public String addRequestTrade(String userId, String tradeId) throws EntryNotFoundException{
-        Trader trader =  findTraderbyId(userId);
+        Trader trader =  findTraderById(userId);
         trader.getRequestedTrades().add(tradeId);
         update(trader);
         return userId;
@@ -118,7 +118,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the user was not found
      */
     public String addRequestItem(String userId, String itemId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
+        Trader trader = findTraderById(userId);
         trader.getRequestedItems().add(itemId);
         update(trader);
         return userId;
@@ -145,7 +145,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the user was not found
      */
     public ArrayList<String> getRequestedItems(String userId) throws EntryNotFoundException {
-        return findTraderbyId(userId).getRequestedItems();
+        return findTraderById(userId).getRequestedItems();
     }
 
     /**
@@ -157,7 +157,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the itemId or the userId could not be found
      */
     public String acceptRequestItem(String userId, String itemId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
+        Trader trader = findTraderById(userId);
         if (!trader.getRequestedItems().remove(itemId)) {
             throw new EntryNotFoundException("Could not find item " + itemId);
         }
@@ -176,7 +176,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException
      */
     public String rejectRequestItem(String userId, String itemId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
+        Trader trader = findTraderById(userId);
         boolean removeReqItem = trader.getRequestedItems().remove(itemId);
         if (!removeReqItem) {
             throw new EntryNotFoundException("Could not find item " + itemId);
@@ -197,8 +197,8 @@ public class TraderManager extends UserManager implements Serializable {
      *                                not found.
      */
     public boolean borrowItem(String user1, String user2, String itemId, int threshold) throws EntryNotFoundException {
-        Trader trader1 = findTraderbyId(user1);
-        Trader trader2 = findTraderbyId(user2);
+        Trader trader1 = findTraderById(user1);
+        Trader trader2 = findTraderById(user2);
         if (trader1.getTotalItemsLent() - trader1.getTotalItemsBorrowed() < threshold) {
             return false;
         }
@@ -239,8 +239,8 @@ public class TraderManager extends UserManager implements Serializable {
      * @return user1's id
      */
     public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
-        Trader trader1 = findTraderbyId(user1);
-        Trader trader2 = findTraderbyId(user2);
+        Trader trader1 = findTraderById(user1);
+        Trader trader2 = findTraderById(user2);
         if (!trader1.getAvailableItems().remove(item1)) {
             throw new EntryNotFoundException("Item " + item1 + " not found");
         }
@@ -305,7 +305,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
     public ArrayList<String> getRequestedTrades(String userId) throws EntryNotFoundException{
-        return findTraderbyId(userId).getRequestedTrades();
+        return findTraderById(userId).getRequestedTrades();
     }
 
     /**
@@ -315,7 +315,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
     public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException{
-        return findTraderbyId(userId).getAcceptedTrades();
+        return findTraderById(userId).getAcceptedTrades();
     }
 
     /**
@@ -325,7 +325,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
     public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException{
-        Trader trader = findTraderbyId(userId);
+        Trader trader = findTraderById(userId);
         trader.getWishlist().add(tradableItemId);
         update(trader);
     }
@@ -338,7 +338,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if the trader could not be found
      */
     public void changeTraderLimits(String userId, int newLimit) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
+        Trader trader = findTraderById(userId);
         trader.setIncompleteTradeLim(newLimit);
     }
 
@@ -350,7 +350,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException
      */
     public ArrayList<String> getAvailableItems(String userID) throws EntryNotFoundException {
-        return findTraderbyId(userID).getAvailableItems();
+        return findTraderById(userID).getAvailableItems();
     }
 
     /**
@@ -360,7 +360,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException
      */
     public ArrayList<String> getWishlist(String userID) throws EntryNotFoundException {
-        return findTraderbyId(userID).getWishlist();
+        return findTraderById(userID).getWishlist();
     }
 
     /**
