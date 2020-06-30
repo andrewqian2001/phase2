@@ -3,12 +3,10 @@ package users;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class TraderManager extends UserManager implements Serializable {
 
@@ -128,7 +126,6 @@ public class TraderManager extends UserManager implements Serializable {
     /**
      * Gets all Item requests for each user
      * @return a Map corresponding to a userId with a list of their item requests
-     * @throws EntryNotFoundException
      */
     public HashMap<String, ArrayList<String>> getAllItemRequests()  {
         HashMap<String, ArrayList<String>> itemRequests = new HashMap<>();
