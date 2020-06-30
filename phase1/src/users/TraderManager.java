@@ -125,6 +125,20 @@ public class TraderManager extends UserManager implements Serializable {
         update(trader);
         return userId;
     }
+    /**
+     * Gets all Item requests for each user
+     * @return a Map corresponding to a userId with a list of their item requests
+     * @throws EntryNotFoundException
+     */
+    public HashMap<String, ArrayList<String>> getAllItemRequests()  {
+        HashMap<String, ArrayList<String>> itemRequests = new HashMap<>();
+        for(User user : getItems()) {
+            if(user instanceof Trader) {
+                itemRequests.put(user.getId(), ((Trader) user).getRequestedItems());
+            }
+        }
+        return itemRequests;
+    }
 
     /**
      * Return the list of requested items for this user
@@ -232,7 +246,6 @@ public class TraderManager extends UserManager implements Serializable {
      */
     public HashMap<String, ArrayList<String>> getAllItemsInInventories() {
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
-
         for (User user : getItems()) {
             if (user instanceof Trader)
                 allItems.put(user.getId(), ((Trader) user).getAvailableItems());
@@ -260,7 +273,6 @@ public class TraderManager extends UserManager implements Serializable {
     /**
      * Gets the IDs of all Traders in the database
      * @return An arraylist of Trader IDs
-     * @throws EntryNotFoundException
      */
     public ArrayList<String> getAllTraders() {
         ArrayList<String> allTraders = new ArrayList<>();

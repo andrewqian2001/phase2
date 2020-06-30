@@ -86,20 +86,18 @@ public class UserManager extends Database<User> implements Serializable {
         User user = populate(userId);
         return user instanceof Admin;
     }
-
     /**
-     * Gets the IDs of all Users in the database
-     * 
-     * @return An arraylist of User IDs
+     * Gets all Unfreeze Requests
+     * @return a list of all traders who have requested their account to be unfrozen
      * @throws EntryNotFoundException
      */
-    public ArrayList<String> getAllUsers() {
-        ArrayList<String> allUsers = new ArrayList<>();
-        for (User user : getItems())
-                allUsers.add(user.getId());
-        return allUsers;
+    public ArrayList<String> getAllUnFreezeRequests() {
+        ArrayList<String> allUnFrozenList = new ArrayList<>();
+        for(User user: getItems()) {
+            if(user.isUnfrozenRequested()) allUnFrozenList.add(user.getId());
+        }
+        return allUnFrozenList;
     }
-
     /**
      * Helper function to find a User by id
      *

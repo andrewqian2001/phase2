@@ -324,10 +324,9 @@ public class TradeSystem implements Serializable {
      * Gets a list of all Unfreeze Request
      * 
      * @return a list of all unfreeze requests
-     * @throws EntryNotFoundException
      */
-    public ArrayList<String> getAllUnfreezeRequests() throws EntryNotFoundException {
-        return ((AdminManager) userManager).getAllUnFreezeRequests();
+    public ArrayList<String> getAllUnfreezeRequests()  {
+        return  userManager.getAllUnFreezeRequests();
     }
 
     /**
@@ -336,7 +335,7 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException
      */
     public HashMap<String, ArrayList<String>> getAllItemRequests() throws EntryNotFoundException {
-        return ((AdminManager) userManager).getAllItemRequests();
+        return ((TraderManager) userManager).getAllItemRequests();
     }
 
     //TO-DO: FINISH
