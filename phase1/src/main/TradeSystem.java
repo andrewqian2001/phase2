@@ -234,12 +234,12 @@ public class TradeSystem implements Serializable {
      * 
      * @param userID user ID
      * @param itemName  name of tradable item
+     * @param itemDesc description of tradableItem
      * @throws EntryNotFoundException
      */
-    public void requestItem(String userID, String itemName) throws EntryNotFoundException {
-        ArrayList<String> itemIDs = tradableItemManager.getIdsWithName(itemName);
-        if(itemIDs.size() == 0) throw new EntryNotFoundException("No items found with name " + itemName);
-        ((TraderManager) userManager).addRequestItem(userID, itemIDs.get(0));
+    public void requestItem(String userID, String itemName, String itemDesc) throws EntryNotFoundException{
+        TradableItem newItem = tradableItemManager.addItem(itemName, itemDesc);
+        ((TraderManager) userManager).addRequestItem(userID, newItem.getId());
     }
 
     /**
@@ -330,6 +330,7 @@ public class TradeSystem implements Serializable {
     }
 
     /**
+     * FIX - DOESNT WORK SINCE USERMANAGER NOT INSTANCEOF TRADERMANAGER
      * Gets a Map of key=id of user, value=list of their item requests
      * @return a list of item requests mapping to each user
      */
@@ -340,10 +341,6 @@ public class TradeSystem implements Serializable {
     //TO-DO: FINISH
     public void processItemRequest(String traderName, String itemName, boolean isAccepted) throws EntryNotFoundException {
         String traderID = userManager.getUserId(traderName);
-        if(isAccepted) {
-            // Accept Item Request
-        } else {
-            // Reject Item Request
-        }
+
     }
 }
