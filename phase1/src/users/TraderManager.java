@@ -123,67 +123,9 @@ public class TraderManager extends UserManager implements Serializable {
         update(trader);
         return userId;
     }
-    /**
-     * Gets all Item requests for each user
-     * @return a Map corresponding to a userId with a list of their item requests
-     */
-    public HashMap<String, ArrayList<String>> getAllItemRequests()  {
-        HashMap<String, ArrayList<String>> itemRequests = new HashMap<>();
-        for(User user : getItems()) {
-            if(user instanceof Trader) {
-                itemRequests.put(user.getId(), ((Trader) user).getRequestedItems());
-            }
-        }
-        return itemRequests;
-    }
-
-    /**
-     * Return the list of requested items for this user
-     * 
-     * @param userId the id of the user
-     * @return the list of requested items for this user
-     * @throws EntryNotFoundException if the user was not found
-     */
-    public ArrayList<String> getRequestedItems(String userId) throws EntryNotFoundException {
-        return findTraderById(userId).getRequestedItems();
-    }
-
-    /**
-     * Accepts one of this user's requested items (allows it to be used in trades)
-     * 
-     * @param userId the id of the user
-     * @param itemId the id of the item
-     * @return the user's id
-     * @throws EntryNotFoundException if the itemId or the userId could not be found
-     */
-    public String acceptRequestItem(String userId, String itemId) throws EntryNotFoundException {
-        Trader trader = findTraderById(userId);
-        if (!trader.getRequestedItems().remove(itemId)) {
-            throw new EntryNotFoundException("Could not find item " + itemId);
-        }
-        trader.getAvailableItems().add(itemId);
-
-        update(trader);
-        return userId;
-    }
 
 
-    /**
-     * Rejects the user'r requested item
-     * @param userId id of the user
-     * @param itemId id of the item
-     * @return the user's id
-     * @throws EntryNotFoundException
-     */
-    public String rejectRequestItem(String userId, String itemId) throws EntryNotFoundException {
-        Trader trader = findTraderById(userId);
-        boolean removeReqItem = trader.getRequestedItems().remove(itemId);
-        if (!removeReqItem) {
-            throw new EntryNotFoundException("Could not find item " + itemId);
-        }
-        update(trader);
-        return userId;
-    }
+
 
     /**
      * Performs the action of user1 borrowing an item from user2
@@ -268,22 +210,7 @@ public class TraderManager extends UserManager implements Serializable {
         return allItems;
     }
 
-    /**
-     * Gets a hashmap of trader ids to an arraylist of their requested items
-     * @return a hashmap of trader ids to an arraylist of their requested items
-     */
-    public HashMap<String, ArrayList<String>> getAllRequestedItems() {
-        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
-        for (User user : getItems()) {
-            if (user instanceof Trader) {
-                ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
-                if (requestedItems.size() > 0)
-                    allItems.put(user.getId(), requestedItems);
-            }
-        }
-        return allItems;
-    }
 
     /**
      * Gets the IDs of all Traders in the database
