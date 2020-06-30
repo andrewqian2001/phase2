@@ -332,9 +332,8 @@ public class TradeSystem implements Serializable {
     /**
      * Gets a Map of key=id of user, value=list of their item requests
      * @return a list of item requests mapping to each user
-     * @throws EntryNotFoundException
      */
-    public HashMap<String, ArrayList<String>> getAllItemRequests() throws EntryNotFoundException {
+    public HashMap<String, ArrayList<String>> getAllItemRequests()  {
         return ((TraderManager) userManager).getAllItemRequests();
     }
 
