@@ -330,7 +330,7 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * FIX - DOESNT WORK SINCE USERMANAGER NOT INSTANCEOF TRADERMANAGER
+     * TODO: DOESNT WORK SINCE USERMANAGER NOT INSTANCEOF TRADERMANAGER WHEN CALLED
      * Gets a Map of key=id of user, value=list of their item requests
      * @return a list of item requests mapping to each user
      */
@@ -338,9 +338,32 @@ public class TradeSystem implements Serializable {
         return ((TraderManager) userManager).getAllItemRequests();
     }
 
-    //TO-DO: FINISH
+    /**
+     * TODO: DOESNT WORK SINCE USERMANAGER NOT INSTANCEOF TRADERMANAGER WHEN CALLED
+     * Process the item request of a user
+     * @param traderName username of the trader
+     * @param itemName name of the item
+     * @param isAccepted true if item is accepted, false if rejected
+     * @throws EntryNotFoundException
+     */
     public void processItemRequest(String traderName, String itemName, boolean isAccepted) throws EntryNotFoundException {
         String traderID = userManager.getUserId(traderName);
-
+        ArrayList<String> reqItems = ((TraderManager)userManager).getRequestedItems(traderID);
+        String reqItemID = "";
+        for(String itemID : reqItems) {
+            if(itemName.equals(tradableItemManager.getName(itemID))) {
+                reqItemID = itemID;
+                break;
+            }
+        } if(!reqItemID.trim().equals("")) {
+            if(isAccepted) {
+                ((TraderManager) userManager).acceptRequestItem(traderID, reqItemID);
+            } else {
+                ((TraderManager) userManager).rejectRequestItem(traderID, reqItemID);
+                tradableItemManager.deleteItem(reqItemID);
+            }
+        } else {
+            throw new EntryNotFoundException(itemName + " was not found in the user's requested items list");
+        }
     }
 }
