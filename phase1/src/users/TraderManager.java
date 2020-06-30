@@ -167,6 +167,24 @@ public class TraderManager extends UserManager implements Serializable {
         return userId;
     }
 
+
+    /**
+     * Rejects the user'r requested item
+     * @param userId id of the user
+     * @param itemId id of the item
+     * @return the user's id
+     * @throws EntryNotFoundException
+     */
+    public String rejectRequestItem(String userId, String itemId) throws EntryNotFoundException {
+        Trader trader = findTraderbyId(userId);
+        boolean removeReqItem = trader.getRequestedItems().remove(itemId);
+        if (!removeReqItem) {
+            throw new EntryNotFoundException("Could not find item " + itemId);
+        }
+        update(trader);
+        return userId;
+    }
+
     /**
      * Performs the action of user1 borrowing an item from user2
      * 

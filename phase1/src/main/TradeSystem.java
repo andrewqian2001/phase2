@@ -234,12 +234,12 @@ public class TradeSystem implements Serializable {
      * 
      * @param userID user ID
      * @param itemName  name of tradable item
+     * @param itemDesc description of tradableItem
      * @throws EntryNotFoundException
      */
-    public void requestItem(String userID, String itemName) throws EntryNotFoundException {
-        ArrayList<String> itemIDs = tradableItemManager.getIdsWithName(itemName);
-        if(itemIDs.size() == 0) throw new EntryNotFoundException("No items found with name " + itemName);
-        ((TraderManager) userManager).addRequestItem(userID, itemIDs.get(0));
+    public void requestItem(String userID, String itemName, String itemDesc) throws EntryNotFoundException{
+        TradableItem newItem = tradableItemManager.addItem(itemName, itemDesc);
+        ((TraderManager) userManager).addRequestItem(userID, newItem.getId());
     }
 
     /**
@@ -330,6 +330,7 @@ public class TradeSystem implements Serializable {
     }
 
     /**
+     * TODO: DOESNT WORK SINCE USERMANAGER NOT INSTANCEOF TRADERMANAGER WHEN CALLED
      * Gets a Map of key=id of user, value=list of their item requests
      * @return a list of item requests mapping to each user
      */
@@ -337,13 +338,32 @@ public class TradeSystem implements Serializable {
         return ((TraderManager) userManager).getAllItemRequests();
     }
 
-    //TO-DO: FINISH
+    /**
+     * TODO: DOESNT WORK SINCE USERMANAGER NOT INSTANCEOF TRADERMANAGER WHEN CALLED
+     * Process the item request of a user
+     * @param traderName username of the trader
+     * @param itemName name of the item
+     * @param isAccepted true if item is accepted, false if rejected
+     * @throws EntryNotFoundException
+     */
     public void processItemRequest(String traderName, String itemName, boolean isAccepted) throws EntryNotFoundException {
         String traderID = userManager.getUserId(traderName);
-        if(isAccepted) {
-            // Accept Item Request
+        ArrayList<String> reqItems = ((TraderManager)userManager).getRequestedItems(traderID);
+        String reqItemID = "";
+        for(String itemID : reqItems) {
+            if(itemName.equals(tradableItemManager.getName(itemID))) {
+                reqItemID = itemID;
+                break;
+            }
+        } if(!reqItemID.trim().equals("")) {
+            if(isAccepted) {
+                ((TraderManager) userManager).acceptRequestItem(traderID, reqItemID);
+            } else {
+                ((TraderManager) userManager).rejectRequestItem(traderID, reqItemID);
+                tradableItemManager.deleteItem(reqItemID);
+            }
         } else {
-            // Reject Item Request
+            throw new EntryNotFoundException(itemName + " was not found in the user's requested items list");
         }
     }
 }

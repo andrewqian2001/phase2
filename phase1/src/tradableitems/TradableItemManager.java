@@ -43,10 +43,24 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
     public TradableItem deleteItem(String tradableItemId) throws EntryNotFoundException {
         return super.delete(tradableItemId);
     }
+
+    /**
+     * gets the name of the tradable item
+     * @param tradableItemId id of the item
+     * @return the name of the item
+     * @throws EntryNotFoundException
+     */
     public String getName (String tradableItemId) throws EntryNotFoundException{
         TradableItem item = super.populate(tradableItemId);
         return item.getName();
     }
+
+    /**
+     * gets the description of the tradable item
+     * @param tradableItemId id of the item
+     * @return description of the item
+     * @throws EntryNotFoundException
+     */
     public String getDesc (String tradableItemId) throws EntryNotFoundException{
         TradableItem item = super.populate(tradableItemId);
         return item.getDesc();
