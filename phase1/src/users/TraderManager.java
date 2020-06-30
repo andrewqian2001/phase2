@@ -371,7 +371,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @throws EntryNotFoundException if a trader with the given userId was not
      *                                found
      */
-    private Trader findTraderbyId(String userId) throws EntryNotFoundException {
+    private Trader findTraderById(String userId) throws EntryNotFoundException {
         User user = findUserById(userId);
         if (user instanceof Trader) {
             return (Trader) user;
