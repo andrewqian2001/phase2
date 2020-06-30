@@ -67,7 +67,7 @@ public class TradeSystem implements Serializable {
      */
     public void registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
-        ((AdminManager) userManager).registerUser(username, password);
+        userManager.registerUser(username, password);
     }
 
     /**
@@ -246,9 +246,8 @@ public class TradeSystem implements Serializable {
      * get all items in all user's inventories 
      * 
      * @return hash map of the items
-     * @throws EntryNotFoundException
      */
-    public HashMap<String, ArrayList<String>> getAllAvailableItems() throws EntryNotFoundException {
+    public HashMap<String, ArrayList<String>> getAllAvailableItems() {
         return ((TraderManager) userManager).getAllItemsInInventories();
     }
 
@@ -284,7 +283,7 @@ public class TradeSystem implements Serializable {
      */
     public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
         String[] frequentTraders = new String[3];
-        ArrayList<String> acceptedTrades = ((TraderManager) userManager).getAcceptedTrades(userID); // Trade IDs
+        ArrayList<String> acceptedTrades = ((TraderManager) userManager).getAcceptedTrades(userID);
         Set<String> distinct = new HashSet<>(acceptedTrades);
         int highest = 0;
         for (int i = 0; i < 3; i++) {
@@ -305,7 +304,7 @@ public class TradeSystem implements Serializable {
      * Gets a list of the items used in trades
      * 
      * @param userId id of the user
-     * @return list of unique items that the user has traded/recieved from a trade
+     * @return list of unique items that the user has traded/received from a trade
      * @throws EntryNotFoundException
      */
     public Set<String> getRecentTradeItems(String userId) throws EntryNotFoundException {
