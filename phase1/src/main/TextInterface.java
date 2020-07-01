@@ -198,8 +198,13 @@ public class TextInterface {
             System.out.println("6.\tView All Items in Database");
             System.out.println("7.\tRequest to add item to Inventory");
             System.out.println("8.\tAdd item to Wishlist");
+            if (!isFrozen) {
+                System.out.println("9.\tBorrow an Item from a Trader");
+                System.out.println("10.\tLend an Item to a Trader");
+                System.out.println("11.\tTrade with a trader");
+            }
             if (isFrozen)
-                System.out.println("10.\tRequest Un-Freeze Account");
+                System.out.println("12.\tRequest Un-Freeze Account");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -231,16 +236,27 @@ public class TextInterface {
                 case 8:
                     addItemToWishList();
                     break;
+                case 9:
+                    if (!isFrozen)
+                        borrowItem();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
                 case 10:
+                    if (!isFrozen)
+                        lendItem();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 11:
+                    if (!isFrozen)
+                        tradeItems();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 12:
                     if (isFrozen) {
-                        // since this valid userID would be returned from a logged in user...
-                        // the exception will never be thrown
-                        try {
-                            tSystem.requestUnfreeze(this.userID, true);
-                            System.out.println("Done! Now please be patient while an admin un-freezes your account");
-                        } catch (EntryNotFoundException e) {
-                            System.out.println(e.getMessage());
-                        }
+                        requestUnFreeze();
                     } else
                         System.out.println("Invalid Selection, please try again");
                     break;
@@ -533,5 +549,44 @@ public class TextInterface {
             }
         } while (!success);
         System.out.println("Done! The new weekly trade limit is now" + tradeLimit);
+    }
+
+    /**
+     * Requests the logged in trader to be unfrozen by an admin REQUIREMENT:
+     * isFrozen == true
+     */
+    private void requestUnFreeze() {
+        // since this valid userID would be returned from a logged in user...
+        // the exception will never be thrown
+        try {
+            tSystem.requestUnfreeze(this.userID, true);
+            System.out.println("Done! Now please be patient while an admin un-freezes your account");
+        } catch (EntryNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * TODO: FINISH 
+     * Prompt to trade items with another trader
+     */
+    private void tradeItems() {
+        System.out.println("Done!");
+    }
+
+    /**
+     * TODO: FINISH 
+     * Prompt to lend item to another trader
+     */
+    private void lendItem() {
+        System.out.println("Done!");
+    }
+
+    /**
+     * TODO: FINISH 
+     * Prompt to borrow item with another trader
+     */
+    private void borrowItem() {
+        System.out.println("Done!");
     }
 }
