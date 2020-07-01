@@ -363,4 +363,20 @@ public class TradeSystem implements Serializable {
             throw new EntryNotFoundException(itemName + " was not found in the user's requested items list");
         }
     }
+
+    /**
+     * Gets the current weekly trade limit
+     * @return the current trade limit
+     */
+    public int getCurrentTradeLimit() {
+        return ((AdminManager) userManager).getTradeLimit();
+    }
+
+    /**
+     * Sets the new weekly trade limit (Admin method)
+     * @param tradeLimit the new weekly trade limit
+     */
+    public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
+        ((AdminManager) userManager).setTradeLimit(tradeLimit);
+    }
 }
