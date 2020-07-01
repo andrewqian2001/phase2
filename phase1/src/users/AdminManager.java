@@ -91,12 +91,15 @@ public class AdminManager extends UserManager implements Serializable {
     }
 
     /**
-     * TODO: FINISH
      * Gets the current weekly trade limit
-     * @return the current weekly trade limit for all traders
+     * @return the current weekly trade limit for all traders. If no traders exist, then return -1
      */
-    public int getTradeLimit() {
-        return 3;
+    public int getTradeLimit() throws EntryNotFoundException {
+        ArrayList<String> traders = getAllTraders();
+        if (traders.size() == 0){
+            return -1;
+        }
+        return findTraderById(traders.get(0)).getTradeLimit();
     }
 
     /**
