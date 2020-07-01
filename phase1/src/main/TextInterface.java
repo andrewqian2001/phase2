@@ -3,7 +3,6 @@ package main;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.logging.ConsoleHandler;
@@ -86,7 +85,7 @@ public class TextInterface {
         try {
             System.out.print("=> ");
             this.userChoice = Integer.parseInt(sc.nextLine());
-        } catch (InputMismatchException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Invalid Input, please try again");
         }
     }
@@ -129,6 +128,7 @@ public class TextInterface {
             System.out.println("5.\tView all Item Requests");
             System.out.println("6.\tApprove Item Request");
             System.out.println("7.\tReject Item Request");
+            System.out.println("8.\tChange Weekly Trade Limit Value");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -156,6 +156,9 @@ public class TextInterface {
                     break;
                 case 7:
                     processItemRequest(false);
+                    break;
+                case 8:
+                    changeWeeklyTradeLimit();
                     break;
                 default:
                     System.out.println("Invalid Selection, please try again");
@@ -500,5 +503,27 @@ public class TextInterface {
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * Prompts admin to change the current trade limit
+     */
+    private void changeWeeklyTradeLimit() {
+        int tradeLimit = tSystem.getCurrentTradeLimit();
+        boolean success = false;
+        System.out.println("The current weekly trade limit is " + tradeLimit);
+        do {
+            try {
+                System.out.println("Enter the new value for the trade limit");
+                System.out.print("=> ");
+                tradeLimit = Integer.parseInt(sc.nextLine());
+                tSystem.setTradeLimit(tradeLimit);
+                success = true;
+            } catch (NumberFormatException | EntryNotFoundException e) {
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.println("Done! The new weekly trade limit is now" + tradeLimit);
     }
 }
