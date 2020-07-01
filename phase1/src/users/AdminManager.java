@@ -97,7 +97,7 @@ public class AdminManager extends UserManager implements Serializable {
     public int getTradeLimit() throws EntryNotFoundException {
         ArrayList<String> traders = getAllTraders();
         if (traders.size() == 0){
-            return 0;
+            throw new EntryNotFoundException("There are not traders in the system");
         }
         return findTraderById(traders.get(0)).getTradeLimit();
     }
