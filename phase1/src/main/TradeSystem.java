@@ -368,7 +368,7 @@ public class TradeSystem implements Serializable {
      * Gets the current weekly trade limit
      * @return the current trade limit
      */
-    public int getCurrentTradeLimit() {
+    public int getCurrentTradeLimit() throws EntryNotFoundException {
         return ((AdminManager) userManager).getTradeLimit();
     }
 
