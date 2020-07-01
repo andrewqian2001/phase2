@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -151,10 +152,10 @@ public class TextInterface {
                     printAllItemRequests();
                     break;
                 case 6:
-                    approveItemRequest();
+                    processItemRequest(true);
                     break;
                 case 7:
-                    rejectItemRequest();
+                    processItemRequest(false);
                     break;
                 default:
                     System.out.println("Invalid Selection, please try again");
@@ -181,9 +182,11 @@ public class TextInterface {
             System.out.println("1.\tView Trades");
             System.out.println("2.\tView Inventory");
             System.out.println("3.\tView Wishlist");
-            System.out.println("4.\tView All Items in Database");
-            System.out.println("5.\tRequest to add item to Inventory");
-            System.out.println("6.\tAdd item to Wishlist");
+            System.out.println("4.\tView Frequent Traders");
+            System.out.println("5.\tView Recent Trade Items");
+            System.out.println("6.\tView All Items in Database");
+            System.out.println("7.\tRequest to add item to Inventory");
+            System.out.println("8.\tAdd item to Wishlist");
             if (isFrozen)
                 System.out.println("10.\tRequest Un-Freeze Account");
             System.out.println("0.\tLOG OUT");
@@ -203,12 +206,18 @@ public class TextInterface {
                     printWishlist();
                     break;
                 case 4:
-                    printDatabase();
+                    viewFreqTraders();
                     break;
                 case 5:
-                    requestItem();
+                    viewRecentTradeItems();
                     break;
                 case 6:
+                    printDatabase();
+                    break;
+                case 7:
+                    requestItem();
+                    break;
+                case 8:
                     addItemToWishList();
                     break;
                 case 10:
@@ -222,7 +231,7 @@ public class TextInterface {
                             System.out.println(e.getMessage());
                         }
                     } else
-                        System.out.println("Your account is not frozen!");
+                        System.out.println("Invalid Selection, please try again");
                     break;
                 default:
                     System.out.println("Invalid Selection, please try again");
@@ -284,13 +293,12 @@ public class TextInterface {
         System.out.printf("Username:\t%s\nPassword:\t%s\n", newAdminString, newAdminPaString);
     }
 
-
     /**
      * Prints the Trader's Trades given their ID NOTE: This method will not be
      * called by an Admin ever
      * 
      */
-   private void printTrades() {
+    private void printTrades() {
         printList(this.userID, "Accepted", "Trade");
         System.out.println();
         printList(this.userID, "Requested", "Trade");
@@ -359,14 +367,13 @@ public class TextInterface {
         System.out.println("*** Un-Freeze Requesters ***");
         try {
             ArrayList<String> unFreezeRequests = tSystem.getAllUnfreezeRequests();
-            for(String userID : unFreezeRequests) {
+            for (String userID : unFreezeRequests) {
                 System.out.println(tSystem.getUsername(userID));
             }
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
-
 
     /**
      * Prints all Item Requests for all Traders
@@ -375,8 +382,8 @@ public class TextInterface {
         System.out.println("*** Item Requests ***");
         try {
             HashMap<String, ArrayList<String>> itemRequests = tSystem.getAllItemRequests();
-            for(String userID : itemRequests.keySet()) {
-                if(itemRequests.get(userID).size() > 0) {
+            for (String userID : itemRequests.keySet()) {
+                if (itemRequests.get(userID).size() > 0) {
                     System.out.println(tSystem.getUsername(userID) + " :");
                     for (String itemID : itemRequests.get(userID)) {
                         System.out.printf("\t%s\n", tSystem.getTradableItemName(itemID));
@@ -384,7 +391,7 @@ public class TextInterface {
                 }
             }
         } catch (EntryNotFoundException e) {
-            
+
         }
     }
 
@@ -393,20 +400,30 @@ public class TextInterface {
      */
     private void requestItem() {
         String itemName = "";
+        String itemDesc = "";
         boolean success = false;
         do {
             System.out.println("Enter the name of an item you request to store");
+            System.out.println("This item must be reasonable (i.e. not the North Pole)");
             System.out.print("=> ");
             itemName = sc.nextLine();
-            try {
-                tSystem.requestItem(this.userID, itemName);
-                success = true;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                success = false;
+            System.out.println("Enter a short description for " + itemName);
+            System.out.print("=> ");
+            itemDesc = sc.nextLine();
+            if (!itemName.trim().equals("")) {
+                try {
+                    tSystem.requestItem(this.userID, itemName, itemDesc);
+                    success = true;
+                } catch (EntryNotFoundException e) {
+                    System.out.println(e.getMessage());
+                    success = false;
+                }
+            } else {
+                System.out.println("I'm sorry but each item must have a name, please try again");
             }
         } while (!success);
         System.out.printf("Done! Your request to add %s has now been processed.", itemName);
+        System.out.println("Please be patient while an Admin approves or rejects your request.");
     }
 
     /**
@@ -430,8 +447,13 @@ public class TextInterface {
         System.out.printf("Done! %s is now in your Wishlist.", itemName);
     }
 
-    //TO-DO: FINISH
-    private void approveItemRequest() {
+    /**
+     * Prompts admin to accept or reject an item request given a Trader Username and
+     * Item Name
+     * 
+     * @param isAccepted if true then item is accepted, else it is rejected
+     */
+    private void processItemRequest(boolean isAccepted) {
         String traderName = "";
         String itemName = "";
         boolean success = false;
@@ -440,32 +462,43 @@ public class TextInterface {
                 System.out.println("Enter the name of the Trader");
                 System.out.print("=> ");
                 traderName = sc.nextLine();
-                success = true;
-            } catch (Exception e) {
+                System.out.println("Enter the name of the Item");
+                itemName = sc.nextLine();
+                tSystem.processItemRequest(traderName, itemName, isAccepted);
+            } catch (EntryNotFoundException e) {
                 System.out.println(e.getMessage());
                 success = false;
             }
         } while (!success);
-        System.out.println("Done!");
+        System.out.printf("Done! %s's request for item '%s' has now been %s\n", traderName, itemName,
+                isAccepted ? "accepted" : "rejected");
     }
-    }   
 
-    //TO-DO: FINISH
-    private void rejectItemRequest() {
-        String traderName = "";
-        String itemName = "";
-        boolean success = false;
-        do {
-            try {
-                System.out.println("Enter the name of the Trader");
-                System.out.print("=> ");
-                traderName = sc.nextLine();
-                success = true;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                success = false;
+    /**
+     * Prints recent Traded items
+     */
+    private void viewRecentTradeItems() {
+        try {
+            Set<String> recentTradeItems = tSystem.getRecentTradeItems(this.userID);
+            for (String itemName : recentTradeItems) {
+                System.out.println("Item: " + itemName);
             }
-        } while (!success);
-        System.out.println("Done!");
+        } catch (EntryNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Prints the 3 most traded with Traders
+     */
+    private void viewFreqTraders() {
+        try {
+            String[] freqTraders = tSystem.getFrequentTraders(this.userID);
+            for (int i = 0; i < freqTraders.length; i++) {
+                System.out.printf("Trader #%d: %s", i + 1, freqTraders[i]);
+            }
+        } catch (EntryNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

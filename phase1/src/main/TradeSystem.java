@@ -67,7 +67,7 @@ public class TradeSystem implements Serializable {
      */
     public void registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
-        ((AdminManager) userManager).registerUser(username, password);
+        userManager.registerUser(username, password);
     }
 
     /**
@@ -230,25 +230,24 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * Requests that the item be added to the user's iventory
+     * Requests that the item be added to the user's inventory
      * 
      * @param userID user ID
      * @param itemName  name of tradable item
+     * @param itemDesc description of tradableItem
      * @throws EntryNotFoundException
      */
-    public void requestItem(String userID, String itemName) throws EntryNotFoundException {
-        ArrayList<String> itemIDs = tradableItemManager.getIdsWithName(itemName);
-        if(itemIDs.size() == 0) throw new EntryNotFoundException("No items found with name " + itemName);
-        ((TraderManager) userManager).addRequestItem(userID, itemIDs.get(0));
+    public void requestItem(String userID, String itemName, String itemDesc) throws EntryNotFoundException{
+        TradableItem newItem = tradableItemManager.addItem(itemName, itemDesc);
+        ((TraderManager) userManager).addRequestItem(userID, newItem.getId());
     }
 
     /**
      * get all items in all user's inventories 
      * 
      * @return hash map of the items
-     * @throws EntryNotFoundException
      */
-    public HashMap<String, ArrayList<String>> getAllAvailableItems() throws EntryNotFoundException {
+    public HashMap<String, ArrayList<String>> getAllAvailableItems() {
         return ((TraderManager) userManager).getAllItemsInInventories();
     }
 
@@ -284,7 +283,7 @@ public class TradeSystem implements Serializable {
      */
     public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
         String[] frequentTraders = new String[3];
-        ArrayList<String> acceptedTrades = ((TraderManager) userManager).getAcceptedTrades(userID); // Trade IDs
+        ArrayList<String> acceptedTrades = ((TraderManager) userManager).getAcceptedTrades(userID);
         Set<String> distinct = new HashSet<>(acceptedTrades);
         int highest = 0;
         for (int i = 0; i < 3; i++) {
@@ -305,7 +304,7 @@ public class TradeSystem implements Serializable {
      * Gets a list of the items used in trades
      * 
      * @param userId id of the user
-     * @return list of unique items that the user has traded/recieved from a trade
+     * @return list of unique items that the user has traded/received from a trade
      * @throws EntryNotFoundException
      */
     public Set<String> getRecentTradeItems(String userId) throws EntryNotFoundException {
@@ -324,18 +323,44 @@ public class TradeSystem implements Serializable {
      * Gets a list of all Unfreeze Request
      * 
      * @return a list of all unfreeze requests
-     * @throws EntryNotFoundException
      */
-    public ArrayList<String> getAllUnfreezeRequests() throws EntryNotFoundException {
-        return ((AdminManager) userManager).getAllUnFreezeRequests();
+    public ArrayList<String> getAllUnfreezeRequests()  {
+        return  userManager.getAllUnFreezeRequests();
     }
 
     /**
      * Gets a Map of key=id of user, value=list of their item requests
      * @return a list of item requests mapping to each user
+     */
+    public HashMap<String, ArrayList<String>> getAllItemRequests()  {
+        return ((AdminManager) userManager).getAllItemRequests();
+    }
+
+    /**
+     * Process the item request of a user
+     * @param traderName username of the trader
+     * @param itemName name of the item
+     * @param isAccepted true if item is accepted, false if rejected
      * @throws EntryNotFoundException
      */
-    public HashMap<String, ArrayList<String>> getAllItemRequests() throws EntryNotFoundException {
-        return ((AdminManager) userManager).getAllItemRequests();
+    public void processItemRequest(String traderName, String itemName, boolean isAccepted) throws EntryNotFoundException {
+        String traderID = userManager.getUserId(traderName);
+        ArrayList<String> reqItems = ((AdminManager)userManager).getRequestedItems(traderID);
+        String reqItemID = "";
+        for(String itemID : reqItems) {
+            if(itemName.equals(tradableItemManager.getName(itemID))) {
+                reqItemID = itemID;
+                break;
+            }
+        } if(!reqItemID.trim().equals("")) {
+            if(isAccepted) {
+                ((AdminManager) userManager).acceptRequestItem(traderID, reqItemID);
+            } else {
+                ((AdminManager) userManager).rejectRequestItem(traderID, reqItemID);
+                tradableItemManager.deleteItem(reqItemID);
+            }
+        } else {
+            throw new EntryNotFoundException(itemName + " was not found in the user's requested items list");
+        }
     }
 }
