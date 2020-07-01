@@ -72,9 +72,7 @@ public class TextInterface {
             else
                 traderMenu();
         }
-        System.out.println("Thank you for using tRaDeMaStEr 9000!");
-        userID = "";
-        sc.close();
+        logOut();
     }
 
     /**
@@ -111,6 +109,16 @@ public class TextInterface {
                 System.out.println(e.getMessage());
             }
         } while (this.userID.equals(""));
+    }
+
+    /**
+     * Log-Out Helper Method - Clears the userID and Closes the scanner
+     */
+    private void logOut() {
+        System.out.println("Thank you for using tRaDeMaStEr 9000!");
+        System.out.printf("ID='%s' Log-Out Success\n", this.userID);
+        this.userID = "";
+        sc.close();
     }
 
     /**
