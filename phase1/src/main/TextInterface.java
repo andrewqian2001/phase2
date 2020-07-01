@@ -533,9 +533,16 @@ public class TextInterface {
      * Prompts admin to change the current trade limit
      */
     private void changeWeeklyTradeLimit() {
-        int tradeLimit = tSystem.getCurrentTradeLimit();
+        int tradeLimit = 0;
+        try {
+            tradeLimit = tSystem.getCurrentTradeLimit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            tradeLimit = 0;
+        }
         boolean success = false;
-        System.out.println("The current weekly trade limit is " + tradeLimit);
+        if(tradeLimit == 0) System.out.println("There are no Traders in the System!");
+        else System.out.println("The current weekly trade limit is " + tradeLimit);
         do {
             try {
                 System.out.println("Enter the new value for the trade limit");
