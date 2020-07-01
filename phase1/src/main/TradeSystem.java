@@ -373,7 +373,7 @@ public class TradeSystem implements Serializable {
             return ((AdminManager) userManager).getTradeLimit();
         }
         catch (EntryNotFoundException e){
-            e.printStackTrace();
+            return 0;
         }
     }
 
