@@ -369,7 +369,12 @@ public class TradeSystem implements Serializable {
      * @return the current trade limit
      */
     public int getCurrentTradeLimit() {
-        return ((AdminManager) userManager).getTradeLimit();
+        try {
+            return ((AdminManager) userManager).getTradeLimit();
+        }
+        catch (EntryNotFoundException e){
+            return 0;
+        }
     }
 
     /**
