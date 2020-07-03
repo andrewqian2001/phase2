@@ -47,6 +47,7 @@ public class TextInterface {
      * @throws IOException
      */
     public void run() throws IOException {
+        loginAdmin();
         boolean isAdmin = false;
         System.out.println("tRaDeMaStEr 9000");
         System.out.println(lineBreak);
@@ -109,6 +110,15 @@ public class TextInterface {
                 System.out.println(e.getMessage());
             }
         } while (this.userID.equals(""));
+    }
+
+    /**
+     * helper method to create an initial admin
+     */
+    private void loginAdmin(){
+        try{tSystem.registerAdmin("admin", "password");} catch (UserAlreadyExistsException | IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -289,7 +299,7 @@ public class TextInterface {
                 System.out.println(e.getMessage());
             }
         } while (!success);
-        System.out.printf("Done! Trader \"%s\" has now been %s\n", wantToFreeze, freezeStatus ? "un-frozen" : "frozen");
+        System.out.printf("Done! Trader \"%s\" has now been %s\n", wantToFreeze, freezeStatus ? "frozen" : "unfrozen");//change 2 statements positions
     }
 
     /**
