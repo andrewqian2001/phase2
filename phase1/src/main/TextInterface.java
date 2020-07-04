@@ -569,8 +569,8 @@ public class TextInterface {
     }
 
     /**
-     * Requests the logged in trader to be unfrozen by an admin REQUIREMENT:
-     * isFrozen == true
+     * Requests the logged in trader to be unfrozen by an admin 
+     * REQUIREMENT: isFrozen == true
      */
     private void requestUnFreeze() {
         // since this valid userID would be returned from a logged in user...
@@ -584,26 +584,88 @@ public class TextInterface {
     }
 
     /**
-     * TODO: FINISH 
+     * TODO: FINISH
      * Prompt to trade items with another trader
      */
     private void tradeItems() {
-        System.out.println("Done!");
+        String traderName = "";
+        int inventoryItemIndex = -1;
+        int traderInventoryItemIndex = -1;
+        boolean success = false;
+        do {
+            try {
+                System.out.println("Here is your inventory:");
+                printInventory();
+                System.out.println("Please enter the index of the item you would like to give");
+                System.out.print("=> ");
+                inventoryItemIndex = Integer.parseInt(sc.nextLine());
+                System.out.println("Enter the username of the Trader you would like to borrow from");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
+                System.out.printf("Here is %s's current inventory:", traderName);
+                printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
+                System.out.println("Enter the index of the item that you would like to recieve from the trader");
+                System.out.print("=> ");
+                traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
+                success = tSystem.tradeItems(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex); // TODO: ADD IN TRADESYSTEM
+            } catch (Exception e) { // TODO: REPLACE
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
     }
-
+    
     /**
-     * TODO: FINISH 
+     * TODO: FINISH
      * Prompt to lend item to another trader
      */
     private void lendItem() {
-        System.out.println("Done!");
+        String traderName = "";
+        int inventoryItemIndex = -1;
+        boolean success = false;
+        do {
+            try {
+                System.out.println("Enter the username of the Trader you would like to lend to");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
+                System.out.println("Here is your current inventory:");
+                printInventory();
+                System.out.println("Please enter the index of the item you would like to lend");
+                System.out.print("=> ");
+                inventoryItemIndex = Integer.parseInt(sc.nextLine());
+                success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex); // TODO: ADD IN TRADESYSTEM
+            } catch (Exception e) { //TODO: REPLACE 
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.printf("Done! Your Trade Request to TRADER=\"%s\" has been sent\n", traderName);
     }
-
+    
     /**
-     * TODO: FINISH 
+     * TODO: FINISH
      * Prompt to borrow item with another trader
      */
     private void borrowItem() {
-        System.out.println("Done!");
+        String traderName = "";
+        int traderInventoryItemIndex = -1;
+        boolean success = false;
+        do {
+            try {
+                System.out.println("Enter the username of the Trader you would like to borrow from");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
+                System.out.printf("Here is %s's current inventory:", traderName);
+                printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
+                System.out.println("Enter the index of the item that you would like to borrow from the trader");
+                System.out.print("=> ");
+                traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
+                success = tSystem.borrowItem(this.userID, traderName, traderInventoryItemIndex); //TODO: ADD IN TRADESYSTEM
+            } catch (Exception e) { //TODO: REPLACE
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.printf("Done! Your Trade Request to TRADER=\"%s\" has been sent\n", traderName);
     }
 }
