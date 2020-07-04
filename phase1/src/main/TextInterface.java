@@ -212,9 +212,12 @@ public class TextInterface {
                 System.out.println("9.\tBorrow an Item from a Trader");
                 System.out.println("10.\tLend an Item to a Trader");
                 System.out.println("11.\tTrade with a trader");
+                System.out.println("12.\tAccept Trade");
+                System.out.println("13.\tEdit Trade");
+                System.out.println("14.\tReject Trade");
             }
             if (isFrozen)
-                System.out.println("12.\tRequest Un-Freeze Account");
+                System.out.println("15.\tRequest Un-Freeze Account");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -265,6 +268,24 @@ public class TextInterface {
                         System.out.println("Invalid Selection, please try again");
                     break;
                 case 12:
+                    if (!isFrozen)
+                        acceptTrade();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 13:
+                    if (!isFrozen)
+                        editTrade();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 14:
+                    if (!isFrozen)
+                        rejectTrade();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 15:
                     if (isFrozen) {
                         requestUnFreeze();
                     } else
@@ -341,6 +362,9 @@ public class TextInterface {
         printList(this.userID, "Requested", "Trade");
     }
 
+    /**
+     * Prints all Inventory Items for all users in the database
+     */
     private void printDatabase() {
         ArrayList<String> allTraders = tSystem.getAllTraders();
         for (String userID : allTraders) {
@@ -586,6 +610,7 @@ public class TextInterface {
     /**
      * TODO: FINISH
      * Prompt to trade items with another trader
+     * REQUIREMENT: isFrozen == true
      */
     private void tradeItems() {
         String traderName = "";
@@ -607,7 +632,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the item that you would like to recieve from the trader");
                 System.out.print("=> ");
                 traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.tradeItems(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex); // TODO: ADD IN TRADESYSTEM
+                success = tSystem.trade(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex); // TODO: ADD IN TRADESYSTEM
             } catch (Exception e) { // TODO: REPLACE
                 success = false;
                 System.out.println(e.getMessage());
@@ -618,6 +643,7 @@ public class TextInterface {
     /**
      * TODO: FINISH
      * Prompt to lend item to another trader
+     * REQUIREMENT: isFrozen == true
      */
     private void lendItem() {
         String traderName = "";
@@ -645,6 +671,7 @@ public class TextInterface {
     /**
      * TODO: FINISH
      * Prompt to borrow item with another trader
+     * REQUIREMENT: isFrozen == true
      */
     private void borrowItem() {
         String traderName = "";
@@ -668,4 +695,29 @@ public class TextInterface {
         } while (!success);
         System.out.printf("Done! Your Trade Request to TRADER=\"%s\" has been sent\n", traderName);
     }
+
+    /**
+     * TODO: FINISH
+     * Prompts user to reject a trade offer
+     * REQUIREMENT: isFrozen == true
+     */
+    private void rejectTrade() {
+    }
+
+    /**
+     * TODO: FINISH
+     * Prompts user to edit a trade offer
+     * REQUIREMENT: isFrozen == true
+     */
+    private void editTrade() {
+    }
+
+    /**
+     * TODO: FINISH
+     * Prompts user to accept a trade offer
+     * REQUIREMENT: isFrozen == true
+     */
+    private void acceptTrade() {
+    }
+
 }
