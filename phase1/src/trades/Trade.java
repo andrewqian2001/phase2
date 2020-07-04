@@ -218,6 +218,10 @@ public class Trade extends DatabaseItem implements Serializable {
         if (userTurnToEdit.equals(FIRST_USER_ID)) userTurnToEdit = SECOND_USER_ID;
         else userTurnToEdit = FIRST_USER_ID;
     }
+
+    /**
+     * @param num
+     */
     void setNumEdits(int num){
         this.numEdits = num;
     }
