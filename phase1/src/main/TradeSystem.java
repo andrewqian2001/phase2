@@ -379,4 +379,13 @@ public class TradeSystem implements Serializable {
     public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
         ((AdminManager) userManager).setTradeLimit(tradeLimit);
     }
+
+    public boolean lendItem(String lenderId, String borrowerName, int itemIndex) throws EntryNotFoundException{
+        String itemId = getAvailableItems(lenderId).get(itemIndex);
+        String borrowId = getIdFromUsername(borrowerName);
+        return ((TraderManager)userManager).lendItem(lenderId, borrowId, itemId, 0);
+
+
+
+    }
 }
