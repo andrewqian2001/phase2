@@ -212,12 +212,13 @@ public class TextInterface {
                 System.out.println("9.\tBorrow an Item from a Trader");
                 System.out.println("10.\tLend an Item to a Trader");
                 System.out.println("11.\tTrade with a trader");
-                System.out.println("12.\tAccept Trade");
-                System.out.println("13.\tEdit Trade");
-                System.out.println("14.\tReject Trade");
+                System.out.println("12.\tAccept Trade Request Offer");
+                System.out.println("13.\tEdit Trade Request Offer");
+                System.out.println("14.\tReject Trade Request Offer");
+                System.out.println("15.\tConfirm Succesful Trade");
             }
             if (isFrozen)
-                System.out.println("15.\tRequest Un-Freeze Account");
+                System.out.println("16.\tRequest Un-Freeze Account");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -269,23 +270,29 @@ public class TextInterface {
                     break;
                 case 12:
                     if (!isFrozen)
-                        acceptTrade();
+                        acceptTradeOffer();
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
                 case 13:
                     if (!isFrozen)
-                        editTrade();
+                        editTradeOffer();
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
                 case 14:
                     if (!isFrozen)
-                        rejectTrade();
+                        rejectTradeOffer();
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
                 case 15:
+                    if (!isFrozen)
+                        confirmTrade();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 16:
                     if (isFrozen) {
                         requestUnFreeze();
                     } else
@@ -550,7 +557,7 @@ public class TextInterface {
     }
 
     /**
-     * Prints the 3 most traded with Traders
+     * Prints the 3 most traded-with Traders
      */
     private void viewFreqTraders() {
         try {
@@ -608,7 +615,7 @@ public class TextInterface {
     }
 
     /**
-     * TODO: FINISH
+     * TODO: FINISH (Add Meeting Locations and Times)
      * Prompt to trade items with another trader
      * REQUIREMENT: isFrozen == true
      */
@@ -616,6 +623,7 @@ public class TextInterface {
         String traderName = "";
         int inventoryItemIndex = -1;
         int traderInventoryItemIndex = -1;
+        boolean isTemporary = true;
         boolean success = false;
         do {
             try {
@@ -632,7 +640,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the item that you would like to recieve from the trader");
                 System.out.print("=> ");
                 traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.trade(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex); // TODO: ADD IN TRADESYSTEM
+                success = tSystem.trade(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex, isTemporary); // TODO: ADD IN TRADESYSTEM
             } catch (Exception e) { // TODO: REPLACE
                 success = false;
                 System.out.println(e.getMessage());
@@ -641,13 +649,14 @@ public class TextInterface {
     }
     
     /**
-     * TODO: FINISH
+     * TODO: FINISH (Add Meeting Locations and Times)
      * Prompt to lend item to another trader
      * REQUIREMENT: isFrozen == true
      */
     private void lendItem() {
         String traderName = "";
         int inventoryItemIndex = -1;
+        boolean isTemporary = true;
         boolean success = false;
         do {
             try {
@@ -659,7 +668,7 @@ public class TextInterface {
                 System.out.println("Please enter the index of the item you would like to lend");
                 System.out.print("=> ");
                 inventoryItemIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex); // TODO: ADD IN TRADESYSTEM
+                success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex, isTemporary); // TODO: ADD IN TRADESYSTEM
             } catch (Exception e) { //TODO: REPLACE 
                 success = false;
                 System.out.println(e.getMessage());
@@ -669,13 +678,14 @@ public class TextInterface {
     }
     
     /**
-     * TODO: FINISH
+     * TODO: FINISH (Add Meeting Locations and Times)
      * Prompt to borrow item with another trader
      * REQUIREMENT: isFrozen == true
      */
     private void borrowItem() {
         String traderName = "";
         int traderInventoryItemIndex = -1;
+        boolean isTemporary = true;
         boolean success = false;
         do {
             try {
@@ -687,7 +697,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the item that you would like to borrow from the trader");
                 System.out.print("=> ");
                 traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.borrowItem(this.userID, traderName, traderInventoryItemIndex); //TODO: ADD IN TRADESYSTEM
+                success = tSystem.borrowItem(this.userID, traderName, traderInventoryItemIndex, isTemporary); //TODO: ADD IN TRADESYSTEM
             } catch (Exception e) { //TODO: REPLACE
                 success = false;
                 System.out.println(e.getMessage());
@@ -701,7 +711,8 @@ public class TextInterface {
      * Prompts user to reject a trade offer
      * REQUIREMENT: isFrozen == true
      */
-    private void rejectTrade() {
+    private void rejectTradeOffer() {
+        System.out.println("Done!");
     }
 
     /**
@@ -709,7 +720,8 @@ public class TextInterface {
      * Prompts user to edit a trade offer
      * REQUIREMENT: isFrozen == true
      */
-    private void editTrade() {
+    private void editTradeOffer() {
+        System.out.println("Done!");
     }
 
     /**
@@ -717,7 +729,15 @@ public class TextInterface {
      * Prompts user to accept a trade offer
      * REQUIREMENT: isFrozen == true
      */
-    private void acceptTrade() {
+    private void acceptTradeOffer() {
+        System.out.println("Done!");
     }
 
+    /**
+     * TODO: FINISH
+     * Prompts user to confirm that a trade has happend outside of this program
+     */
+    private void confirmTrade() {
+        System.out.println("Done!");
+    }
 }
