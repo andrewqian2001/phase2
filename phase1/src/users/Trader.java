@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * represents a trader
+ * represents a trader(user who can trade)
  */
 
 public class Trader extends User implements Serializable {
@@ -22,7 +22,7 @@ public class Trader extends User implements Serializable {
     private int tradeCount;
 
     /**
-     * Constructs a trader with its own username and password, with permissions to add item in their list and trade items.
+     * Constructs a trader with its own username and password.
      *
      * @param name     the trader's username
      * @param password the trader's password
@@ -33,13 +33,14 @@ public class Trader extends User implements Serializable {
     }
 
     /**
-     * @return the number of incompleted trades this trader has done
+     * @return the number of incomplete trades this trader has done
      */
     public int getIncompleteTradeCount(){
         return incompleteTradeCount;
     }
 
     /**
+     * set a new incompleteTradeCount to this trader
      * @param incompleteTradeCount the new value of incompleteTradeCount
      */
     public void setIncompleteTradeCount(int incompleteTradeCount){
@@ -116,6 +117,7 @@ public class Trader extends User implements Serializable {
     }
 
     /**
+     * set a new tradeLimit to this trader
      * @param tradeLimit number of transactions this trader can conduct in 1 week
      */
 
@@ -134,6 +136,7 @@ public class Trader extends User implements Serializable {
     }
 
     /**
+     * set a new incomplete trade limit value to this trader
      * @param incompleteTradeLim how many transactions can be incomplete before this trader's account is frozen
      */
 
@@ -143,7 +146,7 @@ public class Trader extends User implements Serializable {
     }
 
     /**
-     * @return list of total items borrowed by the trader
+     * @return total number of items borrowed by the trader
      */
 
 
@@ -152,7 +155,7 @@ public class Trader extends User implements Serializable {
     }
 
     /**
-     * @param totalItemsBorrowed list of total items borrowed by the trader
+     * @param totalItemsBorrowed total number of items borrowed by the trader
      */
 
 
@@ -161,7 +164,7 @@ public class Trader extends User implements Serializable {
     }
 
     /**
-     * @return list of total items lent by the trader
+     * @return total number of items lent by the trader
      */
 
 
@@ -170,7 +173,8 @@ public class Trader extends User implements Serializable {
     }
 
     /**
-     * @param totalItemsLent list of total items lent by the trader
+     * set a new value to total number of items lent by this trader
+     * @param totalItemsLent total number of items lent by the trader
      */
 
 

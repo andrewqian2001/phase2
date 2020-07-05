@@ -21,6 +21,7 @@ public class TradeSystem implements Serializable {
     private TradableItemManager tradableItemManager;
     private String loggedInUserId;
 
+
     /**
      * Constructor for TradeSystem, initializes managers
      * 
@@ -362,5 +363,40 @@ public class TradeSystem implements Serializable {
         } else {
             throw new EntryNotFoundException(itemName + " was not found in the user's requested items list");
         }
+    }
+
+    /**
+     * Gets the current weekly trade limit
+     * @return the current trade limit
+     */
+    public int getCurrentTradeLimit() throws EntryNotFoundException {
+        return ((AdminManager) userManager).getTradeLimit();
+    }
+
+    /**
+     * Sets the new weekly trade limit (Admin method)
+     * @param tradeLimit the new weekly trade limit
+     */
+    public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
+        ((AdminManager) userManager).setTradeLimit(tradeLimit);
+    }
+
+    public boolean trade(String userId, String secondUserName, int lendItemIndex, int borrowItemIndex,
+                         String meetingTime) throws EntryNotFoundException {
+        String secondUserId = getIdFromUsername(secondUserName);
+
+        return true;
+    }
+
+    public boolean lendItem(String lenderId, String borrowerName, int itemIndex) throws EntryNotFoundException{
+        String itemId = getAvailableItems(lenderId).get(itemIndex);
+        String borrowId = getIdFromUsername(borrowerName);
+        return ((TraderManager)userManager).lendItem(lenderId, borrowId, itemId, 0);
+    }
+
+    public boolean borrowItem(String borrowerId, String lenderName, int itemIndex, boolean isTemp) throws EntryNotFoundException {
+        String lenderId = getIdFromUsername(lenderName);
+        String itemId = getAvailableItems(lenderId).get(itemIndex);
+        return true;
     }
 }

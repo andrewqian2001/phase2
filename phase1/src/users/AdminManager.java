@@ -3,7 +3,6 @@ package users;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -90,6 +89,31 @@ public class AdminManager extends UserManager implements Serializable {
         update(trader);
         return userId;
     }
+
+    /**
+     * Gets the current weekly trade limit
+     * @return the current weekly trade limit for all traders. If no traders exist, then return -1
+     */
+    public int getTradeLimit() throws EntryNotFoundException {
+        ArrayList<String> traders = getAllTraders();
+        if (traders.size() == 0){
+            throw new EntryNotFoundException("There are not traders in the system");
+        }
+        return findTraderById(traders.get(0)).getTradeLimit();
+    }
+
+    /**
+     * Sets the current weekly trade limit for all traders
+     * @param tradeLimit the new weekly trade limit
+     */
+    public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
+        ArrayList<String> allTraders = getAllTraders();
+        for(String traderID : allTraders) {
+            Trader trader = findTraderById(traderID);
+            trader.setTradeLimit(tradeLimit);
+        }
+    }
+
     /**
      * Helper function to find a trader by id
      *
@@ -106,4 +130,16 @@ public class AdminManager extends UserManager implements Serializable {
         throw new EntryNotFoundException("Could not find " + userId + " + in the system.");
     }
 
+    /**
+     * Gets the IDs of all Traders in the database
+     * 
+     * @return An arraylist of Trader IDs
+     */
+    public ArrayList<String> getAllTraders() {
+        ArrayList<String> allTraders = new ArrayList<>();
+        for (User user : getItems())
+            if (user instanceof Trader)
+                allTraders.add(user.getId());
+        return allTraders;
+    }
 }

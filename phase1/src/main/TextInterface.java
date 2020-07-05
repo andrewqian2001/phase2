@@ -3,7 +3,6 @@ package main;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.logging.ConsoleHandler;
@@ -48,6 +47,7 @@ public class TextInterface {
      * @throws IOException
      */
     public void run() throws IOException {
+        loginAdmin();
         boolean isAdmin = false;
         System.out.println("tRaDeMaStEr 9000");
         System.out.println(lineBreak);
@@ -73,9 +73,7 @@ public class TextInterface {
             else
                 traderMenu();
         }
-        System.out.println("Thank you for using tRaDeMaStEr 9000!");
-        userID = "";
-        sc.close();
+        logOut();
     }
 
     /**
@@ -86,7 +84,7 @@ public class TextInterface {
         try {
             System.out.print("=> ");
             this.userChoice = Integer.parseInt(sc.nextLine());
-        } catch (InputMismatchException e) {
+        } catch (NumberFormatException e) {
             System.out.println("Invalid Input, please try again");
         }
     }
@@ -115,6 +113,25 @@ public class TextInterface {
     }
 
     /**
+     * helper method to create an initial admin
+     */
+    private void loginAdmin(){
+        try{tSystem.registerAdmin("admin", "password");} catch (UserAlreadyExistsException | IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Log-Out Helper Method - Clears the userID and Closes the scanner
+     */
+    private void logOut() {
+        System.out.println("Thank you for using tRaDeMaStEr 9000!");
+        System.out.printf("ID='%s' Log-Out Success\n", this.userID);
+        this.userID = "";
+        sc.close();
+    }
+
+    /**
      * Admin Main Menu Helper Method - Displays choices for Admin to select from,
      * and executes said selection
      */
@@ -129,6 +146,7 @@ public class TextInterface {
             System.out.println("5.\tView all Item Requests");
             System.out.println("6.\tApprove Item Request");
             System.out.println("7.\tReject Item Request");
+            System.out.println("8.\tChange Weekly Trade Limit Value");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -156,6 +174,9 @@ public class TextInterface {
                     break;
                 case 7:
                     processItemRequest(false);
+                    break;
+                case 8:
+                    changeWeeklyTradeLimit();
                     break;
                 default:
                     System.out.println("Invalid Selection, please try again");
@@ -187,8 +208,17 @@ public class TextInterface {
             System.out.println("6.\tView All Items in Database");
             System.out.println("7.\tRequest to add item to Inventory");
             System.out.println("8.\tAdd item to Wishlist");
+            if (!isFrozen) {
+                System.out.println("9.\tBorrow an Item from a Trader");
+                System.out.println("10.\tLend an Item to a Trader");
+                System.out.println("11.\tTrade with a trader");
+                System.out.println("12.\tAccept Trade Request Offer");
+                System.out.println("13.\tEdit Trade Request Offer");
+                System.out.println("14.\tReject Trade Request Offer");
+                System.out.println("15.\tConfirm Succesful Trade");
+            }
             if (isFrozen)
-                System.out.println("10.\tRequest Un-Freeze Account");
+                System.out.println("16.\tRequest Un-Freeze Account");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -220,16 +250,51 @@ public class TextInterface {
                 case 8:
                     addItemToWishList();
                     break;
+                case 9:
+                    if (!isFrozen)
+                        borrowItem();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
                 case 10:
+                    if (!isFrozen)
+                        lendItem();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 11:
+                    if (!isFrozen)
+                        tradeItems();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 12:
+                    if (!isFrozen)
+                        acceptTradeOffer();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 13:
+                    if (!isFrozen)
+                        editTradeOffer();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 14:
+                    if (!isFrozen)
+                        rejectTradeOffer();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 15:
+                    if (!isFrozen)
+                        confirmTrade();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                    break;
+                case 16:
                     if (isFrozen) {
-                        // since this valid userID would be returned from a logged in user...
-                        // the exception will never be thrown
-                        try {
-                            tSystem.requestUnfreeze(this.userID, true);
-                            System.out.println("Done! Now please be patient while an admin un-freezes your account");
-                        } catch (EntryNotFoundException e) {
-                            System.out.println(e.getMessage());
-                        }
+                        requestUnFreeze();
                     } else
                         System.out.println("Invalid Selection, please try again");
                     break;
@@ -262,7 +327,7 @@ public class TextInterface {
                 System.out.println(e.getMessage());
             }
         } while (!success);
-        System.out.printf("Done! Trader \"%s\" has now been %s\n", wantToFreeze, freezeStatus ? "un-frozen" : "frozen");
+        System.out.printf("Done! Trader \"%s\" has now been %s\n", wantToFreeze, freezeStatus ? "frozen" : "unfrozen");//change 2 statements positions
     }
 
     /**
@@ -304,6 +369,9 @@ public class TextInterface {
         printList(this.userID, "Requested", "Trade");
     }
 
+    /**
+     * Prints all Inventory Items for all users in the database
+     */
     private void printDatabase() {
         ArrayList<String> allTraders = tSystem.getAllTraders();
         for (String userID : allTraders) {
@@ -489,7 +557,7 @@ public class TextInterface {
     }
 
     /**
-     * Prints the 3 most traded with Traders
+     * Prints the 3 most traded-with Traders
      */
     private void viewFreqTraders() {
         try {
@@ -500,5 +568,181 @@ public class TextInterface {
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * Prompts admin to change the current trade limit
+     */
+    private void changeWeeklyTradeLimit() {
+        int tradeLimit = 0;
+        try {
+            tradeLimit = tSystem.getCurrentTradeLimit();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            tradeLimit = 0;
+        }
+        boolean success = false;
+        if(tradeLimit == 0) System.out.println("There are no Traders in the System!");
+        else System.out.println("The current weekly trade limit is " + tradeLimit);
+        do {
+            try {
+                System.out.println("Enter the new value for the trade limit");
+                System.out.print("=> ");
+                tradeLimit = Integer.parseInt(sc.nextLine());
+                tSystem.setTradeLimit(tradeLimit);
+                success = true;
+            } catch (NumberFormatException | EntryNotFoundException e) {
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.println("Done! The new weekly trade limit is now" + tradeLimit);
+    }
+
+    /**
+     * Requests the logged in trader to be unfrozen by an admin 
+     * REQUIREMENT: isFrozen == true
+     */
+    private void requestUnFreeze() {
+        // since this valid userID would be returned from a logged in user...
+        // the exception will never be thrown
+        try {
+            tSystem.requestUnfreeze(this.userID, true);
+            System.out.println("Done! Now please be patient while an admin un-freezes your account");
+        } catch (EntryNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * TODO: FINISH (Add Meeting Locations and Times)
+     * Prompt to trade items with another trader
+     * REQUIREMENT: isFrozen == true
+     */
+    private void tradeItems() {
+        String traderName = "";
+        String meetingTime = "";
+        String meetingLocation = "";
+        int inventoryItemIndex = -1;
+        int traderInventoryItemIndex = -1;
+        boolean isTemporary = true;
+        boolean success = false;
+        do {
+            try {
+                System.out.println("Here is your inventory:");
+                printInventory();
+                System.out.println("Please enter the index of the item you would like to give");
+                System.out.print("=> ");
+                inventoryItemIndex = Integer.parseInt(sc.nextLine());
+                System.out.println("Enter the username of the Trader you would like to borrow from");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
+                System.out.printf("Here is %s's current inventory:", traderName);
+                printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
+                System.out.println("Enter the index of the item that you would like to recieve from the trader");
+                System.out.print("=> ");
+                traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
+                System.out.println("Enter your preferred meeting time");
+                System.out.print("=> ");
+                meetingTime = sc.nextLine();
+                success = tSystem.trade(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex, meetingTime); // TODO: ADD IN TRADESYSTEM
+            } catch (Exception e) { // TODO: REPLACE
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+    }
+    
+    /**
+     * TODO: FINISH (Add Meeting Locations and Times)
+     * Prompt to lend item to another trader
+     * REQUIREMENT: isFrozen == true
+     */
+    private void lendItem() {
+        String traderName = "";
+        int inventoryItemIndex = -1;
+        boolean isTemporary = true;
+        boolean success = false;
+        do {
+            try {
+                System.out.println("Enter the username of the Trader you would like to lend to");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
+                System.out.println("Here is your current inventory:");
+                printInventory();
+                System.out.println("Please enter the index of the item you would like to lend");
+                System.out.print("=> ");
+                inventoryItemIndex = Integer.parseInt(sc.nextLine());
+                //success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex, isTemporary); // TODO: ADD IN TRADESYSTEM
+            } catch (Exception e) { //TODO: REPLACE 
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.printf("Done! Your Trade Request to TRADER=\"%s\" has been sent\n", traderName);
+    }
+    
+    /**
+     * TODO: FINISH (Add Meeting Locations and Times)
+     * Prompt to borrow item with another trader
+     * REQUIREMENT: isFrozen == true
+     */
+    private void borrowItem() {
+        String traderName = "";
+        int traderInventoryItemIndex = -1;
+        boolean isTemporary = true;
+        boolean success = false;
+        do {
+            try {
+                System.out.println("Enter the username of the Trader you would like to borrow from");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
+                System.out.printf("Here is %s's current inventory:", traderName);
+                printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
+                System.out.println("Enter the index of the item that you would like to borrow from the trader");
+                System.out.print("=> ");
+                traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
+                success = tSystem.borrowItem(this.userID, traderName, traderInventoryItemIndex, isTemporary); //TODO: ADD IN TRADESYSTEM
+            } catch (Exception e) { //TODO: REPLACE
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.printf("Done! Your Trade Request to TRADER=\"%s\" has been sent\n", traderName);
+    }
+
+    /**
+     * TODO: FINISH
+     * Prompts user to reject a trade offer
+     * REQUIREMENT: isFrozen == true
+     */
+    private void rejectTradeOffer() {
+        System.out.println("Done!");
+    }
+
+    /**
+     * TODO: FINISH
+     * Prompts user to edit a trade offer
+     * REQUIREMENT: isFrozen == true
+     */
+    private void editTradeOffer() {
+        System.out.println("Done!");
+    }
+
+    /**
+     * TODO: FINISH
+     * Prompts user to accept a trade offer
+     * REQUIREMENT: isFrozen == true
+     */
+    private void acceptTradeOffer() {
+        System.out.println("Done!");
+    }
+
+    /**
+     * TODO: FINISH
+     * Prompts user to confirm that a trade has happend outside of this program
+     */
+    private void confirmTrade() {
+        System.out.println("Done!");
     }
 }

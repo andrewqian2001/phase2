@@ -20,10 +20,16 @@ public class TradableItem extends DatabaseItem implements Serializable {
         this.description = description;
     }
 
+    /**
+     * @return name of the item
+     */
     String getName() {
         return name;
     }
 
+    /**
+     * @return description of the item
+     */
     String getDesc() {
         return description;
     }
