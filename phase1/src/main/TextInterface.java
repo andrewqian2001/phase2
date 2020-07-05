@@ -621,6 +621,8 @@ public class TextInterface {
      */
     private void tradeItems() {
         String traderName = "";
+        String meetingTime = "";
+        String meetingLocation = "";
         int inventoryItemIndex = -1;
         int traderInventoryItemIndex = -1;
         boolean isTemporary = true;
@@ -640,7 +642,10 @@ public class TextInterface {
                 System.out.println("Enter the index of the item that you would like to recieve from the trader");
                 System.out.print("=> ");
                 traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.trade(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex, isTemporary); // TODO: ADD IN TRADESYSTEM
+                System.out.println("Enter your preferred meeting time");
+                System.out.print("=> ");
+                meetingTime = sc.nextLine();
+                success = tSystem.trade(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex, meetingTime); // TODO: ADD IN TRADESYSTEM
             } catch (Exception e) { // TODO: REPLACE
                 success = false;
                 System.out.println(e.getMessage());
@@ -668,7 +673,7 @@ public class TextInterface {
                 System.out.println("Please enter the index of the item you would like to lend");
                 System.out.print("=> ");
                 inventoryItemIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex, isTemporary); // TODO: ADD IN TRADESYSTEM
+                //success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex, isTemporary); // TODO: ADD IN TRADESYSTEM
             } catch (Exception e) { //TODO: REPLACE 
                 success = false;
                 System.out.println(e.getMessage());

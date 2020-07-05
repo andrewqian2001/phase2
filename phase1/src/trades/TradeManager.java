@@ -1,5 +1,6 @@
 package trades;
 
+import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import main.Database;
 
@@ -35,13 +36,13 @@ public class TradeManager extends Database<Trade> implements Serializable {
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      * @return the object added
      */
-    public Trade addTrade(String firstUserId, String secondUserId,
+    public String addTrade(String firstUserId, String secondUserId,
                           Date meetingTime, Date secondMeetingTime,
                           String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
         Trade trade = new Trade(firstUserId, secondUserId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, firstUserOffer, secondUserOffer, allowedEdits);
-        return update(trade);
+        return update(trade).getId();
     }
 
     /**
@@ -127,6 +128,19 @@ public class TradeManager extends Database<Trade> implements Serializable {
     public Date getSecondMeetingTime (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getSecondMeetingTime();
+    }
+
+    public void editTrade(String tradeId, Date meetingTime, Date secondMeetingTime, String meetingLocation,
+                          String firstUserOffer, String secondUserOffer) throws CannotTradeException, EntryNotFoundException {
+        Trade trade = populate(tradeId);
+        if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) throw new CannotTradeException("Trade not allowed");
+        if (trade.getUserTurnToEdit().equals(trade.getFirstUserId())) trade.changeUserTurn();
+        trade.setMeetingTime(meetingTime);
+        trade.setSecondMeetingTime(secondMeetingTime);
+        trade.setMeetingLocation(meetingLocation);
+        trade.setFirstUserOffer(firstUserOffer);
+        trade.setSecondUserOffer(secondUserOffer);
+        trade.setNumEdits(trade.getNumEdits() + 1);
     }
 
     /**

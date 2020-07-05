@@ -21,6 +21,7 @@ public class TradeSystem implements Serializable {
     private TradableItemManager tradableItemManager;
     private String loggedInUserId;
 
+
     /**
      * Constructor for TradeSystem, initializes managers
      * 
@@ -380,12 +381,22 @@ public class TradeSystem implements Serializable {
         ((AdminManager) userManager).setTradeLimit(tradeLimit);
     }
 
+    public boolean trade(String userId, String secondUserName, int lendItemIndex, int borrowItemIndex,
+                         String meetingTime) throws EntryNotFoundException {
+        String secondUserId = getIdFromUsername(secondUserName);
+
+        return true;
+    }
+
     public boolean lendItem(String lenderId, String borrowerName, int itemIndex) throws EntryNotFoundException{
         String itemId = getAvailableItems(lenderId).get(itemIndex);
         String borrowId = getIdFromUsername(borrowerName);
         return ((TraderManager)userManager).lendItem(lenderId, borrowId, itemId, 0);
+    }
 
-
-
+    public boolean borrowItem(String borrowerId, String lenderName, int itemIndex, boolean isTemp) throws EntryNotFoundException {
+        String lenderId = getIdFromUsername(lenderName);
+        String itemId = getAvailableItems(lenderId).get(itemIndex);
+        return true;
     }
 }
