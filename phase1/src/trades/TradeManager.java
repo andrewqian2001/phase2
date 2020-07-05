@@ -52,8 +52,8 @@ public class TradeManager extends Database<Trade> implements Serializable {
      * @return the Trade that got deleted
      * @throws EntryNotFoundException if the id doesn't refer to anything
      */
-    public Trade deleteTrade(String tradeId) throws EntryNotFoundException {
-        return super.delete(tradeId);
+    public void deleteTrade(String tradeId) throws EntryNotFoundException {
+        super.delete(tradeId);
     }
 
     /**
@@ -143,6 +143,9 @@ public class TradeManager extends Database<Trade> implements Serializable {
         trade.setNumEdits(trade.getNumEdits() + 1);
         update(trade);
         return trade.getId();
+    }
+    public String getMeetingLocation (String tradeID) throws EntryNotFoundException {
+        return populate(tradeID).getMeetingLocation();
     }
 
     /**
