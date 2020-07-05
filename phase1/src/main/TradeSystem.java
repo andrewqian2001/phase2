@@ -381,9 +381,15 @@ public class TradeSystem implements Serializable {
         ((AdminManager) userManager).setTradeLimit(tradeLimit);
     }
 
-    public boolean trade(String userId, String secondUserName, int lendItemIndex, int borrowItemIndex,
-                         String meetingTime) throws EntryNotFoundException {
+    public boolean trade(String userId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException {
         String secondUserId = getIdFromUsername(secondUserName);
+        String lendItemId = getAvailableItems(userId).get(lendItemIndex);
+        String borrowItemId = getAvailableItems(secondUserId).get(borrowItemIndex);
+
+        String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
+        ((TraderManager) userManager).addToIncompleteTradeCount(userId);
+        ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
+        ((TraderManager) userManager).addToIncompleteTradeCount(secondUserId);
 
         return true;
     }
