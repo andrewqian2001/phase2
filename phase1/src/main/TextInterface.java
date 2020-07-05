@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -9,6 +10,7 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
 
 import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
@@ -625,27 +627,49 @@ public class TextInterface {
         String meetingLocation = "";
         int inventoryItemIndex = -1;
         int traderInventoryItemIndex = -1;
-        boolean isTemporary = true;
         boolean success = false;
+        Date firstMeeting = null;
+        Date secondMeeting = null;
         do {
             try {
                 System.out.println("Here is your inventory:");
                 printInventory();
+
                 System.out.println("Please enter the index of the item you would like to give");
                 System.out.print("=> ");
                 inventoryItemIndex = Integer.parseInt(sc.nextLine());
+
                 System.out.println("Enter the username of the Trader you would like to borrow from");
                 System.out.print("=> ");
                 traderName = sc.nextLine();
+
                 System.out.printf("Here is %s's current inventory:", traderName);
                 printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
+
                 System.out.println("Enter the index of the item that you would like to recieve from the trader");
                 System.out.print("=> ");
                 traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
-                System.out.println("Enter your preferred meeting time");
+
+                System.out.println("Enter your preferred first meeting time in the format yyyy/MM/dd HH:mm");
                 System.out.print("=> ");
                 meetingTime = sc.nextLine();
-                success = tSystem.trade(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex, meetingTime); // TODO: ADD IN TRADESYSTEM
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                firstMeeting = sdf.parse(meetingTime);
+
+                System.out.println("Is this a temporary or permanent trade? Y/N");
+                System.out.print("=> ");
+                if(sc.nextLine().equals("Y")) {
+                    System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
+                    System.out.print("=> ");
+                    meetingTime = sc.nextLine();
+                    secondMeeting = sdf.parse(meetingTime);
+                }
+
+                System.out.println("Enter your preferred meeting location");
+                System.out.print("=> ");
+                meetingLocation = sc.nextLine();
+
+                success = tSystem.trade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex); // TODO: ADD IN TRADESYSTEM
             } catch (Exception e) { // TODO: REPLACE
                 success = false;
                 System.out.println(e.getMessage());
@@ -661,6 +685,7 @@ public class TextInterface {
     private void lendItem() {
         String traderName = "";
         int inventoryItemIndex = -1;
+        int meetingTime = 0;
         boolean isTemporary = true;
         boolean success = false;
         do {
@@ -673,7 +698,10 @@ public class TextInterface {
                 System.out.println("Please enter the index of the item you would like to lend");
                 System.out.print("=> ");
                 inventoryItemIndex = Integer.parseInt(sc.nextLine());
-                //success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex, isTemporary); // TODO: ADD IN TRADESYSTEM
+                System.out.println("In how many days do you want the meeting?");
+                System.out.print("=> ");
+                meetingTime = Integer.parseInt(sc.nextLine());
+                success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex); // TODO: ADD IN TRADESYSTEM
             } catch (Exception e) { //TODO: REPLACE 
                 success = false;
                 System.out.println(e.getMessage());
@@ -726,7 +754,7 @@ public class TextInterface {
      * REQUIREMENT: isFrozen == true
      */
     private void editTradeOffer() {
-        System.out.println("Done!");
+
     }
 
     /**
