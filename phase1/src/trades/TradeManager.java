@@ -130,7 +130,7 @@ public class TradeManager extends Database<Trade> implements Serializable {
         return trade.getSecondMeetingTime();
     }
 
-    public void editTrade(String tradeId, Date meetingTime, Date secondMeetingTime, String meetingLocation,
+    public String editTrade(String tradeId, Date meetingTime, Date secondMeetingTime, String meetingLocation,
                           String firstUserOffer, String secondUserOffer) throws CannotTradeException, EntryNotFoundException {
         Trade trade = populate(tradeId);
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) throw new CannotTradeException("Trade not allowed");
@@ -141,6 +141,8 @@ public class TradeManager extends Database<Trade> implements Serializable {
         trade.setFirstUserOffer(firstUserOffer);
         trade.setSecondUserOffer(secondUserOffer);
         trade.setNumEdits(trade.getNumEdits() + 1);
+        update(trade);
+        return trade.getId();
     }
 
     /**
