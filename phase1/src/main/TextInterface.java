@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -617,7 +618,6 @@ public class TextInterface {
     }
 
     /**
-     * TODO: FINISH (Add Meeting Locations and Times)
      * Prompt to trade items with another trader
      * REQUIREMENT: isFrozen == true
      */
@@ -627,9 +627,10 @@ public class TextInterface {
         String meetingLocation = "";
         int inventoryItemIndex = -1;
         int traderInventoryItemIndex = -1;
-        boolean success = false;
+        boolean isTemporary = true;
         Date firstMeeting = null;
         Date secondMeeting = null;
+        boolean success = false;
         do {
             try {
                 System.out.println("Here is your inventory:");
@@ -658,7 +659,8 @@ public class TextInterface {
 
                 System.out.println("Is this a temporary or permanent trade? Y/N");
                 System.out.print("=> ");
-                if(sc.nextLine().equals("Y")) {
+                isTemporary = sc.nextLine().equals("Y");
+                if(isTemporary) {
                     System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
                     System.out.print("=> ");
                     meetingTime = sc.nextLine();
@@ -669,24 +671,27 @@ public class TextInterface {
                 System.out.print("=> ");
                 meetingLocation = sc.nextLine();
 
-                success = tSystem.trade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex); // TODO: ADD IN TRADESYSTEM
-            } catch (Exception e) { // TODO: REPLACE
+                success = tSystem.trade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
+            } catch (EntryNotFoundException | ParseException e) { 
                 success = false;
                 System.out.println(e.getMessage());
             }
         } while (!success);
+        System.out.printf("Done! Your Trade Request to TRADER=\"%s\" has been sent\n", traderName);
     }
     
     /**
-     * TODO: FINISH (Add Meeting Locations and Times)
      * Prompt to lend item to another trader
      * REQUIREMENT: isFrozen == true
      */
     private void lendItem() {
         String traderName = "";
+        String meetingTime = "";
+        String meetingLocation = "";
         int inventoryItemIndex = -1;
-        int meetingTime = 0;
         boolean isTemporary = true;
+        Date firstMeeting = null;
+        Date secondMeeting = null;
         boolean success = false;
         do {
             try {
@@ -698,11 +703,26 @@ public class TextInterface {
                 System.out.println("Please enter the index of the item you would like to lend");
                 System.out.print("=> ");
                 inventoryItemIndex = Integer.parseInt(sc.nextLine());
-                System.out.println("In how many days do you want the meeting?");
+                System.out.println("Enter your preferred first meeting time in the format yyyy/MM/dd HH:mm");
                 System.out.print("=> ");
-                meetingTime = Integer.parseInt(sc.nextLine());
-                success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex); // TODO: ADD IN TRADESYSTEM
-            } catch (Exception e) { //TODO: REPLACE 
+                meetingTime = sc.nextLine();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                firstMeeting = sdf.parse(meetingTime);
+                System.out.println("Is this a temporary or permanent trade? Y/N");
+                System.out.print("=> ");
+                isTemporary = sc.nextLine().equals("Y");
+                if (isTemporary) {
+                    System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
+                    System.out.print("=> ");
+                    meetingTime = sc.nextLine();
+                    secondMeeting = sdf.parse(meetingTime);
+                }
+                System.out.println("Enter your preferred meeting location");
+                System.out.print("=> ");
+                meetingLocation = sc.nextLine();
+                success = tSystem.lendItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
+                        inventoryItemIndex);
+            } catch (EntryNotFoundException | ParseException e) { 
                 success = false;
                 System.out.println(e.getMessage());
             }
@@ -711,14 +731,17 @@ public class TextInterface {
     }
     
     /**
-     * TODO: FINISH (Add Meeting Locations and Times)
      * Prompt to borrow item with another trader
      * REQUIREMENT: isFrozen == true
      */
     private void borrowItem() {
         String traderName = "";
+        String meetingTime = "";
+        String meetingLocation = "";
         int traderInventoryItemIndex = -1;
         boolean isTemporary = true;
+        Date firstMeeting = null;
+        Date secondMeeting = null;
         boolean success = false;
         do {
             try {
@@ -730,8 +753,23 @@ public class TextInterface {
                 System.out.println("Enter the index of the item that you would like to borrow from the trader");
                 System.out.print("=> ");
                 traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.borrowItem(this.userID, traderName, traderInventoryItemIndex, isTemporary); //TODO: ADD IN TRADESYSTEM
-            } catch (Exception e) { //TODO: REPLACE
+                System.out.println("Enter your preferred first meeting time in the format yyyy/MM/dd HH:mm");
+                System.out.print("=> ");
+                meetingTime = sc.nextLine();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                firstMeeting = sdf.parse(meetingTime);
+                System.out.println("Is this a temporary or permanent trade? Y/N");
+                System.out.print("=> ");
+                isTemporary = sc.nextLine().equals("Y");
+                if (isTemporary) {
+                    System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
+                    System.out.print("=> ");
+                    meetingTime = sc.nextLine();
+                    secondMeeting = sdf.parse(meetingTime);
+                }
+                success = tSystem.borrowItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
+                        traderInventoryItemIndex);
+            } catch (EntryNotFoundException | ParseException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }

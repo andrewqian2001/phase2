@@ -394,15 +394,17 @@ public class TradeSystem implements Serializable {
         return true;
     }
 
-    public boolean lendItem(String lenderId, String borrowerName, int itemIndex) throws EntryNotFoundException{
-        String itemId = getAvailableItems(lenderId).get(itemIndex);
-        String borrowId = getIdFromUsername(borrowerName);
-        return ((TraderManager)userManager).lendItem(lenderId, borrowId, itemId, 0);
+    public boolean lendItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
+            String meetingLocation, int lendItemIndex) throws EntryNotFoundException{
+        String itemId = getAvailableItems(userId).get(lendItemIndex);
+        String borrowId = getIdFromUsername(secondUserName);
+        return ((TraderManager)userManager).lendItem(userId, borrowId, itemId, 0);
     }
 
-    public boolean borrowItem(String borrowerId, String lenderName, int itemIndex, boolean isTemp) throws EntryNotFoundException {
-        String lenderId = getIdFromUsername(lenderName);
-        String itemId = getAvailableItems(lenderId).get(itemIndex);
+    public boolean borrowItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
+            String meetingLocation, int borrowItemIndex) throws EntryNotFoundException {
+        String borrowId = getIdFromUsername(secondUserName);
+        String itemId = getAvailableItems(borrowId).get(borrowItemIndex);
         return true;
     }
 }
