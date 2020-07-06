@@ -485,4 +485,32 @@ public class TradeSystem implements Serializable {
 		String tradeID = getRequestedTrades(userID).get(requestedTradeIndex);
         return ((TraderManager) userManager).denyTrade(userID, tradeID);
 	}
+
+	public String getTraderIdFromTrade(String userID, int requestedTradeIndex) {
+		return null;
+	}
+
+	public int getUserTradeItemIndex(String userID, int requestedTradeIndex) {
+		return 0;
+	}
+
+	public int getOtherUserTradeItemIndex(String traderID, int requestedTradeIndex) {
+		return 0;
+	}
+
+	public boolean isTradeTemporary(String userID, int requestedTradeIndex) {
+		return false;
+	}
+
+	public Date getFirstMeeting(String userID, int requestedTradeIndex) {
+		return null;
+	}
+
+	public Date getSecondMeeting(String userID, int requestedTradeIndex) {
+		return null;
+	}
+
+	public Object getUserOffer(String userID, int requestedTradeIndex) {
+		return null;
+	}
 }

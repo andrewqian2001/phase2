@@ -408,7 +408,6 @@ public class TextInterface {
      * Prints a list given the Trader's ID, Type of List, and Item type NOTE: This
      * is method is not called by an Admin ever NOTE: This method is just a helper
      * for the other print__ methods
-     * 
      * @param listType
      * @param itemType
      */
@@ -428,7 +427,7 @@ public class TextInterface {
             for (int i = 0; i < list.size(); i++) {
                 itemID = list.get(i);
                 System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, tSystem.getTradableItemName(itemID),
-                        tSystem.getTradableItemDesc(itemID));
+                        tSystem.getTradableItemDesc(itemID)); //TODO: FIX
             }
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
@@ -735,6 +734,18 @@ public class TextInterface {
      */
     private void editTradeOffer() {
         int requestedTradeIndex = -1;
+
+        String tempInputString = "";
+        String traderID = "";
+        String typeOfTrade = "";
+        String meetingTime = "";
+        String meetingLocation = "";
+        int inventoryItemIndex = -1;
+        int traderInventoryItemIndex = -1;
+        boolean isTemporary = true;
+        Date firstMeeting = null;
+        Date secondMeeting = null;
+
         boolean success = false;
         do {
             try {
@@ -748,8 +759,35 @@ public class TextInterface {
                 System.out.println("Enter the index of the requested trade that you would like to edit");
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
-                // MORE STUFF GOES HERE TO EDIT 🤠 
                 // YO MAMA SO FAT WHEN SHE DOES A 180, A WHOLE YEAR PASSES
+                traderID = tSystem.getTraderIdFromTrade(this.userID, requestedTradeIndex);
+                inventoryItemIndex = tSystem.getUserTradeItemIndex(this.userID, requestedTradeIndex);
+                traderInventoryItemIndex = tSystem.getOtherUserTradeItemIndex(traderID, requestedTradeIndex);
+                isTemporary = tSystem.isTradeTemporary(this.userID, requestedTradeIndex);
+                firstMeeting = tSystem.getFirstMeeting(this.userID, requestedTradeIndex);
+                secondMeeting = tSystem.getSecondMeeting(this.userID, requestedTradeIndex);
+                typeOfTrade = tSystem.getUserOffer(this.userID, requestedTradeIndex).equals("") ? "lending to" : tSystem
+                        .getUserOffer(traderID, requestedTradeIndex).equals("") ? "borrowing from" : "2-way trading with";
+                System.out.printf("In this trade, TRADER=\"%s\" is %s you", typeOfTrade, tSystem.getUsername(traderID));
+                // if this trader is lending to me
+                if(typeOfTrade.equals("lending to")) {
+                    System.out.println("Since the trader is lending to you originally, you do not have any items selected to lend");
+                    if (tSystem.getAvailableItems(this.userID).size() == 0) {
+                        System.out.println("Would you like to add an item to give to the trader? Y/N");
+                        System.out.print("=> ");
+                        tempInputString = sc.nextLine();
+                    }
+                }
+                if(tempInputString.equals("Y") || (tempInputString.equals("") && tSystem.getAvailableItems(this.userID).size() == 0)) {
+                    System.out.println("Here is your inventory:");
+                    printInventory();
+                    if(!typeOfTrade.equals("lending to")) {
+                        System.out.println("")
+                    }
+                    System.out.println("Please enter the index of the item you would like to give");
+                    System.out.print("=> ");
+                    inventoryItemIndex = Integer.parseInt(sc.nextLine());
+                } 
                 success = true;
             } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException e) {
                 success = false;
