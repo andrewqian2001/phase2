@@ -60,6 +60,11 @@ public class TraderManager extends UserManager implements Serializable {
         return trader.getTradeCount() >= trader.getTradeLimit();
     }
 
+    public ArrayList<String> getInventory(String userId) throws EntryNotFoundException {
+        Trader trader = findTraderById(userId);
+        return trader.getAvailableItems();
+    }
+
 
     /**
      * Adds one of user1's requested trades to user1's accepted trade

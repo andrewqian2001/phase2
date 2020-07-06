@@ -782,7 +782,7 @@ public class TextInterface {
                     System.out.println("Here is your inventory:");
                     printInventory();
                     if(!typeOfTrade.equals("lending to")) {
-                        System.out.println("")
+                        System.out.println("");
                     }
                     System.out.println("Please enter the index of the item you would like to give");
                     System.out.print("=> ");

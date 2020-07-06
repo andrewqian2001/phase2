@@ -486,12 +486,41 @@ public class TradeSystem implements Serializable {
         return ((TraderManager) userManager).denyTrade(userID, tradeID);
 	}
 
-	public String getTraderIdFromTrade(String userID, int requestedTradeIndex) {
-		return null;
+    /**
+     * Get userId of the other user in the trade
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the trade
+     * @return userId of the other user
+     * @throws EntryNotFoundException if the user or trade can not be found
+     */
+	public String getTraderIdFromTrade(String userID, int requestedTradeIndex) throws EntryNotFoundException {
+        String tradeID = getRequestedTrades(userID).get(requestedTradeIndex);
+		return tradeManager.getOtherUser(tradeID, userID);
 	}
 
-	public int getUserTradeItemIndex(String userID, int requestedTradeIndex) {
-		return 0;
+    /**
+     * get the item index of the trade item
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the trade
+     * @return item index of the trade item
+     * @throws EntryNotFoundException if the user or trade can not be found
+     */
+	public int getUserTradeItemIndex(String userID, int requestedTradeIndex) throws EntryNotFoundException {
+        String tradeId = getRequestedTrades(userID).get(requestedTradeIndex);
+        String[] items = tradeManager.getItemsFromTrade(tradeId);
+        ArrayList<String> inventory = ((TraderManager) userManager).getInventory(userID);
+
+        if(tradeManager.isFirstUser(tradeId, userID)) {
+            for(int i = 0; i < inventory.size(); i++) {
+                if(items[0].equals(inventory.get(i))) return i;
+            }
+        }
+        else {
+            for(int i = 0; i < inventory.size(); i++) {
+                if(items[1].equals(inventory.get(i))) return i;
+            }
+        }
+        return -1;
 	}
 
 	public int getOtherUserTradeItemIndex(String traderID, int requestedTradeIndex) {
