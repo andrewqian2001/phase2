@@ -719,7 +719,8 @@ public class TextInterface {
                 System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
-                success = isAccepted ? tSystem.acceptTrade(this.userID, requestedTradeIndex) : tSystem.rejectTrade(this.userID, requestedTradeIndex); 
+                success = isAccepted ? tSystem.acceptTrade(this.userID, tSystem.getRequestedTradeId(userID, requestedTradeIndex)) : tSystem.rejectTrade(this.userID, 
+                        tSystem.getRequestedTradeId(userID, requestedTradeIndex)); 
             } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException e) {
                 success = false;
                 System.out.println(e.getMessage());
@@ -736,6 +737,7 @@ public class TextInterface {
         int requestedTradeIndex = -1;
 
         String tempInputString = "";
+        String tradeID = "";
         String traderID = "";
         String typeOfTrade = "";
         String meetingLocation = "";
@@ -759,15 +761,16 @@ public class TextInterface {
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
                 // YO MAMA SO FAT WHEN SHE DOES A 180, A WHOLE YEAR PASSES
-                traderID = tSystem.getTraderIdFromTrade(this.userID, requestedTradeIndex);
-                inventoryItemIndex = tSystem.getUserTradeItemIndex(this.userID, requestedTradeIndex);
-                traderInventoryItemIndex = tSystem.getOtherUserTradeItemIndex(traderID, requestedTradeIndex);
-                isTemporary = tSystem.isTradeTemporary(this.userID, requestedTradeIndex);
-                firstMeeting = tSystem.getFirstMeeting(this.userID, requestedTradeIndex);
-                secondMeeting = tSystem.getSecondMeeting(this.userID, requestedTradeIndex);
-                meetingLocation = tSystem.getMeetingLocation(this.userID, requestedTradeIndex); //ADD
-                typeOfTrade = tSystem.getUserOffer(this.userID, requestedTradeIndex).equals("") ? "lending to" : tSystem
-                        .getUserOffer(traderID, requestedTradeIndex).equals("") ? "borrowing from" : "2-way trading with";
+                tradeID = tSystem.getRequestedTradeId(userID, requestedTradeIndex);
+                traderID = tSystem.getTraderIdFromTrade(this.userID, tradeID);
+                inventoryItemIndex = tSystem.getUserTradeItemIndex(this.userID, tradeID);
+                traderInventoryItemIndex = tSystem.getUserTradeItemIndex(traderID, tradeID);
+                isTemporary = tSystem.isTradeTemporary(tradeID);
+                firstMeeting = tSystem.getFirstMeeting(tradeID);
+                secondMeeting = tSystem.getSecondMeeting(tradeID);
+                meetingLocation = tSystem.getMeetingLocation(tradeID);
+                typeOfTrade = tSystem.getUserOffer(this.userID, tradeID).equals("") ? "lending to" : tSystem
+                        .getUserOffer(traderID, tradeID).equals("") ? "borrowing from" : "2-way trading with";
                 System.out.printf("In this trade, TRADER=\"%s\" is %s you", typeOfTrade, tSystem.getUsername(traderID));
                 // if this trader is lending to me
                 if(typeOfTrade.equals("lending to")) {
@@ -860,7 +863,7 @@ public class TextInterface {
                     meetingLocation = tempInputString;
                 }
                 tempInputString = ""; // reset the input string
-                tSystem.editTrade(this.userID, traderID, requestedTradeIndex, firstMeeting,
+                success = tSystem.editTrade(this.userID, traderID, tradeID, firstMeeting,
                         secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
             } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException | ParseException | CannotTradeException e) {
                 success = false;
@@ -887,7 +890,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
                 System.out.print("=> ");
                 acceptedTradeIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.confirmTrade(this.userID, acceptedTradeIndex);
+                success = tSystem.confirmTrade(this.userID, tSystem.getAcceptedTradeId(userID, acceptedTradeIndex));
             } catch (EntryNotFoundException | NumberFormatException e) {
                 System.out.println(e.getMessage());
             }
