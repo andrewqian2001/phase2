@@ -401,6 +401,7 @@ public class TradeSystem implements Serializable {
         String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
         ((TraderManager) userManager).addToIncompleteTradeCount(userId);
         ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
+        ((TraderManager) userManager).addRequestTrade(userId, tradeId);
         ((TraderManager) userManager).addToIncompleteTradeCount(secondUserId);
 
         return true;
