@@ -703,7 +703,7 @@ public class TextInterface {
      * REQUIREMENT: isFrozen == true
      */
     private void editTradeOffer() {
-
+        System.out.println("Done!");
     }
 
     /**

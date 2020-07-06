@@ -382,7 +382,6 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * TODO: FINISH
      * 2-way trade method
      * @param userId  id of the logged-in user
      * @param secondUserName username of the want-to-trade with user
@@ -396,8 +395,8 @@ public class TradeSystem implements Serializable {
      */      
     public boolean trade(String userId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException {
         String secondUserId = getIdFromUsername(secondUserName);
-        String lendItemId = getAvailableItems(userId).get(lendItemIndex);
-        String borrowItemId = getAvailableItems(secondUserId).get(borrowItemIndex);
+        String lendItemId = lendItemIndex == -1 ? "" : getAvailableItems(userId).get(lendItemIndex);
+        String borrowItemId = borrowItemIndex == -1 ? "" : getAvailableItems(secondUserId).get(borrowItemIndex);
 
         String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
         ((TraderManager) userManager).addToIncompleteTradeCount(userId);
@@ -408,7 +407,6 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * TODO: FINISH
      * 1-way Trade Method: logged-in user giving an item to another user
      * @param userId id of the logged-in user
      * @param secondUserName username of the want-to-trade with user
@@ -421,13 +419,10 @@ public class TradeSystem implements Serializable {
      */   
     public boolean lendItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
             String meetingLocation, int lendItemIndex) throws EntryNotFoundException{
-        String itemId = getAvailableItems(userId).get(lendItemIndex);
-        String borrowId = getIdFromUsername(secondUserName);
-        return ((TraderManager)userManager).lendItem(userId, borrowId, itemId, 0);
+        return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, lendItemIndex, -1);
     }
 
     /**
-     * TODO: FINISH
      * 1-way Trade Method: logged-in user wants an item from another user
      * @param userId id of the logged-in user
      * @param secondUserName username of the want-to-trade with user
@@ -440,8 +435,6 @@ public class TradeSystem implements Serializable {
      */
     public boolean borrowItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
             String meetingLocation, int borrowItemIndex) throws EntryNotFoundException {
-        String borrowId = getIdFromUsername(secondUserName);
-        String itemId = getAvailableItems(borrowId).get(borrowItemIndex);
-        return true;
+        return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, -1, borrowItemIndex);
     }
 }
