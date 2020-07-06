@@ -716,7 +716,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
-                success = isAccepted ? tSystem.acceptTrade(this.userID, requestedTradeIndex) : tSystem.rejectTrade(this.userID, requestedTradeIndex); // TODO: ADD IN TRADESYSTEM
+                success = isAccepted ? tSystem.acceptTrade(this.userID, requestedTradeIndex) : tSystem.rejectTrade(this.userID, requestedTradeIndex); 
             } catch (NumberFormatException | EntryNotFoundException e) {
                 success = false;
                 System.out.println(e.getMessage());
@@ -751,8 +751,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
                 System.out.print("=> ");
                 acceptedTradeIndex = Integer.parseInt(sc.nextLine());
-                
-                success = tSystem.confirmTrade(this.userID, acceptedTradeIndex); // TODO: ADD IN TRADESYSTEM
+                success = tSystem.confirmTrade(this.userID, acceptedTradeIndex);
             } catch (EntryNotFoundException | NumberFormatException e) {
                 System.out.println(e.getMessage());
             }

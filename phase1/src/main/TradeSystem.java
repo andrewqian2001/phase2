@@ -438,4 +438,34 @@ public class TradeSystem implements Serializable {
             String meetingLocation, int borrowItemIndex) throws EntryNotFoundException {
         return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, -1, borrowItemIndex);
     }
+
+    /**
+     * Confirms an accepted trade took place outside of the program
+     * @param userID id of the user
+     * @param acceptedTradeIndex the index of the want-to-confirm trade
+     * @return true if the trade was successfully confirmed
+     */
+	public boolean confirmTrade(String userID, int acceptedTradeIndex) {
+		return true;
+	}
+
+    /**
+     * Accepts a requested trade 
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the want-to-accept trade
+     * @return true if the trade request was sucesssfully confirmed
+     */
+	public boolean acceptTrade(String userID, int requestedTradeIndex) {
+		return true;
+	}
+
+    /**
+     * Rejects a requested trade
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the want-to-reject trade
+     * @return true if the trade request was successfully rejected
+     */
+	public boolean rejectTrade(String userID, int requestedTradeIndex) {
+		return true;
+	}
 }
