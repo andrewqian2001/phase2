@@ -738,7 +738,6 @@ public class TextInterface {
         String tempInputString = "";
         String traderID = "";
         String typeOfTrade = "";
-        String meetingTime = "";
         String meetingLocation = "";
         int inventoryItemIndex = -1;
         int traderInventoryItemIndex = -1;
@@ -778,18 +777,57 @@ public class TextInterface {
                         tempInputString = sc.nextLine();
                     }
                 }
-                if(tempInputString.equals("Y") || (tempInputString.equals("") && tSystem.getAvailableItems(this.userID).size() == 0)) {
+                if(tempInputString.trim().equals("Y") || (tempInputString.trim().equals("") && tSystem.getAvailableItems(this.userID).size() != 0)) {
                     System.out.println("Here is your inventory:");
                     printInventory();
                     if(!typeOfTrade.equals("lending to")) {
-                        System.out.println("")
+                        System.out.println("Item #" + inventoryItemIndex + "is the currently selected item");
+                        System.out.println("If you would not like to change this item, simply press ENTER/RETURN at the prompt");
                     }
                     System.out.println("Please enter the index of the item you would like to give");
                     System.out.print("=> ");
-                    inventoryItemIndex = Integer.parseInt(sc.nextLine());
+                    tempInputString = sc.nextLine();
+                    if(!tempInputString.trim().equals("")) {
+                        inventoryItemIndex = Integer.parseInt(tempInputString);
+                    }
                 } 
+                tempInputString = ""; //reset the input string
+                // if this trader is borrowing from me
+                if(typeOfTrade.equals("borrowing from")) {
+                    System.out.println("Since the trader is borrowing from you originally, they do not have any items selected to lend");
+                    if (tSystem.getAvailableItems(traderID).size() == 0) {
+                        System.out.println("Would you like to add an item to borrow from this trader? Y/N");
+                        System.out.print("=> ");
+                        tempInputString = sc.nextLine();
+                    }
+                }
+                if(tempInputString.trim().equals("Y") || (tempInputString.trim().equals("") && tSystem.getAvailableItems(traderID).size() != 0)) {
+                    System.out.printf("Here is %s's current inventory:", tSystem.getUsername(traderID));
+                    printList(traderID, "Inventory", "Item");
+                    if(!typeOfTrade.equals("borrowing from")) {
+                        System.out.println("Item #" + traderInventoryItemIndex + "is the currently selected item");
+                        System.out.println("If you would not like to change this item, simply press ENTER/RETURN at the prompt");
+                    }
+                    System.out.println("Enter the index of the item that you would like to recieve from the trader");
+                    System.out.print("=> ");
+                    tempInputString = sc.nextLine();
+                    if(!tempInputString.trim().equals("")) {
+                        traderInventoryItemIndex = Integer.parseInt(tempInputString);
+                    }
+                } 
+                tempInputString = ""; //reset the input string
+                System.out.println("The first meeting will take place on " + firstMeeting.toString());
+                System.out.println("If you would not like to change this, please press ENTER/RETURN at the prompt");
+                System.out.println("Enter your preferred first meeting time in the format yyyy/MM/dd HH:mm");
+                System.out.print("=> ");
+                tempInputString = sc.nextLine();
+                if(tempInputString.trim().equals("")) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                    firstMeeting = sdf.parse(tempInputString);
+                }
+                //MORE STUFF HERE - GOTTA COMMIT STYLL
                 success = true;
-            } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException e) {
+            } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException | ParseException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
