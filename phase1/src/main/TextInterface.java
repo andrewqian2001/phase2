@@ -671,7 +671,7 @@ public class TextInterface {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
                 firstMeeting = sdf.parse(meetingTime);
 
-                System.out.println("Is this a temporary or permanent trade? Y/N");
+                System.out.println("Is this a temporary trade? Y/N");
                 System.out.print("=> ");
                 isTemporary = sc.nextLine().equals("Y");
                 if(isTemporary) {
@@ -782,7 +782,7 @@ public class TextInterface {
                     System.out.println("Here is your inventory:");
                     printInventory();
                     if(!typeOfTrade.equals("lending to")) {
-                        System.out.println("");
+                        System.out.println("")
                     }
                     System.out.println("Please enter the index of the item you would like to give");
                     System.out.print("=> ");
