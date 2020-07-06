@@ -576,10 +576,10 @@ public class TradeSystem implements Serializable {
      * get the item offered in the trade by the user
      * @param userID id of the user
      * @param tradeId id of the trade
-     * @return the item object
+     * @return the item id
      * @throws EntryNotFoundException if the user or the trade can not be found
      */
-	public Object getUserOffer(String userID, String tradeId) throws EntryNotFoundException {
+	public String getUserOffer(String userID, String tradeId) throws EntryNotFoundException {
         String[] items = tradeManager.getItemsFromTrade(tradeId);
         if(tradeManager.isFirstUser(tradeId, userID)) {
             return items[0];

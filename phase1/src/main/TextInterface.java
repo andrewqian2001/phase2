@@ -427,11 +427,34 @@ public class TextInterface {
             System.out.printf("%s's %s %ss\n***************\n", tSystem.getUsername(ID), listType, itemType);
             for (int i = 0; i < list.size(); i++) {
                 itemID = list.get(i);
-                System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, tSystem.getTradableItemName(itemID),
-                        tSystem.getTradableItemDesc(itemID)); //TODO: FIX
+                if(itemType.equals("Item"))
+                    System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, tSystem.getTradableItemName(itemID), tSystem.getTradableItemDesc(itemID));
+                else if(listType.equals("Accepted"))
+                    printTrade(tSystem.getAcceptedTradeId(this.userID, i));
+                else if(listType.equals("Requested"))
+                    printTrade(tSystem.getRequestedTradeId(this.userID, i));
             }
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Prints all the details of the trade
+     * @param tradeID id of the trade
+     * @throws EntryNotFoundException
+     */
+    private void printTrade(String tradeID) throws EntryNotFoundException {
+        String traderID =  tSystem.getTraderIdFromTrade(userID, tradeID);
+        String typeOfTrade = tSystem.getUserOffer(this.userID, tradeID).equals("") ? "borrowing from" : tSystem.getUserOffer(traderID, tradeID).equals("") ? "lending to" : "2-way trading with";
+        String isTemporaryString = tSystem.isTradeTemporary(tradeID) ? "temporarily" : "permanently"; 
+        String userItemID = typeOfTrade.equals("borrowing from") ? "N/A" : tSystem.getTradableItemName(tSystem.getUserOffer(userID, tradeID));
+        String traderItemID = typeOfTrade.equals("lending to") ? "N/A" : tSystem.getTradableItemName(tSystem.getUserOffer(traderID, tradeID));
+        System.out.printf("\t%s is %s %s TRADER=\"%s\"\n", tSystem.getUsername(this.userID), isTemporaryString, typeOfTrade, tSystem.getUsername(traderID));
+        System.out.printf("\tYour Item:\t%s\n\t%s's Item:\t%s\n", userItemID, tSystem.getUsername(traderID), traderItemID);
+        System.out.println("\tFirst Meeting: " + tSystem.getFirstMeeting(tradeID) + " @ " + tSystem.getMeetingLocation(tradeID));
+        if(isTemporaryString.equals("temporarily")) {
+            System.out.println("\tSecond Meeting: " + tSystem.getSecondMeeting(tradeID) + " @ " + tSystem.getMeetingLocation(tradeID));
         }
     }
 
