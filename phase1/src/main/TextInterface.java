@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -273,7 +274,7 @@ public class TextInterface {
                     break;
                 case 12:
                     if (!isFrozen)
-                        acceptTradeOffer();
+                        respondToTradeOffer(true);
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
@@ -285,7 +286,7 @@ public class TextInterface {
                     break;
                 case 14:
                     if (!isFrozen)
-                        rejectTradeOffer();
+                        respondToTradeOffer(false);
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
@@ -637,6 +638,10 @@ public class TextInterface {
         do {
             try {
                 if (!tradeType.equals("BORROW")) {
+                    if(tSystem.getAvailableItems(this.userID).size() == 0) {
+                        System.out.println("Ruh Roh! Looks like you have no available items to trade\nABORTING TRADE...");
+                        return;
+                    }
                     System.out.println("Here is your inventory:");
                     printInventory();
                     System.out.println("Please enter the index of the item you would like to give");
@@ -647,6 +652,10 @@ public class TextInterface {
                     System.out.println("Enter the username of the Trader you would like to borrow from");
                     System.out.print("=> ");
                     traderName = sc.nextLine();
+                    if (tSystem.getAvailableItems(tSystem.getIdFromUsername(traderName)).size() == 0) {
+                        System.out.printf("Ruh Roh! %s does not have any available items to trade\nABORTING TRADE...\n", traderName);
+                        return;
+                    }
                     System.out.printf("Here is %s's current inventory:", traderName);
                     printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
                     System.out.println("Enter the index of the item that you would like to recieve from the trader");
@@ -680,7 +689,7 @@ public class TextInterface {
                     success = tSystem.borrowItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
                             traderInventoryItemIndex);
                 else success = tSystem.trade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
-            } catch (EntryNotFoundException | ParseException e) { 
+            } catch (EntryNotFoundException | ParseException | NumberFormatException e) { 
                 success = false;
                 System.out.println(e.getMessage());
             }
@@ -689,12 +698,31 @@ public class TextInterface {
     }
 
     /**
-     * TODO: FINISH
      * Prompts user to reject a trade offer
      * REQUIREMENT: isFrozen == true
      */
-    private void rejectTradeOffer() {
-        System.out.println("Done!");
+    private void respondToTradeOffer(boolean isAccepted) {
+        int requestedTradeIndex = -1;
+        boolean success = false;
+        do {
+            try {
+                if (tSystem.getRequestedTrades(this.userID).size() == 0) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you do not have any requested trades\nABORTING TRADE REQUEST RESPONSE...");
+                    return;
+                }
+                System.out.println("Here is your requested trades");
+                printList(this.userID, "Requested", "Trade");
+                System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
+                System.out.print("=> ");
+                requestedTradeIndex = Integer.parseInt(sc.nextLine());
+                success = isAccepted ? tSystem.acceptTrade(this.userID, requestedTradeIndex) : tSystem.rejectTrade(this.userID, requestedTradeIndex); // TODO: ADD IN TRADESYSTEM
+            } catch (NumberFormatException | EntryNotFoundException e) {
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.println("Done! You have successfully " + (isAccepted ? "accepted" : "rejected") + " the requested trade");
     }
 
     /**
@@ -707,19 +735,28 @@ public class TextInterface {
     }
 
     /**
-     * TODO: FINISH
-     * Prompts user to accept a trade offer
-     * REQUIREMENT: isFrozen == true
-     */
-    private void acceptTradeOffer() {
-        System.out.println("Done!");
-    }
-
-    /**
-     * TODO: FINISH
      * Prompts user to confirm that a trade has happend outside of this program
      */
     private void confirmTrade() {
-        System.out.println("Done!");
+        boolean success = false;
+        int acceptedTradeIndex = -1;
+        do {
+            try {
+                if(tSystem.getAcceptedTrades(this.userID).size() == 0) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
+                    return;
+                } System.out.println("Here is your accepted trades");
+                printList(this.userID, "Accepted", "Trade");
+                System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
+                System.out.print("=> ");
+                acceptedTradeIndex = Integer.parseInt(sc.nextLine());
+                
+                success = tSystem.confirmTrade(this.userID, acceptedTradeIndex); // TODO: ADD IN TRADESYSTEM
+            } catch (EntryNotFoundException | NumberFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.println("Done! You have successfully confirmed the accepted trade");
     }
 }
