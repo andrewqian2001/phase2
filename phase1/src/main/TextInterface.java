@@ -620,6 +620,9 @@ public class TextInterface {
     /**
      * Prompt to trade items with another trader
      * REQUIREMENT: isFrozen == true
+     * @param tradeType LEND: 1-way Trade - logged-in user gives to another user
+     *                  BORROW: 1-way Trade - logged-in user gets from another user
+     *                  TRADE: Standard 2-way trade between logged-in user and another user
      */
     private void trade(String tradeType) {
         String traderName = "";
