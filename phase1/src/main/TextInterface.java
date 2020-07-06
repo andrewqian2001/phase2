@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import java.util.Date;
 
 import exceptions.AuthorizationException;
+import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 
@@ -728,7 +729,6 @@ public class TextInterface {
     }
 
     /**
-     * TODO: FINISH
      * Prompts user to edit a trade offer
      * REQUIREMENT: isFrozen == true
      */
@@ -860,8 +860,9 @@ public class TextInterface {
                     meetingLocation = tempInputString;
                 }
                 tempInputString = ""; // reset the input string
-                success = tSystem.editTrade(this.userID, traderID, requestedTradeIndex, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex); //TODO: ADD
-            } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException | ParseException e) {
+                tSystem.editTrade(this.userID, traderID, requestedTradeIndex, firstMeeting,
+                        secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
+            } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException | ParseException | CannotTradeException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
