@@ -1,6 +1,7 @@
 package main;
 
 import exceptions.AuthorizationException;
+import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import tradableitems.TradableItem;
@@ -487,13 +488,35 @@ public class TradeSystem implements Serializable {
 	}
 
     /**
+     * edits the trade object
+     * @param userID id of the user
+     * @param traderId id of the other user of the trade
+     * @param requestedTradeIndex the index of the trade
+     * @param firstMeeting first meeting date object
+     * @param secondMeeting second meeting date object
+     * @param meetingLocation String of the meeting location
+     * @param inventoryItemIndex index of the user's trade item
+     * @param traderInventoryItemIndex index of the trader's trade item
+     * @throws EntryNotFoundException if user or trade can  not be found
+     * @throws CannotTradeException if the trade is not allowed
+     */
+	public void editTrade(String userID, String traderId,  int requestedTradeIndex, Date firstMeeting,
+                             Date secondMeeting, String meetingLocation, int inventoryItemIndex, int traderInventoryItemIndex) throws EntryNotFoundException, CannotTradeException {
+        String tradeID = getRequestedTrades(userID).get(requestedTradeIndex);
+        ArrayList<String> userInventory = ((TraderManager) userManager).getInventory(userID);
+        ArrayList<String> traderInventory = ((TraderManager) userManager).getInventory(traderId);
+        tradeManager.editTrade(tradeID, firstMeeting, secondMeeting, meetingLocation,
+                userInventory.get(inventoryItemIndex), traderInventory.get(traderInventoryItemIndex));
+    }
+
+    /**
      * Get userId of the other user in the trade
      * @param userID id of the user
      * @param requestedTradeIndex the index of the trade
      * @return userId of the other user
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-	public String getTraderIdFromTrade(String userID, int requestedTradeIndex) throws EntryNotFoundException {
+	public String getTraderIdFromTrade(String userID, int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
         String tradeID = getRequestedTrades(userID).get(requestedTradeIndex);
 		return tradeManager.getOtherUser(tradeID, userID);
 	}
@@ -505,7 +528,7 @@ public class TradeSystem implements Serializable {
      * @return item index of the trade item
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-	public int getUserTradeItemIndex(String userID, int requestedTradeIndex) throws EntryNotFoundException {
+	public int getUserTradeItemIndex(String userID, int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
         String tradeId = getRequestedTrades(userID).get(requestedTradeIndex);
         String[] items = tradeManager.getItemsFromTrade(tradeId);
         ArrayList<String> inventory = ((TraderManager) userManager).getInventory(userID);
@@ -520,26 +543,84 @@ public class TradeSystem implements Serializable {
                 if(items[1].equals(inventory.get(i))) return i;
             }
         }
-        return -1;
+        throw new EntryNotFoundException("The trade item could not be found in the inventory.");
 	}
 
-	public int getOtherUserTradeItemIndex(String traderID, int requestedTradeIndex) {
-		return 0;
+    /**
+     * get the item index of the trade item of the other user in the trade
+     * @param  userID id of the user
+     * @param requestedTradeIndex the index of the trade
+     * @return item index of the trade item
+     * @throws EntryNotFoundException if the user or trade can not be found
+     */
+	public int getOtherUserTradeItemIndex(String userID, int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+        String tradeId = getRequestedTrades(userID).get(requestedTradeIndex);
+        return getUserTradeItemIndex(tradeManager.getOtherUser(userID, tradeId), requestedTradeIndex);
 	}
 
-	public boolean isTradeTemporary(String userID, int requestedTradeIndex) {
-		return false;
+    /**
+     * return if trade is temporary
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the trade
+     * @return true if trade is temporary
+     * @throws EntryNotFoundException if the user or trade can not be found
+     */
+	public boolean isTradeTemporary(String userID, int requestedTradeIndex) throws EntryNotFoundException {
+        String tradeId = getRequestedTrades(userID).get(requestedTradeIndex);
+        return tradeManager.hasSecondMeeting(tradeId);
 	}
 
-	public Date getFirstMeeting(String userID, int requestedTradeIndex) {
-		return null;
+    /**
+     * get first meeting time of the trade
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the trade
+     * @return Date object of the first meeting time
+     * @throws EntryNotFoundException if the user or trade can not be found
+     */
+	public Date getFirstMeeting(String userID, int requestedTradeIndex) throws EntryNotFoundException {
+        String tradeId = getRequestedTrades(userID).get(requestedTradeIndex);
+        return tradeManager.getFirstMeetingTime(tradeId);
 	}
 
-	public Date getSecondMeeting(String userID, int requestedTradeIndex) {
-		return null;
+    /**
+     * get second meeting time of the trade
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the trade
+     * @return Date object of the second meeting time
+     * @throws EntryNotFoundException if the user or trade can not be found
+     */
+	public Date getSecondMeeting(String userID, int requestedTradeIndex) throws EntryNotFoundException {
+        String tradeId = getRequestedTrades(userID).get(requestedTradeIndex);
+        return tradeManager.getSecondMeetingTime(tradeId);
 	}
 
-	public Object getUserOffer(String userID, int requestedTradeIndex) {
-		return null;
+    /**
+     * get the item offered in the trade by the user
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the trade
+     * @return the item object
+     * @throws EntryNotFoundException if the user or the trade can not be found
+     */
+	public Object getUserOffer(String userID, int requestedTradeIndex) throws EntryNotFoundException {
+        String tradeId = getRequestedTrades(userID).get(requestedTradeIndex);
+        String[] items = tradeManager.getItemsFromTrade(tradeId);
+        if(tradeManager.isFirstUser(tradeId, userID)) {
+            return items[0];
+        }
+        else {
+            return items[1];
+        }
 	}
+
+    /**
+     * get meeting location
+     * @param userId id of the user
+     * @param requestedTradeIndex the index of the trade
+     * @return the meeting location
+     * @throws EntryNotFoundException if the user or the trade can not be found
+     */
+    public String getMeetingLocation(String  userId, int requestedTradeIndex) throws EntryNotFoundException {
+        String tradeId = getRequestedTrades(userId).get(requestedTradeIndex);
+        return tradeManager.getMeetingLocation(tradeId);
+    }
 }
