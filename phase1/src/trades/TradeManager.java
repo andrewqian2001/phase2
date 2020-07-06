@@ -68,6 +68,34 @@ public class TradeManager extends Database<Trade> implements Serializable {
     }
 
     /**
+     * Gets if the first meeting was confirmed 
+     * @param tradeID id of the trade
+     * @param userID id of the user
+     * @return true if the user confirmed the first meeting
+     * @throws EntryNotFoundException
+     */
+    public boolean getFirstMeetingConfirmed(String tradeID, String userID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        if(trade.getFirstUserId().equals(userID)) return trade.isFirstUserConfirmed1();
+        else if(trade.getSecondUserId().equals(userID)) return trade.isSecondUserConfirmed1();
+        else throw new EntryNotFoundException("The user " + userID + " was not found.");
+    }
+
+    /**
+     * Gets if the second meeting was confirmed
+     * @param tradeID id of the trade
+     * @param userID id of the user
+     * @return true if the user confirmed the second meeting
+     * @throws EntryNotFoundException
+     */
+    public boolean getSecondMeetingConfirmed(String tradeID, String userID) throws EntryNotFoundException {
+        Trade trade = populate(tradeID);
+        if(trade.getFirstUserId().equals(userID)) return trade.isFirstUserConfirmed2();
+        else if(trade.getSecondUserId().equals(userID)) return trade.isSecondUserConfirmed2();
+        else throw new EntryNotFoundException("The user " + userID + " was not found.");
+    }
+
+    /**
      * Confirms the first meeting
      * @param tradeId id of the trade
      * @param userId id of the user
@@ -128,6 +156,16 @@ public class TradeManager extends Database<Trade> implements Serializable {
     public Date getSecondMeetingTime (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getSecondMeetingTime();
+    }
+
+    /**
+     * Checks if the given trade is temporary (has a second meeting)
+     * @param tradeID id of the trade
+     * @return true if the trade is temporary
+     * @throws EntryNotFoundException
+     */
+    public boolean hasSecondMeeting(String tradeID) throws EntryNotFoundException {
+        return getSecondMeetingTime(tradeID) == null;
     }
 
     public String editTrade(String tradeId, Date meetingTime, Date secondMeetingTime, String meetingLocation,

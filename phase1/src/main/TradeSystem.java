@@ -393,7 +393,7 @@ public class TradeSystem implements Serializable {
      * @return true if the trade has been processed successfully
      * @throws EntryNotFoundException
      */      
-    public boolean trade(String userId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException {
+    public boolean trade(String userId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
         String secondUserId = getIdFromUsername(secondUserName);
         String lendItemId = lendItemIndex == -1 ? "" : getAvailableItems(userId).get(lendItemIndex);
         String borrowItemId = borrowItemIndex == -1 ? "" : getAvailableItems(secondUserId).get(borrowItemIndex);
@@ -445,8 +445,13 @@ public class TradeSystem implements Serializable {
      * @param acceptedTradeIndex the index of the want-to-confirm trade
      * @return true if the trade was successfully confirmed
      */
-	public boolean confirmTrade(String userID, int acceptedTradeIndex) {
-		return true;
+	public boolean confirmTrade(String userID, int acceptedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+        String tradeID = getRequestedTrades(userID).get(acceptedTradeIndex);
+        if(tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID))
+            tradeManager.confirmSecondMeeting(tradeID, userID, true);
+        else
+            tradeManager.confirmFirstMeeting(tradeID, userID, true);
+        return true;
 	}
 
     /**
@@ -454,9 +459,11 @@ public class TradeSystem implements Serializable {
      * @param userID id of the user
      * @param requestedTradeIndex the index of the want-to-accept trade
      * @return true if the trade request was sucesssfully confirmed
+     * @throws EntryNotFoundException
      */
-	public boolean acceptTrade(String userID, int requestedTradeIndex) {
-		return true;
+	public boolean acceptTrade(String userID, int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+        String tradeID = getRequestedTrades(userID).get(requestedTradeIndex);
+		return ((TraderManager) userManager).acceptTradeRequest(userID, tradeID);
 	}
 
     /**
@@ -465,7 +472,8 @@ public class TradeSystem implements Serializable {
      * @param requestedTradeIndex the index of the want-to-reject trade
      * @return true if the trade request was successfully rejected
      */
-	public boolean rejectTrade(String userID, int requestedTradeIndex) {
-		return true;
+	public boolean rejectTrade(String userID, int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+		String tradeID = getRequestedTrades(userID).get(requestedTradeIndex);
+        return ((TraderManager) userManager).denyTrade(userID, tradeID);
 	}
 }

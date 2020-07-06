@@ -689,7 +689,7 @@ public class TextInterface {
                     success = tSystem.borrowItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
                             traderInventoryItemIndex);
                 else success = tSystem.trade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
-            } catch (EntryNotFoundException | ParseException | NumberFormatException e) { 
+            } catch (EntryNotFoundException | ParseException | NumberFormatException | IndexOutOfBoundsException e) { 
                 success = false;
                 System.out.println(e.getMessage());
             }
@@ -717,7 +717,7 @@ public class TextInterface {
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
                 success = isAccepted ? tSystem.acceptTrade(this.userID, requestedTradeIndex) : tSystem.rejectTrade(this.userID, requestedTradeIndex); 
-            } catch (NumberFormatException | EntryNotFoundException e) {
+            } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
