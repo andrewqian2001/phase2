@@ -194,6 +194,7 @@ public class TextInterface {
      */
     private void traderMenu() {
         boolean isFrozen = false;
+        boolean ableToBorrow = false;
         System.out.println("TRADER MAIN MENU");
         System.out.println(lineBreak);
         do {
@@ -201,6 +202,7 @@ public class TextInterface {
                 // since this valid userID would be returned from a logged in user...
                 // the exception will never be thrown
                 isFrozen = tSystem.checkFrozen(this.userID);
+                ableToBorrow = tSystem.canBorrow(this.userID);
             } catch (EntryNotFoundException e) {
                 System.out.println(e.getMessage());
             }
@@ -213,7 +215,8 @@ public class TextInterface {
             System.out.println("7.\tRequest to add item to Inventory");
             System.out.println("8.\tAdd item to Wishlist");
             if (!isFrozen) {
-                System.out.println("9.\tBorrow an Item from a Trader");
+                if(ableToBorrow)
+                    System.out.println("9.\tBorrow an Item from a Trader");
                 System.out.println("10.\tLend an Item to a Trader");
                 System.out.println("11.\tTrade with a trader");
                 System.out.println("12.\tAccept Trade Request Offer");
@@ -255,7 +258,7 @@ public class TextInterface {
                     addItemToWishList();
                     break;
                 case 9:
-                    if (!isFrozen)
+                    if (!isFrozen && ableToBorrow)
                         trade("BORROW");
                     else
                         System.out.println("Invalid Selection, please try again");
@@ -622,7 +625,7 @@ public class TextInterface {
      * Prompt to trade items with another trader
      * REQUIREMENT: isFrozen == true
      * @param tradeType LEND: 1-way Trade - logged-in user gives to another user
-     *                  BORROW: 1-way Trade - logged-in user gets from another user
+     *                  BORROW: 1-way Trade - logged-in user gets from another user (REQUIREMENT: ableToBorrow == true)
      *                  TRADE: Standard 2-way trade between logged-in user and another user
      */
     private void trade(String tradeType) {

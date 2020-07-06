@@ -116,6 +116,15 @@ public class TradeSystem implements Serializable {
     }
 
     /**
+     * Checks if the given user is able to borrow items
+     * @param userID id of the user
+     * @return true if the user is able to borrow, else false
+     */
+    public boolean canBorrow(String userID) throws EntryNotFoundException {
+        return ((TraderManager) userManager).canBorrow(userID);
+    }
+
+    /**
      * Freezes/Unfreezes a Trader given their username Requirement: Only an Admin
      * Account can preform this action
      * 
