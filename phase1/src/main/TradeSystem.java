@@ -21,6 +21,7 @@ public class TradeSystem implements Serializable {
     private TradableItemManager tradableItemManager;
     private String loggedInUserId;
 
+
     /**
      * Constructor for TradeSystem, initializes managers
      * 
@@ -112,6 +113,15 @@ public class TradeSystem implements Serializable {
      */
     public boolean checkAdmin(String userID) throws EntryNotFoundException {
         return userManager.isAdmin(userID);
+    }
+
+    /**
+     * Checks if the given user is able to borrow items
+     * @param userID id of the user
+     * @return true if the user is able to borrow, else false
+     */
+    public boolean canBorrow(String userID) throws EntryNotFoundException {
+        return ((TraderManager) userManager).canBorrow(userID);
     }
 
     /**
@@ -380,12 +390,99 @@ public class TradeSystem implements Serializable {
         ((AdminManager) userManager).setTradeLimit(tradeLimit);
     }
 
-    public boolean lendItem(String lenderId, String borrowerName, int itemIndex) throws EntryNotFoundException{
-        String itemId = getAvailableItems(lenderId).get(itemIndex);
-        String borrowId = getIdFromUsername(borrowerName);
-        return ((TraderManager)userManager).lendItem(lenderId, borrowId, itemId, 0);
+    /**
+     * 2-way trade method
+     * @param userId  id of the logged-in user
+     * @param secondUserName username of the want-to-trade with user
+     * @param firstMeeting Date of the first meeting
+     * @param secondMeeting Date of the second meeting
+     * @param meetingLocation Location of both meetings
+     * @param lendItemIndex index of the item that will be lent to
+     * @param borrowItemIndex index of the item that will be borrowed
+     * @return true if the trade has been processed successfully
+     * @throws EntryNotFoundException
+     */      
+    public boolean trade(String userId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+        String secondUserId = getIdFromUsername(secondUserName);
+        String lendItemId = lendItemIndex == -1 ? "" : getAvailableItems(userId).get(lendItemIndex);
+        String borrowItemId = borrowItemIndex == -1 ? "" : getAvailableItems(secondUserId).get(borrowItemIndex);
 
+        String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
+        ((TraderManager) userManager).addToIncompleteTradeCount(userId);
+        ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
+        ((TraderManager) userManager).addRequestTrade(userId, tradeId);
+        ((TraderManager) userManager).addToIncompleteTradeCount(secondUserId);
 
-
+        return true;
     }
+
+    /**
+     * 1-way Trade Method: logged-in user giving an item to another user
+     * @param userId id of the logged-in user
+     * @param secondUserName username of the want-to-trade with user
+     * @param firstMeeting Date of the first meeting
+     * @param secondMeeting Date of the second meeting
+     * @param meetingLocation Location of both meetings
+     * @param lendItemIndex index of the item that will be lent
+     * @return true if the trade was processed successfully
+     * @throws EntryNotFoundException
+     */   
+    public boolean lendItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
+            String meetingLocation, int lendItemIndex) throws EntryNotFoundException{
+        return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, lendItemIndex, -1);
+    }
+
+    /**
+     * 1-way Trade Method: logged-in user wants an item from another user
+     * @param userId id of the logged-in user
+     * @param secondUserName username of the want-to-trade with user
+     * @param firstMeeting Date of the first meeting
+     * @param secondMeeting Date of the second meeting
+     * @param meetingLocation Location of both meetings
+     * @param borrowItemIndex index of the item that will be borrowed
+     * @return true if the trade has been processed successfully
+     * @throws EntryNotFoundException
+     */
+    public boolean borrowItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
+            String meetingLocation, int borrowItemIndex) throws EntryNotFoundException {
+        return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, -1, borrowItemIndex);
+    }
+
+    /**
+     * Confirms an accepted trade took place outside of the program
+     * @param userID id of the user
+     * @param acceptedTradeIndex the index of the want-to-confirm trade
+     * @return true if the trade was successfully confirmed
+     */
+	public boolean confirmTrade(String userID, int acceptedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+        String tradeID = getRequestedTrades(userID).get(acceptedTradeIndex);
+        if(tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID))
+            tradeManager.confirmSecondMeeting(tradeID, userID, true);
+        else
+            tradeManager.confirmFirstMeeting(tradeID, userID, true);
+        return true;
+	}
+
+    /**
+     * Accepts a requested trade 
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the want-to-accept trade
+     * @return true if the trade request was sucesssfully confirmed
+     * @throws EntryNotFoundException
+     */
+	public boolean acceptTrade(String userID, int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+        String tradeID = getRequestedTrades(userID).get(requestedTradeIndex);
+		return ((TraderManager) userManager).acceptTradeRequest(userID, tradeID);
+	}
+
+    /**
+     * Rejects a requested trade
+     * @param userID id of the user
+     * @param requestedTradeIndex the index of the want-to-reject trade
+     * @return true if the trade request was successfully rejected
+     */
+	public boolean rejectTrade(String userID, int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+		String tradeID = getRequestedTrades(userID).get(requestedTradeIndex);
+        return ((TraderManager) userManager).denyTrade(userID, tradeID);
+	}
 }

@@ -50,6 +50,18 @@ public class TraderManager extends UserManager implements Serializable {
 
 
     /**
+     * Checks whether this user can borrow items
+     * @param userID id of the user
+     * @return true if the user can borrow, false else
+     * @throws EntryNotFoundException
+     */
+    public boolean canBorrow(String userID) throws EntryNotFoundException {
+        Trader trader = findTraderById(userID);
+        return trader.getTradeCount() >= trader.getTradeLimit();
+    }
+
+
+    /**
      * Adds one of user1's requested trades to user1's accepted trade
      * @param user1   id of user
      * @param tradeId id of trade to accept
