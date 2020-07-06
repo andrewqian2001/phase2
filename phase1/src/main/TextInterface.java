@@ -734,6 +734,28 @@ public class TextInterface {
      * REQUIREMENT: isFrozen == true
      */
     private void editTradeOffer() {
+        int requestedTradeIndex = -1;
+        boolean success = false;
+        do {
+            try {
+                if (tSystem.getRequestedTrades(this.userID).size() == 0) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you do not have any requested trades\nABORTING TRADE REQUEST RESPONSE...");
+                    return;
+                }
+                System.out.println("Here is your requested trades");
+                printList(this.userID, "Requested", "Trade");
+                System.out.println("Enter the index of the requested trade that you would like to edit");
+                System.out.print("=> ");
+                requestedTradeIndex = Integer.parseInt(sc.nextLine());
+                // MORE STUFF GOES HERE TO EDIT 🤠 
+                // YO MAMA SO FAT WHEN SHE DOES A 180, A WHOLE YEAR PASSES
+                success = true;
+            } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException e) {
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while(!success);
         System.out.println("Done!");
     }
 
