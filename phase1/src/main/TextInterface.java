@@ -671,7 +671,7 @@ public class TextInterface {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
                 firstMeeting = sdf.parse(meetingTime);
 
-                System.out.println("Is this a temporary or permanent trade? Y/N");
+                System.out.println("Is this a temporary trade? Y/N");
                 System.out.print("=> ");
                 isTemporary = sc.nextLine().equals("Y");
                 if(isTemporary) {
@@ -765,6 +765,7 @@ public class TextInterface {
                 isTemporary = tSystem.isTradeTemporary(this.userID, requestedTradeIndex);
                 firstMeeting = tSystem.getFirstMeeting(this.userID, requestedTradeIndex);
                 secondMeeting = tSystem.getSecondMeeting(this.userID, requestedTradeIndex);
+                meetingLocation = tSystem.getMeetingLocation(this.userID, requestedTradeIndex); //ADD
                 typeOfTrade = tSystem.getUserOffer(this.userID, requestedTradeIndex).equals("") ? "lending to" : tSystem
                         .getUserOffer(traderID, requestedTradeIndex).equals("") ? "borrowing from" : "2-way trading with";
                 System.out.printf("In this trade, TRADER=\"%s\" is %s you", typeOfTrade, tSystem.getUsername(traderID));
@@ -825,14 +826,47 @@ public class TextInterface {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
                     firstMeeting = sdf.parse(tempInputString);
                 }
-                //MORE STUFF HERE - GOTTA COMMIT STYLL
-                success = true;
+                tempInputString = ""; //reset the input string
+                System.out.println("Originally, this is a " + (isTemporary ? "TEMPORARY" : "PERMANENT") + "trade");
+                System.out.println("If you would not like to change this, please press ENTER/RETURN at the prompt");
+                System.out.println("Is this a temporary trade? Y/N");
+                tempInputString = sc.nextLine();
+                // temporary = N => permanent
+                // temporary = "" => styll temp
+                // permanent - Y => temporary
+                // permanent - "" => styll permanent
+                if((isTemporary && tempInputString.trim().equals("")) || (!isTemporary && tempInputString.trim().equals("Y"))) {
+                    if(tempInputString.trim().equals("")) {
+                        System.out.println("The second meeting will take place on " + firstMeeting.toString());
+                        System.out.println("If you would not like to change this, please press ENTER/RETURN at the prompt");
+                    }
+                    System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
+                    System.out.print("=> ");
+                    tempInputString = sc.nextLine();
+                    if (tempInputString.trim().equals("")) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                        secondMeeting = sdf.parse(tempInputString);
+                    }
+                } else if(isTemporary && tempInputString.trim().equals("N")) {
+                    secondMeeting = null;
+                }
+                tempInputString = ""; // reset the input string
+                System.out.println("The meeting location was at " + meetingLocation);
+                System.out.println("If you would not like to change this, please press ENTER/RETURN at the prompt");
+                System.out.println("Enter your preferred meeting location");
+                System.out.print("=> ");
+                tempInputString = sc.nextLine();
+                if(!tempInputString.trim().equals("")) {
+                    meetingLocation = tempInputString;
+                }
+                tempInputString = ""; // reset the input string
+                success = tSystem.editTrade(this.userID, traderID, requestedTradeIndex, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex); //TODO: ADD
             } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException | ParseException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
         } while(!success);
-        System.out.println("Done!");
+        System.out.println("Done! This requested trade has been successfully editied");
     }
 
     /**
