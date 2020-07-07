@@ -297,15 +297,14 @@ public class TradeSystem implements Serializable {
         Set<String> distinct = new HashSet<>(acceptedTrades);
         int highest = 0;
         for (int i = 0; i < 3; i++) {
-            for (String s : distinct) {
-                if (Collections.frequency(acceptedTrades, s) > highest) {
-                    frequentTraders[i] = s;
+            for (String trade_id : distinct) {
+                int possible_high = Collections.frequency(acceptedTrades, trade_id);
+                if (possible_high > highest) {
+                    frequentTraders[i] = userManager.getUsername(tradeManager.getOtherUser(trade_id, userID));
+                    highest = possible_high;
                 }
             }
             distinct.remove(frequentTraders[i]);
-        }
-        for (int i = 0; i < 3; i++) {
-            frequentTraders[i] = userManager.getUserId(frequentTraders[i]);
         }
         return frequentTraders;
     }

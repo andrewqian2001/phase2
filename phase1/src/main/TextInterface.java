@@ -592,12 +592,13 @@ public class TextInterface {
     private void viewFreqTraders() {
         try {
             String[] freqTraders = tSystem.getFrequentTraders(this.userID);
-            for (int i = 0; i < freqTraders.length; i++) {
-                System.out.printf("Trader #%d: %s", i + 1, freqTraders[i]);
+            for (int i = 0; i < freqTraders.length && freqTraders[i] != null; i++) {
+                System.out.printf("Trader #%d: %s\n", i + 1, freqTraders[i]);
             }
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println(lineBreak);
     }
 
     /**
@@ -742,6 +743,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
+                //SHOULD ALSO UPDATE THE REQUESTED LIST OF THE OTHER USER INVOLVED IN THE TRADE
                 success = isAccepted ? tSystem.acceptTrade(this.userID, tSystem.getRequestedTradeId(userID, requestedTradeIndex)) : tSystem.rejectTrade(this.userID, 
                         tSystem.getRequestedTradeId(userID, requestedTradeIndex)); 
             } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException e) {
