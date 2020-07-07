@@ -126,14 +126,15 @@ public class TradeManager extends Database<Trade> implements Serializable {
     }
 
     /**
-     * Gets the user that the trade was sent to
+     * Gets the other user in the trade
      * @param tradeID id of the trade
-     * @return the user id of the user that the trade was sent to
+     * @return the user id of the other user
      * @throws EntryNotFoundException
      */
-    public String getUserThatTradeSentTo (String tradeID) throws EntryNotFoundException {
+    public String getOtherUser (String tradeID, String userId) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
-        return trade.getSecondUserId();
+        if(userId.equals(trade.getFirstUserId())) return trade.getSecondUserId();
+        else return trade.getFirstUserId();
     }
 
     /**
@@ -210,6 +211,10 @@ public class TradeManager extends Database<Trade> implements Serializable {
     public String getUserTurnToEdit (String tradeID) throws EntryNotFoundException {
         Trade trade = populate(tradeID);
         return trade.getUserTurnToEdit();
+    }
+
+    public boolean isFirstUser (String tradeId, String userId) throws EntryNotFoundException {
+        return userId.equals(populate(tradeId).getFirstUserId());
     }
 
 }

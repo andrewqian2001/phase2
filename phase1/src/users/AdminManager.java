@@ -111,6 +111,7 @@ public class AdminManager extends UserManager implements Serializable {
         for(String traderID : allTraders) {
             Trader trader = findTraderById(traderID);
             trader.setTradeLimit(tradeLimit);
+            update(trader);
         }
     }
 
