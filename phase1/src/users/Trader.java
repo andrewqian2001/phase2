@@ -28,8 +28,9 @@ public class Trader extends User implements Serializable {
      * @param password the trader's password
      */
 
-    public Trader(String name, String password) {
+    public Trader(String name, String password, int tradeLimit) {
         super(name, password);
+        this.tradeLimit = tradeLimit;
     }
 
     /**

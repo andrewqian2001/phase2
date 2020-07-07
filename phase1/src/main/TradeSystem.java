@@ -22,7 +22,6 @@ public class TradeSystem implements Serializable {
     private TradableItemManager tradableItemManager;
     private String loggedInUserId;
 
-
     /**
      * Constructor for TradeSystem, initializes managers
      * 
@@ -55,7 +54,7 @@ public class TradeSystem implements Serializable {
      */
     public String registerTrader(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new TraderManager(USERS_FILE_PATH);
-        this.loggedInUserId = userManager.registerUser(username, password);
+        this.loggedInUserId = ((TraderManager) userManager).registerUser(username, password, 3);
         return this.loggedInUserId;
     }
 
