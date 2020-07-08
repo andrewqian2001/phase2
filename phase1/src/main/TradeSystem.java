@@ -470,12 +470,6 @@ public class TradeSystem implements Serializable {
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
         else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
-        if (tradeManager.getFirstMeetingConfirmed(tradeID, userID)
-                && tradeManager.getFirstMeetingConfirmed(tradeID, tradeManager.getOtherUser(tradeID, userID))
-                && tradeManager.getSecondMeetingConfirmed(tradeID, userID)
-                && tradeManager.getSecondMeetingConfirmed(tradeID, tradeManager.getOtherUser(tradeID, userID))) {
-            // TODO: Handle what happens when a trade has been confirmed by both parties for all meetings
-        }
         return true;
     }
 
@@ -651,4 +645,14 @@ public class TradeSystem implements Serializable {
             return tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.getSecondMeetingConfirmed(tradeID, userID);
         return tradeManager.getFirstMeetingConfirmed(tradeID, userID);
     }
+
+    /**
+     * Checks if the trade is still in progress
+     * @param tradeID id of the trade
+     * @return true if the trade is in progress, false else
+     * @throws EntryNotFoundException
+     */
+	public boolean isTradeInProgress(String tradeID) throws EntryNotFoundException {
+		return tradeManager.isTradeInProgress(tradeID);
+	}
 }

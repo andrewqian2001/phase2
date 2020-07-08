@@ -430,9 +430,9 @@ public class TextInterface {
                 if(itemType.equals("Item"))
                     System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, tSystem.getTradableItemName(itemID), tSystem.getTradableItemDesc(itemID));
                 else if(listType.equals("Accepted"))
-                    printTrade(tSystem.getAcceptedTradeId(this.userID, i));
+                    printTrade(tSystem.getAcceptedTradeId(this.userID, i), false);
                 else if(listType.equals("Requested"))
-                    printTrade(tSystem.getRequestedTradeId(this.userID, i));
+                    printTrade(tSystem.getRequestedTradeId(this.userID, i), true);
             }
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
@@ -444,13 +444,15 @@ public class TextInterface {
      * @param tradeID id of the trade
      * @throws EntryNotFoundException
      */
-    private void printTrade(String tradeID) throws EntryNotFoundException {
+    private void printTrade(String tradeID, boolean isRequested) throws EntryNotFoundException {
         String traderID =  tSystem.getTraderIdFromTrade(userID, tradeID);
         String typeOfTrade = tSystem.getUserOffer(this.userID, tradeID).equals("") ? "borrowing from" : tSystem.getUserOffer(traderID, tradeID).equals("") ? "lending to" : "2-way trading with";
         String isTemporaryString = tSystem.isTradeTemporary(tradeID) ? "temporarily" : "permanently"; 
         String userItemID = typeOfTrade.equals("borrowing from") ? "N/A" : tSystem.getTradableItemName(tSystem.getUserOffer(userID, tradeID));
         String traderItemID = typeOfTrade.equals("lending to") ? "N/A" : tSystem.getTradableItemName(tSystem.getUserOffer(traderID, tradeID));
         System.out.printf("\t%s is %s %s TRADER=\"%s\"\n", tSystem.getUsername(this.userID), isTemporaryString, typeOfTrade, tSystem.getUsername(traderID));
+        if(!isRequested)
+            System.out.println("TRADE IS " + (tSystem.isTradeInProgress(tradeID) ? "IN PROGRESS" : "FINISHED"));
         System.out.printf("\tYour Item:\t%s\n\t%s's Item:\t%s\n", userItemID, tSystem.getUsername(traderID), traderItemID);
         System.out.println("\tFirst Meeting: " + tSystem.getFirstMeeting(tradeID) + " @ " + tSystem.getMeetingLocation(tradeID));
         if(isTemporaryString.equals("temporarily")) {
@@ -489,7 +491,7 @@ public class TextInterface {
                 }
             }
         } catch (EntryNotFoundException e) {
-
+            System.out.println(e.getMessage());
         }
     }
 
@@ -916,6 +918,11 @@ public class TextInterface {
                 System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
                 System.out.print("=> ");
                 acceptedTradeIndex = Integer.parseInt(sc.nextLine());
+                if(tSystem.isTradeInProgress(tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                    System.out.println(
+                            "Ruh Roh! Looks like this trade has already finished taking place\nABORTING TRADE CONFIRMATION...");
+                    return;
+                }
                 if (tSystem.hasUserConfirmedAllMeetings(this.userID, tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
                     System.out.println(
                             "Ruh Roh! Looks like you have already confirmed to all the meetings for this trade\nABORTING TRADE CONFIRMATION...");
