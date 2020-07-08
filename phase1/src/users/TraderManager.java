@@ -71,25 +71,19 @@ public class TraderManager extends UserManager implements Serializable {
     /**
      *
      * @param user1 is the ID of the first trader
-     * @param user2 is the ID of the second trader
      * @param tradeId
      * @return true if trade was successful
      * @throws EntryNotFoundException
      */
-    public boolean acceptTradeRequest(String user1, String user2, String tradeId) throws EntryNotFoundException {
+    public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
         Trader trader1 = findTraderbyId(user1);
-        Trader trader2 = findTraderbyId(user2);
         if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
             return false;
         }
         trader1.getRequestedTrades().remove(tradeId);
         trader1.getAcceptedTrades().add(tradeId);
         trader1.setTradeCount(trader1.getTradeCount() + 1);
-        trader2.getRequestedTrades().remove(tradeId);
-        trader2.getAcceptedTrades().add(tradeId);
-        trader2.setTradeCount(trader2.getTradeCount() + 1);
         update(trader1);
-        update(trader2);
         return true;
     }
 
@@ -106,7 +100,7 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
-     * Removes a trade from the user's requested trades
+     * Removes a trade from the two user's requested (or accepted) trades
      * 
      * @param userID  id of user
      * @param user2ID  id of user2
@@ -117,11 +111,13 @@ public class TraderManager extends UserManager implements Serializable {
     public boolean denyTrade(String userID, String user2ID, String tradeId) throws EntryNotFoundException {
         Trader trader = findTraderbyId(userID);
         Trader trader2 = findTraderbyId(user2ID);
-        boolean removed = trader.getRequestedTrades().remove(tradeId);
-        boolean removed2 = trader.getRequestedTrades().remove(tradeId);
+        boolean removed_request = trader.getRequestedTrades().remove(tradeId);
+        boolean removed_accepted = trader.getAcceptedTrades().remove(tradeId);
+        boolean removed_request2 = trader2.getRequestedTrades().remove(tradeId);
+        boolean removed_accepted2 = trader2.getRequestedTrades().remove(tradeId);
         update(trader);
         update(trader2);
-        return removed && removed2;
+        return (removed_request || removed_accepted) && (removed_request2 || removed_accepted2);
     }
 
     /**

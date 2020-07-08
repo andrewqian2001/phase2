@@ -455,14 +455,13 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * Accepts a requested trade 
-     * @param userID id of the user who sent the trade request
+     * Accepts a requested trade
      * @param tradeID id of the trade
      * @return true if the trade request was sucessfully confirmed
      * @throws EntryNotFoundException
      */
-	public boolean acceptTrade(String userID, String tradeID) throws EntryNotFoundException {
-		return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, userID, tradeID);
+	public boolean acceptTrade(String tradeID) throws EntryNotFoundException {
+		return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, tradeID);
 	}
 
     /**
