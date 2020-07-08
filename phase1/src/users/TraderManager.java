@@ -245,6 +245,8 @@ public class TraderManager extends UserManager implements Serializable {
         }
         trader1.getAvailableItems().add(item2);
         trader2.getAvailableItems().add(item1);
+        trader1.getWishlist().remove(item2);
+        trader2.getWishlist().remove(item1);
         update(trader1);
         update(trader2);
         return user1;
