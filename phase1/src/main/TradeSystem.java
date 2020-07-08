@@ -24,7 +24,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Constructor for TradeSystem, initializes managers
-     * 
+     *
      * @throws IOException
      */
     public TradeSystem() throws IOException {
@@ -36,7 +36,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Registers a new trader into the system
-     * 
+     *
      * @param username username of new trader
      * @param password password for new trader
      * @return id of the newly registered trader
@@ -51,7 +51,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Registers a new Admin into the system
-     * 
+     *
      * @param username username of new admin
      * @param password password for new admin
      * @throws IOException
@@ -64,7 +64,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Logs-in a current user into the system
-     * 
+     *
      * @param username username of existing user
      * @param password password of existing user
      * @return id of newly logged in user
@@ -86,7 +86,7 @@ public class TradeSystem implements Serializable {
     /**
      * Check if a User, given their ID, is frozen NOTE: This method is not for
      * Admins since their accounts cannot be frozen
-     * 
+     *
      * @param userID id of the user
      * @return true if the user is frozen, false else
      * @throws EntryNotFoundException
@@ -97,7 +97,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Check if a User, given their ID, is an Admin
-     * 
+     *
      * @param userID the id of the user
      * @return true if the User is of type Admin, false else
      * @throws EntryNotFoundException
@@ -118,7 +118,7 @@ public class TradeSystem implements Serializable {
     /**
      * Freezes/Unfreezes a Trader given their username Requirement: Only an Admin
      * Account can preform this action
-     * 
+     *
      * @param username     the username of the Trader that needs to be (un-)frozen
      * @param freezeStatus if true, method will freeze the Trader, else it will
      *                     unFreeze
@@ -133,7 +133,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets the name of the tradable item given its id
-     * 
+     *
      * @param tradableItemId id of the tradable item
      * @return name of the tradable item
      * @throws EntryNotFoundException
@@ -144,7 +144,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets the description of the tradable item given its id
-     * 
+     *
      * @param tradableItemId id of the tradable item
      * @return description of the tradable item
      * @throws EntryNotFoundException
@@ -156,7 +156,7 @@ public class TradeSystem implements Serializable {
     /**
      * Gets the username of a User given their ID NOTE: This will most likely be
      * deleted before rollout since theres no use for this
-     * 
+     *
      * @param userId id of the User
      * @return username of the User
      * @throws EntryNotFoundException
@@ -167,7 +167,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets the id of a User given their username
-     * 
+     *
      * @param username username of the User
      * @return id of the User
      * @throws EntryNotFoundException
@@ -178,7 +178,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets a list of a given user's WishList
-     * 
+     *
      * @param userID the id of the user
      * @return a list of id's of wishlist items
      * @throws EntryNotFoundException
@@ -189,7 +189,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets a list of a given user's Available Items
-     * 
+     *
      * @param userID the id of the user
      * @return a list of id's of available Items
      * @throws EntryNotFoundException
@@ -200,7 +200,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets a list of a given user's Accepted Trades
-     * 
+     *
      * @param userID the id of the user
      * @return a list of id's of Accepted Trades
      * @throws EntryNotFoundException
@@ -211,7 +211,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets a list of a given user's Requested Trades
-     * 
+     *
      * @param userID the id of the user
      * @return a list of id's of Requested Trades
      * @throws EntryNotFoundException
@@ -222,7 +222,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets a list of all traders in the database
-     * 
+     *
      * @return A list of all traders in the database
      * @throws EntryNotFoundException
      */
@@ -232,7 +232,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Requests that the item be added to the user's inventory
-     * 
+     *
      * @param userID user ID
      * @param itemName  name of tradable item
      * @param itemDesc description of tradableItem
@@ -244,7 +244,7 @@ public class TradeSystem implements Serializable {
     }
     /**
      * Adds item to wishList
-     * 
+     *
      * @param userID   user ID
      * @param itemName name of tradable item
      * @throws EntryNotFoundException
@@ -267,7 +267,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * return the 3 most traded with Traders
-     * 
+     *
      * @param userID user Id
      * @return a String array of the usernames of the 3 most traded with Traders
      * @throws EntryNotFoundException
@@ -304,7 +304,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets a list of the items used in trades
-     * 
+     *
      * @param userId id of the user
      * @return list of unique items that the user has traded/received from a trade
      * @throws EntryNotFoundException
@@ -323,7 +323,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Gets a list of all Unfreeze Request
-     * 
+     *
      * @return a list of all unfreeze requests
      */
     public ArrayList<String> getAllUnfreezeRequests()  {
@@ -393,7 +393,7 @@ public class TradeSystem implements Serializable {
      * @param borrowItemIndex index of the item that will be borrowed
      * @return true if the trade has been processed successfully
      * @throws EntryNotFoundException
-     */      
+     */
     public boolean trade(String userId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
         String secondUserId = getIdFromUsername(secondUserName);
         String lendItemId = lendItemIndex == -1 ? "" : getAvailableItems(userId).get(lendItemIndex);
@@ -418,9 +418,9 @@ public class TradeSystem implements Serializable {
      * @param lendItemIndex index of the item that will be lent
      * @return true if the trade was processed successfully
      * @throws EntryNotFoundException
-     */   
+     */
     public boolean lendItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
-            String meetingLocation, int lendItemIndex) throws EntryNotFoundException{
+                            String meetingLocation, int lendItemIndex) throws EntryNotFoundException{
         return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, lendItemIndex, -1);
     }
 
@@ -436,7 +436,7 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException
      */
     public boolean borrowItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
-            String meetingLocation, int borrowItemIndex) throws EntryNotFoundException {
+                              String meetingLocation, int borrowItemIndex) throws EntryNotFoundException {
         return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, -1, borrowItemIndex);
     }
 
@@ -446,7 +446,7 @@ public class TradeSystem implements Serializable {
      * @param tradeID id of the trade
      * @return true if the trade was successfully confirmed
      */
-	public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
+    public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
         if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID))
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
         else
@@ -460,9 +460,9 @@ public class TradeSystem implements Serializable {
      * @return true if the trade request was sucessfully confirmed
      * @throws EntryNotFoundException
      */
-	public boolean acceptTrade(String tradeID) throws EntryNotFoundException {
-		return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, tradeID);
-	}
+    public boolean acceptTrade(String tradeID) throws EntryNotFoundException {
+        return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, tradeID);
+    }
 
     /**
      * Rejects a requested trade
@@ -470,9 +470,9 @@ public class TradeSystem implements Serializable {
      * @param tradeID id of the trade
      * @return true if the trade request was successfully rejected
      */
-	public boolean rejectTrade(String userID, String tradeID) throws EntryNotFoundException  {
+    public boolean rejectTrade(String userID, String tradeID) throws EntryNotFoundException  {
         return ((TraderManager) userManager).denyTrade(loggedInUserId, userID, tradeID);
-	}
+    }
 
     /**
      * edits the trade object
@@ -487,7 +487,7 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException if user or trade can  not be found
      * @throws CannotTradeException if the trade is not allowed
      */
-	public boolean editTrade(String userID, String traderId,  String tradeID, Date firstMeeting,
+    public boolean editTrade(String userID, String traderId,  String tradeID, Date firstMeeting,
                              Date secondMeeting, String meetingLocation, int inventoryItemIndex, int traderInventoryItemIndex) throws EntryNotFoundException, CannotTradeException {
         ArrayList<String> userInventory = ((TraderManager) userManager).getInventory(userID);
         ArrayList<String> traderInventory = ((TraderManager) userManager).getInventory(traderId);
@@ -503,9 +503,9 @@ public class TradeSystem implements Serializable {
      * @return userId of the other user
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-	public String getTraderIdFromTrade(String userID, String tradeID) throws EntryNotFoundException {
-		return tradeManager.getOtherUser(tradeID, userID);
-	}
+    public String getTraderIdFromTrade(String userID, String tradeID) throws EntryNotFoundException {
+        return tradeManager.getOtherUser(tradeID, userID);
+    }
 
     /**
      * get the item index of the trade item
@@ -514,7 +514,7 @@ public class TradeSystem implements Serializable {
      * @return item index of the trade item
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-	public int getUserTradeItemIndex(String userID, String tradeId) throws EntryNotFoundException {
+    public int getUserTradeItemIndex(String userID, String tradeId) throws EntryNotFoundException {
         String[] items = tradeManager.getItemsFromTrade(tradeId);
         ArrayList<String> inventory = ((TraderManager) userManager).getInventory(userID);
 
@@ -529,7 +529,7 @@ public class TradeSystem implements Serializable {
             }
         }
         throw new EntryNotFoundException("The trade item could not be found in the inventory.");
-	}
+    }
 
     /**
      * return if trade is temporary
@@ -537,20 +537,20 @@ public class TradeSystem implements Serializable {
      * @return true if trade is temporary
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-	public boolean isTradeTemporary(String tradeID) throws EntryNotFoundException {
+    public boolean isTradeTemporary(String tradeID) throws EntryNotFoundException {
         return tradeManager.hasSecondMeeting(tradeID);
-	}
+    }
 
     /**
      * get first meeting time of the trade
-     * 
+     *
      * @param tradeID id of the trade
      * @return Date object of the firstmeeting time
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-	public Date getFirstMeeting(String tradeID) throws EntryNotFoundException {
+    public Date getFirstMeeting(String tradeID) throws EntryNotFoundException {
         return tradeManager.getFirstMeetingTime(tradeID);
-	}
+    }
 
     /**
      * get second meeting time of the trade
@@ -558,9 +558,9 @@ public class TradeSystem implements Serializable {
      * @return Date object of the second meeting time
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-	public Date getSecondMeeting(String tradeID) throws EntryNotFoundException {
+    public Date getSecondMeeting(String tradeID) throws EntryNotFoundException {
         return tradeManager.getSecondMeetingTime(tradeID);
-	}
+    }
 
     /**
      * get the item offered in the trade by the user
@@ -569,7 +569,7 @@ public class TradeSystem implements Serializable {
      * @return the item id
      * @throws EntryNotFoundException if the user or the trade can not be found
      */
-	public String getUserOffer(String userID, String tradeId) throws EntryNotFoundException {
+    public String getUserOffer(String userID, String tradeId) throws EntryNotFoundException {
         String[] items = tradeManager.getItemsFromTrade(tradeId);
         if(tradeManager.isFirstUser(tradeId, userID)) {
             return items[0];
@@ -577,7 +577,7 @@ public class TradeSystem implements Serializable {
         else {
             return items[1];
         }
-	}
+    }
 
     /**
      * get meeting location
@@ -632,7 +632,7 @@ public class TradeSystem implements Serializable {
      * @return true if the trade is in progress, false else
      * @throws EntryNotFoundException
      */
-	public boolean isTradeInProgress(String tradeID) throws EntryNotFoundException {
-		return tradeManager.isTradeInProgress(tradeID);
-	}
+    public boolean isTradeInProgress(String tradeID) throws EntryNotFoundException {
+        return tradeManager.isTradeInProgress(tradeID);
+    }
 }

@@ -3,12 +3,10 @@ package users;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class TraderManager extends UserManager implements Serializable {
 
@@ -96,7 +94,9 @@ public class TraderManager extends UserManager implements Serializable {
      */
     public boolean removeAcceptedTrade(String user1, String tradeId) throws EntryNotFoundException{
         Trader trader1 = findTraderbyId(user1);
-        return trader1.getAcceptedTrades().remove(tradeId);
+        boolean removed = trader1.getAcceptedTrades().remove(tradeId);
+        update(trader1);
+        return removed;
     }
 
     /**
