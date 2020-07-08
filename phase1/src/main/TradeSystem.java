@@ -456,9 +456,9 @@ public class TradeSystem implements Serializable {
 
     /**
      * Accepts a requested trade 
-     * @param userID id of the user
+     * @param userID id of the user who sent the trade request
      * @param tradeID id of the trade
-     * @return true if the trade request was sucesssfully confirmed
+     * @return true if the trade request was sucessfully confirmed
      * @throws EntryNotFoundException
      */
 	public boolean acceptTrade(String userID, String tradeID) throws EntryNotFoundException {
@@ -472,7 +472,7 @@ public class TradeSystem implements Serializable {
      * @return true if the trade request was successfully rejected
      */
 	public boolean rejectTrade(String userID, String tradeID) throws EntryNotFoundException  {
-        return ((TraderManager) userManager).denyTrade(userID, tradeID);
+        return ((TraderManager) userManager).denyTrade(loggedInUserId, userID, tradeID);
 	}
 
     /**

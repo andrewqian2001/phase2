@@ -73,7 +73,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @param user1 is the ID of the first trader
      * @param user2 is the ID of the second trader
      * @param tradeId
-     * @return
+     * @return true if trade was successful
      * @throws EntryNotFoundException
      */
     public boolean acceptTradeRequest(String user1, String user2, String tradeId) throws EntryNotFoundException {
@@ -108,16 +108,20 @@ public class TraderManager extends UserManager implements Serializable {
     /**
      * Removes a trade from the user's requested trades
      * 
-     * @param userId  id of user
+     * @param userID  id of user
+     * @param user2ID  id of user2
      * @param tradeId id of trade to deny
      * @return true if a trade was removed, false otherwise
      * @throws EntryNotFoundException if the user was not found
      */
-    public boolean denyTrade(String userId, String tradeId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
+    public boolean denyTrade(String userID, String user2ID, String tradeId) throws EntryNotFoundException {
+        Trader trader = findTraderbyId(userID);
+        Trader trader2 = findTraderbyId(user2ID);
         boolean removed = trader.getRequestedTrades().remove(tradeId);
+        boolean removed2 = trader.getRequestedTrades().remove(tradeId);
         update(trader);
-        return removed;
+        update(trader2);
+        return removed && removed2;
     }
 
     /**

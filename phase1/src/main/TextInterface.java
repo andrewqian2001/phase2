@@ -755,8 +755,7 @@ public class TextInterface {
                 String tradeID = tSystem.getRequestedTradeId(userID, requestedTradeIndex);
                 String user2ID = tSystem.getTraderIdFromTrade(this.userID, tradeID);
                 //SHOULD ALSO UPDATE THE REQUESTED LIST OF THE OTHER USER INVOLVED IN THE TRADE
-                success = isAccepted ? tSystem.acceptTrade(this.userID, user2ID, tradeID) : tSystem.rejectTrade(this.userID,
-                        tSystem.getRequestedTradeId(userID, requestedTradeIndex)); 
+                success = isAccepted ? tSystem.acceptTrade(user2ID, tradeID) : tSystem.rejectTrade(user2ID, tradeID);
             } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException e) {
                 success = false;
                 System.out.println(e.getMessage());
