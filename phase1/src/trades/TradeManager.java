@@ -175,7 +175,7 @@ public class TradeManager extends Database<Trade> implements Serializable {
      * @throws EntryNotFoundException
      */
     public boolean hasSecondMeeting(String tradeID) throws EntryNotFoundException {
-        return getSecondMeetingTime(tradeID) == null;
+        return getSecondMeetingTime(tradeID) != null;
     }
 
     public String editTrade(String tradeId, Date meetingTime, Date secondMeetingTime, String meetingLocation,
