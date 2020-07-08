@@ -351,7 +351,7 @@ public class TextInterface {
             System.out.println("Enter a username for this new Admin");
             System.out.print("=> ");
             newAdminString = sc.nextLine();
-            System.out.printf("Enter a password for %s", newAdminString);
+            System.out.printf("Enter a password for %s\n", newAdminString);
             newAdminPaString = sc.nextLine();
             try {
                 tSystem.registerAdmin(newAdminString, newAdminPaString);
@@ -673,6 +673,9 @@ public class TextInterface {
                         System.out.println("Ruh Roh! Looks like you have no available items to trade\nABORTING TRADE...");
                         return;
                     }
+                    System.out.println("Enter the username of the Trader you would like to lend your item to");
+                    System.out.print("=> ");
+                    traderName = sc.nextLine();
                     System.out.println("Here is your inventory:");
                     printInventory();
                     System.out.println("Please enter the index of the item you would like to give");
@@ -689,7 +692,7 @@ public class TextInterface {
                     }
                     System.out.printf("Here is %s's current inventory:", traderName);
                     printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
-                    System.out.println("Enter the index of the item that you would like to recieve from the trader");
+                    System.out.println("Enter the index of the item that you would like to receive from the trader");
                     System.out.print("=> ");
                     traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
                 }
