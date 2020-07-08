@@ -475,7 +475,12 @@ public class TradeSystem implements Serializable {
      */
     public boolean confirmIncompleteTrade(String userID, String tradeID) throws EntryNotFoundException {
 
-        tradeManager.confirmSecondMeeting(tradeID, userID, false);
+        if(tradeManager.isFirstMeetingConfirmed(tradeID)){
+            tradeManager.confirmSecondMeeting(tradeID, userID, false);
+        }else{
+            tradeManager.confirmFirstMeeting(tradeID, userID, false);
+        }
+
         String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
         String trader2Id = "";
         if(userID == TraderIds[0]){
