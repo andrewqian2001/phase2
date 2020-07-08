@@ -278,7 +278,7 @@ public class TradeSystem implements Serializable {
         ArrayList<String> users = new ArrayList<>();
 
         // converts trade-id to other users' id
-        for(String trade_id : ((TraderManager) userManager).getAcceptedTrades(userID)){
+        for(String trade_id : ((TraderManager) userManager).getCompletedTrades(userID)){
             users.add(tradeManager.getOtherUser(trade_id, userID));
         }
 
@@ -442,7 +442,7 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * Confirms an accepted trade took place outside of the program
+     * Confirms an accepted trade took place outside of the program, updates inventory as well
      * @param userID id of the user
      * @param tradeID id of the trade
      * @return true if the trade was successfully confirmed

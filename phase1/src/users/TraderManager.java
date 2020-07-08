@@ -316,6 +316,7 @@ public class TraderManager extends UserManager implements Serializable {
      */
     public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException{
         return findTraderbyId(userId).getAcceptedTrades();
+
     }
     /**
      * Gets an arraylist of completed trades of the specified trader
