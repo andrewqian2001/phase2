@@ -563,6 +563,7 @@ public class TextInterface {
                 System.out.println("Enter the name of the Item");
                 itemName = sc.nextLine();
                 tSystem.processItemRequest(traderName, itemName, isAccepted);
+                success = true;
             } catch (EntryNotFoundException e) {
                 System.out.println(e.getMessage());
                 success = false;
