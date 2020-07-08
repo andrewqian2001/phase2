@@ -1,6 +1,9 @@
 package main;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -9,11 +12,17 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.Date;
 
 import exceptions.AuthorizationException;
+import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 
+/**
+ * Used as a way to prompt the user and receive input.
+ * Code is partially taken from logging.zip -> StudentManager.java from week 6 slides and codes.
+ */
 public class TextInterface {
 
     private static final Logger LOGGER = Logger.getLogger(TextInterface.class.getName());
@@ -190,6 +199,7 @@ public class TextInterface {
      */
     private void traderMenu() {
         boolean isFrozen = false;
+        boolean ableToBorrow = false;
         System.out.println("TRADER MAIN MENU");
         System.out.println(lineBreak);
         do {
@@ -197,6 +207,7 @@ public class TextInterface {
                 // since this valid userID would be returned from a logged in user...
                 // the exception will never be thrown
                 isFrozen = tSystem.checkFrozen(this.userID);
+                ableToBorrow = tSystem.canBorrow(this.userID);
             } catch (EntryNotFoundException e) {
                 System.out.println(e.getMessage());
             }
@@ -209,7 +220,8 @@ public class TextInterface {
             System.out.println("7.\tRequest to add item to Inventory");
             System.out.println("8.\tAdd item to Wishlist");
             if (!isFrozen) {
-                System.out.println("9.\tBorrow an Item from a Trader");
+                if(ableToBorrow)
+                    System.out.println("9.\tBorrow an Item from a Trader");
                 System.out.println("10.\tLend an Item to a Trader");
                 System.out.println("11.\tTrade with a trader");
                 System.out.println("12.\tAccept Trade Request Offer");
@@ -251,26 +263,26 @@ public class TextInterface {
                     addItemToWishList();
                     break;
                 case 9:
-                    if (!isFrozen)
-                        borrowItem();
+                    if (!isFrozen && ableToBorrow)
+                        trade("BORROW");
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
                 case 10:
                     if (!isFrozen)
-                        lendItem();
+                        trade("LEND");
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
                 case 11:
                     if (!isFrozen)
-                        tradeItems();
+                        trade("TRADE");
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
                 case 12:
                     if (!isFrozen)
-                        acceptTradeOffer();
+                        respondToTradeOffer(true);
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
@@ -282,7 +294,7 @@ public class TextInterface {
                     break;
                 case 14:
                     if (!isFrozen)
-                        rejectTradeOffer();
+                        respondToTradeOffer(false);
                     else
                         System.out.println("Invalid Selection, please try again");
                     break;
@@ -343,7 +355,7 @@ public class TextInterface {
             System.out.println("Enter a username for this new Admin");
             System.out.print("=> ");
             newAdminString = sc.nextLine();
-            System.out.printf("Enter a password for %s", newAdminString);
+            System.out.printf("Enter a password for %s\n", newAdminString);
             newAdminPaString = sc.nextLine();
             try {
                 tSystem.registerAdmin(newAdminString, newAdminPaString);
@@ -401,7 +413,6 @@ public class TextInterface {
      * Prints a list given the Trader's ID, Type of List, and Item type NOTE: This
      * is method is not called by an Admin ever NOTE: This method is just a helper
      * for the other print__ methods
-     * 
      * @param listType
      * @param itemType
      */
@@ -420,11 +431,36 @@ public class TextInterface {
             System.out.printf("%s's %s %ss\n***************\n", tSystem.getUsername(ID), listType, itemType);
             for (int i = 0; i < list.size(); i++) {
                 itemID = list.get(i);
-                System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, tSystem.getTradableItemName(itemID),
-                        tSystem.getTradableItemDesc(itemID));
+                if(itemType.equals("Item"))
+                    System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, tSystem.getTradableItemName(itemID), tSystem.getTradableItemDesc(itemID));
+                else if(listType.equals("Accepted"))
+                    printTrade(tSystem.getAcceptedTradeId(this.userID, i), false);
+                else if(listType.equals("Requested"))
+                    printTrade(tSystem.getRequestedTradeId(this.userID, i), true);
             }
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Prints all the details of the trade
+     * @param tradeID id of the trade
+     * @throws EntryNotFoundException
+     */
+    private void printTrade(String tradeID, boolean isRequested) throws EntryNotFoundException {
+        String traderID =  tSystem.getTraderIdFromTrade(userID, tradeID);
+        String typeOfTrade = tSystem.getUserOffer(this.userID, tradeID).equals("") ? "borrowing from" : tSystem.getUserOffer(traderID, tradeID).equals("") ? "lending to" : "2-way trading with";
+        String isTemporaryString = tSystem.isTradeTemporary(tradeID) ? "temporarily" : "permanently"; 
+        String userItemID = typeOfTrade.equals("borrowing from") ? "N/A" : tSystem.getTradableItemName(tSystem.getUserOffer(userID, tradeID));
+        String traderItemID = typeOfTrade.equals("lending to") ? "N/A" : tSystem.getTradableItemName(tSystem.getUserOffer(traderID, tradeID));
+        System.out.printf("\t%s is %s %s TRADER=\"%s\"\n", tSystem.getUsername(this.userID), isTemporaryString, typeOfTrade, tSystem.getUsername(traderID));
+        if(!isRequested)
+            System.out.println("TRADE IS " + (tSystem.isTradeInProgress(tradeID) ? "IN PROGRESS" : "FINISHED"));
+        System.out.printf("\tYour Item:\t%s\n\t%s's Item:\t%s\n", userItemID, tSystem.getUsername(traderID), traderItemID);
+        System.out.println("\tFirst Meeting: " + tSystem.getFirstMeeting(tradeID) + " @ " + tSystem.getMeetingLocation(tradeID));
+        if(isTemporaryString.equals("temporarily")) {
+            System.out.println("\tSecond Meeting: " + tSystem.getSecondMeeting(tradeID) + " @ " + tSystem.getMeetingLocation(tradeID));
         }
     }
 
@@ -459,7 +495,7 @@ public class TextInterface {
                 }
             }
         } catch (EntryNotFoundException e) {
-
+            System.out.println(e.getMessage());
         }
     }
 
@@ -531,8 +567,10 @@ public class TextInterface {
                 System.out.print("=> ");
                 traderName = sc.nextLine();
                 System.out.println("Enter the name of the Item");
+                System.out.print("=> ");
                 itemName = sc.nextLine();
                 tSystem.processItemRequest(traderName, itemName, isAccepted);
+                success = true;
             } catch (EntryNotFoundException e) {
                 System.out.println(e.getMessage());
                 success = false;
@@ -562,13 +600,16 @@ public class TextInterface {
     private void viewFreqTraders() {
         try {
             String[] freqTraders = tSystem.getFrequentTraders(this.userID);
-            for (int i = 0; i < freqTraders.length; i++) {
-                System.out.printf("Trader #%d: %s", i + 1, freqTraders[i]);
+            for (int i = 0; i < freqTraders.length && freqTraders[i] != null; i++) {
+                System.out.printf("Trader #%d: %s\n", i + 1, freqTraders[i]);
             }
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println(lineBreak);
     }
+
+
 
     /**
      * Prompts admin to change the current trade limit
@@ -615,95 +656,80 @@ public class TextInterface {
     }
 
     /**
-     * TODO: FINISH (Add Meeting Locations and Times)
      * Prompt to trade items with another trader
      * REQUIREMENT: isFrozen == true
+     * @param tradeType LEND: 1-way Trade - logged-in user gives to another user
+     *                  BORROW: 1-way Trade - logged-in user gets from another user (REQUIREMENT: ableToBorrow == true)
+     *                  TRADE: Standard 2-way trade between logged-in user and another user
      */
-    private void tradeItems() {
+    private void trade(String tradeType) {
         String traderName = "";
         String meetingTime = "";
         String meetingLocation = "";
         int inventoryItemIndex = -1;
         int traderInventoryItemIndex = -1;
         boolean isTemporary = true;
+        Date firstMeeting = null;
+        Date secondMeeting = null;
         boolean success = false;
         do {
             try {
-                System.out.println("Here is your inventory:");
-                printInventory();
-                System.out.println("Please enter the index of the item you would like to give");
-                System.out.print("=> ");
-                inventoryItemIndex = Integer.parseInt(sc.nextLine());
-                System.out.println("Enter the username of the Trader you would like to borrow from");
-                System.out.print("=> ");
-                traderName = sc.nextLine();
-                System.out.printf("Here is %s's current inventory:", traderName);
-                printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
-                System.out.println("Enter the index of the item that you would like to recieve from the trader");
-                System.out.print("=> ");
-                traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
-                System.out.println("Enter your preferred meeting time");
+                if (!tradeType.equals("BORROW")) {
+                    if(tSystem.getAvailableItems(this.userID).size() == 0) {
+                        System.out.println("Ruh Roh! Looks like you have no available items to trade\nABORTING TRADE...");
+                        return;
+                    }
+                    System.out.println("Enter the username of the Trader you would like to lend your item to");
+                    System.out.print("=> ");
+                    traderName = sc.nextLine();
+                    System.out.println("Here is your inventory:");
+                    printInventory();
+                    System.out.println("Please enter the index of the item you would like to give");
+                    System.out.print("=> ");
+                    inventoryItemIndex = Integer.parseInt(sc.nextLine());
+                }
+                if(!tradeType.equals("LEND")){
+                    System.out.println("Enter the username of the Trader you would like to borrow from");
+                    System.out.print("=> ");
+                    traderName = sc.nextLine();
+                    if (tSystem.getAvailableItems(tSystem.getIdFromUsername(traderName)).size() == 0) {
+                        System.out.printf("Ruh Roh! %s does not have any available items to trade\nABORTING TRADE...\n", traderName);
+                        return;
+                    }
+                    System.out.printf("Here is %s's current inventory:", traderName);
+                    printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
+                    System.out.println("Enter the index of the item that you would like to receive from the trader");
+                    System.out.print("=> ");
+                    traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
+                }
+
+                System.out.println("Enter your preferred first meeting time in the format yyyy/MM/dd HH:mm");
                 System.out.print("=> ");
                 meetingTime = sc.nextLine();
-                success = tSystem.trade(this.userID, traderName, inventoryItemIndex, traderInventoryItemIndex, meetingTime); // TODO: ADD IN TRADESYSTEM
-            } catch (Exception e) { // TODO: REPLACE
-                success = false;
-                System.out.println(e.getMessage());
-            }
-        } while (!success);
-    }
-    
-    /**
-     * TODO: FINISH (Add Meeting Locations and Times)
-     * Prompt to lend item to another trader
-     * REQUIREMENT: isFrozen == true
-     */
-    private void lendItem() {
-        String traderName = "";
-        int inventoryItemIndex = -1;
-        boolean isTemporary = true;
-        boolean success = false;
-        do {
-            try {
-                System.out.println("Enter the username of the Trader you would like to lend to");
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                firstMeeting = sdf.parse(meetingTime);
+
+                System.out.println("Is this a temporary trade? Y/N");
                 System.out.print("=> ");
-                traderName = sc.nextLine();
-                System.out.println("Here is your current inventory:");
-                printInventory();
-                System.out.println("Please enter the index of the item you would like to lend");
+                isTemporary = sc.nextLine().equals("Y");
+                if(isTemporary) {
+                    System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
+                    System.out.print("=> ");
+                    meetingTime = sc.nextLine();
+                    secondMeeting = sdf.parse(meetingTime);
+                }
+                System.out.println("Enter your preferred meeting location");
                 System.out.print("=> ");
-                inventoryItemIndex = Integer.parseInt(sc.nextLine());
-                //success = tSystem.lendItem(this.userID, traderName, inventoryItemIndex, isTemporary); // TODO: ADD IN TRADESYSTEM
-            } catch (Exception e) { //TODO: REPLACE 
-                success = false;
-                System.out.println(e.getMessage());
-            }
-        } while (!success);
-        System.out.printf("Done! Your Trade Request to TRADER=\"%s\" has been sent\n", traderName);
-    }
-    
-    /**
-     * TODO: FINISH (Add Meeting Locations and Times)
-     * Prompt to borrow item with another trader
-     * REQUIREMENT: isFrozen == true
-     */
-    private void borrowItem() {
-        String traderName = "";
-        int traderInventoryItemIndex = -1;
-        boolean isTemporary = true;
-        boolean success = false;
-        do {
-            try {
-                System.out.println("Enter the username of the Trader you would like to borrow from");
-                System.out.print("=> ");
-                traderName = sc.nextLine();
-                System.out.printf("Here is %s's current inventory:", traderName);
-                printList(tSystem.getIdFromUsername(traderName), "Inventory", "Item");
-                System.out.println("Enter the index of the item that you would like to borrow from the trader");
-                System.out.print("=> ");
-                traderInventoryItemIndex = Integer.parseInt(sc.nextLine());
-                success = tSystem.borrowItem(this.userID, traderName, traderInventoryItemIndex, isTemporary); //TODO: ADD IN TRADESYSTEM
-            } catch (Exception e) { //TODO: REPLACE
+                meetingLocation = sc.nextLine();
+
+                if(tradeType.equals("LEND")) 
+                    success = tSystem.lendItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
+                            inventoryItemIndex);
+                if(tradeType.equals("BORROW")) 
+                    success = tSystem.borrowItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
+                            traderInventoryItemIndex);
+                else success = tSystem.trade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
+            } catch (EntryNotFoundException | ParseException | NumberFormatException | IndexOutOfBoundsException e) { 
                 success = false;
                 System.out.println(e.getMessage());
             }
@@ -712,37 +738,212 @@ public class TextInterface {
     }
 
     /**
-     * TODO: FINISH
      * Prompts user to reject a trade offer
      * REQUIREMENT: isFrozen == true
      */
-    private void rejectTradeOffer() {
-        System.out.println("Done!");
+    private void respondToTradeOffer(boolean isAccepted) {
+        int requestedTradeIndex = -1;
+        boolean success = false;
+        do {
+            try {
+                if (tSystem.getRequestedTrades(this.userID).size() == 0) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you do not have any requested trades\nABORTING TRADE REQUEST RESPONSE...");
+                    return;
+                }
+                System.out.println("Here is your requested trades");
+                printList(this.userID, "Requested", "Trade");
+                System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
+                System.out.print("=> ");
+                requestedTradeIndex = Integer.parseInt(sc.nextLine());
+                String tradeID = tSystem.getRequestedTradeId(userID, requestedTradeIndex);
+                String user2ID = tSystem.getTraderIdFromTrade(this.userID, tradeID);
+                //SHOULD ALSO UPDATE THE REQUESTED LIST OF THE OTHER USER INVOLVED IN THE TRADE
+                success = isAccepted ? tSystem.acceptTrade(user2ID, tradeID) : tSystem.rejectTrade(user2ID, tradeID);
+            } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException e) {
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.println("Done! You have successfully " + (isAccepted ? "accepted" : "rejected") + " the requested trade");
     }
 
     /**
-     * TODO: FINISH
      * Prompts user to edit a trade offer
      * REQUIREMENT: isFrozen == true
      */
     private void editTradeOffer() {
-        System.out.println("Done!");
+        int requestedTradeIndex = -1;
+
+        String tempInputString = "";
+        String tradeID = "";
+        String traderID = "";
+        String typeOfTrade = "";
+        String meetingLocation = "";
+        int inventoryItemIndex = -1;
+        int traderInventoryItemIndex = -1;
+        boolean isTemporary = true;
+        Date firstMeeting = null;
+        Date secondMeeting = null;
+
+        boolean success = false;
+        do {
+            try {
+                if (tSystem.getRequestedTrades(this.userID).size() == 0) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you do not have any requested trades\nABORTING TRADE REQUEST RESPONSE...");
+                    return;
+                }
+                System.out.println("Here is your requested trades");
+                printList(this.userID, "Requested", "Trade");
+                System.out.println("Enter the index of the requested trade that you would like to edit");
+                System.out.print("=> ");
+                requestedTradeIndex = Integer.parseInt(sc.nextLine());
+                // YO MAMA SO FAT WHEN SHE DOES A 180, A WHOLE YEAR PASSES
+                tradeID = tSystem.getRequestedTradeId(userID, requestedTradeIndex);
+                traderID = tSystem.getTraderIdFromTrade(this.userID, tradeID);
+                inventoryItemIndex = tSystem.getUserTradeItemIndex(this.userID, tradeID);
+                traderInventoryItemIndex = tSystem.getUserTradeItemIndex(traderID, tradeID);
+                isTemporary = tSystem.isTradeTemporary(tradeID);
+                firstMeeting = tSystem.getFirstMeeting(tradeID);
+                secondMeeting = tSystem.getSecondMeeting(tradeID);
+                meetingLocation = tSystem.getMeetingLocation(tradeID);
+                typeOfTrade = tSystem.getUserOffer(this.userID, tradeID).equals("") ? "lending to" : tSystem
+                        .getUserOffer(traderID, tradeID).equals("") ? "borrowing from" : "2-way trading with";
+                System.out.printf("In this trade, TRADER=\"%s\" is %s you", typeOfTrade, tSystem.getUsername(traderID));
+                // if this trader is lending to me
+                if(typeOfTrade.equals("lending to")) {
+                    System.out.println("Since the trader is lending to you originally, you do not have any items selected to lend");
+                    if (tSystem.getAvailableItems(this.userID).size() == 0) {
+                        System.out.println("Would you like to add an item to give to the trader? Y/N");
+                        System.out.print("=> ");
+                        tempInputString = sc.nextLine();
+                    }
+                }
+                if(tempInputString.trim().equals("Y") || (tempInputString.trim().equals("") && tSystem.getAvailableItems(this.userID).size() != 0)) {
+                    System.out.println("Here is your inventory:");
+                    printInventory();
+                    if(!typeOfTrade.equals("lending to")) {
+                        System.out.println("Item #" + inventoryItemIndex + "is the currently selected item");
+                        System.out.println("If you would not like to change this item, simply press ENTER/RETURN at the prompt");
+                    }
+                    System.out.println("Please enter the index of the item you would like to give");
+                    System.out.print("=> ");
+                    tempInputString = sc.nextLine();
+                    if(!tempInputString.trim().equals("")) {
+                        inventoryItemIndex = Integer.parseInt(tempInputString);
+                    }
+                } 
+                tempInputString = ""; //reset the input string
+                // if this trader is borrowing from me
+                if(typeOfTrade.equals("borrowing from")) {
+                    System.out.println("Since the trader is borrowing from you originally, they do not have any items selected to lend");
+                    if (tSystem.getAvailableItems(traderID).size() == 0) {
+                        System.out.println("Would you like to add an item to borrow from this trader? Y/N");
+                        System.out.print("=> ");
+                        tempInputString = sc.nextLine();
+                    }
+                }
+                if(tempInputString.trim().equals("Y") || (tempInputString.trim().equals("") && tSystem.getAvailableItems(traderID).size() != 0)) {
+                    System.out.printf("Here is %s's current inventory:", tSystem.getUsername(traderID));
+                    printList(traderID, "Inventory", "Item");
+                    if(!typeOfTrade.equals("borrowing from")) {
+                        System.out.println("Item #" + traderInventoryItemIndex + "is the currently selected item");
+                        System.out.println("If you would not like to change this item, simply press ENTER/RETURN at the prompt");
+                    }
+                    System.out.println("Enter the index of the item that you would like to recieve from the trader");
+                    System.out.print("=> ");
+                    tempInputString = sc.nextLine();
+                    if(!tempInputString.trim().equals("")) {
+                        traderInventoryItemIndex = Integer.parseInt(tempInputString);
+                    }
+                } 
+                tempInputString = ""; //reset the input string
+                System.out.println("The first meeting will take place on " + firstMeeting.toString());
+                System.out.println("If you would not like to change this, please press ENTER/RETURN at the prompt");
+                System.out.println("Enter your preferred first meeting time in the format yyyy/MM/dd HH:mm");
+                System.out.print("=> ");
+                tempInputString = sc.nextLine();
+                if(tempInputString.trim().equals("")) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                    firstMeeting = sdf.parse(tempInputString);
+                }
+                tempInputString = ""; //reset the input string
+                System.out.println("Originally, this is a " + (isTemporary ? "TEMPORARY" : "PERMANENT") + "trade");
+                System.out.println("If you would not like to change this, please press ENTER/RETURN at the prompt");
+                System.out.println("Is this a temporary trade? Y/N");
+                tempInputString = sc.nextLine();
+                // temporary = N => permanent
+                // temporary = "" => styll temp
+                // permanent - Y => temporary
+                // permanent - "" => styll permanent
+                if((isTemporary && tempInputString.trim().equals("")) || (!isTemporary && tempInputString.trim().equals("Y"))) {
+                    if(tempInputString.trim().equals("")) {
+                        System.out.println("The second meeting will take place on " + firstMeeting.toString());
+                        System.out.println("If you would not like to change this, please press ENTER/RETURN at the prompt");
+                    }
+                    System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
+                    System.out.print("=> ");
+                    tempInputString = sc.nextLine();
+                    if (tempInputString.trim().equals("")) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                        secondMeeting = sdf.parse(tempInputString);
+                    }
+                } else if(isTemporary && tempInputString.trim().equals("N")) {
+                    secondMeeting = null;
+                }
+                tempInputString = ""; // reset the input string
+                System.out.println("The meeting location was at " + meetingLocation);
+                System.out.println("If you would not like to change this, please press ENTER/RETURN at the prompt");
+                System.out.println("Enter your preferred meeting location");
+                System.out.print("=> ");
+                tempInputString = sc.nextLine();
+                if(!tempInputString.trim().equals("")) {
+                    meetingLocation = tempInputString;
+                }
+                tempInputString = ""; // reset the input string
+                success = tSystem.editTrade(this.userID, traderID, tradeID, firstMeeting,
+                        secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
+            } catch(EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException | ParseException | CannotTradeException e) {
+                success = false;
+                System.out.println(e.getMessage());
+            }
+        } while(!success);
+        System.out.println("Done! This requested trade has been successfully editied");
     }
 
     /**
-     * TODO: FINISH
-     * Prompts user to accept a trade offer
-     * REQUIREMENT: isFrozen == true
-     */
-    private void acceptTradeOffer() {
-        System.out.println("Done!");
-    }
-
-    /**
-     * TODO: FINISH
      * Prompts user to confirm that a trade has happend outside of this program
      */
     private void confirmTrade() {
-        System.out.println("Done!");
+        boolean success = false;
+        int acceptedTradeIndex = -1;
+        do {
+            try {
+                if(tSystem.getAcceptedTrades(this.userID).size() == 0) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
+                    return;
+                } System.out.println("Here is your accepted trades");
+                printList(this.userID, "Accepted", "Trade");
+                System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
+                System.out.print("=> ");
+                acceptedTradeIndex = Integer.parseInt(sc.nextLine());
+                if(tSystem.isTradeInProgress(tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                    System.out.println(
+                            "Ruh Roh! Looks like this trade has already finished taking place\nABORTING TRADE CONFIRMATION...");
+                    return;
+                }
+                if (tSystem.hasUserConfirmedAllMeetings(this.userID, tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you have already confirmed to all the meetings for this trade\nABORTING TRADE CONFIRMATION...");
+                    return;
+                }
+                success = tSystem.confirmTrade(this.userID, tSystem.getAcceptedTradeId(userID, acceptedTradeIndex));
+            } catch (EntryNotFoundException | NumberFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.println("Done! You have successfully confirmed the accepted trade");
     }
 }
