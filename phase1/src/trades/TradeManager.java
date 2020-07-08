@@ -208,8 +208,7 @@ public class TradeManager extends Database<Trade> implements Serializable {
         Trade trade = populate(tradeId);
 
         // If permanent trade, then the first meeting must be confirmed by both users for it to not be in progress.
-        if (trade.getSecondMeetingTime().before(trade.getMeetingTime()) ||
-                trade.getSecondMeetingTime().equals(trade.getMeetingTime())) {
+        if (trade.getSecondMeetingTime()== null) {
             return !(trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1());
         }
         // Checks for temporary trades, both meetings must be confirmed by both users for it to not be in progress.
