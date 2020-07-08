@@ -229,6 +229,7 @@ public class TextInterface {
                 System.out.println("14.\tReject Trade Request Offer");
                 System.out.println("15.\tConfirm Succesful Trade");
             }
+
             if (isFrozen)
                 System.out.println("16.\tRequest Un-Freeze Account");
             System.out.println("0.\tLOG OUT");
@@ -913,7 +914,7 @@ public class TextInterface {
     }
 
     /**
-     * Prompts user to confirm that a trade has happend outside of this program
+     * Prompts user to confirm that a trade has happened outside of this program
      */
     private void confirmTrade() {
         boolean success = false;

@@ -310,7 +310,7 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException
      */
     public Set<String> getRecentTradeItems(String userId) throws EntryNotFoundException {
-        ArrayList<String> acceptedTrades = ((TraderManager) userManager).getAcceptedTrades(userId);
+        ArrayList<String> acceptedTrades = ((TraderManager) userManager).getCompletedTrades(userId);
         Set<String> recentTradeItemNames = new HashSet<>();
         for (String tradeID : acceptedTrades) {
             String[] tradeableItemIDs = tradeManager.getItemsFromTrade(tradeID);
