@@ -462,7 +462,7 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException
      */
 	public boolean acceptTrade(String userID, String tradeID) throws EntryNotFoundException {
-		return ((TraderManager) userManager).acceptTradeRequest(userID, tradeID);
+		return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, userID, tradeID);
 	}
 
     /**
