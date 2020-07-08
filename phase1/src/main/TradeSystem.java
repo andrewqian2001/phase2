@@ -466,12 +466,18 @@ public class TradeSystem implements Serializable {
      * @return true if the trade was successfully confirmed
      */
 	public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
-        if(tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID))
+        if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID))
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
         else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
+        if (tradeManager.getFirstMeetingConfirmed(tradeID, userID)
+                && tradeManager.getFirstMeetingConfirmed(tradeID, tradeManager.getOtherUser(tradeID, userID))
+                && tradeManager.getSecondMeetingConfirmed(tradeID, userID)
+                && tradeManager.getSecondMeetingConfirmed(tradeID, tradeManager.getOtherUser(tradeID, userID))) {
+            // TODO: Handle what happens when a trade has been confirmed by both parties for all meetings
+        }
         return true;
-	}
+    }
 
     /**
      * Accepts a requested trade 
@@ -631,5 +637,18 @@ public class TradeSystem implements Serializable {
      */
     public String getAcceptedTradeId(String userId, int acceptedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
         return getAcceptedTrades(userId).get(acceptedTradeIndex);
+    }
+
+    /**
+     * checks if the given user has confirmed all meetings took place
+     * @param userID  id of the user
+     * @param tradeID id of the trade
+     * @return true if the user has confirmed all meetings took place, false else
+     * @throws EntryNotFoundException
+     */
+    public boolean hasUserConfirmedAllMeetings(String userID, String tradeID) throws EntryNotFoundException {
+        if(tradeManager.hasSecondMeeting(tradeID))
+            return tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.getSecondMeetingConfirmed(tradeID, userID);
+        return tradeManager.getFirstMeetingConfirmed(tradeID, userID);
     }
 }
