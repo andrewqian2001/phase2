@@ -124,9 +124,30 @@ public class TradeManager extends Database<Trade> implements Serializable {
         else throw new EntryNotFoundException("The user " + userId + " was not found.");
         update(trade);
     }
+
+    /**
+     *
+     * @param tradeId is the id of the trade
+     * @return if the first meeting happened
+     * @throws EntryNotFoundException
+     */
     public boolean isFirstMeetingConfirmed(String tradeId) throws EntryNotFoundException {
         Trade trade = populate(tradeId);
         if(trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param tradeId is the id of the trade
+     * @return if the second meeting happened
+     * @throws EntryNotFoundException
+     */
+    public boolean isSecondMeetingConfirmed(String tradeId) throws EntryNotFoundException {
+        Trade trade = populate(tradeId);
+        if(trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2()){
             return true;
         }
         return false;
