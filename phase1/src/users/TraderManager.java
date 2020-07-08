@@ -37,6 +37,10 @@ public class TraderManager extends UserManager implements Serializable {
         update(trader);
     }
 
+    public void addToCompletedTradesList(String traderId, String tradeID) throws EntryNotFoundException {
+        getCompletedTrades(traderId).add(tradeID);
+    }
+
     /**
      * Return whether this user should be frozen
      * @param userId the id of the user
