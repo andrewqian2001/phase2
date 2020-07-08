@@ -293,19 +293,31 @@ public class TradeSystem implements Serializable {
      */
     public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
         String[] frequentTraders = new String[3];
-        ArrayList<String> acceptedTrades = ((TraderManager) userManager).getAcceptedTrades(userID);
-        Set<String> distinct = new HashSet<>(acceptedTrades);
+        ArrayList<String> users = new ArrayList<>();
+
+        // converts trade-id to other users' id
+        for(String trade_id : ((TraderManager) userManager).getAcceptedTrades(userID)){
+            users.add(tradeManager.getOtherUser(trade_id, userID));
+        }
+
+        Set<String> distinct = new HashSet<>(users);
         int highest = 0;
         for (int i = 0; i < 3; i++) {
-            for (String trade_id : distinct) {
-                int possible_high = Collections.frequency(acceptedTrades, trade_id);
+            for (String user_id : distinct) {
+                int possible_high = Collections.frequency(users, user_id);
                 if (possible_high > highest) {
-                    frequentTraders[i] = userManager.getUsername(tradeManager.getOtherUser(trade_id, userID));
+                    frequentTraders[i] = user_id;
                     highest = possible_high;
                 }
             }
             distinct.remove(frequentTraders[i]);
         }
+
+        //converts frequentTraders from ID array to username array
+        for (int i = 0; i < 3 && frequentTraders[i] != null; i++){
+            frequentTraders[i] = userManager.getUsername(frequentTraders[i]);
+        }
+
         return frequentTraders;
     }
 
