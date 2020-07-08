@@ -242,16 +242,6 @@ public class TradeSystem implements Serializable {
         TradableItem newItem = tradableItemManager.addItem(itemName, itemDesc);
         ((TraderManager) userManager).addRequestItem(userID, newItem.getId());
     }
-
-    /**
-     * get all items in all user's inventories 
-     * 
-     * @return hash map of the items
-     */
-    public HashMap<String, ArrayList<String>> getAllAvailableItems() {
-        return ((TraderManager) userManager).getAllItemsInInventories();
-    }
-
     /**
      * Adds item to wishList
      * 
