@@ -8,12 +8,14 @@ import java.util.ArrayList;
  */
 
 public class Trader extends User implements Serializable {
-
-    private final ArrayList<String> wishList = new ArrayList<>(); // Ids
-    private final ArrayList<String> availableItems = new ArrayList<>();
-    private final ArrayList<String> requestedItems = new ArrayList<>();
-    private final ArrayList<String> acceptedTrades = new ArrayList<>();
-    private final ArrayList<String> requestedTrades = new ArrayList<>();
+    //all of the arraylist below store IDs
+    private final ArrayList<String> wishList = new ArrayList<>();  //items that this trader wants.
+    private final ArrayList<String> availableItems = new ArrayList<>(); //items that the trader is willing to trade,lend etc
+    private final ArrayList<String> requestedItems = new ArrayList<>(); //items that the this trader wishes to be added to availableItems list
+    private final ArrayList<String> acceptedTrades = new ArrayList<>(); //trades that this user has accepted
+    private final ArrayList<String> requestedTrades = new ArrayList<>(); //trades that a trader has invited this trader to do
+    private final ArrayList<String> completedTrades = new ArrayList<>(); //trades that has happened IRL confirmed by both users
+    private final ArrayList<String> incompleteTrades = new ArrayList<>(); //trades that are incomplete
     private int tradeLimit;
     private int incompleteTradeCount;
     private int incompleteTradeLim;
@@ -99,6 +101,15 @@ public class Trader extends User implements Serializable {
     ArrayList<String> getAcceptedTrades() {
         return acceptedTrades;
     }
+    /**
+     * @return list of trades that are completed (ie confirmed by both users)
+     */
+
+
+    ArrayList<String> getCompletedTrades() {
+        return completedTrades;
+    }
+
 
     /**
      * @return list of trades requested by this trader
@@ -130,8 +141,6 @@ public class Trader extends User implements Serializable {
     /**
      * @return how many transactions can be incomplete before this trader's account is frozen
      */
-
-
     int getIncompleteTradeLim() {
         return incompleteTradeLim;
     }
@@ -140,17 +149,20 @@ public class Trader extends User implements Serializable {
      * set a new incomplete trade limit value to this trader
      * @param incompleteTradeLim how many transactions can be incomplete before this trader's account is frozen
      */
-
-
     void setIncompleteTradeLim(int incompleteTradeLim) {
         this.incompleteTradeLim = incompleteTradeLim;
     }
 
+
+    /**
+     *
+     * @return an arraylist of Trade IDs that represent the traders unsuccessful trade items
+     */
+    ArrayList<String> getIncompleteTrades(){return incompleteTrades;}
+
     /**
      * @return total number of items borrowed by the trader
      */
-
-
     int getTotalItemsBorrowed() {
         return totalItemsBorrowed;
     }
