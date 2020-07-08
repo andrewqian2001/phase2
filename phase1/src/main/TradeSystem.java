@@ -6,6 +6,7 @@ import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import tradableitems.TradableItem;
 import tradableitems.TradableItemManager;
+import trades.Trade;
 import trades.TradeManager;
 import users.*;
 
@@ -310,13 +311,13 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException
      */
     public Set<String> getRecentTradeItems(String userId) throws EntryNotFoundException {
-        ArrayList<String> acceptedTrades = ((TraderManager) userManager).getCompletedTrades(userId);
+        ArrayList<String> completedTrades = ((TraderManager) userManager).getCompletedTrades(userId);
         Set<String> recentTradeItemNames = new HashSet<>();
-        for (String tradeID : acceptedTrades) {
-            String[] tradeableItemIDs = tradeManager.getItemsFromTrade(tradeID);
-            recentTradeItemNames.add(getTradableItemName(tradeableItemIDs[0]));
-            if (!tradeableItemIDs[1].equals(""))
-                recentTradeItemNames.add(getTradableItemName(tradeableItemIDs[1]));
+        for (String tradeID : completedTrades) {
+            String[] tradableItemIDs = tradeManager.getItemsFromTrade(tradeID);
+            recentTradeItemNames.add(getTradableItemName(tradableItemIDs[0]));
+            if (!tradableItemIDs[1].equals(""))
+                recentTradeItemNames.add(getTradableItemName(tradableItemIDs[1]));
         }
         return recentTradeItemNames;
     }
@@ -447,10 +448,16 @@ public class TradeSystem implements Serializable {
      * @return true if the trade was successfully confirmed
      */
     public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
+
         if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID))
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
         else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
+        if(tradeManager.isFirstMeetingConfirmed(tradeID)){ //once both users have confirmed the trade has taken place, the inventories(avalible items list) should update
+            String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
+            String TradeIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
+            ((TraderManager)userManager).trade(TradeIds[0], TradeIds[1], itemsFromTrade[0], itemsFromTrade[1]);
+        }
         return true;
     }
 

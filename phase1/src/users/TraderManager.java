@@ -233,6 +233,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @param item2 the id of the item that user2 will be giving to user1
      * @return user1's id
      */
+
     public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
         Trader trader1 = findTraderbyId(user1);
         Trader trader2 = findTraderbyId(user2);
