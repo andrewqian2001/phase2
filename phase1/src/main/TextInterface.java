@@ -941,6 +941,13 @@ public class TextInterface {
                     return;
                 }
                 success = tSystem.confirmTrade(this.userID, tSystem.getAcceptedTradeId(userID, acceptedTradeIndex));
+                /*
+                if (both users confirmed the trade){
+                    System.out.println("Both users confirmed the trade! Exchanging items...");
+                    exchange first set of items
+                    IDK WHAT TO DO ABOUT TEMPORARY TRADES help
+                }
+                 */
             } catch (EntryNotFoundException | NumberFormatException e) {
                 System.out.println(e.getMessage());
             }
