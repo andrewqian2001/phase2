@@ -563,6 +563,7 @@ public class TextInterface {
                 System.out.print("=> ");
                 traderName = sc.nextLine();
                 System.out.println("Enter the name of the Item");
+                System.out.print("=> ");
                 itemName = sc.nextLine();
                 tSystem.processItemRequest(traderName, itemName, isAccepted);
                 success = true;
