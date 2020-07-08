@@ -467,6 +467,27 @@ public class TradeSystem implements Serializable {
     }
 
     /**
+     * Confirms that other trader did not show up to the trade
+     * This method should increment the other traders incomplete trade count but not this traders
+     * @param userID is the ID of the user
+     * @param tradeID
+     * @return
+     */
+    public boolean confirmIncompleteTrade(String userID, String tradeID) throws EntryNotFoundException {
+
+        tradeManager.confirmSecondMeeting(tradeID, userID, false);
+        String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
+        String trader2Id = "";
+        if(userID == TraderIds[0]){
+            trader2Id = TraderIds[1];
+        }else{
+            trader2Id = TraderIds[0];
+        }
+        ((TraderManager)userManager).addToIncompleteTradeCount(trader2Id);
+        return true;
+    }
+
+    /**
      * Accepts a requested trade
      * @param tradeID id of the trade
      * @return true if the trade request was sucessfully confirmed
