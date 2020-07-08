@@ -605,6 +605,8 @@ public class TextInterface {
         System.out.println(lineBreak);
     }
 
+
+
     /**
      * Prompts admin to change the current trade limit
      */
@@ -750,8 +752,10 @@ public class TextInterface {
                 System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
+                String tradeID = tSystem.getRequestedTradeId(userID, requestedTradeIndex);
+                String user2ID = tSystem.getTraderIdFromTrade(this.userID, tradeID);
                 //SHOULD ALSO UPDATE THE REQUESTED LIST OF THE OTHER USER INVOLVED IN THE TRADE
-                success = isAccepted ? tSystem.acceptTrade(this.userID, tSystem.getRequestedTradeId(userID, requestedTradeIndex)) : tSystem.rejectTrade(this.userID, 
+                success = isAccepted ? tSystem.acceptTrade(this.userID, user2ID, tradeID) : tSystem.rejectTrade(this.userID,
                         tSystem.getRequestedTradeId(userID, requestedTradeIndex)); 
             } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException e) {
                 success = false;
