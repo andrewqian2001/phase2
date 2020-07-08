@@ -278,7 +278,7 @@ public class TradeSystem implements Serializable {
         ArrayList<String> users = new ArrayList<>();
 
         // converts trade-id to other users' id
-        for(String trade_id : ((TraderManager) userManager).getCompletedTrades(userID)){
+        for(String trade_id : ((TraderManager) userManager).getAcceptedTrades(userID)){
             users.add(tradeManager.getOtherUser(trade_id, userID));
         }
 
@@ -401,9 +401,10 @@ public class TradeSystem implements Serializable {
         String borrowItemId = borrowItemIndex == -1 ? "" : getAvailableItems(secondUserId).get(borrowItemIndex);
 
         String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
+        ((TraderManager) userManager).addToIncompleteTradeCount(userId);
         ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
         ((TraderManager) userManager).addRequestTrade(userId, tradeId);
-
+        ((TraderManager) userManager).addToIncompleteTradeCount(secondUserId);
 
         return true;
     }
@@ -442,7 +443,6 @@ public class TradeSystem implements Serializable {
 
     /**
      * Confirms an accepted trade took place outside of the program
-     * updates inventory and updates the completedTrades list for both traders
      * @param userID id of the user
      * @param tradeID id of the trade
      * @return true if the trade was successfully confirmed
@@ -451,25 +451,17 @@ public class TradeSystem implements Serializable {
 
         if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID)){
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
-            if(tradeManager.isSecondMeetingConfirmed(tradeID) && isTradeTemporary(tradeID)){ //if the second meeting has occured and the trade is temporary
-                //the items are traded back and both users are updated
+            if(tradeManager.isSecondMeetingConfirmed(tradeID) && isTradeTemporary(tradeID)){
                 String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
                 String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
-                ((TraderManager)userManager).trade(TraderIds[1], TraderIds[0], itemsFromTrade[1], itemsFromTrade[0]);
-                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);
-                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[1],tradeID);
-
+                ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[1], TraderIds[1], itemsFromTrade[0]);
             }
         } else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
         if(tradeManager.isFirstMeetingConfirmed(tradeID)){ //once both users have confirmed the trade has taken place, the inventories(avalible items list) should update
             String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
             String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
-            ((TraderManager)userManager).trade(TraderIds[0], TraderIds[1], itemsFromTrade[0], itemsFromTrade[1]);
-            if(!isTradeTemporary(tradeID)){ //if the trade is not temporary then the trade is completed
-                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);
-                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[1],tradeID);
-            }
+            ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[0], TraderIds[1], itemsFromTrade[1]);
         }
         return true;
     }
