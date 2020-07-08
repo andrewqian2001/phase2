@@ -69,21 +69,27 @@ public class TraderManager extends UserManager implements Serializable {
 
 
     /**
-     * Adds one of user1's requested trades to user1's accepted trade
-     * @param user1   id of user
-     * @param tradeId id of trade to accept
-     * @return true if the trade was successfully accepted
-     * @throws EntryNotFoundException if the user was not found
+     *
+     * @param user1 is the ID of the first trader
+     * @param user2 is the ID of the second trader
+     * @param tradeId
+     * @return
+     * @throws EntryNotFoundException
      */
-    public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
+    public boolean acceptTradeRequest(String user1, String user2, String tradeId) throws EntryNotFoundException {
         Trader trader1 = findTraderbyId(user1);
+        Trader trader2 = findTraderbyId(user2);
         if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
             return false;
         }
         trader1.getRequestedTrades().remove(tradeId);
         trader1.getAcceptedTrades().add(tradeId);
         trader1.setTradeCount(trader1.getTradeCount() + 1);
+        trader2.getRequestedTrades().remove(tradeId);
+        trader2.getAcceptedTrades().add(tradeId);
+        trader2.setTradeCount(trader2.getTradeCount() + 1);
         update(trader1);
+        update(trader2);
         return true;
     }
 
