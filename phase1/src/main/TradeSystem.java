@@ -35,15 +35,6 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * Getter method for userID
-     * 
-     * @return the id of the loggedInUser
-     */
-    public String getLoggedInUserId() {
-        return this.loggedInUserId;
-    }
-
-    /**
      * Registers a new trader into the system
      * 
      * @param username username of new trader
