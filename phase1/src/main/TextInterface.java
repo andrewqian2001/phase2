@@ -19,6 +19,10 @@ import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 
+/**
+ * Used as a way to prompt the user and receive input.
+ * Code is partially taken from logging.zip -> StudentManager.java from week 6 slides and codes.
+ */
 public class TextInterface {
 
     private static final Logger LOGGER = Logger.getLogger(TextInterface.class.getName());
