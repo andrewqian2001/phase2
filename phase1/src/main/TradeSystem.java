@@ -454,14 +454,14 @@ public class TradeSystem implements Serializable {
             if(tradeManager.isSecondMeetingConfirmed(tradeID) && isTradeTemporary(tradeID)){
                 String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
                 String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
-                ((TraderManager)userManager).trade(TraderIds[1], TraderIds[0], itemsFromTrade[1], itemsFromTrade[0]);
+                ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[1], TraderIds[1], itemsFromTrade[0]);
             }
         } else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
         if(tradeManager.isFirstMeetingConfirmed(tradeID)){ //once both users have confirmed the trade has taken place, the inventories(avalible items list) should update
             String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
             String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
-            ((TraderManager)userManager).trade(TraderIds[0], TraderIds[1], itemsFromTrade[0], itemsFromTrade[1]);
+            ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[0], TraderIds[1], itemsFromTrade[1]);
         }
         return true;
     }
