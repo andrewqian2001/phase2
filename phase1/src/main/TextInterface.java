@@ -223,11 +223,12 @@ public class TextInterface {
                 System.out.println("12.\tAccept Trade Request Offer");
                 System.out.println("13.\tEdit Trade Request Offer");
                 System.out.println("14.\tReject Trade Request Offer");
-                System.out.println("15.\tConfirm Succesful Trade");
+                System.out.println("15.\tConfirm Successful Trade");
+                System.out.println("16.\tConfirm UnSuccessful Trade");
             }
 
             if (isFrozen)
-                System.out.println("16.\tRequest Un-Freeze Account");
+                System.out.println("17.\tRequest Un-Freeze Account");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -302,6 +303,11 @@ public class TextInterface {
                         System.out.println("Invalid Selection, please try again");
                     break;
                 case 16:
+                    if(!isFrozen)
+                        confirmIncompleteTrade();
+                    else
+                        System.out.println("Invalid Selection, please try again");
+                case 17:
                     if (isFrozen) {
                         requestUnFreeze();
                     } else
@@ -972,5 +978,42 @@ public class TextInterface {
             }
         } while (!success);
         System.out.println("Done! You have successfully confirmed the accepted trade");
+    }
+    /**
+     * Prompts user to confirm that the other trader did not show up to IRL trade
+     */
+
+    private void confirmIncompleteTrade() {
+        boolean success = false;
+        int acceptedTradeIndex = -1;
+        do {
+            try {
+                System.out.println(tSystem.getAcceptedTrades(this.userID));
+                if(tSystem.getAcceptedTrades(this.userID).size() == 0) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
+                    return;
+                } System.out.println("Here is your accepted trades");
+                printList(this.userID, "Accepted", "Trade");
+                System.out.println("Enter the index of the accepted trade that you would like to confirm was unsuccessful");
+                System.out.print("=> ");
+                acceptedTradeIndex = Integer.parseInt(sc.nextLine());
+                if(!tSystem.isTradeInProgress(tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                    System.out.println(
+                            "Ruh Roh! Looks like this trade has already finished taking place\nABORTING TRADE CONFIRMATION...");
+                    return;
+                }
+                if (tSystem.hasUserConfirmedAllMeetings(this.userID, tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                    System.out.println(
+                            "Ruh Roh! Looks like you have already confirmed to all the meetings for this trade\nABORTING TRADE CONFIRMATION...");
+                    return;
+                }
+                success = tSystem.confirmIncompleteTrade(this.userID, tSystem.getAcceptedTradeId(userID, acceptedTradeIndex));
+
+            } catch (EntryNotFoundException | NumberFormatException e) {
+                System.out.println(e.getMessage());
+            }
+        } while (!success);
+        System.out.println("Done! The trade has been marked as unsuccessful");
     }
 }
