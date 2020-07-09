@@ -407,6 +407,7 @@ public class TradeSystem implements Serializable {
         ((TraderManager) userManager).addRequestTrade(userId, tradeId);
 
 
+
         return true;
     }
 
@@ -501,6 +502,8 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException
      */
     public boolean acceptTrade(String tradeID) throws EntryNotFoundException {
+
+
         return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, tradeID);
     }
 
@@ -569,6 +572,10 @@ public class TradeSystem implements Serializable {
             }
         }
         throw new EntryNotFoundException("The trade item could not be found in the inventory.");
+    }
+
+    public boolean isFirstUser(String tradeId, String userId) throws EntryNotFoundException {
+        return tradeManager.isFirstUser(tradeId, userId);
     }
 
     /**

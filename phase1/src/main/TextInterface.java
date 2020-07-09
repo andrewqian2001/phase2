@@ -747,6 +747,8 @@ public class TextInterface {
      */
     private void respondToTradeOffer(boolean isAccepted) {
         int requestedTradeIndex = -1;
+        boolean owntrade = false; //I added this so that the print statement at the end does not run if user attempts to
+        //accept their own trade
         boolean success = false;
         do {
             try {
@@ -762,13 +764,24 @@ public class TextInterface {
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
                 String tradeID = tSystem.getRequestedTradeId(userID, requestedTradeIndex);
                 String user2ID = tSystem.getTraderIdFromTrade(this.userID, tradeID);
-                //SHOULD ALSO UPDATE THE REQUESTED LIST OF THE OTHER USER INVOLVED IN THE TRADE
-                success = isAccepted ? tSystem.acceptTrade(tradeID) : tSystem.rejectTrade(user2ID, tradeID);
+
+
+                if(!tSystem.isFirstUser(tradeID, this.userID)){ //checks if user is the user who sent the request
+                    // so that the user cannot accept their own trade
+                    success = isAccepted ? tSystem.acceptTrade(tradeID) : tSystem.rejectTrade(user2ID, tradeID);
+                }else{
+                    System.out.println("You cannot accept your own trade!");
+                    owntrade = true;
+                    success = true;
+
+                }
+
             } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
         } while (!success);
+        if(!owntrade)
         System.out.println("Done! You have successfully " + (isAccepted ? "accepted" : "rejected") + " the requested trade");
     }
 
@@ -919,11 +932,13 @@ public class TextInterface {
     /**
      * Prompts user to confirm that a trade has happened outside of this program
      */
+
     private void confirmTrade() {
         boolean success = false;
         int acceptedTradeIndex = -1;
         do {
             try {
+                System.out.println(tSystem.getAcceptedTrades(this.userID));
                 if(tSystem.getAcceptedTrades(this.userID).size() == 0) {
                     System.out.println(
                             "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
