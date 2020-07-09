@@ -40,8 +40,17 @@ public class TraderManager extends UserManager implements Serializable {
         update(trader);
     }
 
+    /**
+     * Makes an accepted trade turn into a completed trade. This is to be done when both users have confirmed a trade.
+     * @param traderId
+     * @param tradeID
+     * @throws EntryNotFoundException
+     */
     public void addToCompletedTradesList(String traderId, String tradeID) throws EntryNotFoundException {
-        getCompletedTrades(traderId).add(tradeID);
+        Trader t = findTraderbyId(traderId);
+        t.getCompletedTrades().add(tradeID);
+        t.getAcceptedTrades().remove(tradeID);
+        update(t);
     }
 
     /**
@@ -357,6 +366,7 @@ public class TraderManager extends UserManager implements Serializable {
     public void changeTraderLimits(String userId, int newLimit) throws EntryNotFoundException {
         Trader trader = findTraderbyId(userId);
         trader.setIncompleteTradeLim(newLimit);
+        update(trader);
     }
 
 

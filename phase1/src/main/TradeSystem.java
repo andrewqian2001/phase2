@@ -311,7 +311,7 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException cant find user id
      */
     public Set<String> getRecentTradeItems(String userId) throws EntryNotFoundException {
-        ArrayList<String> completedTrades = ((TraderManager) userManager).getCompletedTrades(userId);
+        ArrayList<String> completedTrades = getCompletedTrades(userId);
         Set<String> recentTradeItemNames = new HashSet<>();
         for (String tradeID : completedTrades) {
             String[] tradableItemIDs = tradeManager.getItemsFromTrade(tradeID);
@@ -321,6 +321,11 @@ public class TradeSystem implements Serializable {
         }
         return recentTradeItemNames;
     }
+
+    public ArrayList<String> getCompletedTrades(String userID) throws EntryNotFoundException{
+        return ((TraderManager) userManager).getCompletedTrades(userID);
+    }
+
 
     /**
      * Gets a list of all Unfreeze Request
@@ -458,6 +463,8 @@ public class TradeSystem implements Serializable {
                 String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
                 String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
                 ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[1], TraderIds[1], itemsFromTrade[0]);
+                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0], tradeID);
+                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[1], tradeID);
             }
         } else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
@@ -465,6 +472,10 @@ public class TradeSystem implements Serializable {
             String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
             String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
             ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[0], TraderIds[1], itemsFromTrade[1]);
+            if (!tradeManager.isTradeInProgress(tradeID)){
+                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0], tradeID);
+                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[1], tradeID);
+            }
         }
         return true;
     }
