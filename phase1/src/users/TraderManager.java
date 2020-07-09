@@ -291,7 +291,7 @@ public class TraderManager extends UserManager implements Serializable {
     /**
      * Gets the IDs of all Traders in the database
      * @return An arraylist of Trader IDs
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException could not find users
      */
     public ArrayList<String> getAllTraders() {
         ArrayList<String> allTraders = new ArrayList<>();

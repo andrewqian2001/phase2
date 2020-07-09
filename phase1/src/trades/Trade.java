@@ -199,6 +199,9 @@ public class Trade extends DatabaseItem implements Serializable {
         this.secondUserOffer = secondUserOffer;
     }
 
+    /**
+     * @return how many edits can be done
+     */
     int getMaxAllowedEdits() {
         return MAX_ALLOWED_NUM_EDITS;
     }
