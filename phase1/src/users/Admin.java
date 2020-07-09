@@ -2,6 +2,9 @@ package users;
 
 import java.io.Serializable;
 
+/**
+ * Represents an admin
+ */
 public class Admin extends User implements Serializable{
 
     /**

@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Manages admins
+ */
 public class AdminManager extends UserManager implements Serializable {
     /**
      * Constructor for AdminManager

@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Manages traders
+ */
 public class TraderManager extends UserManager implements Serializable {
 
     /**
