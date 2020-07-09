@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Manages traders
+ */
 public class TraderManager extends UserManager implements Serializable {
 
     /**
@@ -59,7 +62,7 @@ public class TraderManager extends UserManager implements Serializable {
      * Checks whether this user can borrow items
      * @param userID id of the user
      * @return true if the user can borrow, false else
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException user id not found
      */
     public boolean canBorrow(String userID) throws EntryNotFoundException {
         Trader trader = findTraderbyId(userID);
@@ -75,9 +78,9 @@ public class TraderManager extends UserManager implements Serializable {
     /**
      *
      * @param user1 is the ID of the first trader
-     * @param tradeId
+     * @param tradeId id of the trade
      * @return true if trade was successful
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException user1 / tradeId not found
      */
     public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
         Trader trader1 = findTraderbyId(user1);
@@ -238,6 +241,7 @@ public class TraderManager extends UserManager implements Serializable {
      * @param user2 the second user's id
      * @param item2 the id of the item that user2 will be giving to user1
      * @return user1's id
+     * @throws EntryNotFoundException users / items not found
      */
 
     public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
@@ -293,7 +297,6 @@ public class TraderManager extends UserManager implements Serializable {
     /**
      * Gets the IDs of all Traders in the database
      * @return An arraylist of Trader IDs
-     * @throws EntryNotFoundException
      */
     public ArrayList<String> getAllTraders() {
         ArrayList<String> allTraders = new ArrayList<>();
@@ -363,7 +366,7 @@ public class TraderManager extends UserManager implements Serializable {
      * get all available items
      * @param userID user Id
      * @return arraylist of all items in all inventories
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException user id not found
      */
     public ArrayList<String> getAvailableItems(String userID) throws EntryNotFoundException {
         return findTraderbyId(userID).getAvailableItems();
@@ -373,7 +376,7 @@ public class TraderManager extends UserManager implements Serializable {
      * gett all wish list items
      * @param userID user Id
      * @return arraylist of all wish list item
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException user id not found
      */
     public ArrayList<String> getWishlist(String userID) throws EntryNotFoundException {
         return findTraderbyId(userID).getWishlist();

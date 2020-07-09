@@ -4,6 +4,9 @@ import main.DatabaseItem;
 
 import java.io.Serializable;
 
+/**
+ * Represents an item that is supposed to be traded
+ */
 public class TradableItem extends DatabaseItem implements Serializable {
 
     private String name;

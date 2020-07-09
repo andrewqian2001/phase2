@@ -17,7 +17,7 @@ import exceptions.UserAlreadyExistsException;
 
 /**
  * Used as a way to prompt the user and receive input.
- * Code is partially taken from logging.zip -> StudentManager.java from week 6 slides and codes.
+ * Code is partially taken from logging.zip, StudentManager.java from week 6 slides and codes.
  */
 public class TextInterface {
 
@@ -34,7 +34,7 @@ public class TextInterface {
     /**
      * Constructor for TextInterface - Initializes TradeSystem, Scanner and UserID
      *
-     * @throws IOException
+     * @throws IOException if file paths are bad
      */
     public TextInterface() throws IOException {
         LOGGER.setLevel(Level.ALL);
@@ -49,7 +49,7 @@ public class TextInterface {
     /**
      * Visual Presenter for the application
      *
-     * @throws IOException
+     * @throws IOException bad file path
      */
     public void run() throws IOException {
         loginAdmin();

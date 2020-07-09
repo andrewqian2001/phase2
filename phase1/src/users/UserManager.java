@@ -18,7 +18,7 @@ public class UserManager extends Database<User> implements Serializable {
     /**
      * Constructor for UserManager
      * @param filePath path of users.ser
-     * @throws IOException
+     * @throws IOException bad file path
      */
     public UserManager(String filePath) throws IOException {
         super(filePath);
@@ -29,7 +29,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @param username username of new user
      * @param password password of new user
      * @return The ID of the newly created user
-     * @throws UserAlreadyExistsException
+     * @throws UserAlreadyExistsException username is not unique
      */
     public String registerUser(String username, String password) throws UserAlreadyExistsException {
         if (isUsernameUnique(username)) return update(new User(username, password)).getId();
@@ -53,7 +53,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @param username username of user
      * @param password password of user
      * @return the Id of the newly logged in user
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException could not find the user
      */
     public String login(String username, String password) throws EntryNotFoundException {
         LinkedList<User> users = getItems();
@@ -68,8 +68,8 @@ public class UserManager extends Database<User> implements Serializable {
      * @param loggedInUserId the ID of the user calling the action
      * @param userId the ID of the user that is about to be (un-)frozen
      * @param frozenStatus true if want to freeze, false else
-     * @throws EntryNotFoundException
-     * @throws AuthorizationException
+     * @throws EntryNotFoundException could not find the user
+     * @throws AuthorizationException this user has no authority to freeze
      */
     public void freezeUser(String loggedInUserId, String userId, boolean frozenStatus) throws EntryNotFoundException, AuthorizationException {
         User userCallingAction = populate(loggedInUserId);
@@ -83,7 +83,7 @@ public class UserManager extends Database<User> implements Serializable {
      * Gets the username of the user
      * @param userId ID of the user
      * @return the username of the user
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException could not find user
      */
     public String getUsername(String userId) throws EntryNotFoundException{
         User user = super.populate(userId);
@@ -94,7 +94,7 @@ public class UserManager extends Database<User> implements Serializable {
      * Gets the userID of a user given their username
      * @param username the username of the user
      * @return the ID of the user
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException could not find user
      */
     public String getUserId(String username) throws EntryNotFoundException{
         LinkedList<User> users = getItems();
@@ -108,7 +108,7 @@ public class UserManager extends Database<User> implements Serializable {
      * Sets the request frozen status of a user
      * @param userId Id of the user
      * @param status true if the user requested to be un-frozen, false else
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException could not find user
      */
     public void setRequestFrozenStatus(String userId, boolean status) throws EntryNotFoundException{
         User user = populate(userId);
@@ -117,10 +117,9 @@ public class UserManager extends Database<User> implements Serializable {
     }
 
     /**
-     * return if the user is frozen
      * @param userId user Id
-     * @return
-     * @throws EntryNotFoundException
+     * @return if the user is an admin
+     * @throws EntryNotFoundException could not find user
      */
     public boolean isFrozen(String userId) throws EntryNotFoundException {
         User user = populate(userId);
@@ -128,10 +127,9 @@ public class UserManager extends Database<User> implements Serializable {
     }
 
     /**
-     * return if the user is an admin
      * @param userId user Id
-     * @return
-     * @throws EntryNotFoundException
+     * @return if the user is an admin
+     * @throws EntryNotFoundException could not find user
      */
     public boolean isAdmin(String userId) throws EntryNotFoundException {
         User user = populate(userId);
@@ -140,7 +138,6 @@ public class UserManager extends Database<User> implements Serializable {
     /**
      * Gets all Unfreeze Requests
      * @return a list of all traders who have requested their account to be unfrozen
-     * @throws EntryNotFoundException
      */
     public ArrayList<String> getAllUnFreezeRequests() {
         ArrayList<String> allUnFrozenList = new ArrayList<>();
