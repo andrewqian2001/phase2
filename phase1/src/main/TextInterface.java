@@ -679,6 +679,9 @@ public class TextInterface {
                     System.out.println("Enter the username of the Trader you would like to lend your item to");
                     System.out.print("=> ");
                     traderName = sc.nextLine();
+                    if (tSystem.getIdFromUsername(traderName).equals(this.userID)){
+                        System.out.println("A Trader cannot perform borrow/lend/trade action to him/herself");
+                    return;}
                     System.out.println("Here is your inventory:");
                     printInventory();
                     System.out.println("Please enter the index of the item you would like to give");
