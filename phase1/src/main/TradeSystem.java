@@ -406,7 +406,8 @@ public class TradeSystem implements Serializable {
         String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
 
         ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
-        ((TraderManager) userManager).addRequestTrade(userId, tradeId);
+        ((TraderManager) userManager).acceptTradeRequest(userId, tradeId); //yeah we are accepting our own trade, this should
+        //probably be changed idk
 
 
 
@@ -489,7 +490,7 @@ public class TradeSystem implements Serializable {
     public boolean confirmIncompleteTrade(String userID, String tradeID) throws EntryNotFoundException {
 
         if(tradeManager.isFirstMeetingConfirmed(tradeID)){
-            tradeManager.confirmSecondMeeting(tradeID, userID, false);
+            tradeManager.confirmSecondMeeting(tradeID, userID, false); //maybe ill need to change this to input the other users ID?
         }else{
             tradeManager.confirmFirstMeeting(tradeID, userID, false);
         }
@@ -542,6 +543,10 @@ public class TradeSystem implements Serializable {
         ArrayList<String> traderInventory = ((TraderManager) userManager).getInventory(traderId);
         tradeManager.editTrade(tradeID, firstMeeting, secondMeeting, meetingLocation,
                 userInventory.get(inventoryItemIndex), traderInventory.get(traderInventoryItemIndex));
+
+        ((TraderManager)userManager).removeAcceptedTrade(traderId, tradeID);
+        ((TraderManager)userManager).getRequestedTrades(traderId).add(tradeID);
+
         return true;
     }
 
