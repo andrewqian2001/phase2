@@ -395,6 +395,7 @@ public class TradeSystem implements Serializable {
      * @return true if the trade has been processed successfully
      * @throws EntryNotFoundException
      */
+
     public boolean trade(String userId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
         String secondUserId = getIdFromUsername(secondUserName);
         String lendItemId = lendItemIndex == -1 ? "" : getAvailableItems(userId).get(lendItemIndex);
@@ -403,7 +404,7 @@ public class TradeSystem implements Serializable {
         String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
 
         ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
-
+        ((TraderManager) userManager).addRequestTrade(userId, tradeId);
 
 
         return true;
