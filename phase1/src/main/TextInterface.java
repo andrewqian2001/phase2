@@ -4,15 +4,11 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.Date;
 
 import exceptions.AuthorizationException;
 import exceptions.CannotTradeException;
@@ -708,16 +704,20 @@ public class TextInterface {
                 System.out.print("=> ");
                 meetingTime = sc.nextLine();
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+                Date d = new Date();
                 firstMeeting = sdf.parse(meetingTime);
+                if (d.after(firstMeeting)){
+                    System.out.println("please enter a valid date");
+                    return;}
 
                 System.out.println("Is this a temporary trade? Y/N");
                 System.out.print("=> ");
                 isTemporary = sc.nextLine().equals("Y");
                 if(isTemporary) {
-                    System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
-                    System.out.print("=> ");
-                    meetingTime = sc.nextLine();
-                    secondMeeting = sdf.parse(meetingTime);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(firstMeeting);
+                    c.add(Calendar.MONTH, 1);
+                    secondMeeting = c.getTime();
                 }
                 System.out.println("Enter your preferred meeting location");
                 System.out.print("=> ");
