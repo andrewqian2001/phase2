@@ -278,7 +278,7 @@ public class TradeSystem implements Serializable {
         ArrayList<String> users = new ArrayList<>();
 
         // converts trade-id to other users' id
-        for(String trade_id : ((TraderManager) userManager).getAcceptedTrades(userID)){
+        for(String trade_id : ((TraderManager) userManager).getCompletedTrades(userID)){
             users.add(tradeManager.getOtherUser(trade_id, userID));
         }
 
@@ -401,10 +401,10 @@ public class TradeSystem implements Serializable {
         String borrowItemId = borrowItemIndex == -1 ? "" : getAvailableItems(secondUserId).get(borrowItemIndex);
 
         String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
-        ((TraderManager) userManager).addToIncompleteTradeCount(userId);
+
         ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
-        ((TraderManager) userManager).addRequestTrade(userId, tradeId);
-        ((TraderManager) userManager).addToIncompleteTradeCount(secondUserId);
+
+
 
         return true;
     }
@@ -448,9 +448,7 @@ public class TradeSystem implements Serializable {
      * @return true if the trade was successfully confirmed
      */
     public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
-        if(!isTradeInProgress(tradeID)){ //user should not be able to confirm trade occured if the other user has not accepted the trade
-            return false;
-        }
+
         if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID)){
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
             if(tradeManager.isSecondMeetingConfirmed(tradeID) && isTradeTemporary(tradeID)){
@@ -490,13 +488,7 @@ public class TradeSystem implements Serializable {
             tradeManager.confirmFirstMeeting(tradeID, userID, false);
         }
 
-        String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
-        String trader2Id = "";
-        if(userID == TraderIds[0]){
-            trader2Id = TraderIds[1];
-        }else{
-            trader2Id = TraderIds[0];
-        }
+        String trader2Id = tradeManager.getOtherUser(tradeID, userID);
         ((TraderManager)userManager).addToIncompleteTradeCount(trader2Id);
         return true;
     }

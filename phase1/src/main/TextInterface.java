@@ -948,6 +948,7 @@ public class TextInterface {
                     IDK WHAT TO DO ABOUT TEMPORARY TRADES help
                 }
                  */
+                //Temporary trades have the items traded back, it is handled in confirmTrade in TradeSystem.
             } catch (EntryNotFoundException | NumberFormatException e) {
                 System.out.println(e.getMessage());
             }
