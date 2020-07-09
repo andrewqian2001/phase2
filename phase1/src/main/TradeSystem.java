@@ -454,12 +454,16 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException user id / trade id not found
      */
     public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
+        String trader2 = tradeManager.getOtherUser(userID, tradeID);
+        if(((TraderManager)userManager).getAcceptedTrades(trader2).contains(tradeID) == false)return false; //other user has no accepted the trade
+
+        String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
+        String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
 
         if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID)){
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
             if(tradeManager.isSecondMeetingConfirmed(tradeID) && isTradeTemporary(tradeID)){
-                String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
-                String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
+
                 ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[1], TraderIds[1], itemsFromTrade[0]);
                 ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);
                 ((TraderManager)userManager).addToCompletedTradesList(TraderIds[1],tradeID);
@@ -468,8 +472,7 @@ public class TradeSystem implements Serializable {
         } else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
         if(tradeManager.isFirstMeetingConfirmed(tradeID)){ //once both users have confirmed the trade has taken place, the inventories(avalible items list) should update
-            String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
-            String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
+
             ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[0], TraderIds[1], itemsFromTrade[1]);
             if(!isTradeTemporary(tradeID)){
                 ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);

@@ -23,6 +23,7 @@ public class TraderManager extends UserManager implements Serializable {
         super(filePath);
     }
 
+
     public String registerUser(String username, String password, int tradeLimit) throws UserAlreadyExistsException {
         if (isUsernameUnique(username))
             return update(new Trader(username, password, tradeLimit)).getId();
@@ -40,6 +41,12 @@ public class TraderManager extends UserManager implements Serializable {
         update(trader);
     }
 
+    /**
+     * Adds tradeID to the list of completed trades of the trader
+     * @param traderId is the trader id
+     * @param tradeID is the trade id
+     * @throws EntryNotFoundException
+     */
     public void addToCompletedTradesList(String traderId, String tradeID) throws EntryNotFoundException {
         getCompletedTrades(traderId).add(tradeID);
         Trader trader = findTraderbyId(traderId);
