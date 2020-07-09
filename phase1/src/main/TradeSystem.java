@@ -448,13 +448,18 @@ public class TradeSystem implements Serializable {
      * @return true if the trade was successfully confirmed
      */
     public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
-
+        if(!isTradeInProgress(tradeID)){ //user should not be able to confirm trade occured if the other user has not accepted the trade
+            return false;
+        }
         if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID)){
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
             if(tradeManager.isSecondMeetingConfirmed(tradeID) && isTradeTemporary(tradeID)){
                 String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
                 String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
                 ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[1], TraderIds[1], itemsFromTrade[0]);
+                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);
+                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[1],tradeID);
+
             }
         } else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
@@ -462,6 +467,10 @@ public class TradeSystem implements Serializable {
             String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
             String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
             ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[0], TraderIds[1], itemsFromTrade[1]);
+            if(!isTradeTemporary(tradeID)){
+                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);
+                ((TraderManager)userManager).addToCompletedTradesList(TraderIds[1],tradeID);
+            }
         }
         return true;
     }

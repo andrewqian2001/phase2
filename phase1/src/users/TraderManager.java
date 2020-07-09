@@ -39,6 +39,8 @@ public class TraderManager extends UserManager implements Serializable {
 
     public void addToCompletedTradesList(String traderId, String tradeID) throws EntryNotFoundException {
         getCompletedTrades(traderId).add(tradeID);
+        Trader trader = findTraderbyId(traderId);
+        update(trader);
     }
 
     /**
