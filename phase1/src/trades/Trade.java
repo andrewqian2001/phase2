@@ -223,7 +223,7 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
-     * @param num
+     * @param num number of edits
      */
     void setNumEdits(int num){
         this.numEdits = num;

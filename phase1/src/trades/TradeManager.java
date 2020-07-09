@@ -49,7 +49,6 @@ public class TradeManager extends Database<Trade> implements Serializable {
      * Removes a Trade from storage
      *
      * @param tradeId the trade id that is being removed
-     * @return the Trade that got deleted
      * @throws EntryNotFoundException if the id doesn't refer to anything
      */
     public void deleteTrade(String tradeId) throws EntryNotFoundException {
@@ -173,8 +172,9 @@ public class TradeManager extends Database<Trade> implements Serializable {
      * Gets the other user in the trade
      *
      * @param tradeID id of the trade
+     * @param userId id of the user
      * @return the user id of the other user
-     * @throws EntryNotFoundException trade id wasn't found
+     * @throws EntryNotFoundException trade id / user id  wasn't found
      */
     public String getOtherUser(String tradeID, String userId) throws EntryNotFoundException {
         Trade trade = populate(tradeID);

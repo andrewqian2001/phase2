@@ -138,7 +138,6 @@ public class UserManager extends Database<User> implements Serializable {
     /**
      * Gets all Unfreeze Requests
      * @return a list of all traders who have requested their account to be unfrozen
-     * @throws EntryNotFoundException could not find users
      */
     public ArrayList<String> getAllUnFreezeRequests() {
         ArrayList<String> allUnFrozenList = new ArrayList<>();

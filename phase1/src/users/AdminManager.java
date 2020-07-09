@@ -12,7 +12,7 @@ public class AdminManager extends UserManager implements Serializable {
     /**
      * Constructor for AdminManager
      * @param filePath the path of the users.ser file
-     * @throws IOException
+     * @throws IOException file path is bad
      */
     public AdminManager(String filePath) throws IOException {
         super(filePath);
@@ -23,7 +23,7 @@ public class AdminManager extends UserManager implements Serializable {
      * 
      * @param username username of the new admin
      * @param password password of the new admin
-     * @throws UserAlreadyExistsException
+     * @throws UserAlreadyExistsException can't register with this username
      */
     public String registerUser(String username, String password) throws UserAlreadyExistsException {
         if (isUsernameUnique(username)) return update(new Admin(username, password)).getId();
@@ -78,7 +78,7 @@ public class AdminManager extends UserManager implements Serializable {
      * @param userId id of the user
      * @param itemId id of the item
      * @return the user's id
-     * @throws EntryNotFoundException
+     * @throws EntryNotFoundException user id / itemId not found
      */
     public String rejectRequestItem(String userId, String itemId) throws EntryNotFoundException {
         Trader trader = findTraderById(userId);
@@ -93,6 +93,7 @@ public class AdminManager extends UserManager implements Serializable {
     /**
      * Gets the current weekly trade limit
      * @return the current weekly trade limit for all traders. If no traders exist, then return -1
+     * @throws EntryNotFoundException traders not found
      */
     public int getTradeLimit() throws EntryNotFoundException {
         ArrayList<String> traders = getAllTraders();
@@ -105,6 +106,7 @@ public class AdminManager extends UserManager implements Serializable {
     /**
      * Sets the current weekly trade limit for all traders
      * @param tradeLimit the new weekly trade limit
+     * @throws EntryNotFoundException couldn't get traders
      */
     public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
         ArrayList<String> allTraders = getAllTraders();
