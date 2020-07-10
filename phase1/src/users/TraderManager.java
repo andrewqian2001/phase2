@@ -89,17 +89,43 @@ public class TraderManager extends UserManager implements Serializable {
      * @return true if trade was successful
      * @throws EntryNotFoundException user1 / tradeId not found
      */
+
     public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
         Trader trader1 = findTraderbyId(user1);
         if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
+            System.out.println("You have exceeded your trade limit!");
             return false;
         }
+
         trader1.getRequestedTrades().remove(tradeId);
         trader1.getAcceptedTrades().add(tradeId);
         trader1.setTradeCount(trader1.getTradeCount() + 1);
         update(trader1);
         return true;
     }
+
+
+    //This version solves 1 bug but creates more
+    /*
+    public boolean acceptTradeRequest2(String user1, String user2, String tradeId) throws EntryNotFoundException {
+        Trader trader1 = findTraderbyId(user1);
+        Trader trader2 = findTraderbyId(user2);
+        if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
+            System.out.println("You have exceeded your trade limit!");
+            return false;
+        }
+
+        trader1.getRequestedTrades().remove(tradeId);
+        trader1.getAcceptedTrades().add(tradeId);
+        trader1.setTradeCount(trader1.getTradeCount() + 1);
+        trader2.getAcceptedTrades().add(tradeId);
+        trader2.setTradeCount(trader1.getTradeCount() + 1);
+        update(trader1);
+        update(trader2);
+        return true;
+    }
+    */
+
 
     /**
      * Removes a specified trade from a user's accepted trades
@@ -127,6 +153,7 @@ public class TraderManager extends UserManager implements Serializable {
     public boolean denyTrade(String userID, String user2ID, String tradeId) throws EntryNotFoundException {
         Trader trader = findTraderbyId(userID);
         Trader trader2 = findTraderbyId(user2ID);
+        trader2.setTradeCount(trader2.getTradeCount() - 1);
         boolean removed_request = trader.getRequestedTrades().remove(tradeId);
         boolean removed_accepted = trader.getAcceptedTrades().remove(tradeId);
         boolean removed_request2 = trader2.getRequestedTrades().remove(tradeId);
@@ -149,6 +176,19 @@ public class TraderManager extends UserManager implements Serializable {
         update(trader);
         return userId;
     }
+    /**
+     * Adds a trade to the specified user requested trades
+     * @param userId id of user
+     * @param tradeId id of the trade to add to requested trades
+     * @return id of the user
+     * @throws EntryNotFoundException if the user was not found
+     */
+    public String removeRequestTrade(String userId, String tradeId) throws EntryNotFoundException{
+        Trader trader =  findTraderbyId(userId);
+        trader.getRequestedTrades().remove(tradeId);
+        update(trader);
+        return userId;
+    }
 
     /**
      * Makes this user request an item
@@ -164,6 +204,7 @@ public class TraderManager extends UserManager implements Serializable {
         update(trader);
         return userId;
     }
+
 
     /**
      * Return the list of requested items for this user

@@ -756,8 +756,7 @@ public class TextInterface {
      */
     private void respondToTradeOffer(boolean isAccepted) {
         int requestedTradeIndex = -1;
-        boolean owntrade = false; //I added this so that the print statement at the end does not run if user attempts to
-        //accept their own trade
+
         boolean success = false;
         do {
             try {
@@ -775,22 +774,16 @@ public class TextInterface {
                 String user2ID = tSystem.getTraderIdFromTrade(this.userID, tradeID);
 
 
-                if(!tSystem.isFirstUser(tradeID, this.userID)){ //checks if user is the user who sent the request
-                    // so that the user cannot accept their own trade
-                    success = isAccepted ? tSystem.acceptTrade(tradeID) : tSystem.rejectTrade(user2ID, tradeID);
-                }else{
-                    System.out.println("You cannot accept your own trade!");
-                    owntrade = true;
-                    success = true;
 
-                }
+                success = isAccepted ? tSystem.acceptTrade(tradeID) : tSystem.rejectTrade(user2ID, tradeID);
+
 
             } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
         } while (!success);
-        if(!owntrade)
+
         System.out.println("Done! You have successfully " + (isAccepted ? "accepted" : "rejected") + " the requested trade");
     }
 
@@ -947,6 +940,7 @@ public class TextInterface {
         int acceptedTradeIndex = -1;
         do {
             try {
+
                 System.out.println(tSystem.getAcceptedTrades(this.userID));
                 if(tSystem.getAcceptedTrades(this.userID).size() == 0) {
                     System.out.println(
@@ -962,11 +956,13 @@ public class TextInterface {
                             "Ruh Roh! Looks like this trade has already finished taking place\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
+
                 if (tSystem.hasUserConfirmedAllMeetings(this.userID, tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
                     System.out.println(
                             "Ruh Roh! Looks like you have already confirmed to all the meetings for this trade\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
+                System.out.println("111111111111111111111111111111");
                 success = tSystem.confirmTrade(this.userID, tSystem.getAcceptedTradeId(userID, acceptedTradeIndex));
                 /*
                 if (both users confirmed the trade){

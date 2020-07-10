@@ -405,9 +405,15 @@ public class TradeSystem implements Serializable {
 
         String tradeId = tradeManager.addTrade(userId, secondUserId, firstMeeting, secondMeeting, meetingLocation, lendItemId, borrowItemId, 3);
 
+
         ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
-        ((TraderManager) userManager).acceptTradeRequest(userId, tradeId); //yeah we are accepting our own trade, this should
-        //probably be changed idk
+        ((TraderManager) userManager).acceptTradeRequest(userId, tradeId);
+
+        //---------------------------------------------- solves 1 bug creates more ------------------------------
+        /*
+            ((TraderManager) userManager).addRequestTrade(secondUserId, tradeId);
+         */
+
 
 
 
@@ -455,12 +461,18 @@ public class TradeSystem implements Serializable {
      */
     public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
         String trader2 = tradeManager.getOtherUser(userID, tradeID);
-        if(((TraderManager)userManager).getAcceptedTrades(trader2).contains(tradeID) == false)return false; //other user has no accepted the trade
+
+        if(((TraderManager)userManager).getAcceptedTrades(trader2).contains(tradeID) == false){//other user has no accepted the trade
+            System.out.println("Other user has not yet accepted trade");
+            return false;
+        }
+
 
         String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
         String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
 
         if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID)){
+
             tradeManager.confirmSecondMeeting(tradeID, userID, true);
             if(tradeManager.isSecondMeetingConfirmed(tradeID) && isTradeTemporary(tradeID)){
 
@@ -475,6 +487,7 @@ public class TradeSystem implements Serializable {
 
             ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[0], TraderIds[1], itemsFromTrade[1]);
             if(!isTradeTemporary(tradeID)){
+
                 ((TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);
                 ((TraderManager)userManager).addToCompletedTradesList(TraderIds[1],tradeID);
             }
@@ -512,7 +525,15 @@ public class TradeSystem implements Serializable {
     public boolean acceptTrade(String tradeID) throws EntryNotFoundException {
 
 
-        return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, tradeID);
+            return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, tradeID);
+
+        //-------------------------------version that solves 1 bug but creates more------------------------------------
+        /*
+            String user2 = tradeManager.getOtherUser(tradeID,loggedInUserId);
+            return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, user2, tradeID);
+         */
+
+
     }
 
     /**
@@ -547,8 +568,24 @@ public class TradeSystem implements Serializable {
         tradeManager.editTrade(tradeID, firstMeeting, secondMeeting, meetingLocation,
                 userInventory.get(inventoryItemIndex), traderInventory.get(traderInventoryItemIndex));
 
+
+
+
         ((TraderManager)userManager).removeAcceptedTrade(traderId, tradeID);
         ((TraderManager)userManager).addRequestTrade(traderId, tradeID);
+        ((TraderManager)userManager).removeRequestTrade(userID, tradeID);
+        ((TraderManager)userManager).acceptTradeRequest(userID, tradeID);
+
+        //----------------------- version that solves 1 bug but creates more ------------------------------//
+        /*
+            ((TraderManager)userManager).addRequestTrade(traderId, tradeID);
+            ((TraderManager)userManager).removeRequestTrade(userID, tradeID);
+         */
+
+
+
+
+
         return true;
     }
 
