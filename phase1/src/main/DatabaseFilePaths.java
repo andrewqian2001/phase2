@@ -1,9 +1,9 @@
 package main;
 
 public enum DatabaseFilePaths {
-    User("./phase1/src/Database.users/Database.users.ser"),
-    Trade("./phase1/src/Database.trades/Database.trades.ser"),
-    TradableItem("./phase1/src/Database.tradableitems/Database.tradableitems.ser");
+    USER("./phase1/src/Database.users/Database.users.ser"),
+    TRADE("./phase1/src/Database.trades/Database.trades.ser"),
+    TRADABLE_ITEM("./phase1/src/Database.tradableitems/Database.tradableitems.ser");
 
     private final String FILE_PATH;
 

@@ -28,7 +28,7 @@ public class Trader extends User implements Serializable {
      *
      * @param name     the trader's username
      * @param password the trader's password
-     * @param tradeLimit number of Database.trades that can be done
+     * @param tradeLimit number of trades that can be done
      */
 
     public Trader(String name, String password, int tradeLimit) {
@@ -37,7 +37,7 @@ public class Trader extends User implements Serializable {
     }
 
     /**
-     * @return the number of incomplete Database.trades this trader has done
+     * @return the number of incomplete trades this trader has done
      */
     public int getIncompleteTradeCount(){
         return incompleteTradeCount;
