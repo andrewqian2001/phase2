@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 public class Database<T extends DatabaseItem> implements Serializable {
     private String filePath;
 
-    private static final Logger LOGGER = Logger.getLogger(Database.class.getName());
-    private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
+    private static final Logger logger = Logger.getLogger(Database.class.getName());
+    private static final Handler consoleHandler = new ConsoleHandler();
 
     /**
      * For storing the file path of the .ser file
@@ -29,9 +29,9 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @throws IOException if creating a file causes issues
      */
     public Database(String filePath) throws IOException {
-        LOGGER.setLevel(Level.ALL);
-        CONSOLE_HANDLER.setLevel(Level.WARNING);
-        LOGGER.addHandler(CONSOLE_HANDLER);
+        logger.setLevel(Level.ALL);
+        consoleHandler.setLevel(Level.WARNING);
+        logger.addHandler(consoleHandler);
         this.filePath = filePath;
         File file = new File(filePath);
         if (!file.exists()) file.createNewFile();
@@ -63,7 +63,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
             }
             save(allItems);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Input could not be read. Failed to update.", e);
+            logger.log(Level.SEVERE, "Input could not be read. Failed to update.", e);
         }
         return oldItem;
 
@@ -91,7 +91,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
                 }
             }
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Input could not be read.", e);
+            logger.log(Level.SEVERE, "Input could not be read.", e);
         }
         throw new EntryNotFoundException("Could not delete item " + id);
 
@@ -120,7 +120,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
      */
     public LinkedList<T> getItems() {
         if (!new File(this.filePath).exists()) {
-            LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
+            logger.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
             return new LinkedList<T>();
         }
 
@@ -131,9 +131,9 @@ public class Database<T extends DatabaseItem> implements Serializable {
             input.close();
             return items;
         } catch (IOException e) {
-            LOGGER.log(Level.INFO, "Empty file was used.");
+            logger.log(Level.INFO, "Empty file was used.");
         } catch (ClassNotFoundException e) {
-            LOGGER.log(Level.SEVERE, "Input could not be read.", e);
+            logger.log(Level.SEVERE, "Input could not be read.", e);
         }
         return new LinkedList<T>();
 
@@ -147,7 +147,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
      */
     public void save(LinkedList<T> items) throws FileNotFoundException {
         if (!new File(this.filePath).exists()) {
-            LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
+            logger.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
             throw new FileNotFoundException();
         }
         try {
@@ -156,7 +156,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
             output.writeObject(items);
             output.close();
         } catch (IOException e) {
-            LOGGER.log(Level.WARNING, "Unable to save.", e);
+            logger.log(Level.WARNING, "Unable to save.", e);
         }
     }
 }

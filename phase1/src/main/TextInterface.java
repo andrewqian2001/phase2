@@ -21,8 +21,6 @@ import exceptions.UserAlreadyExistsException;
  */
 public class TextInterface {
 
-    private static final Logger LOGGER = Logger.getLogger(TextInterface.class.getName());
-    private static final Handler CONSOLE_HANDLER = new ConsoleHandler();
 
     private static String lineBreak = "--------------------------------------------------";
 
@@ -37,10 +35,6 @@ public class TextInterface {
      * @throws IOException if file paths are bad
      */
     public TextInterface() throws IOException {
-        LOGGER.setLevel(Level.ALL);
-        CONSOLE_HANDLER.setLevel(Level.WARNING);
-        LOGGER.addHandler(CONSOLE_HANDLER);
-
         tSystem = new TradeSystem();
         sc = new Scanner(System.in);
         this.userID = "";
