@@ -77,8 +77,7 @@ public class TradeSystem implements Serializable {
      */
     public String login(String username, String password) throws EntryNotFoundException, IOException {
         this.loggedInUserId = userManager.login(username, password);
-
-        User loggedInUser = userManager.populate(loggedInUserId);
+        User loggedInUser = userManager.getUser(loggedInUserId);
         if (loggedInUser instanceof Admin)
             userManager = new AdminManager(USERS_FILE_PATH);
         else

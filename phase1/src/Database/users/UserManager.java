@@ -38,6 +38,15 @@ public class UserManager implements Serializable {
     }
 
     /**
+     * @param userId the id of the user
+     * @return the user object
+     * @throws EntryNotFoundException if the user isn't found
+     */
+    public User getUser(String userId) throws EntryNotFoundException{
+        return userDatabase.populate(userId);
+    }
+
+    /**
      * Checks if the username is unique
      * @param username username to check for
      * @return True if username is unique, else false
