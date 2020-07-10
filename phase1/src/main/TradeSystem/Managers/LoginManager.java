@@ -2,9 +2,7 @@ package main.TradeSystem.Managers;
 
 import Database.Database;
 import Database.users.Admin;
-import Database.users.AdminManager;
 import Database.users.Trader;
-import Database.users.TraderManager;
 import Database.users.User;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
@@ -17,12 +15,20 @@ public class LoginManager {
     private Database<User> userDatabase;
     private int defaultTradeLimit = 10;
 
+    /**
+     * Represents different user types
+     */
     public enum UserTypes {
         ADMIN,
         TRADER,
         DEFAULT
     }
 
+    /**
+     * For logging in and registering accounts
+     *
+     * @throws IOException if the database file is bad
+     */
     public LoginManager() throws IOException {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
     }
