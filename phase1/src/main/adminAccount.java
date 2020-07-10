@@ -14,13 +14,9 @@ import users.AdminManager;
 import users.UserManager;
 
 public class adminAccount extends TradeSystem{
-    private String loggedInUserId;
+
     private static final String USERS_FILE_PATH = "./phase1/src/users/users.ser";
-    private static final String TRADE_FILE_PATH = "./phase1/src/trades/trades.ser";
-    private static final String TRADABLE_ITEM_FILE_PATH = "./phase1/src/tradableitems/tradableitems.ser";
-    private UserManager userManager;
-    private TradeManager tradeManager;
-    private TradableItemManager tradableItemManager;
+
     public adminAccount() throws IOException {
 
         super();
@@ -35,7 +31,7 @@ public class adminAccount extends TradeSystem{
      */
     public void register(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
-        adminAccount adminAccount = new adminAccount();
+
         userManager.registerUser(username, password);
     }
     /**

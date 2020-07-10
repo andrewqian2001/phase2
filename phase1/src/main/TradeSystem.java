@@ -18,10 +18,10 @@ public class TradeSystem implements Serializable {
     private static final String USERS_FILE_PATH = "./phase1/src/users/users.ser";
     private static final String TRADE_FILE_PATH = "./phase1/src/trades/trades.ser";
     private static final String TRADABLE_ITEM_FILE_PATH = "./phase1/src/tradableitems/tradableitems.ser";
-    private UserManager userManager;
-    private TradeManager tradeManager;
-    private TradableItemManager tradableItemManager;
-    private String loggedInUserId;
+    protected UserManager userManager;
+    protected TradeManager tradeManager;
+    protected TradableItemManager tradableItemManager;
+    protected String loggedInUserId;
 
     /**
      * Constructor for TradeSystem, initializes managers
@@ -32,9 +32,11 @@ public class TradeSystem implements Serializable {
         userManager = new UserManager(USERS_FILE_PATH);
         tradeManager = new TradeManager(TRADE_FILE_PATH);
         tradableItemManager = new TradableItemManager((TRADABLE_ITEM_FILE_PATH));
-        loggedInUserId = "";
-    }
 
+    }
+    /*
+    DO I DELETE TRADER AND ADMIN SPECIFIC METHODS?
+     */
     /**
      * Registers a new trader into the system
      *
@@ -47,6 +49,7 @@ public class TradeSystem implements Serializable {
     public String registerTrader(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new TraderManager(USERS_FILE_PATH);
         this.loggedInUserId = ((TraderManager) userManager).registerUser(username, password, 3);
+        traderAccount traderAccount = new traderAccount();
         return this.loggedInUserId;
     }
 
@@ -60,6 +63,7 @@ public class TradeSystem implements Serializable {
      */
     public void registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
+        adminAccount adminAccount = new adminAccount();
         userManager.registerUser(username, password);
     }
 

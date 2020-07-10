@@ -18,10 +18,7 @@ public class traderAccount extends TradeSystem{
     private static final String USERS_FILE_PATH = "./phase1/src/users/users.ser";
     private static final String TRADE_FILE_PATH = "./phase1/src/trades/trades.ser";
     private static final String TRADABLE_ITEM_FILE_PATH = "./phase1/src/tradableitems/tradableitems.ser";
-    private String loggedInUserId;
-    protected UserManager userManager;
-    private TradeManager tradeManager;
-    private TradableItemManager tradableItemManager;
+
     public traderAccount() throws IOException {
         super();
     }
@@ -38,7 +35,7 @@ public class traderAccount extends TradeSystem{
         userManager = new TraderManager(USERS_FILE_PATH);
 
         this.loggedInUserId = ((TraderManager) userManager).registerUser(username, password, 3);
-        traderAccount traderAccount = new traderAccount();
+
         return this.loggedInUserId;
     }
 
