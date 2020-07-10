@@ -1,19 +1,15 @@
 package main;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import exceptions.AuthorizationException;
 import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
+import main.TradeSystem.TradeSystem;
 
 /**
  * Used as a way to prompt the user and receive input.

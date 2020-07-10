@@ -1,4 +1,4 @@
-package main;
+package main.TradeSystem.Accounts;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +8,9 @@ import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import Database.users.AdminManager;
+import main.TradeSystem.TradeSystem;
 
-public class AdminAccount extends TradeSystem{
+public class AdminAccount extends TradeSystem {
 
     private static final String USERS_FILE_PATH = "./phase1/src/Database.users/Database.users.ser";
 

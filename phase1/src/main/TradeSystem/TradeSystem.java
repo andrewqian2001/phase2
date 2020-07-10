@@ -1,4 +1,4 @@
-package main;
+package main.TradeSystem;
 
 import exceptions.AuthorizationException;
 import exceptions.CannotTradeException;
@@ -8,6 +8,8 @@ import Database.tradableitems.TradableItem;
 import Database.tradableitems.TradableItemManager;
 import Database.trades.TradeManager;
 import Database.users.*;
+import main.TradeSystem.Accounts.AdminAccount;
+import main.TradeSystem.Accounts.TraderAccount;
 
 import java.io.*;
 import java.util.*;

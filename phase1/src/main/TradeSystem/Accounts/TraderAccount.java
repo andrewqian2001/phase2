@@ -1,4 +1,4 @@
-package main;
+package main.TradeSystem.Accounts;
 
 import exceptions.UserAlreadyExistsException;
 import Database.tradableitems.TradableItem;
@@ -8,8 +8,9 @@ import java.util.*;
 
 import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
+import main.TradeSystem.TradeSystem;
 
-public class TraderAccount extends TradeSystem{
+public class TraderAccount extends TradeSystem {
 
     private static final String USERS_FILE_PATH = "./phase1/src/Database.users/Database.users.ser";
     private static final String TRADE_FILE_PATH = "./phase1/src/Database.trades/Database.trades.ser";
