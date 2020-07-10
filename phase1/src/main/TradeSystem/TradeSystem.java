@@ -466,7 +466,7 @@ public class TradeSystem implements Serializable {
     public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
         String trader2 = tradeManager.getOtherUser(tradeID, userID);
 
-        if(((TraderManager)userManager).getAcceptedTrades(trader2).contains(tradeID) == false){//other user has no accepted the trade
+        if(!((TraderManager)userManager).getAcceptedTrades(trader2).contains(tradeID)){//other user has no accepted the trade
             return false;
         }
 
