@@ -1,4 +1,4 @@
-package main;
+package main.Database;
 
 import java.io.Serializable;
 import java.util.UUID;

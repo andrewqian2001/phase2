@@ -3,7 +3,7 @@ package users;
 import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-import main.Database;
+import main.Database.Database;
 
 import java.io.IOException;
 import java.io.Serializable;

@@ -1,7 +1,7 @@
 package tradableitems;
 
 import exceptions.EntryNotFoundException;
-import main.Database;
+import main.Database.Database;
 
 import java.io.IOException;
 import java.io.Serializable;

@@ -1,6 +1,6 @@
 package tradableitems;
 
-import main.DatabaseItem;
+import main.Database.DatabaseItem;
 
 import java.io.Serializable;
 

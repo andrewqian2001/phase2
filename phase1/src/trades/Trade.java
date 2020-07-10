@@ -1,7 +1,6 @@
 package trades;
 
-import exceptions.CannotTradeException;
-import main.DatabaseItem;
+import main.Database.DatabaseItem;
 
 import java.io.Serializable;
 import java.util.Date;
