@@ -460,10 +460,9 @@ public class TradeSystem implements Serializable {
      * @throws EntryNotFoundException user id / trade id not found
      */
     public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
-        String trader2 = tradeManager.getOtherUser(userID, tradeID);
+        String trader2 = tradeManager.getOtherUser(tradeID, userID);
 
         if(((TraderManager)userManager).getAcceptedTrades(trader2).contains(tradeID) == false){//other user has no accepted the trade
-            System.out.println("Other user has not yet accepted trade");
             return false;
         }
 
@@ -610,13 +609,19 @@ public class TradeSystem implements Serializable {
     public int getUserTradeItemIndex(String userID, String tradeId) throws EntryNotFoundException {
         String[] items = tradeManager.getItemsFromTrade(tradeId);
         ArrayList<String> inventory = ((TraderManager) userManager).getInventory(userID);
-
         if(tradeManager.isFirstUser(tradeId, userID)) {
+            if (items[0].equals("")){
+                return -1;
+            }
+
             for(int i = 0; i < inventory.size(); i++) {
                 if(items[0].equals(inventory.get(i))) return i;
             }
         }
         else {
+            if (items[1].equals("")){
+                return -1;
+            }
             for(int i = 0; i < inventory.size(); i++) {
                 if(items[1].equals(inventory.get(i))) return i;
             }

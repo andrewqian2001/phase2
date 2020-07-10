@@ -738,7 +738,7 @@ public class TextInterface {
                 if(tradeType.equals("LEND")) 
                     success = tSystem.lendItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
                             inventoryItemIndex);
-                if(tradeType.equals("BORROW")) 
+                else if(tradeType.equals("BORROW"))
                     success = tSystem.borrowItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
                             traderInventoryItemIndex);
                 else success = tSystem.trade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
@@ -941,7 +941,7 @@ public class TextInterface {
         do {
             try {
 
-                System.out.println(tSystem.getAcceptedTrades(this.userID));
+
                 if(tSystem.getAcceptedTrades(this.userID).size() == 0) {
                     System.out.println(
                             "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
@@ -951,27 +951,20 @@ public class TextInterface {
                 System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
                 System.out.print("=> ");
                 acceptedTradeIndex = Integer.parseInt(sc.nextLine());
-                if(!tSystem.isTradeInProgress(tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                String tradeID = tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex);
+                System.out.println(tSystem.getAcceptedTrades(this.userID));
+                if(!tSystem.isTradeInProgress(tradeID)) {
                     System.out.println(
                             "Ruh Roh! Looks like this trade has already finished taking place\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
 
-                if (tSystem.hasUserConfirmedAllMeetings(this.userID, tSystem.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                if (tSystem.hasUserConfirmedAllMeetings(this.userID, tradeID)) {
                     System.out.println(
                             "Ruh Roh! Looks like you have already confirmed to all the meetings for this trade\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
-                System.out.println("111111111111111111111111111111");
-                success = tSystem.confirmTrade(this.userID, tSystem.getAcceptedTradeId(userID, acceptedTradeIndex));
-                /*
-                if (both users confirmed the trade){
-                    System.out.println("Both users confirmed the trade! Exchanging items...");
-                    exchange first set of items
-                    IDK WHAT TO DO ABOUT TEMPORARY TRADES help
-                }
-                 */
-                //Temporary trades have the items traded back, it is handled in confirmTrade in TradeSystem.
+                success = tSystem.confirmTrade(this.userID, tradeID);
             } catch (EntryNotFoundException | NumberFormatException e) {
                 System.out.println(e.getMessage());
             }

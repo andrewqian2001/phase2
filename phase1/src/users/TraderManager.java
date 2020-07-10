@@ -93,7 +93,6 @@ public class TraderManager extends UserManager implements Serializable {
     public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
         Trader trader1 = findTraderbyId(user1);
         if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
-            System.out.println("You have exceeded your trade limit!");
             return false;
         }
 
