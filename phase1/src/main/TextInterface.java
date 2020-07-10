@@ -436,10 +436,13 @@ public class TextInterface {
                 itemID = list.get(i);
                 if(itemType.equals("Item"))
                     System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, tSystem.getTradableItemName(itemID), tSystem.getTradableItemDesc(itemID));
-                else if(listType.equals("Accepted"))
-                    printTrade(tSystem.getAcceptedTradeId(this.userID, i), false);
-                else if(listType.equals("Requested"))
-                    printTrade(tSystem.getRequestedTradeId(this.userID, i), true);
+                else {
+                    System.out.printf("%s %s #%d\n", listType, itemType, i);
+                    if(listType.equals("Accepted"))
+                        printTrade(tSystem.getAcceptedTradeId(this.userID, i), false);
+                    else if(listType.equals("Requested"))
+                        printTrade(tSystem.getRequestedTradeId(this.userID, i), true);
+                }
             }
         } catch (EntryNotFoundException e) {
             System.out.println(e.getMessage());
