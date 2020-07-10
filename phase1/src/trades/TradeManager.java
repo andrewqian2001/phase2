@@ -240,6 +240,10 @@ public class TradeManager extends Database<Trade> implements Serializable {
         trade.setFirstUserOffer(firstUserOffer);
         trade.setSecondUserOffer(secondUserOffer);
         trade.setNumEdits(trade.getNumEdits() + 1);
+
+
+
+
         update(trade);
         return trade.getId();
     }

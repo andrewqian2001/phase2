@@ -548,8 +548,7 @@ public class TradeSystem implements Serializable {
                 userInventory.get(inventoryItemIndex), traderInventory.get(traderInventoryItemIndex));
 
         ((TraderManager)userManager).removeAcceptedTrade(traderId, tradeID);
-        ((TraderManager)userManager).getRequestedTrades(traderId).add(tradeID);
-
+        ((TraderManager)userManager).addRequestTrade(traderId, tradeID);
         return true;
     }
 
