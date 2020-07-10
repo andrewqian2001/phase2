@@ -1,4 +1,4 @@
-package users;
+package Database.users;
 
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 public class AdminManager extends UserManager implements Serializable {
     /**
      * Constructor for AdminManager
-     * @param filePath the path of the users.ser file
+     * @param filePath the path of the Database.users.ser file
      * @throws IOException file path is bad
      */
     public AdminManager(String filePath) throws IOException {
@@ -58,7 +58,7 @@ public class AdminManager extends UserManager implements Serializable {
     }
 
     /**
-     * Accepts one of this user's requested items (allows it to be used in trades)
+     * Accepts one of this user's requested items (allows it to be used in Database.trades)
      *
      * @param userId the id of the user
      * @param itemId the id of the item

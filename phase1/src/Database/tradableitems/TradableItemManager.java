@@ -1,7 +1,8 @@
-package tradableitems;
+package Database.tradableitems;
 
+import Database.trades.Trade;
 import exceptions.EntryNotFoundException;
-import main.Database.Database;
+import Database.Database;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -10,7 +11,8 @@ import java.util.ArrayList;
 /**
  * Used to manage and store items that are tradable
  */
-public class TradableItemManager extends Database<TradableItem> implements Serializable {
+public class TradableItemManager implements Serializable {
+    protected Database<TradableItem> tradableItemDatabase;
     /**
      * For storing the file path of the .ser file
      *
@@ -18,7 +20,7 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
      * @throws IOException if creating a file causes issues
      */
     public TradableItemManager(String filePath) throws IOException {
-        super(filePath);
+        this.tradableItemDatabase = new Database(filePath);
     }
 
     /**
@@ -30,7 +32,7 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
      */
     public TradableItem addItem(String name, String description) {
         TradableItem item = new TradableItem(name, description);
-        return update(item);
+        return tradableItemDatabase.update(item);
     }
 
     /**
@@ -41,7 +43,7 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
      * @throws EntryNotFoundException if the id doesn't refer to anything
      */
     public TradableItem deleteItem(String tradableItemId) throws EntryNotFoundException {
-        return super.delete(tradableItemId);
+        return tradableItemDatabase.delete(tradableItemId);
     }
 
     /**
@@ -51,7 +53,7 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
      * @throws EntryNotFoundException tradableItemId not found
      */
     public String getName (String tradableItemId) throws EntryNotFoundException{
-        TradableItem item = super.populate(tradableItemId);
+        TradableItem item = tradableItemDatabase.populate(tradableItemId);
         return item.getName();
     }
 
@@ -62,7 +64,7 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
      * @throws EntryNotFoundException tradableItemId not found
      */
     public String getDesc (String tradableItemId) throws EntryNotFoundException{
-        TradableItem item = super.populate(tradableItemId);
+        TradableItem item = tradableItemDatabase.populate(tradableItemId);
         return item.getDesc();
     }
 
@@ -72,7 +74,7 @@ public class TradableItemManager extends Database<TradableItem> implements Seria
      */
     public ArrayList<String> getIdsWithName(String name) {
         ArrayList<String> items = new ArrayList<>();
-        for (TradableItem item : getItems()){
+        for (TradableItem item : tradableItemDatabase.getItems()){
             if (item.getName().equals(name))
                 items.add(item.getId());
         }

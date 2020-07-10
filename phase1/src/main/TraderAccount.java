@@ -1,23 +1,19 @@
 package main;
 
 import exceptions.UserAlreadyExistsException;
-import tradableitems.TradableItem;
-import tradableitems.TradableItemManager;
-import trades.TradeManager;
-import users.TraderManager;
+import Database.tradableitems.TradableItem;
+import Database.users.TraderManager;
 import java.io.IOException;
 import java.util.*;
 
-import exceptions.AuthorizationException;
 import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
-import users.UserManager;
 
 public class TraderAccount extends TradeSystem{
 
-    private static final String USERS_FILE_PATH = "./phase1/src/users/users.ser";
-    private static final String TRADE_FILE_PATH = "./phase1/src/trades/trades.ser";
-    private static final String TRADABLE_ITEM_FILE_PATH = "./phase1/src/tradableitems/tradableitems.ser";
+    private static final String USERS_FILE_PATH = "./phase1/src/Database.users/Database.users.ser";
+    private static final String TRADE_FILE_PATH = "./phase1/src/Database.trades/Database.trades.ser";
+    private static final String TRADABLE_ITEM_FILE_PATH = "./phase1/src/Database.tradableitems/Database.tradableitems.ser";
 
     public TraderAccount() throws IOException {
         super();
@@ -86,7 +82,7 @@ public class TraderAccount extends TradeSystem{
         String[] frequentTraders = new String[3];
         ArrayList<String> users = new ArrayList<>();
 
-        // converts trade-id to other users' id
+        // converts trade-id to other Database.users' id
         for(String trade_id : ((TraderManager) userManager).getCompletedTrades(userID)){
             users.add(tradeManager.getOtherUser(trade_id, userID));
         }
@@ -113,7 +109,7 @@ public class TraderAccount extends TradeSystem{
     }
 
     /**
-     * Gets a list of the items used in trades
+     * Gets a list of the items used in Database.trades
      *
      * @param userId id of the user
      * @return list of unique items that the user has traded/received from a trade
@@ -228,7 +224,7 @@ public class TraderAccount extends TradeSystem{
             }
         } else
             tradeManager.confirmFirstMeeting(tradeID, userID, true);
-        if(tradeManager.isFirstMeetingConfirmed(tradeID)){ //once both users have confirmed the trade has taken place, the inventories(avalible items list) should update
+        if(tradeManager.isFirstMeetingConfirmed(tradeID)){ //once both Database.users have confirmed the trade has taken place, the inventories(avalible items list) should update
 
             ((TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[0], TraderIds[1], itemsFromTrade[1]);
             if(!isTradeTemporary(tradeID)){
@@ -251,7 +247,7 @@ public class TraderAccount extends TradeSystem{
     public boolean confirmIncompleteTrade(String userID, String tradeID) throws EntryNotFoundException {
 
         if(tradeManager.isFirstMeetingConfirmed(tradeID)){
-            tradeManager.confirmSecondMeeting(tradeID, userID, false); //maybe ill need to change this to input the other users ID?
+            tradeManager.confirmSecondMeeting(tradeID, userID, false); //maybe ill need to change this to input the other Database.users ID?
         }else{
             tradeManager.confirmFirstMeeting(tradeID, userID, false);
         }

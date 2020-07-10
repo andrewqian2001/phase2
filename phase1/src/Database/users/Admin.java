@@ -1,4 +1,4 @@
-package users;
+package Database.users;
 
 import java.io.Serializable;
 
@@ -25,7 +25,7 @@ public class Admin extends User implements Serializable{
     }
 
     /**
-     * @return if the user is frozen (always false since admins do not participate in trades)
+     * @return if the user is frozen (always false since admins do not participate in Database.trades)
      */
     boolean isFrozen() {
         return false;

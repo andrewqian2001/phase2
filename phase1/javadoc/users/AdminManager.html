@@ -6,7 +6,7 @@
 <title>AdminManager</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="dc.created" content="2020-07-08">
-<meta name="description" content="declaration: package: users, class: AdminManager">
+<meta name="description" content="declaration: package: Database.users, class: AdminManager">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../script-dir/jquery-ui.css" title="Style">
@@ -88,14 +88,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!-- ======== START OF CLASS DATA ======== -->
 <main role="main">
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">users</a></div>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">Database.users</a></div>
 <h1 title="Class AdminManager" class="title">Class AdminManager</h1>
 </div>
 <div class="contentContainer">
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
-<div class="inheritance"><a href="../main/Database.html" title="class in main">main.Database.Database</a>&lt;<a href="User.html" title="class in users">User</a>&gt;
-<div class="inheritance"><a href="UserManager.html" title="class in users">users.UserManager</a>
-<div class="inheritance">users.AdminManager</div>
+<div class="inheritance"><a href="../main/Database.html" title="class in main">Database.Database</a>&lt;<a href="User.html" title="class in Database.users">User</a>&gt;
+<div class="inheritance"><a href="UserManager.html" title="class in Database.users">Database.users.UserManager</a>
+<div class="inheritance">Database.users.AdminManager</div>
 </div>
 </div>
 </div>
@@ -106,12 +106,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">AdminManager</span>
-extends <a href="UserManager.html" title="class in users">UserManager</a>
+extends <a href="UserManager.html" title="class in Database.users">UserManager</a>
 implements java.io.Serializable</pre>
 <div class="block">Manages admins</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../serialized-form.html#users.AdminManager">Serialized Form</a></dd>
+<dd><a href="../serialized-form.html#Database.users.AdminManager">Serialized Form</a></dd>
 </dl>
 </section>
 <section class="summary">
@@ -166,7 +166,7 @@ implements java.io.Serializable</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#acceptRequestItem(java.lang.String,java.lang.String)">acceptRequestItem</a></span>&#8203;(java.lang.String&nbsp;userId,
 java.lang.String&nbsp;itemId)</code></th>
 <td class="colLast">
-<div class="block">Accepts one of this user's requested items (allows it to be used in trades)</div>
+<div class="block">Accepts one of this user's requested items (allows it to be used in Database.trades)</div>
 </td>
 </tr>
 <tr class="rowColor" id="i1">
@@ -225,13 +225,13 @@ java.lang.String&nbsp;itemId)</code></th>
 </div>
 </div>
 <div class="inheritedList">
-<h3>Methods inherited from class&nbsp;users.<a href="UserManager.html" title="class in users">UserManager</a></h3>
-<a id="methods.inherited.from.class.users.UserManager">
+<h3>Methods inherited from class&nbsp;Database.users.<a href="UserManager.html" title="class in Database.users">UserManager</a></h3>
+<a id="methods.inherited.from.class.Database.users.UserManager">
 <!--   -->
 </a><code><a href="UserManager.html#findUserById(java.lang.String)">findUserById</a>, <a href="UserManager.html#freezeUser(java.lang.String,java.lang.String,boolean)">freezeUser</a>, <a href="UserManager.html#getAllUnFreezeRequests()">getAllUnFreezeRequests</a>, <a href="UserManager.html#getUserId(java.lang.String)">getUserId</a>, <a href="UserManager.html#getUsername(java.lang.String)">getUsername</a>, <a href="UserManager.html#isAdmin(java.lang.String)">isAdmin</a>, <a href="UserManager.html#isFrozen(java.lang.String)">isFrozen</a>, <a href="UserManager.html#isUsernameUnique(java.lang.String)">isUsernameUnique</a>, <a href="UserManager.html#login(java.lang.String,java.lang.String)">login</a>, <a href="UserManager.html#setRequestFrozenStatus(java.lang.String,boolean)">setRequestFrozenStatus</a></code></div>
 <div class="inheritedList">
 <h3>Methods inherited from class&nbsp;main.<a href="../main/Database.html" title="class in main">Database</a></h3>
-<a id="methods.inherited.from.class.main.Database.Database">
+<a id="methods.inherited.from.class.Database.Database">
 <!--   -->
 </a><code><a href="../main/Database.html#delete(java.lang.String)">delete</a>, <a href="../main/Database.html#getItems()">getItems</a>, <a href="../main/Database.html#populate(java.lang.String)">populate</a>, <a href="../main/Database.html#save(java.util.LinkedList)">save</a>, <a href="../main/Database.html#update(T)">update</a></code></div>
 <div class="inheritedList">
@@ -260,7 +260,7 @@ java.lang.String&nbsp;itemId)</code></th>
 <div class="block">Constructor for AdminManager</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>filePath</code> - the path of the users.ser file</dd>
+<dd><code>filePath</code> - the path of the Database.users.ser file</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.io.IOException</code> - file path is bad</dd>
 </dl>
@@ -285,7 +285,7 @@ java.lang.String&nbsp;password)</span>
 <div class="block">Registers a new Admin Account</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="UserManager.html#registerUser(java.lang.String,java.lang.String)">registerUser</a></code>&nbsp;in class&nbsp;<code><a href="UserManager.html" title="class in users">UserManager</a></code></dd>
+<dd><code><a href="UserManager.html#registerUser(java.lang.String,java.lang.String)">registerUser</a></code>&nbsp;in class&nbsp;<code><a href="UserManager.html" title="class in Database.users">UserManager</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>username</code> - username of the new admin</dd>
 <dd><code>password</code> - password of the new admin</dd>
@@ -329,7 +329,7 @@ java.lang.String&nbsp;password)</span>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.lang.String</span>&nbsp;<span class="memberName">acceptRequestItem</span>&#8203;(<span class="arguments">java.lang.String&nbsp;userId,
 java.lang.String&nbsp;itemId)</span>
                                    throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Accepts one of this user's requested items (allows it to be used in trades)</div>
+<div class="block">Accepts one of this user's requested items (allows it to be used in Database.trades)</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - the id of the user</dd>

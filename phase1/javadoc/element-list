@@ -1,5 +1,5 @@
 exceptions
 main
-tradableitems
-trades
-users
+Database.tradableitems
+Database.trades
+Database.users

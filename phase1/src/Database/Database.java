@@ -1,4 +1,4 @@
-package main.Database;
+package Database;
 
 import exceptions.EntryNotFoundException;
 

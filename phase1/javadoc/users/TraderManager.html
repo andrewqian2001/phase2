@@ -6,7 +6,7 @@
 <title>TraderManager</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="dc.created" content="2020-07-08">
-<meta name="description" content="declaration: package: users, class: TraderManager">
+<meta name="description" content="declaration: package: Database.users, class: TraderManager">
 <meta name="generator" content="javadoc/ClassWriterImpl">
 <link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
 <link rel="stylesheet" type="text/css" href="../script-dir/jquery-ui.css" title="Style">
@@ -88,14 +88,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <!-- ======== START OF CLASS DATA ======== -->
 <main role="main">
 <div class="header">
-<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">users</a></div>
+<div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">Database.users</a></div>
 <h1 title="Class TraderManager" class="title">Class TraderManager</h1>
 </div>
 <div class="contentContainer">
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
-<div class="inheritance"><a href="../main/Database.html" title="class in main">main.Database.Database</a>&lt;<a href="User.html" title="class in users">User</a>&gt;
-<div class="inheritance"><a href="UserManager.html" title="class in users">users.UserManager</a>
-<div class="inheritance">users.TraderManager</div>
+<div class="inheritance"><a href="../main/Database.html" title="class in main">Database.Database</a>&lt;<a href="User.html" title="class in Database.users">User</a>&gt;
+<div class="inheritance"><a href="UserManager.html" title="class in Database.users">Database.users.UserManager</a>
+<div class="inheritance">Database.users.TraderManager</div>
 </div>
 </div>
 </div>
@@ -106,12 +106,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">TraderManager</span>
-extends <a href="UserManager.html" title="class in users">UserManager</a>
+extends <a href="UserManager.html" title="class in Database.users">UserManager</a>
 implements java.io.Serializable</pre>
 <div class="block">Manages traders</div>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../serialized-form.html#users.TraderManager">Serialized Form</a></dd>
+<dd><a href="../serialized-form.html#Database.users.TraderManager">Serialized Form</a></dd>
 </dl>
 </section>
 <section class="summary">
@@ -166,7 +166,7 @@ implements java.io.Serializable</pre>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#acceptRequestItem(java.lang.String,java.lang.String)">acceptRequestItem</a></span>&#8203;(java.lang.String&nbsp;userId,
 java.lang.String&nbsp;itemId)</code></th>
 <td class="colLast">
-<div class="block">Accepts one of this user's requested items (allows it to be used in trades)</div>
+<div class="block">Accepts one of this user's requested items (allows it to be used in Database.trades)</div>
 </td>
 </tr>
 <tr class="rowColor" id="i1">
@@ -188,7 +188,7 @@ java.lang.String&nbsp;itemId)</code></th>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#addRequestTrade(java.lang.String,java.lang.String)">addRequestTrade</a></span>&#8203;(java.lang.String&nbsp;userId,
 java.lang.String&nbsp;tradeId)</code></th>
 <td class="colLast">
-<div class="block">Adds a trade to the specified user requested trades</div>
+<div class="block">Adds a trade to the specified user requested Database.trades</div>
 </td>
 </tr>
 <tr class="altColor" id="i4">
@@ -243,14 +243,14 @@ int&nbsp;newLimit)</code></th>
 java.lang.String&nbsp;user2ID,
 java.lang.String&nbsp;tradeId)</code></th>
 <td class="colLast">
-<div class="block">Removes a trade from the two user's requested (or accepted) trades</div>
+<div class="block">Removes a trade from the two user's requested (or accepted) Database.trades</div>
 </td>
 </tr>
 <tr class="rowColor" id="i11">
 <td class="colFirst"><code>java.util.ArrayList&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAcceptedTrades(java.lang.String)">getAcceptedTrades</a></span>&#8203;(java.lang.String&nbsp;userId)</code></th>
 <td class="colLast">
-<div class="block">Gets an arraylist of accepted trades of the specified trader</div>
+<div class="block">Gets an arraylist of accepted Database.trades of the specified trader</div>
 </td>
 </tr>
 <tr class="altColor" id="i12">
@@ -285,7 +285,7 @@ java.lang.String&nbsp;tradeId)</code></th>
 <td class="colFirst"><code>java.util.ArrayList&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getCompletedTrades(java.lang.String)">getCompletedTrades</a></span>&#8203;(java.lang.String&nbsp;userId)</code></th>
 <td class="colLast">
-<div class="block">Gets an arraylist of completed trades of the specified trader</div>
+<div class="block">Gets an arraylist of completed Database.trades of the specified trader</div>
 </td>
 </tr>
 <tr class="rowColor" id="i17">
@@ -304,7 +304,7 @@ java.lang.String&nbsp;tradeId)</code></th>
 <td class="colFirst"><code>java.util.ArrayList&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRequestedTrades(java.lang.String)">getRequestedTrades</a></span>&#8203;(java.lang.String&nbsp;userId)</code></th>
 <td class="colLast">
-<div class="block">Gets an arraylist of requested trades of the specified trader</div>
+<div class="block">Gets an arraylist of requested Database.trades of the specified trader</div>
 </td>
 </tr>
 <tr class="altColor" id="i20">
@@ -336,7 +336,7 @@ int&nbsp;tradeLimit)</code></th>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeAcceptedTrade(java.lang.String,java.lang.String)">removeAcceptedTrade</a></span>&#8203;(java.lang.String&nbsp;user1,
 java.lang.String&nbsp;tradeId)</code></th>
 <td class="colLast">
-<div class="block">Removes a specified trade from a user's accepted trades</div>
+<div class="block">Removes a specified trade from a user's accepted Database.trades</div>
 </td>
 </tr>
 <tr class="altColor" id="i24">
@@ -353,7 +353,7 @@ java.lang.String&nbsp;item1,
 java.lang.String&nbsp;user2,
 java.lang.String&nbsp;item2)</code></th>
 <td class="colLast">
-<div class="block">Performs the trade action between two users</div>
+<div class="block">Performs the trade action between two Database.users</div>
 </td>
 </tr>
 </tbody>
@@ -361,13 +361,13 @@ java.lang.String&nbsp;item2)</code></th>
 </div>
 </div>
 <div class="inheritedList">
-<h3>Methods inherited from class&nbsp;users.<a href="UserManager.html" title="class in users">UserManager</a></h3>
-<a id="methods.inherited.from.class.users.UserManager">
+<h3>Methods inherited from class&nbsp;Database.users.<a href="UserManager.html" title="class in Database.users">UserManager</a></h3>
+<a id="methods.inherited.from.class.Database.users.UserManager">
 <!--   -->
 </a><code><a href="UserManager.html#findUserById(java.lang.String)">findUserById</a>, <a href="UserManager.html#freezeUser(java.lang.String,java.lang.String,boolean)">freezeUser</a>, <a href="UserManager.html#getAllUnFreezeRequests()">getAllUnFreezeRequests</a>, <a href="UserManager.html#getUserId(java.lang.String)">getUserId</a>, <a href="UserManager.html#getUsername(java.lang.String)">getUsername</a>, <a href="UserManager.html#isAdmin(java.lang.String)">isAdmin</a>, <a href="UserManager.html#isFrozen(java.lang.String)">isFrozen</a>, <a href="UserManager.html#isUsernameUnique(java.lang.String)">isUsernameUnique</a>, <a href="UserManager.html#login(java.lang.String,java.lang.String)">login</a>, <a href="UserManager.html#registerUser(java.lang.String,java.lang.String)">registerUser</a>, <a href="UserManager.html#setRequestFrozenStatus(java.lang.String,boolean)">setRequestFrozenStatus</a></code></div>
 <div class="inheritedList">
 <h3>Methods inherited from class&nbsp;main.<a href="../main/Database.html" title="class in main">Database</a></h3>
-<a id="methods.inherited.from.class.main.Database.Database">
+<a id="methods.inherited.from.class.Database.Database">
 <!--   -->
 </a><code><a href="../main/Database.html#delete(java.lang.String)">delete</a>, <a href="../main/Database.html#getItems()">getItems</a>, <a href="../main/Database.html#populate(java.lang.String)">populate</a>, <a href="../main/Database.html#save(java.util.LinkedList)">save</a>, <a href="../main/Database.html#update(T)">update</a></code></div>
 <div class="inheritedList">
@@ -517,7 +517,7 @@ java.lang.String&nbsp;tradeId)</span>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">boolean</span>&nbsp;<span class="memberName">removeAcceptedTrade</span>&#8203;(<span class="arguments">java.lang.String&nbsp;user1,
 java.lang.String&nbsp;tradeId)</span>
                             throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Removes a specified trade from a user's accepted trades</div>
+<div class="block">Removes a specified trade from a user's accepted Database.trades</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>user1</code> - the id of the user</dd>
@@ -536,7 +536,7 @@ java.lang.String&nbsp;tradeId)</span>
 java.lang.String&nbsp;user2ID,
 java.lang.String&nbsp;tradeId)</span>
                   throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Removes a trade from the two user's requested (or accepted) trades</div>
+<div class="block">Removes a trade from the two user's requested (or accepted) Database.trades</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userID</code> - id of user</dd>
@@ -555,11 +555,11 @@ java.lang.String&nbsp;tradeId)</span>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.lang.String</span>&nbsp;<span class="memberName">addRequestTrade</span>&#8203;(<span class="arguments">java.lang.String&nbsp;userId,
 java.lang.String&nbsp;tradeId)</span>
                                  throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Adds a trade to the specified user requested trades</div>
+<div class="block">Adds a trade to the specified user requested Database.trades</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - id of user</dd>
-<dd><code>tradeId</code> - id of the trade to add to requested trades</dd>
+<dd><code>tradeId</code> - id of the trade to add to requested Database.trades</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>id of the user</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -607,7 +607,7 @@ java.lang.String&nbsp;itemId)</span>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.lang.String</span>&nbsp;<span class="memberName">acceptRequestItem</span>&#8203;(<span class="arguments">java.lang.String&nbsp;userId,
 java.lang.String&nbsp;itemId)</span>
                                    throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Accepts one of this user's requested items (allows it to be used in trades)</div>
+<div class="block">Accepts one of this user's requested items (allows it to be used in Database.trades)</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - the id of the user</dd>
@@ -673,7 +673,7 @@ java.lang.String&nbsp;item1,
 java.lang.String&nbsp;user2,
 java.lang.String&nbsp;item2)</span>
                        throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Performs the trade action between two users</div>
+<div class="block">Performs the trade action between two Database.users</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>user1</code> - the first user's id</dd>
@@ -683,7 +683,7 @@ java.lang.String&nbsp;item2)</span>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>user1's id</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
-<dd><code><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></code> - users / items not found</dd>
+<dd><code><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></code> - Database.users / items not found</dd>
 </dl>
 </section>
 </li>
@@ -725,12 +725,12 @@ java.lang.String&nbsp;item2)</span>
 <h3><a id="getRequestedTrades(java.lang.String)">getRequestedTrades</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;java.lang.String&gt;</span>&nbsp;<span class="memberName">getRequestedTrades</span>&#8203;(<span class="arguments">java.lang.String&nbsp;userId)</span>
                                                          throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Gets an arraylist of requested trades of the specified trader</div>
+<div class="block">Gets an arraylist of requested Database.trades of the specified trader</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - the id of the trader</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>an arraylist of requested trades of the specified trader</dd>
+<dd>an arraylist of requested Database.trades of the specified trader</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></code> - if the trader with the given userId is not found</dd>
 </dl>
@@ -741,12 +741,12 @@ java.lang.String&nbsp;item2)</span>
 <h3><a id="getAcceptedTrades(java.lang.String)">getAcceptedTrades</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;java.lang.String&gt;</span>&nbsp;<span class="memberName">getAcceptedTrades</span>&#8203;(<span class="arguments">java.lang.String&nbsp;userId)</span>
                                                         throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Gets an arraylist of accepted trades of the specified trader</div>
+<div class="block">Gets an arraylist of accepted Database.trades of the specified trader</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - the id of the trader</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>an arraylist of accepted trades of the specified trader</dd>
+<dd>an arraylist of accepted Database.trades of the specified trader</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></code> - if the trader with the given userId is not found</dd>
 </dl>
@@ -757,12 +757,12 @@ java.lang.String&nbsp;item2)</span>
 <h3><a id="getCompletedTrades(java.lang.String)">getCompletedTrades</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.ArrayList&lt;java.lang.String&gt;</span>&nbsp;<span class="memberName">getCompletedTrades</span>&#8203;(<span class="arguments">java.lang.String&nbsp;userId)</span>
                                                          throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Gets an arraylist of completed trades of the specified trader</div>
+<div class="block">Gets an arraylist of completed Database.trades of the specified trader</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - the id of the trader</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>an arraylist of accepted trades of the specified trader</dd>
+<dd>an arraylist of accepted Database.trades of the specified trader</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></code> - if the trader with the given userId is not found</dd>
 </dl>

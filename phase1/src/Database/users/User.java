@@ -1,6 +1,6 @@
-package users;
+package Database.users;
 
-import main.Database.DatabaseItem;
+import Database.DatabaseItem;
 
 import java.io.Serializable;
 

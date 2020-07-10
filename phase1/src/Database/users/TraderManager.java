@@ -1,4 +1,4 @@
-package users;
+package Database.users;
 
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
@@ -41,7 +41,7 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
-     * Makes an accepted trade turn into a completed trade. This is to be done when both users have confirmed a trade.
+     * Makes an accepted trade turn into a completed trade. This is to be done when both Database.users have confirmed a trade.
      * @param traderId
      * @param tradeID
      * @throws EntryNotFoundException
@@ -147,7 +147,7 @@ public class TraderManager extends UserManager implements Serializable {
 
 
     /**
-     * Removes a specified trade from a user's accepted trades
+     * Removes a specified trade from a user's accepted Database.trades
      * @param user1 the id of the user
      * @param tradeId the id of the trade to be removed
      * @return true if the trade was removed, false otherwise
@@ -161,7 +161,7 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
-     * Removes a trade from the two user's requested (or accepted) trades
+     * Removes a trade from the two user's requested (or accepted) Database.trades
      * 
      * @param userID  id of user
      * @param user2ID  id of user2
@@ -183,9 +183,9 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
-     * Adds a trade to the specified user requested trades
+     * Adds a trade to the specified user requested Database.trades
      * @param userId id of user
-     * @param tradeId id of the trade to add to requested trades
+     * @param tradeId id of the trade to add to requested Database.trades
      * @return id of the user
      * @throws EntryNotFoundException if the user was not found
      */
@@ -196,9 +196,9 @@ public class TraderManager extends UserManager implements Serializable {
         return userId;
     }
     /**
-     * Adds a trade to the specified user requested trades
+     * Adds a trade to the specified user requested Database.trades
      * @param userId id of user
-     * @param tradeId id of the trade to add to requested trades
+     * @param tradeId id of the trade to add to requested Database.trades
      * @return id of the user
      * @throws EntryNotFoundException if the user was not found
      */
@@ -237,7 +237,7 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
-     * Accepts one of this user's requested items (allows it to be used in trades)
+     * Accepts one of this user's requested items (allows it to be used in Database.trades)
      * 
      * @param userId the id of the user
      * @param itemId the id of the item
@@ -301,14 +301,14 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
-     * Performs the trade action between two users
+     * Performs the trade action between two Database.users
      * 
      * @param user1 the first user's id
      * @param item1 the id of the item that user1 will be giving to user2
      * @param user2 the second user's id
      * @param item2 the id of the item that user2 will be giving to user1
      * @return user1's id
-     * @throws EntryNotFoundException users / items not found
+     * @throws EntryNotFoundException Database.users / items not found
      */
 
     public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
@@ -375,9 +375,9 @@ public class TraderManager extends UserManager implements Serializable {
 
 
     /**
-     * Gets an arraylist of requested trades of the specified trader
+     * Gets an arraylist of requested Database.trades of the specified trader
      * @param userId the id of the trader
-     * @return an arraylist of requested trades of the specified trader
+     * @return an arraylist of requested Database.trades of the specified trader
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
     public ArrayList<String> getRequestedTrades(String userId) throws EntryNotFoundException{
@@ -385,9 +385,9 @@ public class TraderManager extends UserManager implements Serializable {
     }
 
     /**
-     * Gets an arraylist of accepted trades of the specified trader
+     * Gets an arraylist of accepted Database.trades of the specified trader
      * @param userId the id of the trader
-     * @return an arraylist of accepted trades of the specified trader
+     * @return an arraylist of accepted Database.trades of the specified trader
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
     public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException{
@@ -395,9 +395,9 @@ public class TraderManager extends UserManager implements Serializable {
 
     }
     /**
-     * Gets an arraylist of completed trades of the specified trader
+     * Gets an arraylist of completed Database.trades of the specified trader
      * @param userId the id of the trader
-     * @return an arraylist of accepted trades of the specified trader
+     * @return an arraylist of accepted Database.trades of the specified trader
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
     public ArrayList<String> getCompletedTrades(String userId) throws EntryNotFoundException{

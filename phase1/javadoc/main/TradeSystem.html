@@ -250,7 +250,7 @@ boolean&nbsp;freezeStatus)</code></th>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getAcceptedTradeId(java.lang.String,int)">getAcceptedTradeId</a></span>&#8203;(java.lang.String&nbsp;userId,
 int&nbsp;acceptedTradeIndex)</code></th>
 <td class="colLast">
-<div class="block">Gets the tradeID given the index of the users accepted trade</div>
+<div class="block">Gets the tradeID given the index of the Database.users accepted trade</div>
 </td>
 </tr>
 <tr class="rowColor" id="i11">
@@ -327,7 +327,7 @@ int&nbsp;acceptedTradeIndex)</code></th>
 <td class="colFirst"><code>java.util.Set&lt;java.lang.String&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRecentTradeItems(java.lang.String)">getRecentTradeItems</a></span>&#8203;(java.lang.String&nbsp;userId)</code></th>
 <td class="colLast">
-<div class="block">Gets a list of the items used in trades</div>
+<div class="block">Gets a list of the items used in Database.trades</div>
 </td>
 </tr>
 <tr class="altColor" id="i22">
@@ -335,7 +335,7 @@ int&nbsp;acceptedTradeIndex)</code></th>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getRequestedTradeId(java.lang.String,int)">getRequestedTradeId</a></span>&#8203;(java.lang.String&nbsp;userId,
 int&nbsp;requestedTradeIndex)</code></th>
 <td class="colLast">
-<div class="block">Gets the tradeID given the index of the users requested trade</div>
+<div class="block">Gets the tradeID given the index of the Database.users requested trade</div>
 </td>
 </tr>
 <tr class="rowColor" id="i23">
@@ -896,7 +896,7 @@ boolean&nbsp;status)</span>
 <h3><a id="getRecentTradeItems(java.lang.String)">getRecentTradeItems</a></h3>
 <div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">java.util.Set&lt;java.lang.String&gt;</span>&nbsp;<span class="memberName">getRecentTradeItems</span>&#8203;(<span class="arguments">java.lang.String&nbsp;userId)</span>
                                                     throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a></span></div>
-<div class="block">Gets a list of the items used in trades</div>
+<div class="block">Gets a list of the items used in Database.trades</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - id of the user</dd>
@@ -1285,7 +1285,7 @@ java.lang.String&nbsp;tradeId)</span>
 int&nbsp;requestedTradeIndex)</span>
                                      throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a>,
 java.lang.IndexOutOfBoundsException</span></div>
-<div class="block">Gets the tradeID given the index of the users requested trade</div>
+<div class="block">Gets the tradeID given the index of the Database.users requested trade</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - id of the user</dd>
@@ -1305,7 +1305,7 @@ java.lang.IndexOutOfBoundsException</span></div>
 int&nbsp;acceptedTradeIndex)</span>
                                     throws <span class="exceptions"><a href="../exceptions/EntryNotFoundException.html" title="class in exceptions">EntryNotFoundException</a>,
 java.lang.IndexOutOfBoundsException</span></div>
-<div class="block">Gets the tradeID given the index of the users accepted trade</div>
+<div class="block">Gets the tradeID given the index of the Database.users accepted trade</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>userId</code> - id of the user</dd>

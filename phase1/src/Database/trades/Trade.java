@@ -1,12 +1,12 @@
-package trades;
+package Database.trades;
 
-import main.Database.DatabaseItem;
+import Database.DatabaseItem;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Represents a trade between two users
+ * Represents a trade between two Database.users
  */
 public class Trade extends DatabaseItem implements Serializable {
     private Date meetingTime = null;

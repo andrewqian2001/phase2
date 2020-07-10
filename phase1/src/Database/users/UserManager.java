@@ -1,9 +1,9 @@
-package users;
+package Database.users;
 
 import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-import main.Database.Database;
+import Database.Database;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -18,7 +18,7 @@ public class UserManager implements Serializable {
     protected Database<User> userDatabase;
     /**
      * Constructor for UserManager
-     * @param filePath path of users.ser
+     * @param filePath path of Database.users.ser
      * @throws IOException bad file path
      */
     public UserManager(String filePath) throws IOException {

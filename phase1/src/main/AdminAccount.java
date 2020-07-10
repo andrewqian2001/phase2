@@ -5,17 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import exceptions.AuthorizationException;
-import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
-import tradableitems.TradableItemManager;
-import trades.TradeManager;
-import users.AdminManager;
-import users.UserManager;
+import Database.users.AdminManager;
 
 public class AdminAccount extends TradeSystem{
 
-    private static final String USERS_FILE_PATH = "./phase1/src/users/users.ser";
+    private static final String USERS_FILE_PATH = "./phase1/src/Database.users/Database.users.ser";
 
     public AdminAccount() throws IOException {
 

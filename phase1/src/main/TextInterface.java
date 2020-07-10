@@ -385,7 +385,7 @@ public class TextInterface {
     }
 
     /**
-     * Prints all Inventory Items for all users in the database
+     * Prints all Inventory Items for all Database.users in the database
      */
     private void printDatabase() {
         ArrayList<String> allTraders = tSystem.getAllTraders();
@@ -537,7 +537,7 @@ public class TextInterface {
     }
 
     /**
-     * Prompts user to enter the item name and adds the item to the users Wishlist
+     * Prompts user to enter the item name and adds the item to the Database.users Wishlist
      */
     private void addItemToWishList() {
         String itemName = "";
@@ -762,10 +762,10 @@ public class TextInterface {
             try {
                 if (tSystem.getRequestedTrades(this.userID).size() == 0) {
                     System.out.println(
-                            "Ruh Roh! Looks like you do not have any requested trades\nABORTING TRADE REQUEST RESPONSE...");
+                            "Ruh Roh! Looks like you do not have any requested Database.trades\nABORTING TRADE REQUEST RESPONSE...");
                     return;
                 }
-                System.out.println("Here is your requested trades");
+                System.out.println("Here is your requested Database.trades");
                 printList(this.userID, "Requested", "Trade");
                 System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
                 System.out.print("=> ");
@@ -813,10 +813,10 @@ public class TextInterface {
             try {
                 if (tSystem.getRequestedTrades(this.userID).size() == 0) {
                     System.out.println(
-                            "Ruh Roh! Looks like you do not have any requested trades\nABORTING TRADE REQUEST RESPONSE...");
+                            "Ruh Roh! Looks like you do not have any requested Database.trades\nABORTING TRADE REQUEST RESPONSE...");
                     return;
                 }
-                System.out.println("Here is your requested trades");
+                System.out.println("Here is your requested Database.trades");
                 printList(this.userID, "Requested", "Trade");
                 System.out.println("Enter the index of the requested trade that you would like to edit");
                 System.out.print("=> ");
@@ -947,9 +947,9 @@ public class TextInterface {
 
                 if(tSystem.getAcceptedTrades(this.userID).size() == 0) {
                     System.out.println(
-                            "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
+                            "Ruh Roh! Looks like you do not have any ongoing accepted Database.trades\nABORTING TRADE CONFIRMATION...");
                     return;
-                } System.out.println("Here is your accepted trades");
+                } System.out.println("Here is your accepted Database.trades");
                 printList(this.userID, "Accepted", "Trade");
                 System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
                 System.out.print("=> ");
@@ -986,9 +986,9 @@ public class TextInterface {
                 System.out.println(tSystem.getAcceptedTrades(this.userID));
                 if(tSystem.getAcceptedTrades(this.userID).size() == 0) {
                     System.out.println(
-                            "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
+                            "Ruh Roh! Looks like you do not have any ongoing accepted Database.trades\nABORTING TRADE CONFIRMATION...");
                     return;
-                } System.out.println("Here is your accepted trades");
+                } System.out.println("Here is your accepted Database.trades");
                 printList(this.userID, "Accepted", "Trade");
                 System.out.println("Enter the index of the accepted trade that you would like to confirm was unsuccessful");
                 System.out.print("=> ");

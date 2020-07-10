@@ -1,4 +1,4 @@
-package users;
+package Database.users;
 
 public enum Permission {
     FREEZE_USER,
