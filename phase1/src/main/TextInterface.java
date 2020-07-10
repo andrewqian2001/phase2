@@ -837,7 +837,7 @@ public class TextInterface {
                 // if this trader is lending to me
                 if(typeOfTrade.equals("lending to")) {
                     System.out.println("Since the trader is lending to you originally, you do not have any items selected to lend");
-                    if (tSystem.getAvailableItems(this.userID).size() == 0) {
+                    if (tSystem.getAvailableItems(this.userID).size() > 0) {
                         System.out.println("Would you like to add an item to give to the trader? Y/N");
                         System.out.print("=> ");
                         tempInputString = sc.nextLine();
@@ -861,7 +861,7 @@ public class TextInterface {
                 // if this trader is borrowing from me
                 if(typeOfTrade.equals("borrowing from")) {
                     System.out.println("Since the trader is borrowing from you originally, they do not have any items selected to lend");
-                    if (tSystem.getAvailableItems(traderID).size() == 0) {
+                    if (tSystem.getAvailableItems(traderID).size() > 0) {
                         System.out.println("Would you like to add an item to borrow from this trader? Y/N");
                         System.out.print("=> ");
                         tempInputString = sc.nextLine();
