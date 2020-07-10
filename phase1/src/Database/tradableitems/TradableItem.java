@@ -26,14 +26,14 @@ public class TradableItem extends DatabaseItem implements Serializable {
     /**
      * @return name of the item
      */
-    String getName() {
+    public String getName() {
         return name;
     }
 
     /**
      * @return description of the item
      */
-    String getDesc() {
+    public String getDesc() {
         return description;
     }
 }

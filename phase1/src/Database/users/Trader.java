@@ -71,7 +71,7 @@ public class Trader extends User implements Serializable {
      * @return the trader's wishlist
      */
 
-    ArrayList<String> getWishlist() {
+    public ArrayList<String> getWishlist() {
         return wishList;
     }
 
@@ -79,7 +79,7 @@ public class Trader extends User implements Serializable {
      * @return list of available items this trader has
      */
 
-    ArrayList<String> getAvailableItems() {
+    public ArrayList<String> getAvailableItems() {
         return availableItems;
     }
 
@@ -89,7 +89,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    ArrayList<String> getRequestedItems() {
+    public ArrayList<String> getRequestedItems() {
         return requestedItems;
     }
 
@@ -99,7 +99,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    ArrayList<String> getAcceptedTrades() {
+    public ArrayList<String> getAcceptedTrades() {
         return acceptedTrades;
     }
     /**
@@ -107,7 +107,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    ArrayList<String> getCompletedTrades() {
+    public ArrayList<String> getCompletedTrades() {
         return completedTrades;
     }
 
@@ -117,7 +117,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    ArrayList<String> getRequestedTrades() {
+    public ArrayList<String> getRequestedTrades() {
         return requestedTrades;
     }
 
@@ -125,7 +125,7 @@ public class Trader extends User implements Serializable {
      * @return how many transactions this trader can conduct in 1 week
      */
 
-    int getTradeLimit() {
+    public int getTradeLimit() {
         return tradeLimit;
     }
 
@@ -135,14 +135,14 @@ public class Trader extends User implements Serializable {
      */
 
 
-    void setTradeLimit(int tradeLimit) {
+    public void setTradeLimit(int tradeLimit) {
         this.tradeLimit = tradeLimit;
     }
 
     /**
      * @return how many transactions can be incomplete before this trader's account is frozen
      */
-    int getIncompleteTradeLim() {
+    public int getIncompleteTradeLim() {
         return incompleteTradeLim;
     }
 
@@ -150,7 +150,7 @@ public class Trader extends User implements Serializable {
      * set a new incomplete trade limit value to this trader
      * @param incompleteTradeLim how many transactions can be incomplete before this trader's account is frozen
      */
-    void setIncompleteTradeLim(int incompleteTradeLim) {
+    public void setIncompleteTradeLim(int incompleteTradeLim) {
         this.incompleteTradeLim = incompleteTradeLim;
     }
 
@@ -159,12 +159,12 @@ public class Trader extends User implements Serializable {
      *
      * @return an arraylist of Trade IDs that represent the traders unsuccessful trade items
      */
-    ArrayList<String> getIncompleteTrades(){return incompleteTrades;}
+    public ArrayList<String> getIncompleteTrades(){return incompleteTrades;}
 
     /**
      * @return total number of items borrowed by the trader
      */
-    int getTotalItemsBorrowed() {
+    public int getTotalItemsBorrowed() {
         return totalItemsBorrowed;
     }
 
@@ -173,7 +173,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    void setTotalItemsBorrowed(int totalItemsBorrowed) {
+    public void setTotalItemsBorrowed(int totalItemsBorrowed) {
         this.totalItemsBorrowed = totalItemsBorrowed;
     }
 
@@ -182,7 +182,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    int getTotalItemsLent() {
+    public int getTotalItemsLent() {
         return totalItemsLent;
     }
 
@@ -192,7 +192,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    void setTotalItemsLent(int totalItemsLent) {
+    public void setTotalItemsLent(int totalItemsLent) {
         this.totalItemsLent = totalItemsLent;
     }
 

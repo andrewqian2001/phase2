@@ -28,42 +28,42 @@ public class User extends DatabaseItem implements Serializable, Permissible {
     /**
      * @return this user's username.
      */
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 
     /**
      * @param username to be set to this user.
      */
-    void setUsername(String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
     /**
      * @return this user's password
      */
-    String getPassword() {
+    public String getPassword() {
         return password;
     }
 
     /**
      * @param password to be set to this user.
      */
-    void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
     /**
      * @return if this user is frozen.
      */
-    boolean isFrozen() {
+    public boolean isFrozen() {
         return isFrozen;
     }
 
     /**
      * @param frozen if this user is now frozen.
      */
-    void setFrozen(boolean frozen) {
+    public void setFrozen(boolean frozen) {
         isFrozen = frozen;
     }
 
@@ -71,14 +71,14 @@ public class User extends DatabaseItem implements Serializable, Permissible {
     /**
      * @return if this user requested to be unfrozen
      */
-    boolean isUnfrozenRequested() {
+    public boolean isUnfrozenRequested() {
         return isUnfrozenRequested;
     }
 
     /**
      * @param unfrozenRequested if this user requested to be unfrozen
      */
-    void setUnfrozenRequested(boolean unfrozenRequested) {
+    public void setUnfrozenRequested(boolean unfrozenRequested) {
         isUnfrozenRequested = unfrozenRequested;
     }
 
