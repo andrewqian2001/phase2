@@ -76,11 +76,31 @@ public class TraderManager extends UserManager implements Serializable {
         return trader.getTradeCount() >= trader.getTradeLimit();
     }
 
+    /**
+     * gets inventory
+     * @param userId
+     * @return
+     * @throws EntryNotFoundException
+     */
     public ArrayList<String> getInventory(String userId) throws EntryNotFoundException {
         Trader trader = findTraderbyId(userId);
         return trader.getAvailableItems();
     }
 
+    /**
+     * checks if the user is frozen or above trade lim
+     * @param user1
+     * @return true if can trade
+     * @throws EntryNotFoundException
+     */
+    public boolean canTrade(String user1) throws EntryNotFoundException {
+        Trader trader1 = findTraderbyId(user1);
+        if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
+            System.out.println("You cannot trade!");
+            return false;
+        }
+        return true;
+    }
 
     /**
      *

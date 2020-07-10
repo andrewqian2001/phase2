@@ -547,6 +547,15 @@ public class TradeSystem implements Serializable {
     }
 
     /**
+     * Checks if user can trade
+     * @param userID
+     * @return
+     */
+    public boolean canTrade(String userID) throws EntryNotFoundException {
+        return ((TraderManager) userManager).canTrade(userID);
+    }
+
+    /**
      * edits the trade object
      * @param userID id of the user
      * @param traderId id of the other user of the trade

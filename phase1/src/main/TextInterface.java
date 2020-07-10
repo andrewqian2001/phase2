@@ -756,7 +756,7 @@ public class TextInterface {
      */
     private void respondToTradeOffer(boolean isAccepted) {
         int requestedTradeIndex = -1;
-
+        boolean canTrade = true;
         boolean success = false;
         do {
             try {
@@ -774,7 +774,10 @@ public class TextInterface {
                 String user2ID = tSystem.getTraderIdFromTrade(this.userID, tradeID);
 
 
-
+                if(!tSystem.canTrade(this.userID)){ //breaks infinite loop
+                    canTrade = false;
+                    break;
+                }
                 success = isAccepted ? tSystem.acceptTrade(tradeID) : tSystem.rejectTrade(user2ID, tradeID);
 
 
@@ -783,7 +786,7 @@ public class TextInterface {
                 System.out.println(e.getMessage());
             }
         } while (!success);
-
+        if(canTrade) //only displays msg if actually accepted or rejected
         System.out.println("Done! You have successfully " + (isAccepted ? "accepted" : "rejected") + " the requested trade");
     }
 
