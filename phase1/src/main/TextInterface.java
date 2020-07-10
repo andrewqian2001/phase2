@@ -887,7 +887,7 @@ public class TextInterface {
                 System.out.println("Enter your preferred first meeting time in the format yyyy/MM/dd HH:mm");
                 System.out.print("=> ");
                 tempInputString = sc.nextLine();
-                if(tempInputString.trim().equals("")) {
+                if(!tempInputString.trim().equals("")) {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
                     firstMeeting = sdf.parse(tempInputString);
                 }
@@ -908,7 +908,7 @@ public class TextInterface {
                     System.out.println("Enter your preferred second meeting time in the format yyyy/MM/dd HH:mm");
                     System.out.print("=> ");
                     tempInputString = sc.nextLine();
-                    if (tempInputString.trim().equals("")) {
+                    if (!tempInputString.trim().equals("")) {
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
                         secondMeeting = sdf.parse(tempInputString);
                     }
