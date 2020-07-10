@@ -6,7 +6,6 @@ import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import tradableitems.TradableItem;
 import tradableitems.TradableItemManager;
-import trades.Trade;
 import trades.TradeManager;
 import users.*;
 
@@ -49,7 +48,7 @@ public class TradeSystem implements Serializable {
     public String registerTrader(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new TraderManager(USERS_FILE_PATH);
         this.loggedInUserId = ((TraderManager) userManager).registerUser(username, password, 3);
-        traderAccount traderAccount = new traderAccount();
+        TraderAccount traderAccount = new TraderAccount();
         return this.loggedInUserId;
     }
 
@@ -63,7 +62,7 @@ public class TradeSystem implements Serializable {
      */
     public void registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
         userManager = new AdminManager(USERS_FILE_PATH);
-        adminAccount adminAccount = new adminAccount();
+        AdminAccount adminAccount = new AdminAccount();
         userManager.registerUser(username, password);
     }
 

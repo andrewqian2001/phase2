@@ -13,13 +13,13 @@ import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import users.UserManager;
 
-public class traderAccount extends TradeSystem{
+public class TraderAccount extends TradeSystem{
 
     private static final String USERS_FILE_PATH = "./phase1/src/users/users.ser";
     private static final String TRADE_FILE_PATH = "./phase1/src/trades/trades.ser";
     private static final String TRADABLE_ITEM_FILE_PATH = "./phase1/src/tradableitems/tradableitems.ser";
 
-    public traderAccount() throws IOException {
+    public TraderAccount() throws IOException {
         super();
     }
     /**

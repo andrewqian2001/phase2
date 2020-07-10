@@ -13,11 +13,11 @@ import trades.TradeManager;
 import users.AdminManager;
 import users.UserManager;
 
-public class adminAccount extends TradeSystem{
+public class AdminAccount extends TradeSystem{
 
     private static final String USERS_FILE_PATH = "./phase1/src/users/users.ser";
 
-    public adminAccount() throws IOException {
+    public AdminAccount() throws IOException {
 
         super();
     }
