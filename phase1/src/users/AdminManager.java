@@ -29,7 +29,7 @@ public class AdminManager extends UserManager implements Serializable {
      * @throws UserAlreadyExistsException can't register with this username
      */
     public String registerUser(String username, String password) throws UserAlreadyExistsException {
-        if (isUsernameUnique(username)) return update(new Admin(username, password)).getId();
+        if (isUsernameUnique(username)) return userDatabase.update(new Admin(username, password)).getId();
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
     }
 
@@ -39,7 +39,7 @@ public class AdminManager extends UserManager implements Serializable {
      */
     public HashMap<String, ArrayList<String>> getAllItemRequests()  {
         HashMap<String, ArrayList<String>> itemRequests = new HashMap<>();
-        for(User user : getItems()) {
+        for(User user : userDatabase.getItems()) {
             if(user instanceof Trader) {
                 itemRequests.put(user.getId(), ((Trader) user).getRequestedItems());
             }
@@ -72,7 +72,7 @@ public class AdminManager extends UserManager implements Serializable {
         }
         trader.getAvailableItems().add(itemId);
 
-        update(trader);
+        userDatabase.update(trader);
         return userId;
     }
 
@@ -89,7 +89,7 @@ public class AdminManager extends UserManager implements Serializable {
         if (!removeReqItem) {
             throw new EntryNotFoundException("Could not find item " + itemId);
         }
-        update(trader);
+        userDatabase.update(trader);
         return userId;
     }
 
@@ -116,7 +116,7 @@ public class AdminManager extends UserManager implements Serializable {
         for(String traderID : allTraders) {
             Trader trader = findTraderById(traderID);
             trader.setTradeLimit(tradeLimit);
-            update(trader);
+            userDatabase.update(trader);
         }
     }
 
@@ -143,7 +143,7 @@ public class AdminManager extends UserManager implements Serializable {
      */
     public ArrayList<String> getAllTraders() {
         ArrayList<String> allTraders = new ArrayList<>();
-        for (User user : getItems())
+        for (User user : userDatabase.getItems())
             if (user instanceof Trader)
                 allTraders.add(user.getId());
         return allTraders;

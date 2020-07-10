@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  *
  * @param <T> the entry must have an id to identify different entries
  */
-public abstract class Database<T extends DatabaseItem> implements Serializable {
+public class Database<T extends DatabaseItem> implements Serializable {
     private String filePath;
 
     private static final Logger LOGGER = Logger.getLogger(Database.class.getName());
@@ -118,7 +118,7 @@ public abstract class Database<T extends DatabaseItem> implements Serializable {
     /**
      * @return LinkedList containing all the items in the file
      */
-    protected LinkedList<T> getItems() {
+    public LinkedList<T> getItems() {
         if (!new File(this.filePath).exists()) {
             LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
             return new LinkedList<T>();
@@ -145,7 +145,7 @@ public abstract class Database<T extends DatabaseItem> implements Serializable {
      * @param items the items that are being saved to the file
      * @throws FileNotFoundException if the file doesn't exist
      */
-    protected void save(LinkedList<T> items) throws FileNotFoundException {
+    public void save(LinkedList<T> items) throws FileNotFoundException {
         if (!new File(this.filePath).exists()) {
             LOGGER.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
             throw new FileNotFoundException();

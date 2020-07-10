@@ -25,7 +25,7 @@ public class TraderManager extends UserManager implements Serializable {
 
     public String registerUser(String username, String password, int tradeLimit) throws UserAlreadyExistsException {
         if (isUsernameUnique(username))
-            return update(new Trader(username, password, tradeLimit)).getId();
+            return userDatabase.update(new Trader(username, password, tradeLimit)).getId();
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
     }
 
@@ -37,7 +37,7 @@ public class TraderManager extends UserManager implements Serializable {
     public void addToIncompleteTradeCount(String userId) throws EntryNotFoundException {
         Trader trader = findTraderbyId(userId);
         trader.setIncompleteTradeCount(trader.getIncompleteTradeCount() + 1);
-        update(trader);
+        userDatabase.update(trader);
     }
 
     /**
@@ -50,7 +50,7 @@ public class TraderManager extends UserManager implements Serializable {
         Trader t = findTraderbyId(traderId);
         t.getCompletedTrades().add(tradeID);
         t.getAcceptedTrades().remove(tradeID);
-        update(t);
+        userDatabase.update(t);
     }
 
     /**
@@ -119,7 +119,7 @@ public class TraderManager extends UserManager implements Serializable {
         trader1.getRequestedTrades().remove(tradeId);
         trader1.getAcceptedTrades().add(tradeId);
         trader1.setTradeCount(trader1.getTradeCount() + 1);
-        update(trader1);
+        userDatabase.update(trader1);
         return true;
     }
 
@@ -156,7 +156,7 @@ public class TraderManager extends UserManager implements Serializable {
     public boolean removeAcceptedTrade(String user1, String tradeId) throws EntryNotFoundException{
         Trader trader1 = findTraderbyId(user1);
         boolean removed = trader1.getAcceptedTrades().remove(tradeId);
-        update(trader1);
+        userDatabase.update(trader1);
         return removed;
     }
 
@@ -177,8 +177,8 @@ public class TraderManager extends UserManager implements Serializable {
         boolean removed_accepted = trader.getAcceptedTrades().remove(tradeId);
         boolean removed_request2 = trader2.getRequestedTrades().remove(tradeId);
         boolean removed_accepted2 = trader2.getRequestedTrades().remove(tradeId);
-        update(trader);
-        update(trader2);
+        userDatabase.update(trader);
+        userDatabase.update(trader2);
         return (removed_request || removed_accepted) && (removed_request2 || removed_accepted2);
     }
 
@@ -192,7 +192,7 @@ public class TraderManager extends UserManager implements Serializable {
     public String addRequestTrade(String userId, String tradeId) throws EntryNotFoundException{
         Trader trader =  findTraderbyId(userId);
         trader.getRequestedTrades().add(tradeId);
-        update(trader);
+        userDatabase.update(trader);
         return userId;
     }
     /**
@@ -205,7 +205,7 @@ public class TraderManager extends UserManager implements Serializable {
     public String removeRequestTrade(String userId, String tradeId) throws EntryNotFoundException{
         Trader trader =  findTraderbyId(userId);
         trader.getRequestedTrades().remove(tradeId);
-        update(trader);
+        userDatabase.update(trader);
         return userId;
     }
 
@@ -220,7 +220,7 @@ public class TraderManager extends UserManager implements Serializable {
     public String addRequestItem(String userId, String itemId) throws EntryNotFoundException {
         Trader trader = findTraderbyId(userId);
         trader.getRequestedItems().add(itemId);
-        update(trader);
+        userDatabase.update(trader);
         return userId;
     }
 
@@ -251,7 +251,7 @@ public class TraderManager extends UserManager implements Serializable {
         }
         trader.getAvailableItems().add(itemId);
 
-        update(trader);
+        userDatabase.update(trader);
         return userId;
     }
 
@@ -280,8 +280,8 @@ public class TraderManager extends UserManager implements Serializable {
         trader1.getAvailableItems().add(itemId);
         trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed() + 1);
         trader2.setTotalItemsLent(trader2.getTotalItemsLent() + 1);
-        update(trader2);
-        update(trader1);
+        userDatabase.update(trader2);
+        userDatabase.update(trader1);
         return true;
     }
 
@@ -325,8 +325,8 @@ public class TraderManager extends UserManager implements Serializable {
         trader2.getAvailableItems().add(item1);
         trader1.getWishlist().remove(item2);
         trader2.getWishlist().remove(item1);
-        update(trader1);
-        update(trader2);
+        userDatabase.update(trader1);
+        userDatabase.update(trader2);
         return user1;
     }
 
@@ -337,7 +337,7 @@ public class TraderManager extends UserManager implements Serializable {
     public HashMap<String, ArrayList<String>> getAllItemsInInventories() {
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
-        for (User user : getItems()) {
+        for (User user : userDatabase.getItems()) {
             if (user instanceof Trader)
                 allItems.put(user.getId(), ((Trader) user).getAvailableItems());
         }
@@ -351,7 +351,7 @@ public class TraderManager extends UserManager implements Serializable {
     public HashMap<String, ArrayList<String>> getAllRequestedItems() {
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
-        for (User user : getItems()) {
+        for (User user : userDatabase.getItems()) {
             if (user instanceof Trader) {
                 ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
                 if (requestedItems.size() > 0)
@@ -367,7 +367,7 @@ public class TraderManager extends UserManager implements Serializable {
      */
     public ArrayList<String> getAllTraders() {
         ArrayList<String> allTraders = new ArrayList<>();
-        for (User user : getItems())
+        for (User user : userDatabase.getItems())
             if(user instanceof Trader)
                 allTraders.add(user.getId());
         return allTraders;
@@ -413,7 +413,7 @@ public class TraderManager extends UserManager implements Serializable {
     public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException{
         Trader trader = findTraderbyId(userId);
         trader.getWishlist().add(tradableItemId);
-        update(trader);
+        userDatabase.update(trader);
     }
 
 
@@ -426,7 +426,7 @@ public class TraderManager extends UserManager implements Serializable {
     public void changeTraderLimits(String userId, int newLimit) throws EntryNotFoundException {
         Trader trader = findTraderbyId(userId);
         trader.setIncompleteTradeLim(newLimit);
-        update(trader);
+        userDatabase.update(trader);
     }
 
 

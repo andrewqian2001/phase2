@@ -13,15 +13,16 @@ import java.util.LinkedList;
 /**
  * Used to manage and store Users.
  */
-public class UserManager extends Database<User> implements Serializable {
+public class UserManager implements Serializable {
 
+    protected Database<User> userDatabase;
     /**
      * Constructor for UserManager
      * @param filePath path of users.ser
      * @throws IOException bad file path
      */
     public UserManager(String filePath) throws IOException {
-        super(filePath);
+        userDatabase = new Database(filePath);
     }
 
     /**
@@ -32,7 +33,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws UserAlreadyExistsException username is not unique
      */
     public String registerUser(String username, String password) throws UserAlreadyExistsException {
-        if (isUsernameUnique(username)) return update(new User(username, password)).getId();
+        if (isUsernameUnique(username)) return userDatabase.update(new User(username, password)).getId();
         throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
     }
 
@@ -42,7 +43,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @return True if username is unique, else false
      */
     protected boolean isUsernameUnique(String username) {
-        for (User user : getItems())
+        for (User user : userDatabase.getItems())
             if (user.getUsername().equals(username))
                 return false;
         return true;
@@ -56,7 +57,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws EntryNotFoundException could not find the user
      */
     public String login(String username, String password) throws EntryNotFoundException {
-        LinkedList<User> users = getItems();
+        LinkedList<User> users = userDatabase.getItems();
         for (User user : users)
             if (user.getUsername().equals(username) && (user.getPassword().equals(password)))
                 return user.getId();
@@ -72,12 +73,12 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws AuthorizationException this user has no authority to freeze
      */
     public void freezeUser(String loggedInUserId, String userId, boolean frozenStatus) throws EntryNotFoundException, AuthorizationException {
-        User userCallingAction = populate(loggedInUserId);
+        User userCallingAction = userDatabase.populate(loggedInUserId);
         if (!userCallingAction.hasPermission((Permission.FREEZE_USER)) || userCallingAction.isFrozen())
             throw new AuthorizationException(loggedInUserId + " has no permission.");
-        User user = populate(userId);
+        User user = userDatabase.populate(userId);
         user.setFrozen(frozenStatus);
-        update(user);
+        userDatabase.update(user);
     }
     /**
      * Gets the username of the user
@@ -86,7 +87,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws EntryNotFoundException could not find user
      */
     public String getUsername(String userId) throws EntryNotFoundException{
-        User user = super.populate(userId);
+        User user = userDatabase.populate(userId);
         return user.getUsername();
     }
 
@@ -97,7 +98,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws EntryNotFoundException could not find user
      */
     public String getUserId(String username) throws EntryNotFoundException{
-        LinkedList<User> users = getItems();
+        LinkedList<User> users = userDatabase.getItems();
         for (User user : users)
             if (user.getUsername().equals(username))
                 return user.getId();
@@ -111,9 +112,9 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws EntryNotFoundException could not find user
      */
     public void setRequestFrozenStatus(String userId, boolean status) throws EntryNotFoundException{
-        User user = populate(userId);
+        User user = userDatabase.populate(userId);
         user.setUnfrozenRequested(status);
-        update(user);
+        userDatabase.update(user);
     }
 
     /**
@@ -122,7 +123,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws EntryNotFoundException could not find user
      */
     public boolean isFrozen(String userId) throws EntryNotFoundException {
-        User user = populate(userId);
+        User user = userDatabase.populate(userId);
         return user.isFrozen();
     }
 
@@ -132,7 +133,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws EntryNotFoundException could not find user
      */
     public boolean isAdmin(String userId) throws EntryNotFoundException {
-        User user = populate(userId);
+        User user = userDatabase.populate(userId);
         return user instanceof Admin;
     }
     /**
@@ -141,7 +142,7 @@ public class UserManager extends Database<User> implements Serializable {
      */
     public ArrayList<String> getAllUnFreezeRequests() {
         ArrayList<String> allUnFrozenList = new ArrayList<>();
-        for(User user: getItems()) {
+        for(User user: userDatabase.getItems()) {
             if(user.isUnfrozenRequested()) allUnFrozenList.add(user.getId());
         }
         return allUnFrozenList;
@@ -159,7 +160,7 @@ public class UserManager extends Database<User> implements Serializable {
      * @throws EntryNotFoundException if user was not found
      */
     public User findUserById(String userId) throws EntryNotFoundException {
-        return populate(userId);
+        return userDatabase.populate(userId);
     }
 
 }
