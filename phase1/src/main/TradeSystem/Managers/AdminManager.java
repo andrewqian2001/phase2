@@ -14,6 +14,7 @@ import main.DatabaseFilePaths;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class AdminManager {
     private Database<User> userDatabase;
@@ -44,18 +45,15 @@ public class AdminManager {
     }
 
     /**
-     * Freezes/Unfreezes a Trader given their username Requirement: Only an Admin
-     * Account can preform this action
+     * Freeze or unfreeze a user
      *
-     * @param userID        the username of the Trader that needs to be (un-)frozen
-     * @param freeze_status if true, method will freeze the Trader, else it will
-     *                      unFreeze
-     * @throws EntryNotFoundException can't find username
-     * @throws AuthorizationException not allowed to freeze user
+     * @param userID       the user id
+     * @param freezeStatus to freeze the user
+     * @throws EntryNotFoundException can't find user id
      */
-    public void setFrozen(String userID, boolean freeze_status) throws EntryNotFoundException {
-        User user = findUserByID(userID);
-        user.setFrozen(freeze_status);
+    public void setFrozen(String userID, boolean freezeStatus) throws UserNotFoundException {
+        User user = getUser(userID);
+        user.setFrozen(freezeStatus);
         userDatabase.update(user);
     }
 
@@ -178,10 +176,31 @@ public class AdminManager {
         userDatabase.update(trader);
     }
 
-
-    private User findUserByID(String userID) throws EntryNotFoundException {
-        return userDatabase.populate(userID);
+    /**
+     * For getting a user object from a user id
+     * @param userID the user id
+     * @return the user object
+     * @throws UserNotFoundException if the user id wasn't found
+     */
+    public User getUser(String userID) throws UserNotFoundException {
+        try {
+            return userDatabase.populate(userID);
+        }
+        catch(EntryNotFoundException e){
+            throw new UserNotFoundException(userID);
+        }
     }
-
-
+    /**
+     * Gets the userID of a user given their username
+     * @param username the username of the user
+     * @return the ID of the user
+     * @throws UserNotFoundException could not find user
+     */
+    public String getUserId(String username) throws UserNotFoundException{
+        LinkedList<User> users = userDatabase.getItems();
+        for (User user : users)
+            if (user.getUsername().equals(username))
+                return user.getId();
+        throw new UserNotFoundException();
+    }
 }

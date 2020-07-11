@@ -2,8 +2,6 @@ package main.TradeSystem;
 
 import exceptions.*;
 import Database.tradableitems.TradableItem;
-import Database.tradableitems.TradableItemManager;
-import Database.trades.TradeManager;
 import Database.users.*;
 import main.TradeSystem.Accounts.Account;
 import main.TradeSystem.Accounts.AdminAccount;
@@ -71,29 +69,6 @@ public class TradeSystem implements Serializable {
         return null;
     }
 
-
-    /**
-     * Check if a User, given their ID, is frozen NOTE: This method is not for
-     * Admins since their accounts cannot be frozen
-     *
-     * @param userID id of the user
-     * @return true if the user is frozen, false else
-     * @throws EntryNotFoundException cant find user id
-     */
-    public boolean checkFrozen(String userID) throws EntryNotFoundException {
-        return userManager.isFrozen(userID);
-    }
-
-
-    /**
-     * Checks if the given user is able to borrow items
-     * @param userID id of the user
-     * @return true if the user is able to borrow, else false
-     * @throws EntryNotFoundException cant find user id
-     */
-    public boolean canBorrow(String userID) throws EntryNotFoundException {
-        return ((TraderManager) userManager).canBorrow(userID);
-    }
 
     /**
      * Freezes/Unfreezes a Trader given their username Requirement: Only an Admin

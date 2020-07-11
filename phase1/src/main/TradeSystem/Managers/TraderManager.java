@@ -41,7 +41,7 @@ public class TraderManager {
      * @throws AuthorizationException if the user isn't a trader
      */
     public String getRequestedTradeId(int requestedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
-        return getTrader(traderId).getRequestedTrades().get(requestedTradeIndex);
+        return getTrader().getRequestedTrades().get(requestedTradeIndex);
     }
 
 
@@ -55,7 +55,7 @@ public class TraderManager {
      * @throws IndexOutOfBoundsException index out of bounds
      */
     public String getAcceptedTradeId(String userId, int acceptedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
-        return getTrader(traderId).getAcceptedTrades().get(acceptedTradeIndex);
+        return getTrader().getAcceptedTrades().get(acceptedTradeIndex);
     }
 
     /**
@@ -67,7 +67,7 @@ public class TraderManager {
      * @throws AuthorizationException if the user isn't a trader
      */
     public void addRequestItem(String itemId) throws UserNotFoundException, AuthorizationException{
-        Trader trader = getTrader(traderId);
+        Trader trader = getTrader();
         trader.getRequestedItems().add(itemId);
         userDatabase.update(trader);
     }
@@ -101,47 +101,6 @@ public class TraderManager {
         return allTraders;
     }
 
-
-    /**
-     * Gets an arraylist of requested Database.trades of the specified trader
-     * @param userId the id of the trader
-     * @return an arraylist of requested Database.trades of the specified trader
-     * @throws UserNotFoundException if the trader with the given userId is not found
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public ArrayList<String> getRequestedTrades(String userId) throws UserNotFoundException, AuthorizationException{
-        return getTrader(userId).getRequestedTrades();
-    }
-
-    /**
-     * Gets an arraylist of accepted Database.trades of the specified trader
-     * @return an arraylist of accepted Database.trades of the specified trader
-     * @throws UserNotFoundException if the trader with the given userId is not found
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public ArrayList<String> getAcceptedTrades() throws UserNotFoundException, AuthorizationException{
-        return getTrader(traderId).getAcceptedTrades();
-
-    }
-    /**
-     * Gets an arraylist of completed Database.trades of the specified trader
-     * @return an arraylist of accepted Database.trades of the specified trader
-     * @throws UserNotFoundException if the trader with the given userId is not found
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public ArrayList<String> getCompletedTrades()  throws UserNotFoundException, AuthorizationException{
-        return getTrader(traderId).getCompletedTrades();
-    }
-
-    /**
-     * get all available items
-     * @return arraylist of all items in all inventories
-     * @throws UserNotFoundException user id not found
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public ArrayList<String> getAvailableItems()  throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getAvailableItems();
-    }
 
     /**
      * gett all wish list items
@@ -182,6 +141,16 @@ public class TraderManager {
         catch (EntryNotFoundException e){
             throw new UserNotFoundException(id);
         }
+    }
+
+    /**
+     * For getting the trader object
+     * @return the trader object
+     * @throws UserNotFoundException if the trader doesn't exist
+     * @throws AuthorizationException if the user isn't a trader
+     */
+    public Trader getTrader() throws UserNotFoundException, AuthorizationException {
+        return getTrader(traderId);
     }
 
 }
