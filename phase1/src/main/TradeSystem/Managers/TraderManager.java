@@ -45,6 +45,97 @@ public class TraderManager {
     }
 
 
+    /**
+     * Performs the trade action between two Database.users
+     *
+     * @param user1 the first user's id
+     * @param item1 the id of the item that user1 will be giving to user2
+     * @param user2 the second user's id
+     * @param item2 the id of the item that user2 will be giving to user1
+     * @return user1's id
+     * @throws EntryNotFoundException Database.users / items not found
+     */
+
+    public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
+        Trader trader1 = findTraderbyId(user1);
+        Trader trader2 = findTraderbyId(user2);
+        if (!trader1.getAvailableItems().remove(item1)) {
+            throw new EntryNotFoundException("Item " + item1 + " not found");
+        }
+        if (!trader2.getAvailableItems().remove(item2)) {
+            trader1.getAvailableItems().add(item1);
+            throw new EntryNotFoundException("Item " + item2 + " not found");
+        }
+        trader1.getAvailableItems().add(item2);
+        trader2.getAvailableItems().add(item1);
+        trader1.getWishlist().remove(item2);
+        trader2.getWishlist().remove(item1);
+        userDatabase.update(trader1);
+        userDatabase.update(trader2);
+        return user1;
+    }
+
+
+    /**
+     * Performs the action of user1 lending an item from user2
+     *
+     * @param user1  the id of the user lending an item
+     * @param user2  the id of the user borrowing the item
+     * @param itemId the id of the item
+     * @param threshold the value for how many items can be borrowed before starting to lend
+     * @return true if the item was successfully lent
+     * @throws EntryNotFoundException if the itemId or one of the two user IDs were
+     *                                not found.
+     */
+    public boolean lendItem(String user1, String user2, String itemId, int threshold) throws EntryNotFoundException {
+        return borrowItem(user2, user1, itemId, threshold);
+    }
+
+    /**
+     * Performs the action of user1 borrowing an item from user2
+     *
+     * @param user1  the id of the user borrowing an item
+     * @param user2  the id of the user lending the item
+     * @param itemId the id of the item
+     * @param threshold the value for how many items can be borrowed before starting to lend
+     * @return true if the item was successfully borrowed
+     * @throws EntryNotFoundException if the itemId or one of the two user IDs were
+     *                                not found.
+     */
+    public boolean borrowItem(String user1, String user2, String itemId, int threshold) throws EntryNotFoundException {
+        Trader trader1 = findTraderbyId(user1);
+        Trader trader2 = findTraderbyId(user2);
+
+        if (trader1.getTotalItemsLent() - trader1.getTotalItemsBorrowed() < threshold) {
+            return false;
+        }
+        if (!trader2.getAvailableItems().remove(itemId)) {
+            throw new EntryNotFoundException("Item " + itemId + " not found");
+        }
+
+        trader1.getAvailableItems().add(itemId);
+        trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed() + 1);
+        trader2.setTotalItemsLent(trader2.getTotalItemsLent() + 1);
+        userDatabase.update(trader2);
+        userDatabase.update(trader1);
+        return true;
+    }
+
+    /**
+     * Helper function to find a trader by id
+     *
+     * @param userId the id of the trader to find
+     * @return the trader that was found
+     * @throws EntryNotFoundException if a trader with the given userId was not
+     *                                found
+     */
+    private Trader findTraderbyId(String userId) throws EntryNotFoundException {
+        User user = findUserById(userId);
+        if (user instanceof Trader) {
+            return (Trader) user;
+        }
+        throw new EntryNotFoundException("Could not find " + userId + " + in the system.");
+    }
 
     /**
      * Gets the tradeID given the index of the Database.users accepted trade
@@ -150,6 +241,16 @@ public class TraderManager {
         catch (EntryNotFoundException e){
             throw new UserNotFoundException(id);
         }
+    }
+
+    /**
+     * get all available items
+     * @param userID user Id
+     * @return arraylist of all items in all inventories
+     * @throws EntryNotFoundException user id not found
+     */
+    public ArrayList<String> getAvailableItems(String userID) throws EntryNotFoundException {
+        return findTraderbyId(userID).getAvailableItems();
     }
 
     /**
