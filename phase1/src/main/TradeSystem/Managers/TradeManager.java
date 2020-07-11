@@ -34,7 +34,7 @@ public class TradeManager {
 
 
     /**
-     * Creates a new trade and
+     * Creates a new temporary trade
      *
      * @param userId            the id of the user being traded with
      * @param meetingTime       when the meeting takes place
@@ -44,22 +44,24 @@ public class TradeManager {
      * @param thisUserOfferId   the item id of that this current user is willing to offer
      * @param secondUserOfferId the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
+     * @return the trade object
      * @throws TradableItemNotFoundException the items passed in for trading doesn't exist
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        the item for trading cannot be traded
      * @throws CannotTradeException          cannot request a trade
      */
-    public void requestTrade(String userId,
-                             Date meetingTime, Date secondMeetingTime,
-                             String meetingLocation, String thisUserOfferId, String secondUserOfferId, int allowedEdits)
+    public Trade requestTrade(String userId,
+                              Date meetingTime, Date secondMeetingTime,
+                              String meetingLocation, String thisUserOfferId, String secondUserOfferId, int allowedEdits)
             throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader secondTrader = getTrader(userId);
+        Trader trader = getTrader(traderId);
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot trade with yourself");
 
-        // Need to check trade limits
-        // Need to check trade limits
-        // Need to check trade limits
-        // Need to check trade limits
+        if (trader.getTradeLimit() < 0)
+            throw new CannotTradeException("Your trading limit has passed, wait until it resets");
+        if (secondTrader.getTradeLimit() < 0)
+            throw new CannotTradeException("The user requested has a trading limit restriction");
 
         // This is used to check if the items are valid to trade
         getTradableItem(thisUserOfferId, traderId);
@@ -72,11 +74,25 @@ public class TradeManager {
                 meetingTime, secondMeetingTime,
                 meetingLocation, thisUserOfferId, secondUserOfferId, allowedEdits);
         String tradeId = tradeDatabase.update(trade).getId();
-        Trader trader = getTrader(traderId);
         trader.getRequestedTrades().add(tradeId);
-        userDatabase.update(trader);
         secondTrader.getRequestedTrades().add(tradeId);
+        trader.setTradeLimit(trader.getTradeLimit() - 1);
+        secondTrader.setTradeLimit(secondTrader.getTradeLimit() - 1);
+        userDatabase.update(trader);
         userDatabase.update(secondTrader);
+        return trade;
+    }
+
+    /**
+     *
+     */
+    public void requestLend() {
+    }
+
+    /**
+     *
+     */
+    public void requestBorrow() {
     }
 
     /**
@@ -114,6 +130,29 @@ public class TradeManager {
         tradeDatabase.update(trade);
     }
 
+    public boolean confirmRequest(String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+        Trade trade = getTrade(tradeId);
+        if (trade.getFirstUserId().equals(traderId))
+            trade.setHasFirstUserConfirmedRequest(true);
+        else trade.setHasSecondUserConfirmedRequest(true);
+
+        // This should always be true but this is a check anyway
+        if (trade.isHasFirstUserConfirmedRequest() && trade.isHasSecondUserConfirmedRequest()) {
+            Trader trader = getTrader(trade.getFirstUserId());
+            Trader trader2 = getTrader(trade.getSecondUserId());
+            trader.getAvailableItems().remove(trade.getFirstUserOffer());
+            trader2.getAvailableItems().remove(trade.getSecondUserOffer());
+            trader.getAcceptedTrades().add(tradeId);
+            trader2.getAcceptedTrades().add(tradeId);
+            trader.setIncompleteTradeCount(trader.getIncompleteTradeCount() - 1);
+            trader2.setIncompleteTradeCount(trader2.getIncompleteTradeCount() - 1);
+            userDatabase.update(trader);
+            userDatabase.update(trader2);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Confirms the second meeting
      *
@@ -121,11 +160,33 @@ public class TradeManager {
      * @param status  if the meeting is confirmed and the trade happened
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException this trade doesn't belong to this user
+     * @throws UserNotFoundException  if the other user of the trade is not found
      */
-    public void confirmSecondMeeting(String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException {
+    public void confirmSecondMeeting(String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
-        if (trade.getFirstUserId().equals(tradeId)) trade.setFirstUserConfirmed2(status);
-        else if ((trade.getSecondUserId().equals(tradeId))) trade.setSecondUserConfirmed2(status);
+        if (trade.getFirstUserId().equals(tradeId)) {
+            if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1())
+                throw new AuthorizationException("First meeting hasn't been confirmed");
+            trade.setFirstUserConfirmed2(status);
+        } else if ((trade.getSecondUserId().equals(tradeId))) {
+            if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1())
+                throw new AuthorizationException("First meeting hasn't been confirmed");
+            trade.setSecondUserConfirmed2(status);
+        }
+        if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1() &&
+                trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2()) {
+            Trader trader1 = getTrader(trade.getFirstUserId());
+            Trader trader2 = getTrader(trade.getSecondUserId());
+            trader1.getCompletedTrades().add(tradeId);
+            trader2.getCompletedTrades().add(tradeId);
+            trader1.getAcceptedTrades().remove(tradeId);
+            trader1.getAcceptedTrades().remove(tradeId);
+            trader1.getAvailableItems().add(trade.getSecondUserOffer());
+            trader2.getAvailableItems().add(trade.getFirstUserOffer());
+            userDatabase.update(trader1);
+            userDatabase.update(trader2);
+
+        }
         tradeDatabase.update(trade);
     }
 
@@ -144,8 +205,10 @@ public class TradeManager {
      * @throws TradeNotFoundException this trade doesn't exist
      * @throws AuthorizationException this trade doesn't belong to this user
      */
-    public String counterTradeOffer(String tradeId, Date meetingTime, Date secondMeetingTime, String meetingLocation,
-                                    String firstUserOffer, String secondUserOffer) throws CannotTradeException, UserNotFoundException, TradeNotFoundException, AuthorizationException {
+    public String counterTradeOffer(String tradeId, Date meetingTime, Date secondMeetingTime, String
+            meetingLocation,
+                                    String firstUserOffer, String secondUserOffer) throws
+            CannotTradeException, UserNotFoundException, TradeNotFoundException, AuthorizationException {
         Trade trade = getTrade(tradeId);
         Trader currTrader = getTrader(traderId);
         Trader otherTrader;
@@ -217,12 +280,14 @@ public class TradeManager {
      * @throws TradableItemNotFoundException if the tradable item object wasn't found
      * @throws AuthorizationException        if the tradable item doesn't belong to the trader
      */
-    private TradableItem getTradableItem(String tradableItemId, String traderId) throws TradableItemNotFoundException, UserNotFoundException,
+    private TradableItem getTradableItem(String tradableItemId, String traderId) throws
+            TradableItemNotFoundException, UserNotFoundException,
             AuthorizationException {
         Trader trader = getTrader(traderId);
         TradableItem item;
         try {
-            if (!tradableItemDatabase.contains(tradableItemId)) throw new TradableItemNotFoundException(tradableItemId);
+            if (!tradableItemDatabase.contains(tradableItemId))
+                throw new TradableItemNotFoundException(tradableItemId);
             item = tradableItemDatabase.populate(tradableItemId);
             if (!trader.getAvailableItems().contains(tradableItemId))
                 throw new AuthorizationException("This trader does not have that item");
