@@ -104,8 +104,6 @@ public class TraderManager {
         return allItems;
     }
 
-
-
     /**
      * Gets the IDs of all Traders in the database
      * @return An arraylist of Trader IDs
@@ -120,7 +118,7 @@ public class TraderManager {
 
 
     /**
-     * gett all wish list items
+     * get all wish list items
      * @return arraylist of all wish list item
      * @throws UserNotFoundException user id not found
      * @throws AuthorizationException if the user isn't a trader
@@ -210,7 +208,6 @@ public class TraderManager {
         return userManager.getUserId(username);
     }
 
-
     /**
      * Get userId of the other user in the trade
      * @param userID id of the user
@@ -220,29 +217,6 @@ public class TraderManager {
      */
     public String getTraderIdFromTrade(String userID, String tradeID) throws EntryNotFoundException {
         return tradeManager.getOtherUser(tradeID, userID);
-    }
-
-
-
-    /**
-     * Confirms that other trader did not show up to the trade
-     * This method should increment the other traders incomplete trade count but not this traders
-     * @param userID is the ID of the user
-     * @param tradeID the trade id
-     * @return true
-     * @throws EntryNotFoundException could not find user id / trade id
-     */
-    public boolean confirmIncompleteTrade(String userID, String tradeID) throws EntryNotFoundException {
-
-        if(tradeManager.isFirstMeetingConfirmed(tradeID)){
-            tradeManager.confirmSecondMeeting(tradeID, userID, false); //maybe ill need to change this to input the other Database.users ID?
-        }else{
-            tradeManager.confirmFirstMeeting(tradeID, userID, false);
-        }
-
-        String trader2Id = tradeManager.getOtherUser(tradeID, userID);
-        ((Database.users.TraderManager)userManager).addToIncompleteTradeCount(trader2Id);
-        return true;
     }
 
     /**
@@ -263,9 +237,9 @@ public class TraderManager {
      * @return item index of the trade item
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-    public int getUserTradeItemIndex(String userID, String tradeId) throws EntryNotFoundException {
+    public int getUserTradeItemIndex(String userID, String tradeId) throws EntryNotFoundException, AuthorizationException {
         String[] items = tradeManager.getItemsFromTrade(tradeId);
-        ArrayList<String> inventory = ((Database.users.TraderManager) userManager).getInventory(userID);
+        ArrayList<String> inventory = getTrader().getAvailableItems();
         if(tradeManager.isFirstUser(tradeId, userID)) {
             if (items[0].equals("")){
                 return -1;
@@ -289,17 +263,16 @@ public class TraderManager {
     /**
      * return the 3 most traded with Traders
      *
-     * @param userID user Id
      * @return a String array of the usernames of the 3 most traded with Traders
      * @throws EntryNotFoundException cant find user id
      */
-    public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
+    public String[] getFrequentTraders() throws EntryNotFoundException, AuthorizationException {
         String[] frequentTraders = new String[3];
         ArrayList<String> users = new ArrayList<>();
 
         // converts trade-id to other Database.users' id
-        for(String trade_id : ((Database.users.TraderManager) userManager).getCompletedTrades(userID)){
-            users.add(tradeManager.getOtherUser(trade_id, userID));
+        for(String trade_id : getTrader().getCompletedTrades()){
+            users.add(tradeManager.getOtherUser(trade_id, traderId));
         }
 
         Set<String> distinct = new HashSet<>(users);
@@ -317,13 +290,11 @@ public class TraderManager {
 
         //converts frequentTraders from ID array to username array
         for (int i = 0; i < 3 && frequentTraders[i] != null; i++){
-            frequentTraders[i] = userManager.getUsername(frequentTraders[i]);
+            frequentTraders[i] = userDatabase.populate(frequentTraders[i]).getUsername();
         }
 
         return frequentTraders;
     }
-
-
 
     /**
      * Gets the username of a User given their ID
@@ -333,6 +304,23 @@ public class TraderManager {
      */
     public String getUsername() throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getUsername();
+    }
+
+    /**
+     * Gets a hashmap of trader ids to an arraylist of their requested items
+     * @return a hashmap of trader ids to an arraylist of their requested items
+     */
+    public HashMap<String, ArrayList<String>> getAllItemRequests() {
+        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+
+        for (User user : userDatabase.getItems()) {
+            if (user instanceof Trader) {
+                ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
+                if (requestedItems.size() > 0)
+                    allItems.put(user.getId(), requestedItems);
+            }
+        }
+        return allItems;
     }
 
 

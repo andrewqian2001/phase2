@@ -54,8 +54,7 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException can't find user id or cna't find item name
      */
     public void addToWishList(String itemName) throws EntryNotFoundException, AuthorizationException {
-        String itemId = traderManager.getItemId(itemName);
-        traderManager.addToWishList(itemId);
+        traderManager.addToWishList(itemName);
     }
 
     /**
@@ -150,10 +149,6 @@ public class TraderAccount implements Account{
     }
 
 
-
-
-
-
     @Override
     public UserTypes getAccountType() {
         return UserTypes.TRADER;
@@ -166,16 +161,8 @@ public class TraderAccount implements Account{
      * @return list of unique items that the user has traded/received from a trade
      * @throws EntryNotFoundException cant find user id
      */
-    public Set<String> getRecentTradeItems(String userId) throws EntryNotFoundException {
-        ArrayList<String> completedTrades = ((Database.users.TraderManager) userManager).getCompletedTrades(userId);
-        Set<String> recentTradeItemNames = new HashSet<>();
-        for (String tradeID : completedTrades) {
-            String[] tradableItemIDs = tradeManager.getItemsFromTrade(tradeID);
-            recentTradeItemNames.add(getTradableItemName(tradableItemIDs[0]));
-            if (!tradableItemIDs[1].equals(""))
-                recentTradeItemNames.add(getTradableItemName(tradableItemIDs[1]));
-        }
-        return recentTradeItemNames;
+    public Set<String> getRecentTradeItems() throws EntryNotFoundException {
+        return traderManager.getRecentTradeItems();
     }
 
     /**
@@ -538,13 +525,6 @@ public class TraderAccount implements Account{
         return tradableItemManager.getDesc(tradableItemId);
     }
 
-    /**
-     * Gets a Map of key=id of user, value=list of their item requests
-     * @return a list of item requests mapping to each user
-     */
-    public HashMap<String, ArrayList<String>> getAllItemRequests()  {
-        return ((AdminManager) userManager).getAllItemRequests();
-    }
 
 
 
