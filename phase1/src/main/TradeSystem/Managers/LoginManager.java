@@ -4,7 +4,6 @@ import Database.Database;
 import Database.users.Admin;
 import Database.users.Trader;
 import Database.users.User;
-import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;

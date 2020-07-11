@@ -1,6 +1,5 @@
 package Database.tradableitems;
 
-import Database.trades.Trade;
 import exceptions.EntryNotFoundException;
 import Database.Database;
 
