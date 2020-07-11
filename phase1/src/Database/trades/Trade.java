@@ -161,7 +161,7 @@ public class Trade extends DatabaseItem implements Serializable {
     /**
      * @return where the trade is taking place
      */
-    String getMeetingLocation() {
+    public String getMeetingLocation() {
         return meetingLocation;
     }
 
@@ -203,7 +203,7 @@ public class Trade extends DatabaseItem implements Serializable {
     /**
      * @return how many edits can be done
      */
-    int getMaxAllowedEdits() {
+    public int getMaxAllowedEdits() {
         return MAX_ALLOWED_NUM_EDITS;
     }
 
