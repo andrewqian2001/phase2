@@ -2,11 +2,14 @@ package Database.users;
 
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
+import exceptions.UserNotFoundException;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Manages admins
@@ -14,16 +17,17 @@ import java.util.HashMap;
 public class AdminManager extends UserManager implements Serializable {
     /**
      * Constructor for AdminManager
+     *
      * @param filePath the path of the Database.users.ser file
      * @throws IOException file path is bad
      */
     public AdminManager(String filePath) throws IOException {
         super(filePath);
     }
-    
+
     /**
      * Registers a new Admin Account
-     * 
+     *
      * @param username username of the new admin
      * @param password password of the new admin
      * @throws UserAlreadyExistsException can't register with this username
@@ -35,32 +39,40 @@ public class AdminManager extends UserManager implements Serializable {
 
     /**
      * Sets the current weekly trade limit for all traders
+     *
      * @param tradeLimit the new weekly trade limit
      * @throws EntryNotFoundException couldn't get traders
      */
     public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
-        ArrayList<String> allTraders = getAllTraders();
-        for(String traderID : allTraders) {
-            Trader trader = findTraderById(traderID);
-            trader.setTradeLimit(tradeLimit);
-            userDatabase.update(trader);
+        LinkedList<User> allUsers = userDatabase.getItems();
+        for (User user : allUsers)
+            if (user instanceof Trader) {
+                ((Trader) user).setTradeLimit(tradeLimit);
+            }
+        try {
+            userDatabase.save(allUsers);
+        }
+        catch (FileNotFoundException e){
+            throw new UserNotFoundException();
         }
     }
 
 
     /**
      * Gets all Item requests for each user
+     *
      * @return a Map corresponding to a userId with a list of their item requests
      */
-    public HashMap<String, ArrayList<String>> getAllItemRequests()  {
+    public HashMap<String, ArrayList<String>> getAllItemRequests() {
         HashMap<String, ArrayList<String>> itemRequests = new HashMap<>();
-        for(User user : userDatabase.getItems()) {
-            if(user instanceof Trader) {
+        for (User user : userDatabase.getItems()) {
+            if (user instanceof Trader) {
                 itemRequests.put(user.getId(), ((Trader) user).getRequestedItems());
             }
         }
         return itemRequests;
     }
+
     /**
      * Return the list of requested items for this user
      *
@@ -71,7 +83,6 @@ public class AdminManager extends UserManager implements Serializable {
     public ArrayList<String> getRequestedItems(String userId) throws EntryNotFoundException {
         return findTraderById(userId).getRequestedItems();
     }
-
 
 
     /**
@@ -95,6 +106,7 @@ public class AdminManager extends UserManager implements Serializable {
 
     /**
      * Rejects the user'r requested item
+     *
      * @param userId id of the user
      * @param itemId id of the item
      * @return the user's id
@@ -112,12 +124,13 @@ public class AdminManager extends UserManager implements Serializable {
 
     /**
      * Gets the current weekly trade limit
+     *
      * @return the current weekly trade limit for all traders. If no traders exist, then return -1
      * @throws EntryNotFoundException traders not found
      */
     public int getTradeLimit() throws EntryNotFoundException {
         ArrayList<String> traders = getAllTraders();
-        if (traders.size() == 0){
+        if (traders.size() == 0) {
             throw new EntryNotFoundException("There are not traders in the system");
         }
         return findTraderById(traders.get(0)).getTradeLimit();
@@ -141,7 +154,7 @@ public class AdminManager extends UserManager implements Serializable {
 
     /**
      * Gets the IDs of all Traders in the database
-     * 
+     *
      * @return An arraylist of Trader IDs
      */
     public ArrayList<String> getAllTraders() {
