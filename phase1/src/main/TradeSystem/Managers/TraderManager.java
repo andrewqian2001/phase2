@@ -30,7 +30,7 @@ public class TraderManager {
         if (!(tmp instanceof Trader))
             throw new AuthorizationException("This account is not a trader type.");
         else
-            traderId = tmp.getId();
+            this.traderId = tmp.getId();
         trader = (Trader) tmp;
 
     }

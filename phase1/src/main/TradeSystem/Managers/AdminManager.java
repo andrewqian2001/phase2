@@ -15,11 +15,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AdminManager {
-    private Database<User> userDatabase;
-    private Database<Trade> tradeDatabase;
-    private Database<TradableItem> tradableItemDatabase;
-    private String adminId;
-    private Admin admin;
+    private final Database<User> userDatabase;
+    private final Database<Trade> tradeDatabase;
+    private final Database<TradableItem> tradableItemDatabase;
+    private final String adminId;
 
     /**
      * This is used for the actions that an admin user can do
@@ -37,8 +36,7 @@ public class AdminManager {
         if (!(tmp instanceof Admin))
             throw new AuthorizationException("This account is not an admin type.");
         else
-            adminId = tmp.getId();
-        admin = (Admin) tmp;
+            this.adminId = tmp.getId();
     }
 
     /**

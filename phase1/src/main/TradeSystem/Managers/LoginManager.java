@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 public class LoginManager {
-    private Database<User> userDatabase;
+    private final Database<User> userDatabase;
     private int defaultTradeLimit = 10;
     private int defaultIncompleteTradeLim = 3;
 

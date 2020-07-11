@@ -29,7 +29,7 @@ public class TradeManager {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
         tradeDatabase = new Database<Trade>(DatabaseFilePaths.TRADE.getFilePath());
         tradableItemDatabase = new Database<TradableItem>(DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
-        traderId = getTrader(traderId).getId();
+        this.traderId = getTrader(traderId).getId();
     }
 
 
