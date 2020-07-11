@@ -72,6 +72,7 @@ public class TraderAccount extends TradeSystem {
         userManager.setRequestFrozenStatus(userId, status);
     }
 
+
     /**
      * return the 3 most traded with Traders
      *
