@@ -12,6 +12,7 @@ import java.io.IOException;
 public class TraderManager {
     private Database<User> userDatabase;
     private String traderId;
+    private Trader trader;
 
     /**
      * This is used for the actions that a trader user can do
@@ -28,6 +29,32 @@ public class TraderManager {
             throw new AuthorizationException("This account is not a trader type.");
         else
             traderId = tmp.getId();
+        trader = (Trader) tmp;
 
     }
+
+    /**
+     * Gets the tradeID given the index of the users requested trade
+     * @param requestedTradeIndex index of the requested trade
+     * @return the trade ID
+     * @throws EntryNotFoundException userId not found
+     * @throws IndexOutOfBoundsException index out of bounds
+     */
+    public String getRequestedTradeId(int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException, AuthorizationException {
+        return trader.getRequestedTrades().get(requestedTradeIndex);
+    }
+
+    /**
+     * Gets the tradeID given the index of the Database.users accepted trade
+     * @param userId id of the user
+     * @param acceptedTradeIndex index of the accepted trade
+     * @return the trade ID
+     * @throws EntryNotFoundException userId not found
+     * @throws IndexOutOfBoundsException index out of bounds
+     */
+    public String getAcceptedTradeId(String userId, int acceptedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException, AuthorizationException {
+        return trader.getAcceptedTrades().get(acceptedTradeIndex);
+    }
+
+
 }

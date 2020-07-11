@@ -327,30 +327,6 @@ public class TradeManager {
     }
 
     /**
-     * Gets the tradeID given the index of the Database.users requested trade
-     * @param userId id of the user
-     * @param requestedTradeIndex index of the requested trade
-     * @return the trade ID
-     * @throws EntryNotFoundException userId not found
-     * @throws IndexOutOfBoundsException index out of bounds
-     */
-    public String getRequestedTradeId(String userId, int requestedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException, AuthorizationException {
-        return getTrader(userId).getRequestedTrades().get(requestedTradeIndex);
-    }
-
-    /**
-     * Gets the tradeID given the index of the Database.users accepted trade
-     * @param userId id of the user
-     * @param acceptedTradeIndex index of the accepted trade
-     * @return the trade ID
-     * @throws EntryNotFoundException userId not found
-     * @throws IndexOutOfBoundsException index out of bounds
-     */
-    public String getAcceptedTradeId(String userId, int acceptedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException, AuthorizationException {
-        return getTrader(userId).getAcceptedTrades().get(acceptedTradeIndex);
-    }
-
-    /**
      * checks if the given user has confirmed all meetings took place
      * @param userID  id of the user
      * @param tradeID id of the trade
@@ -362,6 +338,7 @@ public class TradeManager {
             return this.getFirstMeetingConfirmed(tradeID, userID) && this.getSecondMeetingConfirmed(tradeID, userID);
         return this.getFirstMeetingConfirmed(tradeID, userID);
     }
+
 
     private Trader getTrader(String userId) throws UserNotFoundException, AuthorizationException{
         User trader;
