@@ -15,6 +15,8 @@ public class Trade extends DatabaseItem implements Serializable {
     private int numEdits = 0;
     private String firstUserOffer = "";
     private String secondUserOffer = "";
+    private boolean hasFirstUserConfirmedRequest = true;
+    private boolean hasSecondUserConfirmedRequest = false;
     private boolean isFirstUserConfirmed1 = false;
     private boolean isSecondUserConfirmed1 = false;
     private boolean isFirstUserConfirmed2 = false;
@@ -226,5 +228,32 @@ public class Trade extends DatabaseItem implements Serializable {
      */
     public void setNumEdits(int num){
         this.numEdits = num;
+    }
+
+    /**
+     * @return if the first user has confirmed the trade request
+     */
+    public boolean isHasFirstUserConfirmedRequest() {
+        return hasFirstUserConfirmedRequest;
+    }
+
+    /**
+     * @param hasFirstUserConfirmedRequest changing the status if the first user confirmed the trade
+     */
+    public void setHasFirstUserConfirmedRequest(boolean hasFirstUserConfirmedRequest) {
+        this.hasFirstUserConfirmedRequest = hasFirstUserConfirmedRequest;
+    }
+
+    /**
+     * @return if the second user has confirmed the trade request
+     */
+    public boolean isHasSecondUserConfirmedRequest() {
+        return hasSecondUserConfirmedRequest;
+    }
+    /**
+     * @param hasSecondUserConfirmedRequest changing the status if the second user confirmed the trade
+     */
+    public void setHasSecondUserConfirmedRequest(boolean hasSecondUserConfirmedRequest) {
+        this.hasSecondUserConfirmedRequest = hasSecondUserConfirmedRequest;
     }
 }

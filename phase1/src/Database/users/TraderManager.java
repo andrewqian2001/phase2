@@ -26,7 +26,7 @@ public class TraderManager extends UserManager implements Serializable {
     public String registerUser(String username, String password, int tradeLimit) throws UserAlreadyExistsException {
         if (isUsernameUnique(username))
             return userDatabase.update(new Trader(username, password, tradeLimit)).getId();
-        throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
+        throw new UserAlreadyExistsException();
     }
 
     /**
