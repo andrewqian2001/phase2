@@ -491,13 +491,13 @@ public class TextInterface {
             for (String userID : itemRequests.keySet()) {
                 TraderAccount currTradeAccount = new TraderAccount(userID);
                 if (itemRequests.get(userID).size() > 0) {
-                    System.out.println(traderAccount.getUsername(userID) + " :");
+                    System.out.println(currTradeAccount.getUsername() + " :");
                     for (String itemID : itemRequests.get(userID)) {
                         System.out.printf("\t%s\n", traderAccount.getTradableItemName(itemID));
                     }
                 }
             }
-        } catch (EntryNotFoundException e) {
+        } catch (EntryNotFoundException | IOException | AuthorizationException e) {
             System.out.println(e.getMessage());
         }
     }

@@ -104,14 +104,6 @@ public class TraderManager {
         return allItems;
     }
 
-    /**
-     *
-     * @param itemName is the name of the item
-     * @return
-     */
-    public String getItemId(String itemName){
-
-    }
 
 
     /**

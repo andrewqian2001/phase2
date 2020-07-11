@@ -111,33 +111,12 @@ public class TraderAccount implements Account{
         return traderManager.getTrader().getAvailableItems();
     }
 
-    public String getUsername() throws UserNotFoundException, AuthorizationException {
-        return traderManager.getTrader().getUsername();
-    }
-
-    public String getTradableItemDesc(String itemID) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
-        return tradeManager.getTradableItem(itemID, traderId).getDesc();
-    }
-
-    public String getTradableItemName(String itemID) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
-        return tradeManager.getTradableItem(itemID, traderId).getName();
-    }
-
-    public String getAcceptedTradeId(int i) throws UserNotFoundException, AuthorizationException {
-        return traderManager.getTrader().getAcceptedTrades().get(i);
-    }
-
-    public String getRequestedTradeId(int i) throws UserNotFoundException, AuthorizationException {
-        return traderManager.getTrader().getRequestedTrades().get(i);
-    }
-
     public String getTraderIdFromTrade(String tradeID) throws EntryNotFoundException {
         return tradeManager.getOtherUser(tradeID, traderId);
     }
 
     /**
      * get the item offered in the trade by the user
-     * @param userID id of the user
      * @param tradeId id of the trade
      * @return the item id
      * @throws EntryNotFoundException if the user or the trade can not be found
@@ -160,47 +139,6 @@ public class TraderAccount implements Account{
      */
     public boolean isTradeTemporary(String tradeID) throws EntryNotFoundException {
         return tradeManager.hasSecondMeeting(tradeID);
-    }
-
-    /**
-     * Checks if the trade is still in progress
-     * @param tradeID id of the trade
-     * @return true if the trade is in progress, false else
-     * @throws EntryNotFoundException trade is not found
-     */
-    public boolean isTradeInProgress(String tradeID) throws EntryNotFoundException {
-        return tradeManager.isTradeInProgress(tradeID);
-    }
-
-    /**
-     * get first meeting time of the trade
-     *
-     * @param tradeID id of the trade
-     * @return Date object of the firstmeeting time
-     * @throws EntryNotFoundException if the user or trade can not be found
-     */
-    public Date getFirstMeeting(String tradeID) throws EntryNotFoundException {
-        return tradeManager.getFirstMeetingTime(tradeID);
-    }
-
-    /**
-     * get second meeting time of the trade
-     * @param tradeID id of the trade
-     * @return Date object of the second meeting time
-     * @throws EntryNotFoundException if the user or trade can not be found
-     */
-    public Date getSecondMeeting(String tradeID) throws EntryNotFoundException {
-        return tradeManager.getSecondMeetingTime(tradeID);
-    }
-
-    /**
-     * get meeting location
-     * @param tradeId of the trade
-     * @return the meeting location
-     * @throws EntryNotFoundException if the user or the trade can not be found
-     */
-    public String getMeetingLocation(String tradeId) throws EntryNotFoundException {
-        return tradeManager.getMeetingLocation(tradeId);
     }
 
     /**
@@ -483,15 +421,6 @@ public class TraderAccount implements Account{
         return frequentTraders;
     }
 
-    /**
-     * return if trade is temporary
-     * @param tradeID id of the trade
-     * @return true if trade is temporary
-     * @throws EntryNotFoundException if the user or trade can not be found
-     */
-    public boolean isTradeTemporary(String tradeID) throws EntryNotFoundException {
-        return tradeManager.hasSecondMeeting(tradeID);
-    }
 
     /**
      * get first meeting time of the trade
