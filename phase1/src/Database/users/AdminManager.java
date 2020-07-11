@@ -57,6 +57,8 @@ public class AdminManager extends UserManager implements Serializable {
         return findTraderById(userId).getRequestedItems();
     }
 
+
+
     /**
      * Accepts one of this user's requested items (allows it to be used in Database.trades)
      *

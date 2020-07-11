@@ -38,28 +38,23 @@ public class TraderAccount implements Account{
     /**
      * Requests that the item be added to the user's inventory
      *
-     * @param userID user ID
      * @param itemName  name of tradable item
-     * @param itemDesc description of tradableItem
      * @throws EntryNotFoundException can't find user id
      */
-    public void requestItem(String userID, String itemName, String itemDesc) throws EntryNotFoundException{
-        TradableItem newItem = tradableItemManager.addItem(itemName, itemDesc);
-        ((Database.users.TraderManager) userManager).addRequestItem(userID, newItem.getId());
+    public void requestItem(String itemName) throws EntryNotFoundException, AuthorizationException {
+
+        traderManager.addRequestItem(itemName);
     }
 
     /**
      * Adds item to wishList
      *
-     * @param userID   user ID
      * @param itemName name of tradable item
      * @throws EntryNotFoundException can't find user id or cna't find item name
      */
-    public void addToWishList(String userID, String itemName) throws EntryNotFoundException {
-        ArrayList<String> itemIDs = tradableItemManager.getIdsWithName(itemName);
-        if (itemIDs.size() == 0)
-            throw new EntryNotFoundException("No items found with name " + itemName);
-        ((Database.users.TraderManager) userManager).addToWishList(userID, itemIDs.get(0));
+    public void addToWishList(String itemName) throws EntryNotFoundException, AuthorizationException {
+        String itemId = traderManager.getItemId(itemName);
+        traderManager.addToWishList(itemId);
     }
 
     /**
@@ -138,18 +133,6 @@ public class TraderAccount implements Account{
                 recentTradeItemNames.add(getTradableItemName(tradableItemIDs[1]));
         }
         return recentTradeItemNames;
-    }
-    /**
-     * Requests that the item be added to the user's inventory
-     *
-     * @param userID user ID
-     * @param itemName  name of tradable item
-     * @param itemDesc description of tradableItem
-     * @throws EntryNotFoundException can't find user id
-     */
-    public void requestItem(String userID, String itemName, String itemDesc) throws EntryNotFoundException{
-        TradableItem newItem = tradableItemManager.addItem(itemName, itemDesc);
-        ((Database.users.TraderManager) userManager).addRequestItem(userID, newItem.getId());
     }
 
     /**

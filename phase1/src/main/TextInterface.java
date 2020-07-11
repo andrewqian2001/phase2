@@ -521,7 +521,7 @@ public class TextInterface {
             itemDesc = sc.nextLine();
             if (!itemName.trim().equals("")) {
                 try {
-                    traderAccount.requestItem(this.userID, itemName, itemDesc);
+                    traderAccount.requestItem(itemName);
                     success = true;
                 } catch (EntryNotFoundException e) {
                     System.out.println(e.getMessage());
@@ -546,7 +546,7 @@ public class TextInterface {
             System.out.print("=> ");
             itemName = sc.nextLine();
             try {
-                traderAccount.addToWishList(this.userID, itemName);
+                traderAccount.addToWishList(itemName);
                 success = true;
             } catch (Exception e) {
                 System.out.println(e.getMessage());

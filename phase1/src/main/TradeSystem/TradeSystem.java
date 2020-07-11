@@ -71,44 +71,6 @@ public class TradeSystem implements Serializable {
 
 
     /**
-     * Freezes/Unfreezes a Trader given their username Requirement: Only an Admin
-     * Account can preform this action
-     *
-     * @param username     the username of the Trader that needs to be (un-)frozen
-     * @param freezeStatus if true, method will freeze the Trader, else it will
-     *                     unFreeze
-     * @throws EntryNotFoundException can't find username
-     * @throws AuthorizationException not allowed to freeze user
-     */
-    public void freezeUser(String username, boolean freezeStatus)
-            throws EntryNotFoundException, AuthorizationException {
-        String userId = getIdFromUsername(username);
-        userManager.freezeUser(loggedInUserId, userId, freezeStatus);
-    }
-
-    /**
-     * Gets the name of the tradable item given its id
-     *
-     * @param tradableItemId id of the tradable item
-     * @return name of the tradable item
-     * @throws EntryNotFoundException cant find tradable item id
-     */
-    public String getTradableItemName(String tradableItemId) throws EntryNotFoundException {
-        return tradableItemManager.getName(tradableItemId);
-    }
-
-    /**
-     * Gets the description of the tradable item given its id
-     *
-     * @param tradableItemId id of the tradable item
-     * @return description of the tradable item
-     * @throws EntryNotFoundException cant find tradable item id
-     */
-    public String getTradableItemDesc(String tradableItemId) throws EntryNotFoundException {
-        return tradableItemManager.getDesc(tradableItemId);
-    }
-
-    /**
      * Gets the username of a User given their ID NOTE: This will most likely be
      * deleted before rollout since theres no use for this
      *
@@ -185,23 +147,6 @@ public class TradeSystem implements Serializable {
     }
 
 
-
-
-
-
-
-
-
-
-    /**
-     * Gets a list of all Unfreeze Request
-     *
-     * @return a list of all unfreeze requests
-     */
-    public ArrayList<String> getAllUnfreezeRequests()  {
-        return  userManager.getAllUnFreezeRequests();
-    }
-
     /**
      * Gets a Map of key=id of user, value=list of their item requests
      * @return a list of item requests mapping to each user
@@ -222,29 +167,6 @@ public class TradeSystem implements Serializable {
     }
 
     /**
-     * Sets the new weekly trade limit (Admin method)
-     * @param tradeLimit the new weekly trade limit
-     * @throws EntryNotFoundException Can't find traders
-     */
-    public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
-        ((AdminManager) userManager).setTradeLimit(tradeLimit);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /**
      * Checks if user can trade
      * @param userID
      * @return
@@ -252,8 +174,6 @@ public class TradeSystem implements Serializable {
     public boolean canTrade(String userID) throws EntryNotFoundException {
         return ((TraderManager) userManager).canTrade(userID);
     }
-
-
 
     /**
      * Get userId of the other user in the trade
