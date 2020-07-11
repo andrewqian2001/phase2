@@ -8,6 +8,7 @@ import Database.users.Trader;
 import Database.users.User;
 import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
+import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
 
 import java.io.IOException;
@@ -25,27 +26,30 @@ public class AdminManager {
      *
      * @param adminId this is the user id of the admin account
      * @throws IOException            if something goes wrong with getting database
-     * @throws EntryNotFoundException if the user id passed in doesn't exist
+     * @throws UserNotFoundException  if the user id passed in doesn't exist
      * @throws AuthorizationException if the user id is of the wrong type
      */
-    public AdminManager(String adminId) throws IOException, EntryNotFoundException, AuthorizationException {
+    public AdminManager(String adminId) throws IOException, UserNotFoundException, AuthorizationException {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
         tradeDatabase = new Database<Trade>(DatabaseFilePaths.TRADE.getFilePath());
         tradableItemDatabase = new Database<TradableItem>(DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
-        User tmp = userDatabase.populate(adminId);
-        if (!(tmp instanceof Admin))
-            throw new AuthorizationException("This account is not an admin type.");
-
-        this.adminId = tmp.getId();
+        try {
+            User tmp = userDatabase.populate(adminId);
+            if (!(tmp instanceof Admin))
+                throw new AuthorizationException("This account is not an admin type.");
+            this.adminId = tmp.getId();
+        } catch (EntryNotFoundException e) {
+            throw new UserNotFoundException(adminId);
+        }
     }
 
     /**
      * Freezes/Unfreezes a Trader given their username Requirement: Only an Admin
      * Account can preform this action
      *
-     * @param userID     the username of the Trader that needs to be (un-)frozen
+     * @param userID        the username of the Trader that needs to be (un-)frozen
      * @param freeze_status if true, method will freeze the Trader, else it will
-     *                     unFreeze
+     *                      unFreeze
      * @throws EntryNotFoundException can't find username
      * @throws AuthorizationException not allowed to freeze user
      */
@@ -60,10 +64,10 @@ public class AdminManager {
      *
      * @return a list of all unfreeze requests
      */
-    public ArrayList<String> getAllUnfreezeRequests()  {
+    public ArrayList<String> getAllUnfreezeRequests() {
         ArrayList<String> result = new ArrayList<>();
-        for (User user : userDatabase.getItems()){
-            if (user.isUnfrozenRequested()){
+        for (User user : userDatabase.getItems()) {
+            if (user.isUnfrozenRequested()) {
                 result.add(user.getUsername());
             }
         }
@@ -72,6 +76,7 @@ public class AdminManager {
 
     /**
      * Gets a hashmap of trader ids to an arraylist of their requested items
+     *
      * @return a hashmap of trader ids to an arraylist of their requested items
      */
     public HashMap<String, ArrayList<String>> getAllItemRequests() {
@@ -90,19 +95,20 @@ public class AdminManager {
 
     /**
      * Process the item request of a user
-     * @param traderID ID of the trader
-     * @param itemIndex index of the item
+     *
+     * @param traderID   ID of the trader
+     * @param itemIndex  index of the item
      * @param isAccepted true if item is accepted, false if rejected
      * @throws EntryNotFoundException traderName / itemName not found
      */
     public void processItemRequest(String traderID, int itemIndex, boolean isAccepted) throws EntryNotFoundException {
         Trader trader = (Trader) this.findUserByID(traderID);
         ArrayList<String> itemIDs = trader.getRequestedItems();
-        if (itemIndex < 0 || itemIndex >= itemIDs.size()){
+        if (itemIndex < 0 || itemIndex >= itemIDs.size()) {
             throw new EntryNotFoundException("Invalid index.");
         }
         String reqItemID = itemIDs.get(itemIndex);
-        if(isAccepted) {
+        if (isAccepted) {
             trader.getAvailableItems().add(reqItemID);
         }
         trader.getRequestedItems().remove(reqItemID);
@@ -111,11 +117,12 @@ public class AdminManager {
 
     /**
      * Sets the current weekly trade limit for all traders
+     *
      * @param tradeLimit the new weekly trade limit
      * @throws EntryNotFoundException couldn't get traders
      */
     public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
-        for(User user : userDatabase.getItems()) {
+        for (User user : userDatabase.getItems()) {
             if (user instanceof Trader) {
                 ((Trader) user).setTradeLimit(tradeLimit);
                 userDatabase.update(user);
@@ -125,13 +132,14 @@ public class AdminManager {
 
     /**
      * Return traders that should be frozen
+     *
      * @return true if the user should be frozen, false otherwise
      * @throws EntryNotFoundException if the user can not be found
      */
     public ArrayList<String> getFreezable() {
         ArrayList<String> freezable = new ArrayList<>();
-        for(User user : userDatabase.getItems()){
-            if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()){
+        for (User user : userDatabase.getItems()) {
+            if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()) {
                 freezable.add(user.getId());
             }
         }
@@ -140,13 +148,14 @@ public class AdminManager {
 
     /**
      * Changes the specified user's incomplete trade limit
-     * @param userId the user who's trade limit will be changed
+     *
+     * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
      * @throws EntryNotFoundException if the trader could not be found
      */
     public void changeIncompleteTradeLimit(String userId, int newLimit) throws EntryNotFoundException {
         User trader = findUserByID(userId);
-        if (!(trader instanceof Trader)){
+        if (!(trader instanceof Trader)) {
             throw new EntryNotFoundException("The specified user is not a trader.");
         }
         ((Trader) trader).setIncompleteTradeLim(newLimit);
@@ -155,7 +164,8 @@ public class AdminManager {
 
     /**
      * Changes the specified user's weekly trade limit
-     * @param userId the user who's trade limit will be changed
+     *
+     * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
      * @throws EntryNotFoundException if the trader could not be found
      */
@@ -172,7 +182,6 @@ public class AdminManager {
     private User findUserByID(String userID) throws EntryNotFoundException {
         return userDatabase.populate(userID);
     }
-
 
 
 }

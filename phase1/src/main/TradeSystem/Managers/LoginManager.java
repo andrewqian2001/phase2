@@ -7,6 +7,7 @@ import Database.users.User;
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
+import main.TradeSystem.Accounts.UserTypes;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -19,15 +20,7 @@ public class LoginManager {
     private int defaultTradeLimit = 10;
     private int defaultIncompleteTradeLim = 3;
     private int defaultMinimumAmountNeededToBorrow = 1;
-
-    /**
-     * Represents different user types
-     */
-    public enum UserTypes {
-        ADMIN,
-        TRADER,
-        DEFAULT
-    }
+    private UserTypes lastLoggedInType = null;
 
     /**
      * For logging in and registering accounts
@@ -51,13 +44,14 @@ public class LoginManager {
             throw new UserAlreadyExistsException();
         switch (type) {
             case ADMIN:
+                lastLoggedInType = UserTypes.ADMIN;
                 return userDatabase.update(new Admin(username, password)).getId();
             case TRADER:
-                return userDatabase.update(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
-                        defaultMinimumAmountNeededToBorrow)).getId();
             case DEFAULT:
             default:
-                return userDatabase.update(new User(username, password)).getId();
+                lastLoggedInType = UserTypes.TRADER;
+                return userDatabase.update(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
+                        defaultMinimumAmountNeededToBorrow)).getId();
         }
 
     }
@@ -76,6 +70,9 @@ public class LoginManager {
             if (user.getUsername().equals(username) && (user.getPassword().equals(password)))
                 return user.getId();
         throw new UserNotFoundException();
+    }
+    public UserTypes getLastLoggedInType(){
+        return lastLoggedInType;
     }
 
     /**

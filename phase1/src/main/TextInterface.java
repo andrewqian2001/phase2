@@ -18,10 +18,10 @@ import main.TradeSystem.TradeSystem;
 public class TextInterface {
 
 
-    private static String lineBreak = "--------------------------------------------------";
+    private static final String lineBreak = "--------------------------------------------------";
 
-    private Scanner sc;
-    private TradeSystem tSystem;
+    private final Scanner sc;
+    private final TradeSystem tSystem;
     private int userChoice;
     private String userID;
 

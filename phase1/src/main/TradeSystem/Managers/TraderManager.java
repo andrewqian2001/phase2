@@ -16,8 +16,8 @@ import java.util.HashMap;
  * Used for the actions of a Trader
  */
 public class TraderManager {
-    private Database<User> userDatabase;
-    private String traderId;
+    private final Database<User> userDatabase;
+    private final String traderId;
 
     /**
      * This is used for the actions that a trader user can do
@@ -25,12 +25,11 @@ public class TraderManager {
      * @param traderId this is the user id of the trader account
      * @throws IOException            if something goes wrong with getting database
      * @throws UserNotFoundException if the user id passed in doesn't exist
-     * @throws AuthorizationException if the user id is of the wrong type
+     * @throws AuthorizationException if the user is not a trader or if the user is frozen
      */
     public TraderManager(String traderId) throws IOException, UserNotFoundException, AuthorizationException {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
         this.traderId = getTrader(traderId).getId();
-
     }
 
     /**

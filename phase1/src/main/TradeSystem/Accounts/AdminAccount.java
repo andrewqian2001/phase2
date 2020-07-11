@@ -7,7 +7,7 @@ import exceptions.EntryNotFoundException;
 import exceptions.UserNotFoundException;
 import main.TradeSystem.Managers.AdminManager;
 
-public class AdminAccount {
+public class AdminAccount implements Account {
 
     private final AdminManager adminManager;
 
@@ -18,8 +18,15 @@ public class AdminAccount {
      * @throws UserNotFoundException if this admin doesn't exist
      * @throws AuthorizationException if this user isn't an admin
      */
-    public AdminAccount(String adminId) throws IOException, EntryNotFoundException, AuthorizationException {
+    public AdminAccount(String adminId) throws IOException, UserNotFoundException, AuthorizationException {
         adminManager = new AdminManager(adminId);
     }
 
+    // Needs registerAdmin method here
+
+
+    @Override
+    public UserTypes getAccountType() {
+        return UserTypes.ADMIN;
+    }
 }

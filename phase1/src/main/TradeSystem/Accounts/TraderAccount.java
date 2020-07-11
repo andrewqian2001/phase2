@@ -8,7 +8,7 @@ import main.TradeSystem.Managers.TraderManager;
 /**
  * For interacting with traders
  */
-public class TraderAccount {
+public class TraderAccount implements Account{
 
     private final TraderManager traderManager;
     /**
@@ -16,10 +16,14 @@ public class TraderAccount {
      * @param traderId the id of the trader
      * @throws IOException if database file has issues
      * @throws UserNotFoundException if this trader doesn't exist
-     * @throws AuthorizationException if this user isn't a trader
+     * @throws AuthorizationException if this user isn't a trader or if the account is frozen
      */
     public TraderAccount(String traderId) throws IOException, UserNotFoundException, AuthorizationException {
         traderManager = new TraderManager(traderId);
+    }
+    @Override
+    public UserTypes getAccountType() {
+        return UserTypes.TRADER;
     }
 
 }

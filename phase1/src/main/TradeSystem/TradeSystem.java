@@ -1,92 +1,70 @@
 package main.TradeSystem;
 
-import exceptions.AuthorizationException;
-import exceptions.CannotTradeException;
-import exceptions.EntryNotFoundException;
-import exceptions.UserAlreadyExistsException;
+import exceptions.*;
 import Database.tradableitems.TradableItem;
 import Database.tradableitems.TradableItemManager;
 import Database.trades.TradeManager;
 import Database.users.*;
+import main.TradeSystem.Accounts.Account;
 import main.TradeSystem.Accounts.AdminAccount;
 import main.TradeSystem.Accounts.TraderAccount;
+import main.TradeSystem.Accounts.UserTypes;
+import main.TradeSystem.Managers.LoginManager;
 
 import java.io.*;
 import java.util.*;
 
 public class TradeSystem implements Serializable {
 
-    private static final String USERS_FILE_PATH = "./phase1/src/Database.users/Database.users.ser";
-    private static final String TRADE_FILE_PATH = "./phase1/src/Database.trades/Database.trades.ser";
-    private static final String TRADABLE_ITEM_FILE_PATH = "./phase1/src/Database.tradableitems/Database.tradableitems.ser";
-    protected UserManager userManager;
-    protected TradeManager tradeManager;
-    protected TradableItemManager tradableItemManager;
-    protected String loggedInUserId;
+    private final LoginManager loginManager;
+    private Account account = null;
+    private String lastLoggedInString = "";
 
     /**
-     * Constructor for TradeSystem, initializes managers
-     *
-     * @throws IOException file path is bad
+     * For setting up the login manager
+     * @throws IOException if database has issues
      */
     public TradeSystem() throws IOException {
-        userManager = new UserManager(USERS_FILE_PATH);
-        tradeManager = new TradeManager(TRADE_FILE_PATH);
-        tradableItemManager = new TradableItemManager((TRADABLE_ITEM_FILE_PATH));
-
-    }
-    /*
-    DO I DELETE TRADER AND ADMIN SPECIFIC METHODS?
-     */
-    /**
-     * Registers a new trader into the system
-     *
-     * @param username username of new trader
-     * @param password password for new trader
-     * @return id of the newly registered trader
-     * @throws IOException file path is bad
-     * @throws UserAlreadyExistsException can't register a user that already exists
-     */
-    public String registerTrader(String username, String password) throws IOException, UserAlreadyExistsException {
-        userManager = new TraderManager(USERS_FILE_PATH);
-        this.loggedInUserId = ((TraderManager) userManager).registerUser(username, password, 3);
-        TraderAccount traderAccount = new TraderAccount();
-        return this.loggedInUserId;
+        loginManager = new LoginManager();
     }
 
     /**
-     * Registers a new Admin into the system
-     *
-     * @param username username of new admin
-     * @param password password for new admin
-     * @throws IOException file path is bad
-     * @throws UserAlreadyExistsException username already exists
+     * Logging in
+     * @param username username of the user
+     * @param password password of the user
+     * @throws UserNotFoundException bad credentials
      */
-    public void registerAdmin(String username, String password) throws IOException, UserAlreadyExistsException {
-        userManager = new AdminManager(USERS_FILE_PATH);
-        AdminAccount adminAccount = new AdminAccount();
-        userManager.registerUser(username, password);
+    public void login(String username, String password) throws UserNotFoundException {
+        lastLoggedInString = loginManager.login(username, password);
     }
 
     /**
-     * Logs-in a current user into the system
-     *
-     * @param username username of existing user
-     * @param password password of existing user
-     * @return id of newly logged in user
-     * @throws EntryNotFoundException bad credentials
-     * @throws IOException file path is bad
+     * Making a new account
+     * @param username username of the user
+     * @param password password of the user
+     * @throws UserAlreadyExistsException if username isn't unique
      */
-    public String login(String username, String password) throws EntryNotFoundException, IOException {
-        this.loggedInUserId = userManager.login(username, password);
-        User loggedInUser = userManager.getUser(loggedInUserId);
-        if (loggedInUser instanceof Admin)
-            userManager = new AdminManager(USERS_FILE_PATH);
-        else
-            userManager = new TraderManager(USERS_FILE_PATH);
-
-        return this.loggedInUserId;
+    public void register(String username, String password) throws UserAlreadyExistsException {
+        lastLoggedInString = loginManager.registerUser(username, password, UserTypes.TRADER);
     }
+
+    /**
+     * Getting the account
+     * @return the account
+     * @throws AuthorizationException if the account doesn't match the user id
+     * @throws UserNotFoundException if the user id doesn't exist
+     * @throws IOException issues with database
+     */
+    public Account getAccount() throws AuthorizationException, UserNotFoundException, IOException {
+        switch(loginManager.getLastLoggedInType()){
+            case ADMIN:
+                return new AdminAccount(lastLoggedInString);
+            case TRADER:
+                return new TraderAccount(lastLoggedInString);
+        }
+        return null;
+    }
+
 
     /**
      * Check if a User, given their ID, is frozen NOTE: This method is not for
