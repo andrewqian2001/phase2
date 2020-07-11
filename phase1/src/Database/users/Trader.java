@@ -15,10 +15,10 @@ public class Trader extends User implements Serializable {
     private final ArrayList<String> requestedTrades = new ArrayList<>(); // trades yet to be accepted or denied
     private final ArrayList<String> completedTrades = new ArrayList<>(); // trades where meetings are finished and confirmed by both sides and transaction has concluded
     private int tradeLimit;
-    private int incompleteTradeCount;
     private int incompleteTradeLim;
     private int totalItemsBorrowed;
     private int totalItemsLent;
+    private int minimumAmountNeededToBorrow;
     private int tradeCount;
 
     /**
@@ -29,24 +29,32 @@ public class Trader extends User implements Serializable {
      * @param tradeLimit number of trades that can be done
      */
 
-    public Trader(String name, String password, int tradeLimit) {
+    public Trader(String name, String password, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow) {
         super(name, password);
         this.tradeLimit = tradeLimit;
+        this.incompleteTradeLim = incompleteTradeLim;
+        this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
     }
+
+
+    public void setMinimumAmountNeededToBorrow(int minimumAmountNeededToBorrow) {
+        this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
+    }
+
+    public boolean canBorrow(){
+        return canTrade() && totalItemsLent - totalItemsBorrowed > minimumAmountNeededToBorrow;
+    }
+
+    public boolean canTrade(){
+        return !isFrozen() && acceptedTrades.size() < tradeLimit;
+    }
+
 
     /**
      * @return the number of incomplete trades this trader has done
      */
     public int getIncompleteTradeCount(){
-        return incompleteTradeCount;
-    }
-
-    /**
-     * set a new incompleteTradeCount to this trader
-     * @param incompleteTradeCount the new value of incompleteTradeCount
-     */
-    public void setIncompleteTradeCount(int incompleteTradeCount){
-        this.incompleteTradeCount = incompleteTradeCount;
+        return acceptedTrades.size();
     }
 
     /**

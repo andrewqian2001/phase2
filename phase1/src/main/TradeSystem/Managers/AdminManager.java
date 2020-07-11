@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AdminManager {
-    private final Database<User> userDatabase;
-    private final Database<Trade> tradeDatabase;
-    private final Database<TradableItem> tradableItemDatabase;
-    private final String adminId;
+    private Database<User> userDatabase;
+    private Database<Trade> tradeDatabase;
+    private Database<TradableItem> tradableItemDatabase;
+    private String adminId;
 
     /**
      * This is used for the actions that an admin user can do
@@ -35,8 +35,8 @@ public class AdminManager {
         User tmp = userDatabase.populate(adminId);
         if (!(tmp instanceof Admin))
             throw new AuthorizationException("This account is not an admin type.");
-        else
-            this.adminId = tmp.getId();
+
+        this.adminId = tmp.getId();
     }
 
     /**
@@ -50,7 +50,9 @@ public class AdminManager {
      * @throws AuthorizationException not allowed to freeze user
      */
     public void setFrozen(String userID, boolean freeze_status) throws EntryNotFoundException {
-        findUserByID(userID).setFrozen(freeze_status);
+        User user = findUserByID(userID);
+        user.setFrozen(freeze_status);
+        userDatabase.update(user);
     }
 
     /**
@@ -165,6 +167,7 @@ public class AdminManager {
         ((Trader) trader).setTradeLimit(newLimit);
         userDatabase.update(trader);
     }
+
 
     private User findUserByID(String userID) throws EntryNotFoundException {
         return userDatabase.populate(userID);

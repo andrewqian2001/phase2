@@ -94,4 +94,6 @@ public class LoginManager {
     public void setDefaultTradeLimit(int tradeLimit) {
         defaultTradeLimit = tradeLimit;
     }
+
+    public void setDefaultIncompleteTradeLim(int defaultIncompleteTradeLim) {this.defaultIncompleteTradeLim = defaultIncompleteTradeLim;}
 }
