@@ -437,9 +437,9 @@ public class TextInterface {
                 else {
                     System.out.printf("%s %s #%d\n", listType, itemType, i);
                     if (listType.equals("Accepted"))
-                        printTrade(traderAccount.getAcceptedTradeId(this.userID, i), false);
+                        printTrade(traderAccount.getAcceptedTradeId(i), false);
                     else if (listType.equals("Requested"))
-                        printTrade(traderAccount.getRequestedTradeId(this.userID, i), true);
+                        printTrade(traderAccount.getRequestedTradeId(i), true);
                 }
             }
         } catch (EntryNotFoundException | AuthorizationException e) {
@@ -459,10 +459,10 @@ public class TextInterface {
         String isTemporaryString = traderAccount.isTradeTemporary(tradeID) ? "temporarily" : "permanently";
         String userItemID = typeOfTrade.equals("borrowing from") ? "N/A" : traderAccount.getTradableItemName(traderAccount.getUserOffer(userID, tradeID));
         String traderItemID = typeOfTrade.equals("lending to") ? "N/A" : traderAccount.getTradableItemName(traderAccount.getUserOffer(traderID, tradeID));
-        System.out.printf("\t%s is %s %s TRADER=\"%s\"\n", traderAccount.getUsername(this.userID), isTemporaryString, typeOfTrade, traderAccount.getUsername(traderID));
+        System.out.printf("\t%s is %s %s TRADER=\"%s\"\n", traderAccount.getUsername(), isTemporaryString, typeOfTrade, traderAccount.getUsername());
         if (!isRequested)
             System.out.println("TRADE IS " + (traderAccount.isTradeInProgress(tradeID) ? "IN PROGRESS" : "FINISHED"));
-        System.out.printf("\tYour Item:\t%s\n\t%s's Item:\t%s\n", userItemID, traderAccount.getUsername(traderID), traderItemID);
+        System.out.printf("\tYour Item:\t%s\n\t%s's Item:\t%s\n", userItemID, traderAccount.getUsername(), traderItemID);
         System.out.println("\tFirst Meeting: " + traderAccount.getFirstMeeting(tradeID) + " @ " + traderAccount.getMeetingLocation(tradeID));
         if (isTemporaryString.equals("temporarily")) {
             System.out.println("\tSecond Meeting: " + traderAccount.getSecondMeeting(tradeID) + " @ " + traderAccount.getMeetingLocation(tradeID));
@@ -493,7 +493,7 @@ public class TextInterface {
             HashMap<String, ArrayList<String>> itemRequests = traderAccount.getAllItemRequests();
             for (String userID : itemRequests.keySet()) {
                 if (itemRequests.get(userID).size() > 0) {
-                    System.out.println(traderAccount.getUsername(userID) + " :");
+                    System.out.println(traderAccount.getUsername() + " :");
                     for (String itemID : itemRequests.get(userID)) {
                         System.out.printf("\t%s\n", traderAccount.getTradableItemName(itemID));
                     }
@@ -523,7 +523,7 @@ public class TextInterface {
                 try {
                     traderAccount.requestItem(itemName);
                     success = true;
-                } catch (EntryNotFoundException e) {
+                } catch (EntryNotFoundException | AuthorizationException e) {
                     System.out.println(e.getMessage());
                     success = false;
                 }
@@ -701,7 +701,7 @@ public class TextInterface {
                     System.out.println("Enter the username of the Trader you would like to borrow from");
                     System.out.print("=> ");
                     traderName = sc.nextLine();
-                    if (traderAccount.getAvailableItems(traderAccount.getIdFromUsername(traderName)).size() == 0) {
+                    if (traderAccount.getAvailableItems().size() == 0) {
                         System.out.printf("Ruh Roh! %s does not have any available items to trade\nABORTING TRADE...\n", traderName);
                         return;
                     }
@@ -743,7 +743,7 @@ public class TextInterface {
                     success = traderAccount.borrowItem(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation,
                             traderInventoryItemIndex);
                 else
-                    success = traderAccount.trade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
+                    success = traderAccount.sendTrade(this.userID, traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
             } catch (EntryNotFoundException | ParseException | NumberFormatException | IndexOutOfBoundsException | AuthorizationException e) {
                 success = false;
                 System.out.println(e.getMessage());
@@ -772,7 +772,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
-                String tradeID = traderAccount.getRequestedTradeId(userID, requestedTradeIndex);
+                String tradeID = traderAccount.getRequestedTradeId(requestedTradeIndex);
                 String user2ID = traderAccount.getTraderIdFromTrade(this.userID, tradeID);
 
 
@@ -813,7 +813,7 @@ public class TextInterface {
         boolean success = false;
         do {
             try {
-                if (traderAccount.getRequestedTrades(this.userID).size() == 0) {
+                if (traderAccount.getRequestedTrades().size() == 0) {
                     System.out.println(
                             "Ruh Roh! Looks like you do not have any requested Database.trades\nABORTING TRADE REQUEST RESPONSE...");
                     return;
@@ -824,7 +824,7 @@ public class TextInterface {
                 System.out.print("=> ");
                 requestedTradeIndex = Integer.parseInt(sc.nextLine());
                 // YO MAMA SO FAT WHEN SHE DOES A 180, A WHOLE YEAR PASSES
-                tradeID = traderAccount.getRequestedTradeId(userID, requestedTradeIndex);
+                tradeID = traderAccount.getRequestedTradeId(requestedTradeIndex);
                 traderID = traderAccount.getTraderIdFromTrade(this.userID, tradeID);
                 inventoryItemIndex = traderAccount.getUserTradeItemIndex(this.userID, tradeID);
                 traderInventoryItemIndex = traderAccount.getUserTradeItemIndex(traderID, tradeID);
@@ -834,7 +834,7 @@ public class TextInterface {
                 meetingLocation = traderAccount.getMeetingLocation(tradeID);
                 typeOfTrade = traderAccount.getUserOffer(this.userID, tradeID).equals("") ? "lending to" : traderAccount
                         .getUserOffer(traderID, tradeID).equals("") ? "borrowing from" : "2-way trading with";
-                System.out.printf("In this trade, TRADER=\"%s\" is %s you", typeOfTrade, traderAccount.getUsername(traderID));
+                System.out.printf("In this trade, TRADER=\"%s\" is %s you", typeOfTrade, traderAccount.getUsername());
                 // if this trader is lending to me
                 if (typeOfTrade.equals("lending to")) {
                     System.out.println("Since the trader is lending to you originally, you do not have any items selected to lend");
@@ -862,14 +862,14 @@ public class TextInterface {
                 // if this trader is borrowing from me
                 if (typeOfTrade.equals("borrowing from")) {
                     System.out.println("Since the trader is borrowing from you originally, they do not have any items selected to lend");
-                    if (traderAccount.getAvailableItems(traderID).size() > 0) {
+                    if (traderAccount.getAvailableItems().size() > 0) {
                         System.out.println("Would you like to add an item to borrow from this trader? Y/N");
                         System.out.print("=> ");
                         tempInputString = sc.nextLine();
                     }
                 }
-                if (tempInputString.trim().equals("Y") || (tempInputString.trim().equals("") && traderAccount.getAvailableItems(traderID).size() != 0)) {
-                    System.out.printf("Here is %s's current inventory:", traderAccount.getUsername(traderID));
+                if (tempInputString.trim().equals("Y") || (tempInputString.trim().equals("") && traderAccount.getAvailableItems().size() != 0)) {
+                    System.out.printf("Here is %s's current inventory:", traderAccount.getUsername());
                     printList(traderID, "Inventory", "Item");
                     if (!typeOfTrade.equals("borrowing from")) {
                         System.out.println("Item #" + traderInventoryItemIndex + "is the currently selected item");
@@ -947,7 +947,7 @@ public class TextInterface {
             try {
 
 
-                if (traderAccount.getAcceptedTrades(this.userID).size() == 0) {
+                if (traderAccount.getAcceptedTrades().size() == 0) {
                     System.out.println(
                             "Ruh Roh! Looks like you do not have any ongoing accepted Database.trades\nABORTING TRADE CONFIRMATION...");
                     return;
@@ -957,8 +957,8 @@ public class TextInterface {
                 System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
                 System.out.print("=> ");
                 acceptedTradeIndex = Integer.parseInt(sc.nextLine());
-                String tradeID = traderAccount.getAcceptedTradeId(this.userID, acceptedTradeIndex);
-                System.out.println(traderAccount.getAcceptedTrades(this.userID));
+                String tradeID = traderAccount.getAcceptedTradeId(acceptedTradeIndex);
+                System.out.println(traderAccount.getAcceptedTrades());
                 if (!traderAccount.isTradeInProgress(tradeID)) {
                     System.out.println(
                             "Ruh Roh! Looks like this trade has already finished taking place\nABORTING TRADE CONFIRMATION...");
@@ -971,7 +971,7 @@ public class TextInterface {
                     return;
                 }
                 success = traderAccount.confirmTrade(this.userID, tradeID);
-            } catch (EntryNotFoundException | NumberFormatException e) {
+            } catch (EntryNotFoundException | NumberFormatException | AuthorizationException e) {
                 System.out.println(e.getMessage());
             }
         } while (!success);
@@ -987,8 +987,8 @@ public class TextInterface {
         int acceptedTradeIndex = -1;
         do {
             try {
-                System.out.println(traderAccount.getAcceptedTrades(this.userID));
-                if (traderAccount.getAcceptedTrades(this.userID).size() == 0) {
+                System.out.println(traderAccount.getAcceptedTrades());
+                if (traderAccount.getAcceptedTrades().size() == 0) {
                     System.out.println(
                             "Ruh Roh! Looks like you do not have any ongoing accepted Database.trades\nABORTING TRADE CONFIRMATION...");
                     return;
@@ -998,19 +998,19 @@ public class TextInterface {
                 System.out.println("Enter the index of the accepted trade that you would like to confirm was unsuccessful");
                 System.out.print("=> ");
                 acceptedTradeIndex = Integer.parseInt(sc.nextLine());
-                if (!traderAccount.isTradeInProgress(traderAccount.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                if (!traderAccount.isTradeInProgress(traderAccount.getAcceptedTradeId(acceptedTradeIndex))) {
                     System.out.println(
                             "Ruh Roh! Looks like this trade has already finished taking place\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
-                if (traderAccount.hasUserConfirmedAllMeetings(this.userID, traderAccount.getAcceptedTradeId(this.userID, acceptedTradeIndex))) {
+                if (traderAccount.hasUserConfirmedAllMeetings(this.userID, traderAccount.getAcceptedTradeId(acceptedTradeIndex))) {
                     System.out.println(
                             "Ruh Roh! Looks like you have already confirmed to all the meetings for this trade\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
-                success = traderAccount.confirmIncompleteTrade(this.userID, traderAccount.getAcceptedTradeId(userID, acceptedTradeIndex));
+                success = traderAccount.confirmIncompleteTrade(this.userID, traderAccount.getAcceptedTradeId(acceptedTradeIndex));
 
-            } catch (EntryNotFoundException | NumberFormatException e) {
+            } catch (EntryNotFoundException | NumberFormatException | AuthorizationException e) {
                 System.out.println(e.getMessage());
             }
         } while (!success);

@@ -135,7 +135,7 @@ public class TraderAccount implements Account{
     }
 
     /**
-     * Gets the id of a User given their username
+     * Gets the id of a User given their username (usually used to get id of other trader)
      *
      * @param username username of the User
      * @return id of the User
@@ -251,7 +251,7 @@ public class TraderAccount implements Account{
     }
 
     /**
-     * 2-way trade method
+     * Sends a trade Method
      * @param userId  id of the logged-in user
      * @param secondUserName username of the want-to-trade with user
      * @param firstMeeting Date of the first meeting
@@ -263,7 +263,7 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException userId not found
      */
 
-    public boolean trade(String traderId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
+    public boolean sendTrade(String traderId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
 
 
 
@@ -277,17 +277,7 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException could not find trade id
      */
     public boolean acceptTrade(String tradeID) throws EntryNotFoundException {
-
-
-        return ((Database.users.TraderManager) userManager).acceptTradeRequest(loggedInUserId, tradeID);
-
-        //-------------------------------version that solves 1 bug but creates more------------------------------------
-        /*
-            String user2 = tradeManager.getOtherUser(tradeID,loggedInUserId);
-            return ((TraderManager) userManager).acceptTradeRequest(loggedInUserId, user2, tradeID);
-         */
-
-
+        return traderManager.acceptTradeRequest(tradeID);
     }
 
     /**
@@ -298,12 +288,12 @@ public class TraderAccount implements Account{
      * @return true
      * @throws EntryNotFoundException could not find user id / trade id
      */
-    public boolean confirmIncompleteTrade(String userID, String tradeID) throws EntryNotFoundException {
+    public boolean confirmIncompleteTrade(String userID, String tradeID) throws EntryNotFoundException,AuthorizationException {
 
         if(tradeManager.isFirstMeetingConfirmed(tradeID)){
-            tradeManager.confirmSecondMeeting(tradeID, userID, false); //maybe ill need to change this to input the other Database.users ID?
+            tradeManager.confirmSecondMeeting(tradeID,false); //maybe ill need to change this to input the other Database.users ID?
         }else{
-            tradeManager.confirmFirstMeeting(tradeID, userID, false);
+            tradeManager.confirmFirstMeeting(tradeID,false);
         }
 
         String trader2Id = tradeManager.getOtherUser(tradeID, userID);
@@ -446,15 +436,14 @@ public class TraderAccount implements Account{
     }
 
     /**
-     * Gets the username of a User given their ID NOTE: This will most likely be
-     * deleted before rollout since theres no use for this
+     * Gets your own username
      *
      * @param userId id of the User
      * @return username of the User
      * @throws EntryNotFoundException cant find user id
      */
-    public String getUsername(String userId) throws EntryNotFoundException {
-        return userManager.getUsername(userId);
+    public String getUsername() throws EntryNotFoundException {
+        return userManager.getUsername();
     }
 
     /**
@@ -465,8 +454,8 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException userId not found
      * @throws IndexOutOfBoundsException index out of bounds
      */
-    public String getAcceptedTradeId(String userId, int acceptedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException, AuthorizationException {
-        return traderManager.getAcceptedTradeId(userId, acceptedTradeIndex);
+    public String getAcceptedTradeId(int acceptedTradeIndex) throws EntryNotFoundException, IndexOutOfBoundsException, AuthorizationException {
+        return traderManager.getAcceptedTradeId(acceptedTradeIndex);
     }
 
     /**

@@ -176,8 +176,8 @@ public class TraderManager {
      * @throws EntryNotFoundException user1 / tradeId not found
      */
 
-    public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
-        Trader trader1 = findTraderbyId(user1);
+    public boolean acceptTradeRequest(String tradeId) throws EntryNotFoundException {
+        Trader trader1 = findTraderbyId(traderId);
         if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
             return false;
         }
@@ -259,7 +259,7 @@ public class TraderManager {
      * @throws UserNotFoundException userId not found
      * @throws IndexOutOfBoundsException index out of bounds
      */
-    public String getAcceptedTradeId(String userId, int acceptedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
+    public String getAcceptedTradeId(int acceptedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
         return getTrader().getAcceptedTrades().get(acceptedTradeIndex);
     }
 
@@ -385,6 +385,17 @@ public class TraderManager {
      */
     public Trader getTrader() throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId);
+    }
+
+    /**
+     * Helper function to find a User by id
+     *
+     * @param userId the id of the trader to find
+     * @return the User that was found
+     * @throws EntryNotFoundException if user was not found
+     */
+    public User findUserById(String userId) throws EntryNotFoundException {
+        return userDatabase.populate(userId);
     }
 
 }
