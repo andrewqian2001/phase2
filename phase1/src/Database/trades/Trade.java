@@ -161,7 +161,7 @@ public class Trade extends DatabaseItem implements Serializable {
     /**
      * @return where the trade is taking place
      */
-    String getMeetingLocation() {
+    public String getMeetingLocation() {
         return meetingLocation;
     }
 
