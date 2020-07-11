@@ -11,7 +11,7 @@ import java.io.IOException;
 
 public class TraderManager {
     private Database<User> userDatabase;
-    private Trader trader;
+    private String traderId;
 
     /**
      * This is used for the actions that a trader user can do
@@ -27,7 +27,7 @@ public class TraderManager {
         if (!(tmp instanceof Trader))
             throw new AuthorizationException("This account is not a trader type.");
         else
-            trader = (Trader) tmp;
+            traderId = tmp.getId();
 
     }
 }

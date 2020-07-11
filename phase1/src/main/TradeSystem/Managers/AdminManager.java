@@ -15,7 +15,7 @@ public class AdminManager {
     private Database<User> userDatabase;
     private Database<Trade> tradeDatabase;
     private Database<TradableItem> tradableItemDatabase;
-    private Admin admin;
+    private String adminId;
 
     /**
      * This is used for the actions that an admin user can do
@@ -33,7 +33,7 @@ public class AdminManager {
         if (!(tmp instanceof Admin))
             throw new AuthorizationException("This account is not an admin type.");
         else
-            admin = (Admin) tmp;
+            adminId = tmp.getId();
 
     }
 }
