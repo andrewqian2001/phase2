@@ -37,6 +37,7 @@ public class TradeManager {
             traderId = tmp.getId();
     }
 
+
     /**
      * Creates a new trade and
      *
@@ -48,20 +49,31 @@ public class TradeManager {
      * @param firstUserOfferId    the item id that the user who initialized the trade is willing to offer
      * @param secondUserOfferId   the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
-     * @return the trade id added
      */
-    public String addTrade(String userId,
+    public void requestTrade(String userId,
                            Date meetingTime, Date secondMeetingTime,
-                           String meetingLocation, String firstUserOfferId, String secondUserOfferId, int allowedEdits) throws EntryNotFoundException {
-        if (!userDatabase.contains(userId)) throw new UserNotFoundException(userId);
+                           String meetingLocation, String firstUserOfferId, String secondUserOfferId, int allowedEdits)
+            throws EntryNotFoundException, AuthorizationException {
+        Trader secondTrader = getTrader(userId);
         if (!tradableItemDatabase.contains(firstUserOfferId)) throw new TradableItemNotFoundException(firstUserOfferId);
         if (!tradableItemDatabase.contains(secondUserOfferId)) throw new TradableItemNotFoundException(secondUserOfferId);
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, firstUserOfferId, secondUserOfferId, allowedEdits);
+        String tradeId = tradeDatabase.update(trade).getId();
         Trader trader = (Trader) userDatabase.populate((traderId));
-
-        return tradeDatabase.update(trade).getId();
+        trader.getRequestedTrades().add(tradeId);
+        userDatabase.update(trader);
+        secondTrader.getRequestedTrades().add(tradeId);
+        userDatabase.update(secondTrader);
+    }
+    public void denyTrade(String tradeId) throws TradeNotFoundException{
+        try {
+            tradeDatabase.delete(tradeId);
+        }
+        catch(EntryNotFoundException e){
+            throw new TradeNotFoundException(tradeId);
+        }
     }
 
     /**
@@ -313,5 +325,25 @@ public class TradeManager {
     public boolean isFirstUser(String tradeId, String userId) throws EntryNotFoundException {
         return userId.equals(tradeDatabase.populate(tradeId).getFirstUserId());
     }
-
+    private Trader getTrader(String userId) throws UserNotFoundException, AuthorizationException{
+        User trader;
+        try {
+            trader = userDatabase.populate(userId);
+        }
+        catch(EntryNotFoundException e){
+            throw new UserNotFoundException(userId);
+        }
+        if (!(trader instanceof Trader)) throw new AuthorizationException("This user is not a trader");
+        return (Trader) trader;
+    }
+    private Trade getTrade(String tradeId) throws TradeNotFoundException{
+        Trade trade;
+        try {
+            trade = tradeDatabase.populate(tradeId);
+        }
+        catch(EntryNotFoundException e){
+            throw new TradeNotFoundException(tradeId);
+        }
+        return trade;
+    }
 }
