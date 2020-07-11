@@ -11,6 +11,9 @@ import main.DatabaseFilePaths;
 import java.io.IOException;
 import java.util.LinkedList;
 
+/**
+ * Used for logging in and registering
+ */
 public class LoginManager {
     private final Database<User> userDatabase;
     private int defaultTradeLimit = 10;
@@ -45,7 +48,7 @@ public class LoginManager {
      */
     public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException {
         if (!isUsernameUnique(username))
-            throw new UserAlreadyExistsException("A user with the username " + username + " exists already.");
+            throw new UserAlreadyExistsException();
         switch (type) {
             case ADMIN:
                 return userDatabase.update(new Admin(username, password)).getId();
@@ -99,7 +102,8 @@ public class LoginManager {
 
     /**
      * For the trader user type, this sets the initial incomplete trade limit when making a new account.
-     * @param defaultIncompleteTradeLim
+     *
+     * @param defaultIncompleteTradeLim initial incomplete trade limit of a trader user
      */
     public void setDefaultIncompleteTradeLim(int defaultIncompleteTradeLim) {
         this.defaultIncompleteTradeLim = defaultIncompleteTradeLim;
@@ -108,7 +112,8 @@ public class LoginManager {
     /**
      * For the trader user type, this sets the initial minimum amount that (items lent - items borrowed) should be
      * before the trader is allowed to borrow.
-     * @param defaultMinimumAmountNeededToBorrow
+     *
+     * @param defaultMinimumAmountNeededToBorrow the number of items that need to be lent out before borrowing is allowed
      */
     public void setDefaultMinimumAmountNeededToBorrow(int defaultMinimumAmountNeededToBorrow) {
         this.defaultMinimumAmountNeededToBorrow = defaultMinimumAmountNeededToBorrow;
