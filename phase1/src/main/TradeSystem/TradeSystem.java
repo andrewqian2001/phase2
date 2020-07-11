@@ -32,21 +32,27 @@ public class TradeSystem implements Serializable {
      * Logging in
      * @param username username of the user
      * @param password password of the user
+     * @return the user id
      * @throws UserNotFoundException bad credentials
      */
-    public void login(String username, String password) throws UserNotFoundException {
+    public String login(String username, String password) throws UserNotFoundException {
         lastLoggedInString = loginManager.login(username, password);
+        return lastLoggedInString;
     }
 
     /**
      * Making a new account
      * @param username username of the user
      * @param password password of the user
+     * @param type type of the account
+     * @return the user id
      * @throws UserAlreadyExistsException if username isn't unique
      */
-    public void register(String username, String password) throws UserAlreadyExistsException {
-        lastLoggedInString = loginManager.registerUser(username, password, UserTypes.TRADER);
+    public String register(String username, String password, UserTypes type) throws UserAlreadyExistsException {
+        lastLoggedInString = loginManager.registerUser(username, password, type);
+        return lastLoggedInString;
     }
+
 
     /**
      * Getting the account
@@ -78,16 +84,6 @@ public class TradeSystem implements Serializable {
         return userManager.isFrozen(userID);
     }
 
-    /**
-     * Check if a User, given their ID, is an Admin
-     *
-     * @param userID the id of the user
-     * @return true if the User is of type Admin, false else
-     * @throws EntryNotFoundException cant find user id
-     */
-    public boolean checkAdmin(String userID) throws EntryNotFoundException {
-        return userManager.isAdmin(userID);
-    }
 
     /**
      * Checks if the given user is able to borrow items
