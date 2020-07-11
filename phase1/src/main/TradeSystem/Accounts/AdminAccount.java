@@ -56,7 +56,7 @@ public class AdminAccount implements Account {
      * @throws EntryNotFoundException Can't find traders
      */
     public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
-        ((Database.users.AdminManager) userManager).setTradeLimit(tradeLimit);
+        adminManager.setTradeLimit(tradeLimit);
     }
 
     /**

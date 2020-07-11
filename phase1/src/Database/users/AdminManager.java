@@ -34,6 +34,21 @@ public class AdminManager extends UserManager implements Serializable {
     }
 
     /**
+     * Sets the current weekly trade limit for all traders
+     * @param tradeLimit the new weekly trade limit
+     * @throws EntryNotFoundException couldn't get traders
+     */
+    public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
+        ArrayList<String> allTraders = getAllTraders();
+        for(String traderID : allTraders) {
+            Trader trader = findTraderById(traderID);
+            trader.setTradeLimit(tradeLimit);
+            userDatabase.update(trader);
+        }
+    }
+
+
+    /**
      * Gets all Item requests for each user
      * @return a Map corresponding to a userId with a list of their item requests
      */
@@ -106,20 +121,6 @@ public class AdminManager extends UserManager implements Serializable {
             throw new EntryNotFoundException("There are not traders in the system");
         }
         return findTraderById(traders.get(0)).getTradeLimit();
-    }
-
-    /**
-     * Sets the current weekly trade limit for all traders
-     * @param tradeLimit the new weekly trade limit
-     * @throws EntryNotFoundException couldn't get traders
-     */
-    public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
-        ArrayList<String> allTraders = getAllTraders();
-        for(String traderID : allTraders) {
-            Trader trader = findTraderById(traderID);
-            trader.setTradeLimit(tradeLimit);
-            userDatabase.update(trader);
-        }
     }
 
     /**
