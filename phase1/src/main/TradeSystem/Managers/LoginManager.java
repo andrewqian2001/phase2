@@ -15,6 +15,7 @@ public class LoginManager {
     private final Database<User> userDatabase;
     private int defaultTradeLimit = 10;
     private int defaultIncompleteTradeLim = 3;
+    private int defaultMinimumAmountNeededToBorrow = 1;
 
     /**
      * Represents different user types
@@ -49,7 +50,8 @@ public class LoginManager {
             case ADMIN:
                 return userDatabase.update(new Admin(username, password)).getId();
             case TRADER:
-                return userDatabase.update(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim)).getId();
+                return userDatabase.update(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
+                        defaultMinimumAmountNeededToBorrow)).getId();
             case DEFAULT:
             default:
                 return userDatabase.update(new User(username, password)).getId();
@@ -93,5 +95,22 @@ public class LoginManager {
      */
     public void setDefaultTradeLimit(int tradeLimit) {
         defaultTradeLimit = tradeLimit;
+    }
+
+    /**
+     * For the trader user type, this sets the initial incomplete trade limit when making a new account.
+     * @param defaultIncompleteTradeLim
+     */
+    public void setDefaultIncompleteTradeLim(int defaultIncompleteTradeLim) {
+        this.defaultIncompleteTradeLim = defaultIncompleteTradeLim;
+    }
+
+    /**
+     * For the trader user type, this sets the initial minimum amount that (items lent - items borrowed) should be
+     * before the trader is allowed to borrow.
+     * @param defaultMinimumAmountNeededToBorrow
+     */
+    public void setDefaultMinimumAmountNeededToBorrow(int defaultMinimumAmountNeededToBorrow) {
+        this.defaultMinimumAmountNeededToBorrow = defaultMinimumAmountNeededToBorrow;
     }
 }

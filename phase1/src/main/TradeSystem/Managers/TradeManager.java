@@ -58,14 +58,9 @@ public class TradeManager {
         Trader trader = getTrader(traderId);
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot trade with yourself");
 
-        if (trader.getTradeLimit() < 0)
-            throw new CannotTradeException("This user has passed its trading limit");
-        if (secondTrader.getTradeLimit() < 0)
-            throw new CannotTradeException("The user requested has a trading limit restriction");
-        if (trader.getAcceptedTrades().size() >= trader.getIncompleteTradeLim())
-            throw new CannotTradeException("This user has too many active trades.");
-        if (secondTrader.getAcceptedTrades().size() >= secondTrader.getIncompleteTradeLim())
-            throw new CannotTradeException("The user requested has too many active trades.");
+        if (!trader.canTrade()) throw new CannotTradeException("This user cannot trade due to trading restrictions");
+        if (!secondTrader.canTrade())
+            throw new CannotTradeException("The user requested cannot trade due to trading restrictions");
 
         // This is used to check if the items are valid to trade
         getTradableItem(thisUserOfferId, traderId);
@@ -77,8 +72,6 @@ public class TradeManager {
         String tradeId = tradeDatabase.update(trade).getId();
         trader.getRequestedTrades().add(tradeId);
         secondTrader.getRequestedTrades().add(tradeId);
-        trader.setTradeLimit(trader.getTradeLimit() - 1);
-        secondTrader.setTradeLimit(secondTrader.getTradeLimit() - 1);
         userDatabase.update(trader);
         userDatabase.update(secondTrader);
         return trade;
@@ -106,6 +99,8 @@ public class TradeManager {
             throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);
         Trader secondTrader = getTrader(userId);
+        if (!secondTrader.canBorrow() || !trader.canTrade())
+            throw new CannotTradeException("Cannot trade due to trading restrictions");
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot lend to yourself");
         if (secondTrader.getTradeLimit() < 0)
             throw new CannotTradeException("There is a trading limit restriction");
@@ -122,7 +117,6 @@ public class TradeManager {
         String tradeId = tradeDatabase.update(trade).getId();
         trader.getRequestedTrades().add(tradeId);
         secondTrader.getRequestedTrades().add(tradeId);
-        secondTrader.setTradeLimit(secondTrader.getTradeLimit() - 1);
         userDatabase.update(trader);
         userDatabase.update(secondTrader);
         return trade;
@@ -186,22 +180,34 @@ public class TradeManager {
         tradeDatabase.update(trade);
     }
 
-    public boolean confirmRequest(String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+    /**
+     * For confirming a trade request
+     * @param tradeId the trade id
+     * @return if the request was confirmed
+     * @throws TradeNotFoundException if the trade wasn't found
+     * @throws AuthorizationException if the user is not a trader
+     * @throws UserNotFoundException if the user doesn't exist
+     * @throws CannotTradeException if trading limitations prevent the trade from happening
+     */
+    public boolean confirmRequest(String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException, CannotTradeException {
         Trade trade = getTrade(tradeId);
+        Trader trader = getTrader(trade.getFirstUserId());
+        Trader trader2 = getTrader(trade.getSecondUserId());
+        if (!trader.canTrade() || !trader2.canTrade())
+            throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
         if (trade.getFirstUserId().equals(traderId))
             trade.setHasFirstUserConfirmedRequest(true);
         else trade.setHasSecondUserConfirmedRequest(true);
 
         // This should always be true but this is a check anyway
         if (trade.isHasFirstUserConfirmedRequest() && trade.isHasSecondUserConfirmedRequest()) {
-            Trader trader = getTrader(trade.getFirstUserId());
-            Trader trader2 = getTrader(trade.getSecondUserId());
+
             trader.getAvailableItems().remove(trade.getFirstUserOffer());
             trader2.getAvailableItems().remove(trade.getSecondUserOffer());
             trader.getAcceptedTrades().add(tradeId);
             trader2.getAcceptedTrades().add(tradeId);
-            trader.setIncompleteTradeCount(trader.getIncompleteTradeCount() - 1);
-            trader2.setIncompleteTradeCount(trader2.getIncompleteTradeCount() - 1);
+            trader.setTradeLimit(trader.getTradeLimit() - 1);
+            trader2.setTradeLimit(trader2.getTradeLimit() - 1);
             userDatabase.update(trader);
             userDatabase.update(trader2);
             return true;

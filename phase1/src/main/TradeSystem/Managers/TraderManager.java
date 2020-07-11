@@ -29,9 +29,7 @@ public class TraderManager {
         User tmp = userDatabase.populate(traderId);
         if (!(tmp instanceof Trader))
             throw new AuthorizationException("This account is not a trader type.");
-        else
-            this.traderId = tmp.getId();
-        trader = (Trader) tmp;
+        this.traderId = tmp.getId();
 
     }
 
@@ -46,6 +44,8 @@ public class TraderManager {
         return trader.getRequestedTrades().get(requestedTradeIndex);
     }
 
+
+
     /**
      * Gets the tradeID given the index of the Database.users accepted trade
      * @param userId id of the user
@@ -58,17 +58,22 @@ public class TraderManager {
         return trader.getAcceptedTrades().get(acceptedTradeIndex);
     }
 
-
     /**
-     * gets inventory
-     * @param userId
-     * @return
-     * @throws EntryNotFoundException
+     * Makes this user request an item
+     *
+     * @param itemId id of the item to add
+     * @return the user's id
+     * @throws EntryNotFoundException if the user was not found
      */
-    public ArrayList<String> getInventory(String userId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
-        return trader.getAvailableItems();
+    public void addRequestItem(String itemId) throws EntryNotFoundException {
+        Trader trader = findTraderbyId(traderId);
+        trader.getRequestedItems().add(itemId);
+        userDatabase.update(trader);
     }
+
+
+
+
 
     //This version solves 1 bug but creates more
     /*
@@ -94,20 +99,7 @@ public class TraderManager {
 
 
 
-    /**
-     * Makes this user request an item
-     *
-     * @param userId id of the user
-     * @param itemId id of the item to add
-     * @return the user's id
-     * @throws EntryNotFoundException if the user was not found
-     */
-    public String addRequestItem(String userId, String itemId) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
-        trader.getRequestedItems().add(itemId);
-        userDatabase.update(trader);
-        return userId;
-    }
+
 
 
 //    /**
@@ -165,55 +157,52 @@ public class TraderManager {
 
     /**
      * Gets an arraylist of accepted Database.trades of the specified trader
-     * @param userId the id of the trader
      * @return an arraylist of accepted Database.trades of the specified trader
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
-    public ArrayList<String> getAcceptedTrades(String userId) throws EntryNotFoundException{
-        return findTraderbyId(userId).getAcceptedTrades();
+    public ArrayList<String> getAcceptedTrades() throws EntryNotFoundException{
+        return findTraderbyId(traderId).getAcceptedTrades();
 
     }
     /**
      * Gets an arraylist of completed Database.trades of the specified trader
-     * @param userId the id of the trader
      * @return an arraylist of accepted Database.trades of the specified trader
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
-    public ArrayList<String> getCompletedTrades(String userId) throws EntryNotFoundException{
-        return findTraderbyId(userId).getCompletedTrades();
+    public ArrayList<String> getCompletedTrades() throws EntryNotFoundException{
+        return findTraderbyId(traderId).getCompletedTrades();
     }
 
     /**
      * get all available items
-     * @param userID user Id
      * @return arraylist of all items in all inventories
      * @throws EntryNotFoundException user id not found
      */
-    public ArrayList<String> getAvailableItems(String userID) throws EntryNotFoundException {
-        return findTraderbyId(userID).getAvailableItems();
+    public ArrayList<String> getAvailableItems() throws EntryNotFoundException {
+        return findTraderbyId(traderId).getAvailableItems();
     }
 
     /**
      * gett all wish list items
-     * @param userID user Id
      * @return arraylist of all wish list item
      * @throws EntryNotFoundException user id not found
      */
-    public ArrayList<String> getWishlist(String userID) throws EntryNotFoundException {
-        return findTraderbyId(userID).getWishlist();
+    public ArrayList<String> getWishlist() throws EntryNotFoundException {
+        return findTraderbyId(traderId).getWishlist();
     }
 
     /**
      * Adds an item to this trader's wishlist
-     * @param userId the trader's id
      * @param tradableItemId the item to be added to this user's wishlist
      * @throws EntryNotFoundException if the trader with the given userId is not found
      */
-    public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException{
-        Trader trader = findTraderbyId(userId);
+    public void addToWishList(String tradableItemId) throws EntryNotFoundException{
+        Trader trader = findTraderbyId(traderId);
         trader.getWishlist().add(tradableItemId);
         userDatabase.update(trader);
     }
+
+
 
     /**
      * Helper function to find a trader by id
