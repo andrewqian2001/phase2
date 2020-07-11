@@ -11,4 +11,11 @@ public class UserNotFoundException extends EntryNotFoundException {
     public UserNotFoundException(String id){
         super(id, "The user " + id + " was not found.");
     }
+
+    /**
+     * No error message exception
+     */
+    public UserNotFoundException(){
+        super();
+    }
 }

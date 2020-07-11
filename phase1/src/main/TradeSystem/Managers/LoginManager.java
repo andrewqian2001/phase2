@@ -6,6 +6,7 @@ import Database.users.Trader;
 import Database.users.User;
 import exceptions.EntryNotFoundException;
 import exceptions.UserAlreadyExistsException;
+import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
 
 import java.io.IOException;
@@ -68,14 +69,14 @@ public class LoginManager {
      * @param username username of user
      * @param password password of user
      * @return the user id of the logged in user
-     * @throws EntryNotFoundException could not find the user
+     * @throws UserNotFoundException could not find the user
      */
-    public String login(String username, String password) throws EntryNotFoundException {
+    public String login(String username, String password) throws UserNotFoundException {
         LinkedList<User> users = userDatabase.getItems();
         for (User user : users)
             if (user.getUsername().equals(username) && (user.getPassword().equals(password)))
                 return user.getId();
-        throw new EntryNotFoundException("Bad credentials.");
+        throw new UserNotFoundException("Bad credentials.");
     }
 
     /**
