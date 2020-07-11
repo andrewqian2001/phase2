@@ -71,9 +71,35 @@ public class AdminAccount implements Account {
         return adminManager.getUsername(userId);
     }
 
+    /**
+     *
+     * @return all unfreeze requests of every user
+     */
     public ArrayList<String> getAllUnfreezeRequests(){
         return adminManager.getAllUnfreezeRequests();
     }
+
+    /**
+     * Process the item request of a user
+     *
+     * @param traderID   ID of the trader
+     * @param itemIndex  index of the item
+     * @param isAccepted true if item is accepted, false if rejected
+     * @throws EntryNotFoundException traderName / itemName not found
+     */
+    public void processItemRequest(String traderID, int itemIndex, boolean isAccepted) throws EntryNotFoundException, AuthorizationException {
+        adminManager.processItemRequest(traderID, itemIndex, isAccepted);
+    }
+
+    /**
+     *
+     * @return the current default trade limit
+     */
+    public int getCurrentTradeLimit(){
+        return loginManager.getDefaultTradeLimit();
+    }
+
+
 
 
 

@@ -1,6 +1,7 @@
 package main.TradeSystem.Accounts;
 
 import Database.users.AdminManager;
+import Database.users.User;
 import exceptions.*;
 import java.io.IOException;
 import java.util.*;
@@ -28,6 +29,10 @@ public class TraderAccount implements Account{
         this.traderId = traderId;
     }
 
+    public String getTraderId(){
+        return traderId;
+    }
+
     /**
      * @return whether this account is frozen
      * @throws UserNotFoundException if the user wasn't found
@@ -43,7 +48,6 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException can't find user id
      */
     public void requestItem(String itemName) throws EntryNotFoundException, AuthorizationException {
-
         traderManager.addRequestItem(itemName);
     }
 
@@ -162,7 +166,7 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException cant find user id
      */
     public Set<String> getRecentTradeItems() throws EntryNotFoundException {
-        return traderManager.getRecentTradeItems();
+        return traderManager.getRecentTradeItems(traderId);
     }
 
     /**
@@ -173,9 +177,10 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException cant find user id
      */
     public String getIdFromUsername(String username) throws EntryNotFoundException {
-        return userManager.getUserId(username);
+        return traderManager.getIdFromUsername(username);
     }
     /**
+     * TODO:HELP JAMES
      * 1-way Trade Method: logged-in user giving an item to another user
      * @param userId id of the logged-in user
      * @param secondUserName username of the want-to-trade with user
@@ -186,14 +191,14 @@ public class TraderAccount implements Account{
      * @return true if the trade was processed successfully
      * @throws EntryNotFoundException userId not found
      */
-    public boolean lendItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
+    public boolean lendItem(String secondUserName, Date firstMeeting, Date secondMeeting,
                             String meetingLocation, int lendItemIndex) throws EntryNotFoundException{
-        return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, lendItemIndex, -1);
+        return tradeManager.requestLend(traderId, secondUserName, firstMeeting, secondMeeting, meetingLocation, lendItemIndex);
     }
 
     /**
+     * TODO:HELP JAMES
      * 1-way Trade Method: logged-in user wants an item from another user
-     * @param userId id of the logged-in user
      * @param secondUserName username of the want-to-trade with user
      * @param firstMeeting Date of the first meeting
      * @param secondMeeting Date of the second meeting
@@ -202,34 +207,47 @@ public class TraderAccount implements Account{
      * @return true if the trade has been processed successfully
      * @throws EntryNotFoundException user id not found
      */
-    public boolean borrowItem(String userId, String secondUserName, Date firstMeeting, Date secondMeeting,
+    public boolean borrowItem(String secondUserName, Date firstMeeting, Date secondMeeting,
                               String meetingLocation, int borrowItemIndex) throws EntryNotFoundException {
-        return trade(userId, secondUserName, firstMeeting, secondMeeting, meetingLocation, -1, borrowItemIndex);
+        return tradeManager.requestBorrow(traderId, firstMeeting, secondMeeting, meetingLocation,);
+    }
+
+    /**
+     * TODO:HELP JAMES
+     * @param traderName
+     * @param firstMeeting
+     * @param secondMeeting
+     * @param meetingLocation
+     * @param inventoryItemIndex
+     * @param traderInventoryItemIndex
+     * @return
+     */
+    public boolean trade(String traderName, Date firstMeeting, Date secondMeeting, String meetingLocation, int inventoryItemIndex, int traderInventoryItemIndex){
+        return tradeManager.requestTrade(traderId, ... );
     }
 
     /**
      * Confirms an accepted trade took place outside of the program
-     * @param userID id of the user
      * @param tradeID id of the trade
      * @return true if the trade was successfully confirmed
      * @throws EntryNotFoundException user id / trade id not found
      */
-    public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException, AuthorizationException {
-        return traderManager.confirmTrade(tradeID);
+    public boolean confirmTrade(String tradeID) throws EntryNotFoundException, AuthorizationException, CannotTradeException {
+        return tradeManager.confirmRequest(tradeID);
     }
 
     /**
      * Rejects a requested trade
-     * @param userID id of the user
      * @param tradeID id of the trade
      * @return true if the trade request was successfully rejected
      * @throws EntryNotFoundException could not find trade id / user id
      */
-    public boolean rejectTrade(String userID, String tradeID) throws EntryNotFoundException  {
-        return ((Database.users.TraderManager) userManager).denyTrade(loggedInUserId, userID, tradeID);
+    public boolean rejectTrade(String tradeID) throws EntryNotFoundException, AuthorizationException {
+        return tradeManager.denyTrade(tradeID);
     }
 
     /**
+     * TODO: JAMES HELP
      * edits the trade object
      * @param userID id of the user
      * @param traderId id of the other user of the trade
@@ -243,9 +261,9 @@ public class TraderAccount implements Account{
      * @throws CannotTradeException if the trade is not allowed
      * @return true
      */
-    public boolean editTrade(String userID, String traderId,  String tradeID, Date firstMeeting, Date secondMeeting, String meetingLocation, int inventoryItemIndex, int traderInventoryItemIndex) throws CannotTradeException, EntryNotFoundException {
+    public boolean editTrade(String otherTraderId,  String tradeID, Date firstMeeting, Date secondMeeting, String meetingLocation, int inventoryItemIndex, int traderInventoryItemIndex) throws CannotTradeException, EntryNotFoundException {
 
-        traderManager.editTrade(userID, traderId, tradeID, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
+        tradeManager.editTrade(traderId, otherTraderId, tradeID, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
 
         return true;
     }
@@ -264,41 +282,10 @@ public class TraderAccount implements Account{
 
     /**
      * Checks if user can trade
-     * @param userID
      * @return
      */
-    public boolean canTrade(String userID) throws EntryNotFoundException {
-        return ((Database.users.TraderManager) userManager).canTrade(userID);
-    }
-    /**
-     * Get userId of the other user in the trade
-     * @param userID id of the user
-     * @param tradeID id of the trade
-     * @return userId of the other user
-     * @throws EntryNotFoundException if the user or trade can not be found
-     */
-    public String getTraderIdFromTrade(String userID, String tradeID) throws EntryNotFoundException {
-        return tradeManager.getOtherUser(tradeID, userID);
-    }
-
-    /**
-     * Sends a trade Method
-     * @param userId  id of the logged-in user
-     * @param secondUserName username of the want-to-trade with user
-     * @param firstMeeting Date of the first meeting
-     * @param secondMeeting Date of the second meeting
-     * @param meetingLocation Location of both meetings
-     * @param lendItemIndex index of the item that will be lent to
-     * @param borrowItemIndex index of the item that will be borrowed
-     * @return true if the trade has been processed successfully
-     * @throws EntryNotFoundException userId not found
-     */
-
-    public boolean sendTrade(String traderId, String secondUserName, Date firstMeeting, Date secondMeeting, String meetingLocation, int lendItemIndex, int borrowItemIndex) throws EntryNotFoundException, IndexOutOfBoundsException {
-
-
-
-        return true;
+    public boolean canTrade() throws EntryNotFoundException {
+        return traderManager.canTrade(traderId);
     }
 
     /**
@@ -308,18 +295,17 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException could not find trade id
      */
     public boolean acceptTrade(String tradeID) throws EntryNotFoundException {
-        return traderManager.acceptTradeRequest(tradeID);
+        return tradeManager.acceptTradeRequest(tradeID);
     }
 
     /**
      * Confirms that other trader did not show up to the trade
      * This method should increment the other traders incomplete trade count but not this traders
-     * @param userID is the ID of the user
      * @param tradeID the trade id
      * @return true
      * @throws EntryNotFoundException could not find user id / trade id
      */
-    public boolean confirmIncompleteTrade(String userID, String tradeID) throws EntryNotFoundException,AuthorizationException {
+    public boolean confirmIncompleteTrade(String tradeID) throws EntryNotFoundException,AuthorizationException {
 
         if(tradeManager.isFirstMeetingConfirmed(tradeID)){
             tradeManager.confirmSecondMeeting(tradeID,false); //maybe ill need to change this to input the other Database.users ID?
@@ -327,7 +313,7 @@ public class TraderAccount implements Account{
             tradeManager.confirmFirstMeeting(tradeID,false);
         }
 
-        String trader2Id = tradeManager.getOtherUser(tradeID, userID);
+        String trader2Id = tradeManager.getOtherUser(tradeID, tradeID);
         ((Database.users.TraderManager)userManager).addToIncompleteTradeCount(trader2Id);
         return true;
     }
@@ -343,15 +329,14 @@ public class TraderAccount implements Account{
 
     /**
      * get the item index of the trade item
-     * @param userID id of the user
      * @param tradeId id of the trade
      * @return item index of the trade item
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-    public int getUserTradeItemIndex(String userID, String tradeId) throws EntryNotFoundException {
+    public int getUserTradeItemIndex(String tradeId) throws EntryNotFoundException {
         String[] items = tradeManager.getItemsFromTrade(tradeId);
-        ArrayList<String> inventory = ((Database.users.TraderManager) userManager).getInventory(userID);
-        if(tradeManager.isFirstUser(tradeId, userID)) {
+        ArrayList<String> inventory = traderManager.getAvailableItems(traderId);
+        if(tradeManager.isFirstUser(tradeId, traderId)) {
             if (items[0].equals("")){
                 return -1;
             }
@@ -374,16 +359,15 @@ public class TraderAccount implements Account{
     /**
      * return the 3 most traded with Traders
      *
-     * @param userID user Id
      * @return a String array of the usernames of the 3 most traded with Traders
      * @throws EntryNotFoundException cant find user id
      */
-    public String[] getFrequentTraders(String userID) throws EntryNotFoundException {
+    public String[] getFrequentTraders() throws EntryNotFoundException {
         String[] frequentTraders = new String[3];
         ArrayList<String> users = new ArrayList<>();
 
         // converts trade-id to other Database.users' id
-        for(String trade_id : ((Database.users.TraderManager) userManager).getCompletedTrades(userID)){
+        for(String trade_id : ((Database.users.TraderManager) userManager).getCompletedTrades(traderId)){
             users.add(tradeManager.getOtherUser(trade_id, userID));
         }
 
@@ -440,22 +424,6 @@ public class TraderAccount implements Account{
         return tradeManager.getMeetingLocation(tradeId);
     }
 
-    /**
-     * get the item offered in the trade by the user
-     * @param userID id of the user
-     * @param tradeId id of the trade
-     * @return the item id
-     * @throws EntryNotFoundException if the user or the trade can not be found
-     */
-    public String getUserOffer(String userID, String tradeId) throws EntryNotFoundException {
-        String[] items = tradeManager.getItemsFromTrade(tradeId);
-        if(tradeManager.isFirstUser(tradeId, userID)) {
-            return items[0];
-        }
-        else {
-            return items[1];
-        }
-    }
 
     /**
      * Gets your own username
@@ -470,7 +438,6 @@ public class TraderAccount implements Account{
 
     /**
      * Gets the tradeID given the index of the Database.users accepted trade
-     * @param userId id of the user
      * @param acceptedTradeIndex index of the accepted trade
      * @return the trade ID
      * @throws EntryNotFoundException userId not found
@@ -497,10 +464,10 @@ public class TraderAccount implements Account{
      * @return true if the user has confirmed all meetings took place, false else
      * @throws EntryNotFoundException user id / trade id not found
      */
-    public boolean hasUserConfirmedAllMeetings(String userID, String tradeID) throws EntryNotFoundException {
+    public boolean hasUserConfirmedAllMeetings(String tradeID) throws EntryNotFoundException {
         if(tradeManager.hasSecondMeeting(tradeID))
-            return tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.getSecondMeetingConfirmed(tradeID, userID);
-        return tradeManager.getFirstMeetingConfirmed(tradeID, userID);
+            return tradeManager.getFirstMeetingConfirmed(tradeID, traderId) && tradeManager.getSecondMeetingConfirmed(tradeID, traderId);
+        return tradeManager.getFirstMeetingConfirmed(tradeID, traderId);
     }
 
     /**

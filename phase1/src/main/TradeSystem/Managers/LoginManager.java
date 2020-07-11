@@ -99,6 +99,14 @@ public class LoginManager {
     }
 
     /**
+     *
+     * @return the current defautl trade limit.
+     */
+    public int getDefaultTradeLimit() {
+        return defaultTradeLimit;
+    }
+
+    /**
      * For the trader user type, this sets the initial incomplete trade limit when making a new account.
      *
      * @param defaultIncompleteTradeLim initial incomplete trade limit of a trader user

@@ -65,13 +65,12 @@ public class TraderManager {
 
     /**
      * Gets the tradeID given the index of the Database.users accepted trade
-     * @param userId id of the user
      * @param acceptedTradeIndex index of the accepted trade
      * @return the trade ID
      * @throws UserNotFoundException userId not found
      * @throws IndexOutOfBoundsException index out of bounds
      */
-    public String getAcceptedTradeId(String userId, int acceptedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
+    public String getAcceptedTradeId(int acceptedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
         return getTrader().getAcceptedTrades().get(acceptedTradeIndex);
     }
 
@@ -179,9 +178,9 @@ public class TraderManager {
     }
 
     /**
+     * TODO: FIX or move to another class
      * Gets a list of the items used in Database.trades
      *
-     * @param userId id of the user
      * @return list of unique items that the user has traded/received from a trade
      * @throws EntryNotFoundException cant find user id
      */
@@ -190,7 +189,7 @@ public class TraderManager {
         Set<String> recentTradeItemNames = new HashSet<>();
         for (String tradeID : completedTrades) {
             String[] tradableItemIDs = tradeManager.getItemsFromTrade(tradeID);
-            recentTradeItemNames.add(tradableItemda(tradableItemIDs[0]));
+            recentTradeItemNames.add(trade(tradableItemIDs[0]));
             if (!tradableItemIDs[1].equals(""))
                 recentTradeItemNames.add(getTradableItemName(tradableItemIDs[1]));
         }
@@ -205,7 +204,11 @@ public class TraderManager {
      * @throws EntryNotFoundException cant find user id
      */
     public String getIdFromUsername(String username) throws EntryNotFoundException {
-        return userManager.getUserId(username);
+        LinkedList<User> users = user.getItems();
+        for (User user : users)
+            if (user.getUsername().equals(username))
+                return user.getId();
+        throw new EntryNotFoundException("User with the username " + username + " not found.");
     }
 
     /**
@@ -321,6 +324,10 @@ public class TraderManager {
             }
         }
         return allItems;
+    }
+
+    public boolean canTrade(){
+        return
     }
 
 
