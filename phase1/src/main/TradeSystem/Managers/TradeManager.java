@@ -341,7 +341,7 @@ public class TradeManager {
      * @throws TradableItemNotFoundException if the tradable item object wasn't found
      * @throws AuthorizationException        if the tradable item doesn't belong to the trader
      */
-    private TradableItem getTradableItem(String tradableItemId, String traderId) throws
+    public TradableItem getTradableItem(String tradableItemId, String traderId) throws
             TradableItemNotFoundException, UserNotFoundException,
             AuthorizationException {
         Trader trader = getTrader(traderId);
@@ -542,5 +542,6 @@ public class TradeManager {
         else if (trade.getSecondUserId().equals(userID)) return trade.isSecondUserConfirmed2();
         else throw new EntryNotFoundException("The user " + userID + " was not found.");
     }
+
 
 }

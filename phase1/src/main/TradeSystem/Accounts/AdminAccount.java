@@ -58,6 +58,25 @@ public class AdminAccount implements Account {
     public void setTradeLimit(int tradeLimit) throws UserNotFoundException {
         adminManager.setTradeLimit(tradeLimit);
     }
+
+    /**
+     * Gets the username of a User given their ID NOTE: This will most likely be
+     * deleted before rollout since theres no use for this
+     *
+     * @param userId id of the User
+     * @return username of the User
+     * @throws EntryNotFoundException cant find user id
+     */
+    public String getUsername(String userId) throws EntryNotFoundException {
+        return adminManager.getUsername(userId);
+    }
+
+    public ArrayList<String> getAllUnfreezeRequests(){
+        return adminManager.getAllUnfreezeRequests();
+    }
+
+
+
     /**
      * @return type admin
      */

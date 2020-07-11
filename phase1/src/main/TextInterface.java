@@ -418,31 +418,32 @@ public class TextInterface {
      */
     private void printList(String ID, String listType, String itemType) {
         try {
+            TraderAccount currTraderAccount = new TraderAccount(ID);
             ArrayList<String> list = null;
             String itemID = "";
             if (listType.equals("Wishlist"))
-                list = traderAccount.getWishlist();
+                list = currTraderAccount.getWishlist();
             else if (listType.equals("Inventory"))
-                list = traderAccount.getAvailableItems();
+                list = currTraderAccount.getAvailableItems();
             else if (listType.equals("Accepted"))
-                list = traderAccount.getAcceptedTrades();
+                list = currTraderAccount.getAcceptedTrades();
             else if (listType.equals("Requested"))
-                list = traderAccount.getRequestedTrades();
-            System.out.printf("%s's %s %ss\n***************\n", traderAccount.getUsername(), listType, itemType);
+                list = currTraderAccount.getRequestedTrades();
+            System.out.printf("%s's %s %ss\n***************\n", currTraderAccount.getUsername(), listType, itemType);
             for (int i = 0; i < list.size(); i++) {
                 itemID = list.get(i);
                 if (itemType.equals("Item"))
-                    System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, traderAccount.getTradableItemName(itemID),
-                            traderAccount.getTradableItemDesc(itemID));
+                    System.out.printf("%s %s #%d: %s\n\t%s\n", listType, itemType, i, currTraderAccount.getTradableItemName(itemID),
+                            currTraderAccount.getTradableItemDesc(itemID));
                 else {
                     System.out.printf("%s %s #%d\n", listType, itemType, i);
                     if (listType.equals("Accepted"))
-                        printTrade(traderAccount.getAcceptedTradeId(this.userID, i), false);
+                        printTrade(currTraderAccount.getAcceptedTradeId(i), false);
                     else if (listType.equals("Requested"))
-                        printTrade(traderAccount.getRequestedTradeId(this.userID, i), true);
+                        printTrade(currTraderAccount.getRequestedTradeId(i), true);
                 }
             }
-        } catch (EntryNotFoundException | AuthorizationException e) {
+        } catch (EntryNotFoundException | AuthorizationException | IOException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -453,16 +454,16 @@ public class TextInterface {
      * @param tradeID id of the trade
      * @throws EntryNotFoundException
      */
-    private void printTrade(String tradeID, boolean isRequested) throws EntryNotFoundException {
-        String traderID = traderAccount.getTraderIdFromTrade(userID, tradeID);
-        String typeOfTrade = traderAccount.getUserOffer(this.userID, tradeID).equals("") ? "borrowing from" : traderAccount.getUserOffer(traderID, tradeID).equals("") ? "lending to" : "2-way trading with";
+    private void printTrade(String tradeID, boolean isRequested) throws EntryNotFoundException, IOException, AuthorizationException {
+        TraderAccount otherTraderAccount = new TraderAccount(traderAccount.getTraderIdFromTrade(tradeID));
+        String typeOfTrade = traderAccount.getUserOffer(tradeID).equals("") ? "borrowing from" : traderAccount.getUserOffer(tradeID).equals("") ? "lending to" : "2-way trading with";
         String isTemporaryString = traderAccount.isTradeTemporary(tradeID) ? "temporarily" : "permanently";
-        String userItemID = typeOfTrade.equals("borrowing from") ? "N/A" : traderAccount.getTradableItemName(traderAccount.getUserOffer(userID, tradeID));
-        String traderItemID = typeOfTrade.equals("lending to") ? "N/A" : traderAccount.getTradableItemName(traderAccount.getUserOffer(traderID, tradeID));
-        System.out.printf("\t%s is %s %s TRADER=\"%s\"\n", traderAccount.getUsername(this.userID), isTemporaryString, typeOfTrade, traderAccount.getUsername(traderID));
+        String userItemID = typeOfTrade.equals("borrowing from") ? "N/A" : traderAccount.getTradableItemName(traderAccount.getUserOffer(tradeID));
+        String traderItemID = typeOfTrade.equals("lending to") ? "N/A" : traderAccount.getTradableItemName(otherTraderAccount.getUserOffer(tradeID));
+        System.out.printf("\t%s is %s %s TRADER=\"%s\"\n", traderAccount.getUsername(), isTemporaryString, typeOfTrade, otherTraderAccount.getUsername());
         if (!isRequested)
             System.out.println("TRADE IS " + (traderAccount.isTradeInProgress(tradeID) ? "IN PROGRESS" : "FINISHED"));
-        System.out.printf("\tYour Item:\t%s\n\t%s's Item:\t%s\n", userItemID, traderAccount.getUsername(traderID), traderItemID);
+        System.out.printf("\tYour Item:\t%s\n\t%s's Item:\t%s\n", userItemID, otherTraderAccount.getUsername(), traderItemID);
         System.out.println("\tFirst Meeting: " + traderAccount.getFirstMeeting(tradeID) + " @ " + traderAccount.getMeetingLocation(tradeID));
         if (isTemporaryString.equals("temporarily")) {
             System.out.println("\tSecond Meeting: " + traderAccount.getSecondMeeting(tradeID) + " @ " + traderAccount.getMeetingLocation(tradeID));
@@ -474,13 +475,9 @@ public class TextInterface {
      */
     private void printAllUnfreezeRequests() {
         System.out.println("*** Un-Freeze Requesters ***");
-        try {
-            ArrayList<String> unFreezeRequests = adminAccount.getAllUnfreezeRequests();
-            for (String userID : unFreezeRequests) {
-                System.out.println(adminAccount.getUsername(userID));
-            }
-        } catch (EntryNotFoundException e) {
-            System.out.println(e.getMessage());
+        ArrayList<String> unFreezeRequests = adminAccount.getAllUnfreezeRequests();
+        for (String username : unFreezeRequests) {
+            System.out.println(username);
         }
     }
 
@@ -492,6 +489,7 @@ public class TextInterface {
         try {
             HashMap<String, ArrayList<String>> itemRequests = traderAccount.getAllItemRequests();
             for (String userID : itemRequests.keySet()) {
+                TraderAccount currTradeAccount = new TraderAccount(userID);
                 if (itemRequests.get(userID).size() > 0) {
                     System.out.println(traderAccount.getUsername(userID) + " :");
                     for (String itemID : itemRequests.get(userID)) {

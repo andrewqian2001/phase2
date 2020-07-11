@@ -222,15 +222,6 @@ public class AdminManager {
     }
 
     /**
-     * Gets a list of all Unfreeze Request
-     *
-     * @return a list of all unfreeze requests
-     */
-    public ArrayList<String> getAllUnfreezeRequests()  {
-        return  userManager.getAllUnFreezeRequests();
-    }
-
-    /**
      * Gets the username of a User given their ID NOTE: This will most likely be
      * deleted before rollout since theres no use for this
      *
@@ -239,7 +230,7 @@ public class AdminManager {
      * @throws EntryNotFoundException cant find user id
      */
     public String getUsername(String userId) throws EntryNotFoundException {
-        return userManager.getUsername(userId);
+        return userDatabase.populate(userId).getUsername();
     }
 
     /**
@@ -250,31 +241,5 @@ public class AdminManager {
     public int getCurrentTradeLimit() throws EntryNotFoundException {
         return ((Database.users.AdminManager) userManager).getTradeLimit();
     }
-    /**
-     * Process the item request of a user
-     * @param traderName username of the trader
-     * @param itemName name of the item
-     * @param isAccepted true if item is accepted, false if rejected
-     * @throws EntryNotFoundException traderName / itemName not found
-     */
-    public void processItemRequest(String traderName, String itemName, boolean isAccepted) throws EntryNotFoundException {
-        String traderID = userManager.getUserId(traderName);
-        ArrayList<String> reqItems = ((Database.users.AdminManager)userManager).getRequestedItems(traderID);
-        String reqItemID = "";
-        for(String itemID : reqItems) {
-            if(itemName.equals(tradableItemManager.getName(itemID))) {
-                reqItemID = itemID;
-                break;
-            }
-        } if(!reqItemID.trim().equals("")) {
-            if(isAccepted) {
-                ((Database.users.AdminManager) userManager).acceptRequestItem(traderID, reqItemID);
-            } else {
-                ((Database.users.AdminManager) userManager).rejectRequestItem(traderID, reqItemID);
-                tradableItemManager.deleteItem(reqItemID);
-            }
-        } else {
-            throw new EntryNotFoundException(itemName + " was not found in the user's requested items list");
-        }
-    }
+
 }

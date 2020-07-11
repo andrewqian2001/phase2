@@ -71,6 +71,7 @@ public class LoginManager {
                 return user.getId();
         throw new UserNotFoundException();
     }
+
     public UserTypes getLastLoggedInType(){
         return lastLoggedInType;
     }
