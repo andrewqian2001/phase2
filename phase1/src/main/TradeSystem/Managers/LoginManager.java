@@ -76,7 +76,7 @@ public class LoginManager {
         for (User user : users)
             if (user.getUsername().equals(username) && (user.getPassword().equals(password)))
                 return user.getId();
-        throw new UserNotFoundException("Bad credentials.");
+        throw new UserNotFoundException();
     }
 
     /**
