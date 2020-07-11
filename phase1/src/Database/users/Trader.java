@@ -8,14 +8,12 @@ import java.util.ArrayList;
  */
 
 public class Trader extends User implements Serializable {
-    //all of the arraylist below store IDs
     private final ArrayList<String> wishList = new ArrayList<>();  //items that this trader wants.
-    private final ArrayList<String> availableItems = new ArrayList<>(); //items that the trader is willing to trade,lend etc
-    private final ArrayList<String> requestedItems = new ArrayList<>(); //items that the this trader wishes to be added to availableItems list
-    private final ArrayList<String> acceptedTrades = new ArrayList<>(); //Database.trades that this user has accepted
-    private final ArrayList<String> requestedTrades = new ArrayList<>(); //Database.trades that a trader has invited this trader to do
-    private final ArrayList<String> completedTrades = new ArrayList<>(); //Database.trades that has happened IRL confirmed by both Database.users
-    private final ArrayList<String> incompleteTrades = new ArrayList<>(); //Database.trades that are incomplete
+    private final ArrayList<String> availableItems = new ArrayList<>(); // items that the trader is willing to trade,lend etc
+    private final ArrayList<String> requestedItems = new ArrayList<>(); // items that the this trader wishes to be added to availableItems list
+    private final ArrayList<String> acceptedTrades = new ArrayList<>(); // trades that are ongoing
+    private final ArrayList<String> requestedTrades = new ArrayList<>(); // trades yet to be accepted or denied
+    private final ArrayList<String> completedTrades = new ArrayList<>(); // trades where meetings are finished and confirmed by both sides and transaction has concluded
     private int tradeLimit;
     private int incompleteTradeCount;
     private int incompleteTradeLim;
@@ -155,11 +153,6 @@ public class Trader extends User implements Serializable {
     }
 
 
-    /**
-     *
-     * @return an arraylist of Trade IDs that represent the traders unsuccessful trade items
-     */
-    public ArrayList<String> getIncompleteTrades(){return incompleteTrades;}
 
     /**
      * @return total number of items borrowed by the trader
