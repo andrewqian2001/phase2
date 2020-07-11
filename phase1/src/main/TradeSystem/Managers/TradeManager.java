@@ -59,17 +59,18 @@ public class TradeManager {
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot trade with yourself");
 
         if (trader.getTradeLimit() < 0)
-            throw new CannotTradeException("Your trading limit has passed, wait until it resets");
+            throw new CannotTradeException("This user has passed its trading limit");
         if (secondTrader.getTradeLimit() < 0)
             throw new CannotTradeException("The user requested has a trading limit restriction");
+        if (trader.getAcceptedTrades().size() >= trader.getIncompleteTradeLim())
+            throw new CannotTradeException("This user has too many active trades.");
+        if (secondTrader.getAcceptedTrades().size() >= secondTrader.getIncompleteTradeLim())
+            throw new CannotTradeException("The user requested has too many active trades.");
 
         // This is used to check if the items are valid to trade
         getTradableItem(thisUserOfferId, traderId);
         getTradableItem(thisUserOfferId, secondUserOfferId);
 
-        if (!tradableItemDatabase.contains(thisUserOfferId)) throw new TradableItemNotFoundException(thisUserOfferId);
-        if (!tradableItemDatabase.contains(secondUserOfferId))
-            throw new TradableItemNotFoundException(secondUserOfferId);
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, thisUserOfferId, secondUserOfferId, allowedEdits);
@@ -84,15 +85,70 @@ public class TradeManager {
     }
 
     /**
+     * Requests to lend an item to someone
      *
+     * @param userId            the id of the user to lend to
+     * @param meetingTime       when the meeting takes place
+     * @param secondMeetingTime when the second meeting takes place (make this time to be the same or earlier
+     *                          than the first meeting time for a permanent trade)
+     * @param meetingLocation   where the meeting takes place
+     * @param thisUserOfferId   the item id of that this current user is willing to offer
+     * @param allowedEdits      number of edits allowed before the trade is cancelled
+     * @return the trade object
+     * @throws TradableItemNotFoundException the items passed in for trading doesn't exist
+     * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
+     * @throws AuthorizationException        the item for trading cannot be traded
+     * @throws CannotTradeException          cannot request a trade
      */
-    public void requestLend() {
+    public Trade requestLend(String userId,
+                             Date meetingTime, Date secondMeetingTime,
+                             String meetingLocation, String thisUserOfferId, int allowedEdits)
+            throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
+        Trader trader = getTrader(traderId);
+        Trader secondTrader = getTrader(userId);
+        if (userId.equals(traderId)) throw new CannotTradeException("Cannot lend to yourself");
+        if (secondTrader.getTradeLimit() < 0)
+            throw new CannotTradeException("There is a trading limit restriction");
+        if (trader.getAcceptedTrades().size() >= trader.getIncompleteTradeLim() ||
+                secondTrader.getAcceptedTrades().size() >= secondTrader.getIncompleteTradeLim())
+            throw new CannotTradeException("Too many active trades.");
+
+        // This is used to check if the items are valid to trade
+        getTradableItem(thisUserOfferId, traderId);
+
+        Trade trade = new Trade(traderId, userId,
+                meetingTime, secondMeetingTime,
+                meetingLocation, thisUserOfferId, "", allowedEdits);
+        String tradeId = tradeDatabase.update(trade).getId();
+        trader.getRequestedTrades().add(tradeId);
+        secondTrader.getRequestedTrades().add(tradeId);
+        secondTrader.setTradeLimit(secondTrader.getTradeLimit() - 1);
+        userDatabase.update(trader);
+        userDatabase.update(secondTrader);
+        return trade;
     }
 
     /**
+     * Requests to borrow an item from someone
      *
+     * @param userId            the id of the user to borrow from
+     * @param meetingTime       when the meeting takes place
+     * @param secondMeetingTime when the second meeting takes place (make this time to be the same or earlier
+     *                          than the first meeting time for a permanent trade)
+     * @param meetingLocation   where the meeting takes place
+     * @param thatUserOfferId   the item id to borrow
+     * @param allowedEdits      number of edits allowed before the trade is cancelled
+     * @return the trade object
+     * @throws TradableItemNotFoundException the items passed in for trading doesn't exist
+     * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
+     * @throws AuthorizationException        the item for trading cannot be traded
+     * @throws CannotTradeException          cannot request a trade
      */
-    public void requestBorrow() {
+    public Trade requestBorrow(String userId,
+                               Date meetingTime, Date secondMeetingTime,
+                               String meetingLocation, String thatUserOfferId, int allowedEdits) throws
+            TradableItemNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
+        return requestLend(userId, meetingTime, secondMeetingTime, meetingLocation, thatUserOfferId, allowedEdits);
     }
 
     /**
@@ -185,7 +241,6 @@ public class TradeManager {
             trader2.getAvailableItems().add(trade.getFirstUserOffer());
             userDatabase.update(trader1);
             userDatabase.update(trader2);
-
         }
         tradeDatabase.update(trade);
     }
@@ -218,7 +273,7 @@ public class TradeManager {
             this.denyTrade(tradeId);
             throw new CannotTradeException("Too many edits. Trade is cancelled.");
         }
-        if (trade.getUserTurnToEdit().equals(trade.getFirstUserId())) trade.changeUserTurn();
+        if (trade.getUserTurnToEdit().equals(traderId)) trade.changeUserTurn();
         else throw new CannotTradeException("A previous trade offer has already been sent");
         trade.setMeetingTime(meetingTime);
         trade.setSecondMeetingTime(secondMeetingTime);
