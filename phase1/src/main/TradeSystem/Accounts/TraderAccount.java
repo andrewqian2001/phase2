@@ -182,38 +182,7 @@ public class TraderAccount implements Account{
      * @throws EntryNotFoundException user id / trade id not found
      */
     public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
-        String trader2 = tradeManager.getOtherUser(tradeID, userID);
-
-        if(!((Database.users.TraderManager)userManager).getAcceptedTrades(trader2).contains(tradeID)){//other user has no accepted the trade
-            return false;
-        }
-
-
-        String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
-        String TraderIds[] = tradeManager.getTraderIDsFromTrade(tradeID);
-
-        if (tradeManager.getFirstMeetingConfirmed(tradeID, userID) && tradeManager.hasSecondMeeting(tradeID)){
-
-            tradeManager.confirmSecondMeeting(tradeID, userID, true);
-            if(tradeManager.isSecondMeetingConfirmed(tradeID) && isTradeTemporary(tradeID)){
-
-                ((Database.users.TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[1], TraderIds[1], itemsFromTrade[0]);
-                ((Database.users.TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);
-                ((Database.users.TraderManager)userManager).addToCompletedTradesList(TraderIds[1],tradeID);
-
-            }
-        } else
-            tradeManager.confirmFirstMeeting(tradeID, userID, true);
-        if(tradeManager.isFirstMeetingConfirmed(tradeID)){ //once both Database.users have confirmed the trade has taken place, the inventories(avalible items list) should update
-
-            ((Database.users.TraderManager)userManager).trade(TraderIds[0], itemsFromTrade[0], TraderIds[1], itemsFromTrade[1]);
-            if(!isTradeTemporary(tradeID)){
-
-                ((Database.users.TraderManager)userManager).addToCompletedTradesList(TraderIds[0],tradeID);
-                ((Database.users.TraderManager)userManager).addToCompletedTradesList(TraderIds[1],tradeID);
-            }
-        }
-        return true;
+        return traderManager.confirmTrade(tradeID);
     }
 
     /**
@@ -241,31 +210,13 @@ public class TraderAccount implements Account{
      * @throws CannotTradeException if the trade is not allowed
      * @return true
      */
-    public boolean editTrade(String userID, String traderId,  String tradeID, Date firstMeeting,
-                             Date secondMeeting, String meetingLocation, int inventoryItemIndex, int traderInventoryItemIndex) throws EntryNotFoundException, CannotTradeException {
+    public boolean editTrade(String userID, String traderId,  String tradeID, Date firstMeeting, Date secondMeeting, String meetingLocation, int inventoryItemIndex, int traderInventoryItemIndex) throws CannotTradeException, EntryNotFoundException {
 
-        /*
-        ArrayList<String> userInventory = ((Database.users.TraderManager) userManager).getInventory(userID);
-        ArrayList<String> traderInventory = ((Database.users.TraderManager) userManager).getInventory(traderId);
-        tradeManager.editTrade(tradeID, firstMeeting, secondMeeting, meetingLocation,
-                userInventory.get(inventoryItemIndex), traderInventory.get(traderInventoryItemIndex));
-
-
-
-
-        ((Database.users.TraderManager)userManager).removeAcceptedTrade(traderId, tradeID);
-        ((Database.users.TraderManager)userManager).addRequestTrade(traderId, tradeID);
-        ((Database.users.TraderManager)userManager).removeRequestTrade(userID, tradeID);
-        ((Database.users.TraderManager)userManager).acceptTradeRequest(userID, tradeID);
-        */
-
-
-
-
-
+        traderManager.editTrade(userID, traderId, tradeID, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
 
         return true;
     }
+
     /**
      * Gets the tradeID given the index of the Database.users requested trade
      * @param userId id of the user

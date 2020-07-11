@@ -4,21 +4,23 @@ import Database.Database;
 import Database.users.Trader;
 import Database.users.User;
 import exceptions.AuthorizationException;
+import exceptions.CannotTradeException;
 import exceptions.EntryNotFoundException;
 import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
+import main.TradeSystem.Managers.TradeManager;
 /**
  * Used for the actions of a Trader
  */
 public class TraderManager {
     private final Database<User> userDatabase;
     private final String traderId;
-
+    private final TradeManager tradeManager;
     /**
      * This is used for the actions that a trader user can do
      *
@@ -56,7 +58,7 @@ public class TraderManager {
      * @throws EntryNotFoundException Database.users / items not found
      */
 
-    public String trade(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
+    public String tradeItems(String user1, String item1, String user2, String item2) throws EntryNotFoundException {
         Trader trader1 = findTraderbyId(user1);
         Trader trader2 = findTraderbyId(user2);
         if (!trader1.getAvailableItems().remove(item1)) {
@@ -66,6 +68,7 @@ public class TraderManager {
             trader1.getAvailableItems().add(item1);
             throw new EntryNotFoundException("Item " + item2 + " not found");
         }
+        //Arnt we supposed to add the items after we confirm trade
         trader1.getAvailableItems().add(item2);
         trader2.getAvailableItems().add(item1);
         trader1.getWishlist().remove(item2);
@@ -73,6 +76,73 @@ public class TraderManager {
         userDatabase.update(trader1);
         userDatabase.update(trader2);
         return user1;
+    }
+
+    /**
+     *
+     * @param traderId is the id of trader1
+     * @param trader2Id is the id of trader2
+     * @param tradeID
+     * @param firstMeeting date
+     * @param secondMeeting date
+     * @param meetingLocation
+     * @param inventoryItemIndex
+     * @param traderInventoryItemIndex
+     * @return true if edit was sucessful
+     * @throws CannotTradeException
+     * @throws EntryNotFoundException
+     */
+    public boolean editTrade(String traderId, String trader2Id,  String tradeID, Date firstMeeting,
+                            Date secondMeeting, String meetingLocation, int inventoryItemIndex, int traderInventoryItemIndex)throws CannotTradeException, EntryNotFoundException {
+        ArrayList<String> traderInventory = ((Database.users.TraderManager) userManager).getInventory(traderId);
+        ArrayList<String> trader2Inventory = ((Database.users.TraderManager) userManager).getInventory(trader2Id);
+        tradeManager.editTrade(tradeID, firstMeeting, secondMeeting, meetingLocation,
+                traderInventory.get(inventoryItemIndex), trader2Inventory.get(traderInventoryItemIndex));
+
+
+        ((Database.users.TraderManager)userManager).removeAcceptedTrade(traderId, tradeID);
+        ((Database.users.TraderManager)userManager).addRequestTrade(traderId, tradeID);
+        ((Database.users.TraderManager)userManager).removeRequestTrade(traderId, tradeID);
+        ((Database.users.TraderManager)userManager).acceptTradeRequest(traderId, tradeID);
+        return true;
+    }
+    /**
+     * Confirms an accepted trade took place outside of the program
+     * @param tradeID id of the trade
+     * @return true if the trade was successfully confirmed
+     * @throws EntryNotFoundException user id / trade id not found
+     */
+    public boolean confirmTrade(String tradeID) throws EntryNotFoundException, AuthorizationException{
+        String trader2Id = tradeManager.getOtherUser(tradeID, traderId);
+
+        if(!((Database.users.TraderManager)userManager).getAcceptedTrades(trader2Id).contains(tradeID)){//other user has no accepted the trade
+            return false;
+        }
+        String itemsFromTrade[] = tradeManager.getItemsFromTrade(tradeID);
+
+
+        if (tradeManager.getFirstMeetingConfirmed(tradeID, traderId) && tradeManager.hasSecondMeeting(tradeID)){
+
+            tradeManager.confirmSecondMeeting(tradeID, true);
+            if(tradeManager.isSecondMeetingConfirmed(tradeID) && tradeManager.hasSecondMeeting(tradeID)){
+
+                ((Database.users.TraderManager)userManager).trade(traderId, itemsFromTrade[1], trader2Id, itemsFromTrade[0]);
+                ((Database.users.TraderManager)userManager).addToCompletedTradesList(traderId,tradeID);
+                ((Database.users.TraderManager)userManager).addToCompletedTradesList(trader2Id,tradeID);
+
+            }
+        } else
+            tradeManager.confirmFirstMeeting(tradeID, userID, true);
+        if(tradeManager.isFirstMeetingConfirmed(tradeID)){ //once both Database.users have confirmed the trade has taken place, the inventories(avalible items list) should update
+
+            ((Database.users.TraderManager)userManager).trade(traderId, itemsFromTrade[0], trader2Id, itemsFromTrade[1]);
+            if(!tradeManager.hasSecondMeeting(tradeID)){
+
+                ((Database.users.TraderManager)userManager).addToCompletedTradesList(traderId,tradeID);
+                ((Database.users.TraderManager)userManager).addToCompletedTradesList(trader2Id,tradeID);
+            }
+        }
+        return true;
     }
 
 

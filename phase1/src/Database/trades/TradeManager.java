@@ -81,20 +81,7 @@ public class TradeManager implements Serializable {
         return new String[]{trade.getFirstUserId(), trade.getSecondUserId()};
     }
 
-    /**
-     * Gets if the first meeting was confirmed
-     *
-     * @param tradeID id of the trade
-     * @param userID  id of the user
-     * @return true if the user confirmed the first meeting
-     * @throws EntryNotFoundException trade id wasn't found
-     */
-    public boolean getFirstMeetingConfirmed(String tradeID, String userID) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeID);
-        if (trade.getFirstUserId().equals(userID)) return trade.isFirstUserConfirmed1();
-        else if (trade.getSecondUserId().equals(userID)) return trade.isSecondUserConfirmed1();
-        else throw new EntryNotFoundException("The user " + userID + " was not found.");
-    }
+
 
     /**
      * Gets if the second meeting was confirmed
@@ -197,28 +184,9 @@ public class TradeManager implements Serializable {
         return trade.getMeetingTime();
     }
 
-    /**
-     * Gets the second meeting time
-     *
-     * @param tradeID id of the trade
-     * @return the Date of the second meeting time
-     * @throws EntryNotFoundException trade id wasnt found
-     */
-    public Date getSecondMeetingTime(String tradeID) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeID);
-        return trade.getSecondMeetingTime();
-    }
 
-    /**
-     * Checks if the given trade is temporary (has a second meeting)
-     *
-     * @param tradeID id of the trade
-     * @return true if the trade is temporary
-     * @throws EntryNotFoundException trade id wasn't found
-     */
-    public boolean hasSecondMeeting(String tradeID) throws EntryNotFoundException {
-        return getSecondMeetingTime(tradeID) != null;
-    }
+
+
 
     /**
      * Editing an existing trade
