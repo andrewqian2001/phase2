@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.util.*;
 
 import main.TradeSystem.Managers.TraderManager;
-
+import main.TradeSystem.Managers.TradeManager;
 /**
  * For interacting with traders
  */
 public class TraderAccount implements Account{
 
     private final TraderManager traderManager;
+    private final TradeManager tradeManager;
     /**
      * For accessing actions that a trader can do
      * @param traderId the id of the trader
@@ -22,6 +23,7 @@ public class TraderAccount implements Account{
      */
     public TraderAccount(String traderId) throws IOException, UserNotFoundException, AuthorizationException {
         traderManager = new TraderManager(traderId);
+        tradeManager = new TradeManager(traderId);
     }
 
     /**
@@ -181,7 +183,7 @@ public class TraderAccount implements Account{
      * @return true if the trade was successfully confirmed
      * @throws EntryNotFoundException user id / trade id not found
      */
-    public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException {
+    public boolean confirmTrade(String userID, String tradeID) throws EntryNotFoundException, AuthorizationException {
         return traderManager.confirmTrade(tradeID);
     }
 

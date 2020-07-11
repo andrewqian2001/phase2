@@ -32,6 +32,7 @@ public class TraderManager {
     public TraderManager(String traderId) throws IOException, UserNotFoundException, AuthorizationException {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
         this.traderId = getTrader(traderId).getId();
+        tradeManager = new TradeManager(traderId);
     }
 
     /**
@@ -145,6 +146,49 @@ public class TraderManager {
         return true;
     }
 
+    /**
+     * Removes a trade from the two user's requested (or accepted) Database.trades
+     *
+     * @param userID  id of user
+     * @param user2ID  id of user2
+     * @param tradeId id of trade to deny
+     * @return true if a trade was removed, false otherwise
+     * @throws EntryNotFoundException if the user was not found
+     */
+    public boolean denyTrade(String userID, String user2ID, String tradeId) throws EntryNotFoundException {
+        Trader trader = findTraderbyId(userID);
+        Trader trader2 = findTraderbyId(user2ID);
+        trader2.setTradeCount(trader2.getTradeCount() - 1);
+        boolean removed_request = trader.getRequestedTrades().remove(tradeId);
+        boolean removed_accepted = trader.getAcceptedTrades().remove(tradeId);
+        boolean removed_request2 = trader2.getRequestedTrades().remove(tradeId);
+        boolean removed_accepted2 = trader2.getRequestedTrades().remove(tradeId);
+        userDatabase.update(trader);
+        userDatabase.update(trader2);
+        return (removed_request || removed_accepted) && (removed_request2 || removed_accepted2);
+    }
+
+    /**
+     *
+     * @param user1 is the ID of the first trader
+     * @param tradeId id of the trade
+     * @return true if trade was successful
+     * @throws EntryNotFoundException user1 / tradeId not found
+     */
+
+    public boolean acceptTradeRequest(String user1, String tradeId) throws EntryNotFoundException {
+        Trader trader1 = findTraderbyId(user1);
+        if (trader1.isFrozen() || trader1.getTradeLimit() <= trader1.getTradeCount()) {
+            return false;
+        }
+
+        trader1.getRequestedTrades().remove(tradeId);
+        trader1.getAcceptedTrades().add(tradeId);
+        trader1.setTradeCount(trader1.getTradeCount() + 1);
+        userDatabase.update(trader1);
+        return true;
+    }
+
 
     /**
      * Performs the action of user1 lending an item from user2
@@ -233,7 +277,17 @@ public class TraderManager {
         userDatabase.update(trader);
     }
 
-
+    /**
+     * Adds an item to this trader's wishlist
+     * @param userId the trader's id
+     * @param tradableItemId the item to be added to this user's wishlist
+     * @throws EntryNotFoundException if the trader with the given userId is not found
+     */
+    public void addToWishList(String userId, String tradableItemId) throws EntryNotFoundException{
+        Trader trader = findTraderbyId(userId);
+        trader.getWishlist().add(tradableItemId);
+        userDatabase.update(trader);
+    }
 
     /**
      * Gets a hashmap of trader ids to an arraylist of their available items

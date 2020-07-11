@@ -114,33 +114,9 @@ public class TradeManager implements Serializable {
         tradeDatabase.update(trade);
     }
 
-    /**
-     *
-     * @param tradeId is the id of the trade
-     * @return if the first meeting happened
-     * @throws EntryNotFoundException trade id wasn't found
-     */
-    public boolean isFirstMeetingConfirmed(String tradeId) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeId);
-        if(trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()){
-            return true;
-        }
-        return false;
-    }
 
-    /**
-     *
-     * @param tradeId is the id of the trade
-     * @return if the second meeting happened
-     * @throws EntryNotFoundException trade id wasn't found
-     */
-    public boolean isSecondMeetingConfirmed(String tradeId) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeId);
-        if(trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2()){
-            return true;
-        }
-        return false;
-    }
+
+
 
     /**
      * Confirms the second meeting, if there was a second meeting
@@ -172,17 +148,7 @@ public class TradeManager implements Serializable {
         else return trade.getFirstUserId();
     }
 
-    /**
-     * Gets the first meeting time
-     *
-     * @param tradeID id of the trade
-     * @return the Date of the first meeting time
-     * @throws EntryNotFoundException trade id wasn't found
-     */
-    public Date getFirstMeetingTime(String tradeID) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeID);
-        return trade.getMeetingTime();
-    }
+
 
 
 
@@ -216,33 +182,9 @@ public class TradeManager implements Serializable {
         return trade.getId();
     }
 
-    /**
-     * @param tradeID the id of the trade
-     * @return meeting location of the trade
-     * @throws EntryNotFoundException tradeId is not found
-     */
-    public String getMeetingLocation(String tradeID) throws EntryNotFoundException {
-        return tradeDatabase.populate(tradeID).getMeetingLocation();
-    }
 
-    /**
-     * Checks if trade is in progress
-     *
-     * @param tradeId id of the trade
-     * @return true if the trade is in progress, false else
-     * @throws EntryNotFoundException tradeId is not found
-     */
-    public boolean isTradeInProgress(String tradeId) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeId);
 
-        // If permanent trade, then the first meeting must be confirmed by both Database.users for it to not be in progress.
-        if (trade.getSecondMeetingTime()== null) {
-            return !(trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1());
-        }
-        // Checks for temporary Database.trades, both meetings must be confirmed by both Database.users for it to not be in progress.
-        return !(trade.isFirstUserConfirmed2() && trade.isFirstUserConfirmed2() &&
-                trade.isSecondUserConfirmed1() && trade.isSecondUserConfirmed2());
-    }
+
 
     /**
      * Gets the user turn to edit

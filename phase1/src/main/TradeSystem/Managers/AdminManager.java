@@ -138,6 +138,18 @@ public class AdminManager {
     }
 
     /**
+     * Changes the specified user's trade limit
+     * @param userId the user who's trade limit will be changed
+     * @param newLimit the new trade limit
+     * @throws EntryNotFoundException if the trader could not be found
+     */
+    public void changeTraderLimits(String userId, int newLimit) throws EntryNotFoundException {
+        Trader trader = findTraderbyId(userId);
+        trader.setIncompleteTradeLim(newLimit);
+        userDatabase.update(trader);
+    }
+
+    /**
      * Return traders that should be frozen
      *
      * @return true if the user should be frozen, false otherwise
