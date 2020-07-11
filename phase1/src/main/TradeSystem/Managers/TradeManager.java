@@ -72,7 +72,7 @@ public class TradeManager {
                 meetingTime, secondMeetingTime,
                 meetingLocation, thisUserOfferId, secondUserOfferId, allowedEdits);
         String tradeId = tradeDatabase.update(trade).getId();
-        Trader trader = getTrader(tradeId);
+        Trader trader = getTrader(traderId);
         trader.getRequestedTrades().add(tradeId);
         userDatabase.update(trader);
         secondTrader.getRequestedTrades().add(tradeId);
