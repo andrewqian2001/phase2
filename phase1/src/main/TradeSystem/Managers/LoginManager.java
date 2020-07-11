@@ -12,8 +12,9 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 public class LoginManager {
-    private Database<User> userDatabase;
+    private final Database<User> userDatabase;
     private int defaultTradeLimit = 10;
+    private int defaultIncompleteTradeLim = 3;
 
     /**
      * Represents different user types
@@ -48,7 +49,7 @@ public class LoginManager {
             case ADMIN:
                 return userDatabase.update(new Admin(username, password)).getId();
             case TRADER:
-                return userDatabase.update(new Trader(username, password, defaultTradeLimit)).getId();
+                return userDatabase.update(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim)).getId();
             case DEFAULT:
             default:
                 return userDatabase.update(new User(username, password)).getId();

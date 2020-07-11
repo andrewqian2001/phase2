@@ -15,11 +15,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class AdminManager {
-    private Database<User> userDatabase;
-    private Database<Trade> tradeDatabase;
-    private Database<TradableItem> tradableItemDatabase;
-    private String adminId;
-    private Admin admin;
+    private final Database<User> userDatabase;
+    private final Database<Trade> tradeDatabase;
+    private final Database<TradableItem> tradableItemDatabase;
+    private final String adminId;
 
     /**
      * This is used for the actions that an admin user can do
@@ -37,8 +36,7 @@ public class AdminManager {
         if (!(tmp instanceof Admin))
             throw new AuthorizationException("This account is not an admin type.");
         else
-            adminId = tmp.getId();
-        admin = (Admin) tmp;
+            this.adminId = tmp.getId();
     }
 
     /**
@@ -71,18 +69,22 @@ public class AdminManager {
     }
 
     /**
-     * Gets all Item requests for each user
-     * @return a Map corresponding to a userId with a list of their item requests
+     * Gets a hashmap of trader ids to an arraylist of their requested items
+     * @return a hashmap of trader ids to an arraylist of their requested items
      */
-    public HashMap<String, ArrayList<String>> getAllItemRequests()  {
-        HashMap<String, ArrayList<String>> itemRequests = new HashMap<>();
-        for(User user : userDatabase.getItems()) {
-            if(user instanceof Trader) {
-                itemRequests.put(user.getId(), ((Trader) user).getRequestedItems());
+    public HashMap<String, ArrayList<String>> getAllItemRequests() {
+        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+
+        for (User user : userDatabase.getItems()) {
+            if (user instanceof Trader) {
+                ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
+                if (requestedItems.size() > 0)
+                    allItems.put(user.getId(), requestedItems);
             }
         }
-        return itemRequests;
+        return allItems;
     }
+
 
     /**
      * Process the item request of a user
@@ -117,6 +119,51 @@ public class AdminManager {
                 userDatabase.update(user);
             }
         }
+    }
+
+    /**
+     * Return traders that should be frozen
+     * @return true if the user should be frozen, false otherwise
+     * @throws EntryNotFoundException if the user can not be found
+     */
+    public ArrayList<String> getFreezable() {
+        ArrayList<String> freezable = new ArrayList<>();
+        for(User user : userDatabase.getItems()){
+            if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()){
+                freezable.add(user.getId());
+            }
+        }
+        return freezable;
+    }
+
+    /**
+     * Changes the specified user's incomplete trade limit
+     * @param userId the user who's trade limit will be changed
+     * @param newLimit the new trade limit
+     * @throws EntryNotFoundException if the trader could not be found
+     */
+    public void changeIncompleteTradeLimit(String userId, int newLimit) throws EntryNotFoundException {
+        User trader = findUserByID(userId);
+        if (!(trader instanceof Trader)){
+            throw new EntryNotFoundException("The specified user is not a trader.");
+        }
+        ((Trader) trader).setIncompleteTradeLim(newLimit);
+        userDatabase.update(trader);
+    }
+
+    /**
+     * Changes the specified user's weekly trade limit
+     * @param userId the user who's trade limit will be changed
+     * @param newLimit the new trade limit
+     * @throws EntryNotFoundException if the trader could not be found
+     */
+    public void changeWeeklyTradeLimit(String userId, int newLimit) throws EntryNotFoundException {
+        User trader = findUserByID(userId);
+        if (!(trader instanceof Trader)) {
+            throw new EntryNotFoundException("The specified user is not a trader.");
+        }
+        ((Trader) trader).setTradeLimit(newLimit);
+        userDatabase.update(trader);
     }
 
     private User findUserByID(String userID) throws EntryNotFoundException {
