@@ -114,6 +114,15 @@ public class Database<T extends DatabaseItem> implements Serializable {
         }
         throw new EntryNotFoundException("Could not find item " + id);
     }
+    public boolean contains(String id) {
+        try {
+            populate(id);
+        }
+        catch (EntryNotFoundException e){
+            return false;
+        }
+        return true;
+    }
 
     /**
      * @return LinkedList containing all the items in the file

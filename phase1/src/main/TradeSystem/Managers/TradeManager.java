@@ -54,8 +54,10 @@ public class TradeManager {
      */
     public String addTrade(String userId,
                            Date meetingTime, Date secondMeetingTime,
-                           String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
-        Trade trade = new Trade(firstUserId, secondUserId,
+                           String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) throws EntryNotFoundException {
+        if (!userDatabase.contains(userId)) throw new EntryNotFoundException("The user " + userId + " does not exist.");
+        if (!tradableItemDatabase.contains(firstUserOffer)) throw new EntryNotFoundException("The item " + firstUserOffer + " does not exist.");
+        Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, firstUserOffer, secondUserOffer, allowedEdits);
         return tradeDatabase.update(trade).getId();
