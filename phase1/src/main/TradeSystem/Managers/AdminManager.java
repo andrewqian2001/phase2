@@ -11,6 +11,7 @@ import exceptions.EntryNotFoundException;
 import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,12 +50,16 @@ public class AdminManager {
      *
      * @param userID       the user id
      * @param freezeStatus to freeze the user
-     * @throws EntryNotFoundException can't find user id
+     * @throws UserNotFoundException can't find user id
      */
     public void setFrozen(String userID, boolean freezeStatus) throws UserNotFoundException {
-        User user = getUser(userID);
-        user.setFrozen(freezeStatus);
-        userDatabase.update(user);
+        try {
+            User user = userDatabase.populate(userID);
+            user.setFrozen(freezeStatus);
+            userDatabase.update(user);
+        } catch (EntryNotFoundException e) {
+            throw new UserNotFoundException(userID);
+        }
     }
 
     /**
@@ -99,8 +104,8 @@ public class AdminManager {
      * @param isAccepted true if item is accepted, false if rejected
      * @throws EntryNotFoundException traderName / itemName not found
      */
-    public void processItemRequest(String traderID, int itemIndex, boolean isAccepted) throws EntryNotFoundException {
-        Trader trader = (Trader) this.findUserByID(traderID);
+    public void processItemRequest(String traderID, int itemIndex, boolean isAccepted) throws EntryNotFoundException, AuthorizationException {
+        Trader trader = getTrader(traderID);
         ArrayList<String> itemIDs = trader.getRequestedItems();
         if (itemIndex < 0 || itemIndex >= itemIDs.size()) {
             throw new EntryNotFoundException("Invalid index.");
@@ -117,14 +122,18 @@ public class AdminManager {
      * Sets the current weekly trade limit for all traders
      *
      * @param tradeLimit the new weekly trade limit
-     * @throws EntryNotFoundException couldn't get traders
+     * @throws UserNotFoundException couldn't get traders
      */
-    public void setTradeLimit(int tradeLimit) throws EntryNotFoundException {
-        for (User user : userDatabase.getItems()) {
+    public void setTradeLimit(int tradeLimit) throws UserNotFoundException {
+        LinkedList<User> allUsers = userDatabase.getItems();
+        for (User user : allUsers)
             if (user instanceof Trader) {
                 ((Trader) user).setTradeLimit(tradeLimit);
-                userDatabase.update(user);
             }
+        try {
+            userDatabase.save(allUsers);
+        } catch (FileNotFoundException e) {
+            throw new UserNotFoundException();
         }
     }
 
@@ -132,7 +141,6 @@ public class AdminManager {
      * Return traders that should be frozen
      *
      * @return true if the user should be frozen, false otherwise
-     * @throws EntryNotFoundException if the user can not be found
      */
     public ArrayList<String> getFreezable() {
         ArrayList<String> freezable = new ArrayList<>();
@@ -149,14 +157,10 @@ public class AdminManager {
      *
      * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
-     * @throws EntryNotFoundException if the trader could not be found
      */
-    public void changeIncompleteTradeLimit(String userId, int newLimit) throws EntryNotFoundException {
-        User trader = findUserByID(userId);
-        if (!(trader instanceof Trader)) {
-            throw new EntryNotFoundException("The specified user is not a trader.");
-        }
-        ((Trader) trader).setIncompleteTradeLim(newLimit);
+    public void changeIncompleteTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(userId);
+        trader.setIncompleteTradeLim(newLimit);
         userDatabase.update(trader);
     }
 
@@ -165,38 +169,39 @@ public class AdminManager {
      *
      * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
-     * @throws EntryNotFoundException if the trader could not be found
      */
-    public void changeWeeklyTradeLimit(String userId, int newLimit) throws EntryNotFoundException {
-        User trader = findUserByID(userId);
-        if (!(trader instanceof Trader)) {
-            throw new EntryNotFoundException("The specified user is not a trader.");
-        }
-        ((Trader) trader).setTradeLimit(newLimit);
+    public void changeWeeklyTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(userId);
+        trader.setTradeLimit(newLimit);
         userDatabase.update(trader);
     }
 
     /**
      * For getting a user object from a user id
+     *
      * @param userID the user id
      * @return the user object
-     * @throws UserNotFoundException if the user id wasn't found
+     * @throws UserNotFoundException  if the user id wasn't found
+     * @throws AuthorizationException this is not a trader
      */
-    public User getUser(String userID) throws UserNotFoundException {
+    public Trader getTrader(String userID) throws UserNotFoundException, AuthorizationException {
         try {
-            return userDatabase.populate(userID);
-        }
-        catch(EntryNotFoundException e){
+            User tmp = userDatabase.populate(userID);
+            if (!(tmp instanceof Trader)) throw new AuthorizationException("This is not a trader");
+            return (Trader) tmp;
+        } catch (EntryNotFoundException e) {
             throw new UserNotFoundException(userID);
         }
     }
+
     /**
      * Gets the userID of a user given their username
+     *
      * @param username the username of the user
      * @return the ID of the user
      * @throws UserNotFoundException could not find user
      */
-    public String getUserId(String username) throws UserNotFoundException{
+    public String getUserId(String username) throws UserNotFoundException {
         LinkedList<User> users = userDatabase.getItems();
         for (User user : users)
             if (user.getUsername().equals(username))
