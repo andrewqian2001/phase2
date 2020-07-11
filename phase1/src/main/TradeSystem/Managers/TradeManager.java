@@ -5,9 +5,7 @@ import Database.tradableitems.TradableItem;
 import Database.trades.Trade;
 import Database.users.Trader;
 import Database.users.User;
-import exceptions.AuthorizationException;
-import exceptions.CannotTradeException;
-import exceptions.EntryNotFoundException;
+import exceptions.*;
 import main.DatabaseFilePaths;
 
 import java.io.IOException;
@@ -40,26 +38,29 @@ public class TradeManager {
     }
 
     /**
-     * Creates a new Trade
+     * Creates a new trade and
      *
      * @param userId      the id of the user being traded with
      * @param meetingTime       when the meeting takes place
      * @param secondMeetingTime when the second meeting takes place (make this time to be the same or earlier
      *                          than the first meeting time for a permanent trade)
      * @param meetingLocation   where the meeting takes place
-     * @param firstUserOffer    the item id that the user who initialized the trade is willing to offer
-     * @param secondUserOffer   the item id that the user who got sent the trade is willing to offer
+     * @param firstUserOfferId    the item id that the user who initialized the trade is willing to offer
+     * @param secondUserOfferId   the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
-     * @return the object added
+     * @return the trade id added
      */
     public String addTrade(String userId,
                            Date meetingTime, Date secondMeetingTime,
-                           String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) throws EntryNotFoundException {
-        if (!userDatabase.contains(userId)) throw new EntryNotFoundException("The user " + userId + " does not exist.");
-        if (!tradableItemDatabase.contains(firstUserOffer)) throw new EntryNotFoundException("The item " + firstUserOffer + " does not exist.");
+                           String meetingLocation, String firstUserOfferId, String secondUserOfferId, int allowedEdits) throws EntryNotFoundException {
+        if (!userDatabase.contains(userId)) throw new UserNotFoundException(userId);
+        if (!tradableItemDatabase.contains(firstUserOfferId)) throw new TradableItemNotFoundException(firstUserOfferId);
+        if (!tradableItemDatabase.contains(secondUserOfferId)) throw new TradableItemNotFoundException(secondUserOfferId);
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
-                meetingLocation, firstUserOffer, secondUserOffer, allowedEdits);
+                meetingLocation, firstUserOfferId, secondUserOfferId, allowedEdits);
+        Trader trader = (Trader) userDatabase.populate((traderId));
+
         return tradeDatabase.update(trade).getId();
     }
 
