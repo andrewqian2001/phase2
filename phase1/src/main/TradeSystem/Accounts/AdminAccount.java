@@ -7,6 +7,7 @@ import java.util.HashMap;
 import exceptions.*;
 import main.TradeSystem.Managers.AdminManager;
 import main.TradeSystem.Managers.LoginManager;
+import main.TraderProperties;
 
 /**
  * Represents an admin account
@@ -79,10 +80,21 @@ public class AdminAccount implements Account {
      * @param tradeLimit the new weekly trade limit
      * @throws UserNotFoundException Can't find traders
      */
-    public void setTradeLimit(int tradeLimit) throws UserNotFoundException {
-        adminManager.setTradeLimit(tradeLimit);
-        loginManager.setDefaultTradeLimit(tradeLimit);
+    public void setLimit(TraderProperties property, int tradeLimit) throws UserNotFoundException {
+        adminManager.setLimit(property, tradeLimit);
+        loginManager.setProperty(property, tradeLimit);
     }
+
+    /**
+     * Gets the current default value of a specified trader limit
+     * @param property the specified trader limit
+     * @return the value of the property
+     */
+    public int getDefaultLimit(TraderProperties property){
+        return loginManager.getProperty(property);
+    }
+
+
 
     /**
      * Gets the username of a User given their ID NOTE: This will most likely be
@@ -116,15 +128,6 @@ public class AdminAccount implements Account {
      */
     public void processItemRequest(String traderID, int itemIndex, boolean isAccepted) throws EntryNotFoundException, AuthorizationException {
         adminManager.processItemRequest(traderID, itemIndex, isAccepted);
-    }
-
-    /**
-     * the current default trade limit
-     *
-     * @return the current default trade limit
-     */
-    public int getCurrentTradeLimit() {
-        return loginManager.getDefaultTradeLimit();
     }
 
     /**

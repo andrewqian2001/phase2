@@ -8,6 +8,7 @@ import exceptions.UserAlreadyExistsException;
 import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
 import main.TradeSystem.Accounts.UserTypes;
+import main.TraderProperties;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -18,10 +19,6 @@ import java.util.Properties;
  */
 public class LoginManager {
     private final Database<User> userDatabase;
-
-    private final String DEFAULTTRADELIMIT = "defaultTradeLimit";
-    private final String DEFAULTINCOMPLETETRADELIM = "defaultIncompleteTradeLim";
-    private final String DEFAULTMINIMUMAMOUNTNEEDEDTOBORROW = "defaultMinimumAmountNeededToBorrow";
 
     private UserTypes lastLoggedInType = null;
 
@@ -44,9 +41,9 @@ public class LoginManager {
      * @throws UserAlreadyExistsException username is not unique
      */
     public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException {
-        int defaultTradeLimit = getProperty(DEFAULTTRADELIMIT);
-        int defaultIncompleteTradeLim = getProperty(DEFAULTINCOMPLETETRADELIM);
-        int defaultMinimumAmountNeededToBorrow = getProperty(DEFAULTMINIMUMAMOUNTNEEDEDTOBORROW);
+        int defaultTradeLimit = getProperty(TraderProperties.TRADELIMIT);
+        int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETETRADELIM);
+        int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUMAMOUNTNEEDEDTOBORROW);
 
         if (!isUsernameUnique(username))
             throw new UserAlreadyExistsException();
@@ -108,48 +105,11 @@ public class LoginManager {
     }
 
     /**
-     * For the trader user type, this sets the initial trade limit when making a new account
-     *
-     * @param tradeLimit initial trade limit of a trader user
-     */
-    public void setDefaultTradeLimit(int tradeLimit) {
-        setProperty(DEFAULTTRADELIMIT, tradeLimit);
-    }
-
-    /**
-     * default trade limit
-     *
-     * @return the current default trade limit.
-     */
-    public int getDefaultTradeLimit() {
-        return getProperty(DEFAULTTRADELIMIT);
-    }
-
-    /**
-     * For the trader user type, this sets the initial incomplete trade limit when making a new account.
-     *
-     * @param defaultIncompleteTradeLim initial incomplete trade limit of a trader user
-     */
-    public void setDefaultIncompleteTradeLim(int defaultIncompleteTradeLim) {
-        setProperty(DEFAULTINCOMPLETETRADELIM, defaultIncompleteTradeLim);
-    }
-
-    /**
-     * For the trader user type, this sets the initial minimum amount that (items lent - items borrowed) should be
-     * before the trader is allowed to borrow.
-     *
-     * @param defaultMinimumAmountNeededToBorrow the number of items that need to be lent out before borrowing is allowed
-     */
-    public void setDefaultMinimumAmountNeededToBorrow(int defaultMinimumAmountNeededToBorrow) {
-        setProperty(DEFAULTMINIMUMAMOUNTNEEDEDTOBORROW, defaultMinimumAmountNeededToBorrow);
-    }
-
-    /**
      * Gets the current value of the specified trader property
-     * @param property_name the name of the trader property
+     * @param propertyType the type of property
      * @return the value of the specified trader property
      */
-    private int getProperty(String property_name){
+    public int getProperty(TraderProperties propertyType){
         try {
             // get the file
             File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
@@ -162,9 +122,9 @@ public class LoginManager {
             // we're not going to use reader anymore, so close it
             reader.close();
             // return the integer value of that property
-            return Integer.parseInt(properties.getProperty(property_name));
+            return Integer.parseInt(properties.getProperty(propertyType.getProperty()));
         } catch (IOException ex) {
-            // I/O error
+            ex.printStackTrace();
         }
         return -1;
     }
@@ -174,7 +134,7 @@ public class LoginManager {
      * @param propertyName the property to change
      * @param propertyValue the new value of that property
      */
-    private void setProperty(String propertyName, int propertyValue){
+    public void setProperty(TraderProperties propertyName, int propertyValue){
         try {
             // get the file
             File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
@@ -185,7 +145,7 @@ public class LoginManager {
             // associate this properties object with the file
             properties.load(reader);
             // set the property
-            properties.setProperty(propertyName, "" + propertyValue);
+            properties.setProperty(propertyName.getProperty(), "" + propertyValue);
 
             //update the file
             FileWriter writer = new FileWriter(propertyFile);

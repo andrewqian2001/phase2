@@ -11,6 +11,7 @@ import exceptions.EntryNotFoundException;
 import exceptions.TradableItemNotFoundException;
 import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
+import main.TraderProperties;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -110,16 +111,27 @@ public class AdminManager {
     }
 
     /**
-     * Sets the current weekly trade limit for all traders
+     * Sets the specified limit for all traders
      *
-     * @param tradeLimit the new weekly trade limit
+     * @param traderProperty the property (limit) to change
+     * @param limit the new value of the specified property
      * @throws UserNotFoundException couldn't get traders
      */
-    public void setTradeLimit(int tradeLimit) throws UserNotFoundException {
+    public void setLimit(TraderProperties traderProperty, int limit) throws UserNotFoundException {
         LinkedList<User> allUsers = userDatabase.getItems();
         for (User user : allUsers)
             if (user instanceof Trader) {
-                ((Trader) user).setTradeLimit(tradeLimit);
+                switch(traderProperty){
+                    case TRADELIMIT:
+                        ((Trader) user).setTradeLimit(limit);
+                        break;
+                    case INCOMPLETETRADELIM:
+                        ((Trader) user).setIncompleteTradeLim(limit);
+                        break;
+                    case MINIMUMAMOUNTNEEDEDTOBORROW:
+                        ((Trader) user).setMinimumAmountNeededToBorrow(limit);
+                }
+
             }
         try {
             userDatabase.save(allUsers);
@@ -129,18 +141,30 @@ public class AdminManager {
     }
 
     /**
-     * Changes the specified user's trade limit
+     * Changes the specified property of the specified user
      *
-     * @param userId   the user who's trade limit will be changed
-     * @param newLimit the new trade limit
+     * @param property the property (limit) to change
+     * @param userId   the user who's property will be changed
+     * @param newLimit the new limit
      * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
-    public void changeTraderLimits(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
+    public void setLimitSpecific(TraderProperties property, String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userId);
-        trader.setIncompleteTradeLim(newLimit);
+        switch (property){
+            case MINIMUMAMOUNTNEEDEDTOBORROW:
+                trader.setMinimumAmountNeededToBorrow(newLimit);
+                break;
+            case INCOMPLETETRADELIM:
+                trader.setIncompleteTradeLim(newLimit);
+                break;
+            case TRADELIMIT:
+                trader.setTradeLimit(newLimit);
+        }
         userDatabase.update(trader);
     }
+
+
 
     /**
      * Return traders that should be frozen

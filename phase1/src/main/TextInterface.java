@@ -620,7 +620,7 @@ public class TextInterface {
     private void changeWeeklyTradeLimit() {
         int tradeLimit = 0;
         try {
-            tradeLimit = adminAccount.getCurrentTradeLimit();
+            tradeLimit = adminAccount.getDefaultLimit(TraderProperties.TRADELIMIT);
         } catch (Exception e) {
             System.out.println(e.getMessage());
             tradeLimit = 0;
@@ -633,7 +633,7 @@ public class TextInterface {
                 System.out.println("Enter the new value for the trade limit");
                 System.out.print("=> ");
                 tradeLimit = Integer.parseInt(sc.nextLine());
-                adminAccount.setTradeLimit(tradeLimit);
+                adminAccount.setLimit(TraderProperties.TRADELIMIT, tradeLimit);
                 success = true;
             } catch (NumberFormatException | UserNotFoundException e) {
                 success = false;
