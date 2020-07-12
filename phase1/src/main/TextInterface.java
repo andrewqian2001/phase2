@@ -383,7 +383,7 @@ public class TextInterface {
     }
 
     /**
-     * Prints all Inventory Items for all Database.users in the database
+     * Prints all Inventory Items for all users in the database
      */
     private void printDatabase() {
         ArrayList<String> allTraders = traderAccount.getAllTraders();
@@ -533,7 +533,7 @@ public class TextInterface {
     }
 
     /**
-     * Prompts user to enter the item name and adds the item to the Database.users Wishlist
+     * Prompts user to enter the item name and adds the item to the users Wishlist
      */
     private void addItemToWishList() {
         String itemName = "";
@@ -571,7 +571,7 @@ public class TextInterface {
                 System.out.println("Enter the index of the Item");
                 System.out.print("=> ");
                 itemIndex = Integer.parseInt(sc.nextLine());
-                adminAccount.processItemRequest(traderName, itemIndex, isAccepted);
+                adminAccount.processItemRequest(adminAccount.getUserId(traderName), itemIndex, isAccepted);
                 success = true;
             } catch (AuthorizationException | EntryNotFoundException e) {
                 System.out.println(e.getMessage());
@@ -763,10 +763,10 @@ public class TextInterface {
             try {
                 if (traderAccount.getRequestedTrades().size() == 0) {
                     System.out.println(
-                            "Ruh Roh! Looks like you do not have any requested Database.trades\nABORTING TRADE REQUEST RESPONSE...");
+                            "Ruh Roh! Looks like you do not have any requested trades\nABORTING TRADE REQUEST RESPONSE...");
                     return;
                 }
-                System.out.println("Here is your requested Database.trades");
+                System.out.println("Here is your requested trades");
                 printList(this.userID, "Requested", "Trade");
                 System.out.println("Enter the index of the requested trade that you would like to " + (isAccepted ? "accept" : "reject"));
                 System.out.print("=> ");
@@ -818,10 +818,10 @@ public class TextInterface {
             try {
                 if (traderAccount.getRequestedTrades().size() == 0) {
                     System.out.println(
-                            "Ruh Roh! Looks like you do not have any requested Database.trades\nABORTING TRADE REQUEST RESPONSE...");
+                            "Ruh Roh! Looks like you do not have any requested trades\nABORTING TRADE REQUEST RESPONSE...");
                     return;
                 }
-                System.out.println("Here is your requested Database.trades");
+                System.out.println("Here is your requested trades");
                 printList(this.userID, "Requested", "Trade");
                 System.out.println("Enter the index of the requested trade that you would like to edit");
                 System.out.print("=> ");
@@ -955,10 +955,10 @@ public class TextInterface {
 
                 if (traderAccount.getAcceptedTrades().size() == 0) {
                     System.out.println(
-                            "Ruh Roh! Looks like you do not have any ongoing accepted Database.trades\nABORTING TRADE CONFIRMATION...");
+                            "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
-                System.out.println("Here is your accepted Database.trades");
+                System.out.println("Here is your accepted trades");
                 printList(this.userID, "Accepted", "Trade");
                 System.out.println("Enter the index of the accepted trade that you would like to confirm took place");
                 System.out.print("=> ");
@@ -996,10 +996,10 @@ public class TextInterface {
                 System.out.println(traderAccount.getAcceptedTrades());
                 if (traderAccount.getAcceptedTrades().size() == 0) {
                     System.out.println(
-                            "Ruh Roh! Looks like you do not have any ongoing accepted Database.trades\nABORTING TRADE CONFIRMATION...");
+                            "Ruh Roh! Looks like you do not have any ongoing accepted trades\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
-                System.out.println("Here is your accepted Database.trades");
+                System.out.println("Here is your accepted trades");
                 printList(this.userID, "Accepted", "Trade");
                 System.out.println("Enter the index of the accepted trade that you would like to confirm was unsuccessful");
                 System.out.print("=> ");

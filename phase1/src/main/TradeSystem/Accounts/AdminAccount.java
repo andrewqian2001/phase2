@@ -126,6 +126,15 @@ public class AdminAccount implements Account {
         return loginManager.getDefaultTradeLimit();
     }
 
+    /**
+     * Gets the user id from username
+     * @param username the username
+     * @return the user id
+     * @throws UserNotFoundException if the user wasn't found
+     */
+    public String getUserId(String username) throws UserNotFoundException {
+        return adminManager.getUserId(username);
+    }
 
     /**
      * account type

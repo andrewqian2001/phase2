@@ -364,7 +364,6 @@ public class TraderAccount implements Account {
     }
 
     /**
-     * TODO: possibly not needed
      * Confirms that other trader did not show up to the trade
      * This method should increment the other traders incomplete trade count but not this traders
      *
