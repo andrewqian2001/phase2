@@ -1,6 +1,7 @@
 package main.TradeSystem.Managers;
 
 import Database.Database;
+import Database.tradableitems.TradableItem;
 import Database.trades.Trade;
 import Database.users.AdminManager;
 import Database.users.Trader;
@@ -21,6 +22,7 @@ public class TraderManager {
     private final Database<User> userDatabase;
     private final String traderId;
     private final Database<Trade> tradeDatabase;
+    private final Database<TradableItem> tradableItemDatabase;
     /**
      * This is used for the actions that a trader user can do
      *
@@ -33,6 +35,7 @@ public class TraderManager {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
         this.traderId = getTrader(traderId).getId();
         tradeDatabase = new Database<Trade>(DatabaseFilePaths.TRADE.getFilePath());
+        tradableItemDatabase = new Database<TradableItem>(DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
     }
 
     /**
@@ -179,7 +182,7 @@ public class TraderManager {
     }
 
     /**
-     * TODO: FIX or move to another class
+     * TODO: FIX or move to another class (i.e. TradeManager)
      * Gets a list of the items used in Database.trades
      *
      * @return list of unique items that the user has traded/received from a trade
@@ -334,6 +337,26 @@ public class TraderManager {
      */
     public boolean canTrade() throws UserNotFoundException, AuthorizationException {
         return getTrader().canTrade();
+    }
+
+    /**
+     * Gets the name of this item
+     * @param itemID the ID of this item
+     * @return the name of this item
+     * @throws EntryNotFoundException if the item could not be found in the database
+     */
+    public String getTradableItemName(String itemID) throws EntryNotFoundException {
+        return tradableItemDatabase.populate(itemID).getName();
+    }
+
+    /**
+     * Gets the description of this item
+     * @param itemID the ID of this item
+     * @return the description of this item
+     * @throws EntryNotFoundException if the item could not be found in the database
+     */
+    public String getTradableItemDesc(String itemID) throws EntryNotFoundException {
+        return tradableItemDatabase.populate(itemID).getDesc();
     }
 
 

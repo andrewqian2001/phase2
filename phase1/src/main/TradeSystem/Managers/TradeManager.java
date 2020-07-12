@@ -543,5 +543,16 @@ public class TradeManager {
         else throw new EntryNotFoundException("The user " + userID + " was not found.");
     }
 
+    /**
+     * Return's whether
+     * @param tradeID
+     * @return
+     * @throws EntryNotFoundException
+     */
+    public boolean hasUserConfirmedAllMeetings(String traderId, String tradeID) throws EntryNotFoundException {
+        if (hasSecondMeeting(tradeID))
+            return getFirstMeetingConfirmed(tradeID, traderId) && getSecondMeetingConfirmed(tradeID, traderId);
+        return getFirstMeetingConfirmed(tradeID, traderId);
+    }
 
 }
