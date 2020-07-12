@@ -64,13 +64,16 @@ public class TraderManager {
     /**
      * Makes this user request an item
      *
-     * @param itemId id of the item to add
+     * @param name name of the item
+     * @param desc description of the item
      * @throws UserNotFoundException  if the user was not found
      * @throws AuthorizationException if the user isn't a trader
      */
-    public void addRequestItem(String itemId) throws UserNotFoundException, AuthorizationException {
+    public void addRequestItem(String name, String desc) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader();
-        trader.getRequestedItems().add(itemId);
+        TradableItem item = new TradableItem(name, desc);
+        tradableItemDatabase.update(item);
+        trader.getRequestedItems().add(item.getId());
         userDatabase.update(trader);
     }
 
@@ -242,23 +245,6 @@ public class TraderManager {
         return getTrader(traderId).getUsername();
     }
 
-    /**
-     * Gets a hashmap of trader ids to an arraylist of their requested items
-     *
-     * @return a hashmap of trader ids to an arraylist of their requested items
-     */
-    public HashMap<String, ArrayList<String>> getAllItemRequests() {
-        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
-
-        for (User user : userDatabase.getItems()) {
-            if (user instanceof Trader) {
-                ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
-                if (requestedItems.size() > 0)
-                    allItems.put(user.getId(), requestedItems);
-            }
-        }
-        return allItems;
-    }
 
     /**
      * whether or not the current user can trade

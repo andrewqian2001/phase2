@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import Database.trades.Trade;
 import exceptions.*;
 import main.TradeSystem.Accounts.Account;
 import main.TradeSystem.Accounts.AdminAccount;
@@ -100,6 +99,7 @@ public class TextInterface {
                 switch (tmp.getAccountType()) {
                     case ADMIN:
                         adminAccount = new AdminAccount(userID);
+                        break;
                     case TRADER:
                     default:
                         traderAccount = new TraderAccount(userID);
@@ -486,13 +486,13 @@ public class TextInterface {
     private void printAllItemRequests() {
         System.out.println("*** Item Requests ***");
         try {
-            HashMap<String, ArrayList<String>> itemRequests = traderAccount.getAllItemRequests();
+            HashMap<String, ArrayList<String>> itemRequests = adminAccount.getAllItemRequests();
             for (String userID : itemRequests.keySet()) {
                 TraderAccount currTradeAccount = new TraderAccount(userID);
                 if (itemRequests.get(userID).size() > 0) {
                     System.out.println(currTradeAccount.getUsername() + " :");
                     for (String itemID : itemRequests.get(userID)) {
-                        System.out.printf("\t%s\n", traderAccount.getTradableItemName(itemID));
+                        System.out.printf("\t%s\n", adminAccount.getTradableItemName(itemID));
                     }
                 }
             }
@@ -518,7 +518,7 @@ public class TextInterface {
             itemDesc = sc.nextLine();
             if (!itemName.trim().equals("")) {
                 try {
-                    traderAccount.requestItem(itemName);
+                    traderAccount.requestItem(itemName, itemDesc);
                     success = true;
                 } catch (AuthorizationException | UserNotFoundException e) {
                     System.out.println(e.getMessage());

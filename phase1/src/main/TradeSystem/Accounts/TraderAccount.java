@@ -1,5 +1,6 @@
 package main.TradeSystem.Accounts;
 
+import Database.tradableitems.TradableItem;
 import exceptions.*;
 
 import java.io.IOException;
@@ -53,11 +54,12 @@ public class TraderAccount implements Account {
      * Requests that the item be added to the user's inventory
      *
      * @param itemName name of tradable item
+     * @param description description of the tradable item
      * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
-    public void requestItem(String itemName) throws UserNotFoundException, AuthorizationException {
-        traderManager.addRequestItem(itemName);
+    public void requestItem(String itemName, String description) throws UserNotFoundException, AuthorizationException {
+        traderManager.addRequestItem(itemName, description);
     }
 
     /**
@@ -176,16 +178,6 @@ public class TraderAccount implements Account {
     public boolean isTradeTemporary(String tradeID) throws TradeNotFoundException, AuthorizationException {
         return tradeManager.hasSecondMeeting(tradeID);
     }
-
-    /**
-     * Gets a Map of key=id of user, value=list of their item requests
-     *
-     * @return a list of item requests mapping to each user
-     */
-    public HashMap<String, ArrayList<String>> getAllItemRequests() {
-        return traderManager.getAllItemRequests();
-    }
-
 
     /**
      * trader account type

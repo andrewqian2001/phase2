@@ -8,6 +8,7 @@ import Database.users.Trader;
 import Database.users.User;
 import exceptions.AuthorizationException;
 import exceptions.EntryNotFoundException;
+import exceptions.TradableItemNotFoundException;
 import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
 
@@ -240,6 +241,20 @@ public class AdminManager {
      */
     public String getUsername(String userId) throws EntryNotFoundException {
         return userDatabase.populate(userId).getUsername();
+    }
+    /**
+     * Gets the tradable item object
+     *
+     * @param itemID the ID of this item
+     * @return the item object
+     * @throws TradableItemNotFoundException if the item could not be found in the database
+     */
+    public TradableItem getTradableItem(String itemID) throws TradableItemNotFoundException {
+        try {
+            return tradableItemDatabase.populate(itemID);
+        } catch (EntryNotFoundException e) {
+            throw new TradableItemNotFoundException(itemID);
+        }
     }
 
 }

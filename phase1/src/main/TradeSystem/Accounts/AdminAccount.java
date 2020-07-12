@@ -2,11 +2,9 @@ package main.TradeSystem.Accounts;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
-import exceptions.AuthorizationException;
-import exceptions.EntryNotFoundException;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserNotFoundException;
+import exceptions.*;
 import main.TradeSystem.Managers.AdminManager;
 import main.TradeSystem.Managers.LoginManager;
 
@@ -53,6 +51,26 @@ public class AdminAccount implements Account {
     public void freezeUser(String username, boolean freezeStatus)
             throws UserNotFoundException {
         adminManager.setFrozen(adminManager.getUserId(username), freezeStatus);
+    }
+
+    /**
+     * Gets a Map of key=id of user, value=list of their item requests
+     *
+     * @return a list of item requests mapping to each user
+     */
+    public HashMap<String, ArrayList<String>> getAllItemRequests() {
+        return adminManager.getAllItemRequests();
+    }
+
+    /**
+     * Gets the name of the tradable item given its id
+     *
+     * @param tradableItemId id of the tradable item
+     * @return name of the tradable item
+     * @throws TradableItemNotFoundException cant find tradable item id
+     */
+    public String getTradableItemName(String tradableItemId) throws TradableItemNotFoundException {
+        return adminManager.getTradableItem(tradableItemId).getName();
     }
 
     /**
