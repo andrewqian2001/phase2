@@ -491,8 +491,10 @@ public class TextInterface {
                 TraderAccount currTradeAccount = new TraderAccount(userID);
                 if (itemRequests.get(userID).size() > 0) {
                     System.out.println(currTradeAccount.getUsername() + " :");
-                    for (String itemID : itemRequests.get(userID)) {
-                        System.out.printf("\t%s\n", adminAccount.getTradableItemName(itemID));
+                    ArrayList<String> currItemRequests = itemRequests.get(userID);
+                    for (int i = 0; i < currItemRequests.size(); i++) {
+                        String itemID = currItemRequests.get(i);
+                        System.out.printf("\t#%d: %s\n", i, adminAccount.getTradableItemName(itemID));
                     }
                 }
             }
