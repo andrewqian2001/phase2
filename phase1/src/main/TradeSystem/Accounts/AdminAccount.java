@@ -81,6 +81,7 @@ public class AdminAccount implements Account {
      */
     public void setTradeLimit(int tradeLimit) throws UserNotFoundException {
         adminManager.setTradeLimit(tradeLimit);
+        loginManager.setDefaultTradeLimit(tradeLimit);
     }
 
     /**
