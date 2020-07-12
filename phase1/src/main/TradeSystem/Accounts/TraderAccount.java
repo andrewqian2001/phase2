@@ -48,7 +48,8 @@ public class TraderAccount implements Account {
      * Requests that the item be added to the user's inventory
      *
      * @param itemName name of tradable item
-     * @throws UserNotFoundException can't find user id
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
      */
     public void requestItem(String itemName) throws UserNotFoundException, AuthorizationException {
         traderManager.addRequestItem(itemName);
@@ -271,9 +272,9 @@ public class TraderAccount implements Account {
      * @param tradeID id of the trade
      * @return true if the trade was successfully confirmed
      * @throws UserNotFoundException         userId not found
-     * @throws TradableItemNotFoundException tradable item not found
      * @throws AuthorizationException        user isn't a trader
      * @throws CannotTradeException          trading restrictions
+     * @throws TradeNotFoundException if the trade isn't found
      */
     public boolean confirmTrade(String tradeID) throws AuthorizationException, TradeNotFoundException,
             CannotTradeException, UserNotFoundException {
@@ -284,7 +285,6 @@ public class TraderAccount implements Account {
      * Rejects a requested trade
      *
      * @param tradeID id of the trade
-     * @return true if the trade request was successfully rejected
      * @throws AuthorizationException user isn't a trader
      * @throws TradeNotFoundException trade wasn't found
      */
@@ -304,6 +304,8 @@ public class TraderAccount implements Account {
      * @throws CannotTradeException          if the trade is not allowed
      * @throws AuthorizationException        if the user cannot access this trade
      * @throws TradableItemNotFoundException couldn't find the item
+     * @throws UserNotFoundException if the user isn't found
+     * @throws TradeNotFoundException if the trade isn't found
      */
     public void editTrade(String tradeID, Date firstMeeting, Date secondMeeting, String meetingLocation,
                           int inventoryItemIndex, int traderInventoryItemIndex)
@@ -317,7 +319,8 @@ public class TraderAccount implements Account {
      *
      * @param requestedTradeIndex index of the requested trade
      * @return the trade ID
-     * @throws UserNotFoundException     userId not found
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
      * @throws IndexOutOfBoundsException index out of bounds
      */
     public String getRequestedTradeId(int requestedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
@@ -370,6 +373,8 @@ public class TraderAccount implements Account {
      * Makes this user request unfreeze (changes the status of whether an unfreeze was requested)
      *
      * @param status if the user requested to be unfrozen
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
      */
     public void requestUnfreeze(boolean status) throws AuthorizationException, UserNotFoundException {
         traderManager.requestUnfreeze(status);
@@ -463,7 +468,8 @@ public class TraderAccount implements Account {
      * Gets your own username
      *
      * @return username of the User
-     * @throws UserNotFoundException cant find user id
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
      */
     public String getUsername() throws UserNotFoundException, AuthorizationException {
         return traderManager.getUsername();

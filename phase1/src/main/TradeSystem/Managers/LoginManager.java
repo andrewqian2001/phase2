@@ -36,6 +36,7 @@ public class LoginManager {
      *
      * @param username username of new user
      * @param password password of new user
+     * @param type the type of user
      * @return The ID of the newly created user
      * @throws UserAlreadyExistsException username is not unique
      */

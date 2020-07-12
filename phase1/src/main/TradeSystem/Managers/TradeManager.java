@@ -225,10 +225,11 @@ public class TradeManager {
      * @param meetingLocation          String of the meeting location
      * @param inventoryItemIndex       index of the user's trade item
      * @param traderInventoryItemIndex index of the trader's trade item
-     * @throws EntryNotFoundException        if user or trade can  not be found
      * @throws CannotTradeException          if the trade is not allowed
      * @throws AuthorizationException        if the user cannot access this trade
      * @throws TradableItemNotFoundException couldn't find the item
+     * @throws UserNotFoundException if the user isn't found
+     * @throws TradeNotFoundException if the trade isn't found
      */
     public void editTrade(String tradeID, Date firstMeeting, Date secondMeeting, String meetingLocation,
                           int inventoryItemIndex, int traderInventoryItemIndex)
@@ -415,6 +416,7 @@ public class TradeManager {
      * @return the tradable item object
      * @throws TradableItemNotFoundException if the tradable item object wasn't found
      * @throws AuthorizationException        if the tradable item doesn't belong to the trader
+     * @throws UserNotFoundException if the user isn't found
      */
     public TradableItem getTradableItem(String tradableItemId, String traderId) throws
             TradableItemNotFoundException, UserNotFoundException,

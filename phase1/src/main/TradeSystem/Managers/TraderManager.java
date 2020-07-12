@@ -55,6 +55,7 @@ public class TraderManager {
      * @return the trade ID
      * @throws UserNotFoundException     userId not found
      * @throws IndexOutOfBoundsException index out of bounds
+     * @throws AuthorizationException if the user isn't a trader
      */
     public String getAcceptedTradeId(int acceptedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
         return getTrader().getAcceptedTrades().get(acceptedTradeIndex);
@@ -64,7 +65,6 @@ public class TraderManager {
      * Makes this user request an item
      *
      * @param itemId id of the item to add
-     * @return the user's id
      * @throws UserNotFoundException  if the user was not found
      * @throws AuthorizationException if the user isn't a trader
      */
@@ -138,6 +138,7 @@ public class TraderManager {
      *
      * @param tradableItemId the item to be added to this user's wishlist
      * @throws UserNotFoundException if the trader with the given userId is not found
+     * @throws AuthorizationException if the user isn't a trader
      */
     public void addToWishList(String tradableItemId) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(traderId);
@@ -221,6 +222,8 @@ public class TraderManager {
 
     /**
      * @param status if the user requested to be unfrozen
+     * @throws AuthorizationException if the user is not a trader
+     * @throws UserNotFoundException if the user wasn't found
      */
     public void requestUnfreeze(boolean status) throws AuthorizationException, UserNotFoundException {
         Trader t = getTrader();
@@ -260,7 +263,7 @@ public class TraderManager {
     /**
      * @return whether or not the current user can trade
      * @throws UserNotFoundException  if the current user could not be found
-     * @throws AuthorizationException
+     * @throws AuthorizationException if the user is not a trader
      */
     public boolean canTrade() throws UserNotFoundException, AuthorizationException {
         return getTrader().canTrade();

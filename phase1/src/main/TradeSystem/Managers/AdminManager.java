@@ -103,6 +103,7 @@ public class AdminManager {
      * @param itemIndex  index of the item
      * @param isAccepted true if item is accepted, false if rejected
      * @throws EntryNotFoundException traderName / itemName not found
+     * @throws AuthorizationException if the user isn't a trader
      */
     public void processItemRequest(String traderID, int itemIndex, boolean isAccepted) throws EntryNotFoundException, AuthorizationException {
         Trader trader = getTrader(traderID);
@@ -141,15 +142,12 @@ public class AdminManager {
      * Changes the specified user's trade limit
      * @param userId the user who's trade limit will be changed
      * @param newLimit the new trade limit
-     * @throws EntryNotFoundException if the trader could not be found
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
      */
-    public void changeTraderLimits(String userId, int newLimit) throws EntryNotFoundException, UserNotFoundException{
-        User trader = userDatabase.populate(userId);
-        if (!(trader instanceof Trader)){
-            throw new UserNotFoundException("This user is not a trader");
-        }
-
-        ((Trader)trader).setIncompleteTradeLim(newLimit);
+    public void changeTraderLimits(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(userId);
+        trader.setIncompleteTradeLim(newLimit);
         userDatabase.update(trader);
     }
 
@@ -173,6 +171,8 @@ public class AdminManager {
      *
      * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
      */
     public void changeIncompleteTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userId);
@@ -185,6 +185,8 @@ public class AdminManager {
      *
      * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
      */
     public void changeWeeklyTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userId);

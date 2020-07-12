@@ -21,14 +21,17 @@ public class Trader extends User implements Serializable {
     private int minimumAmountNeededToBorrow;
     private int tradeCount;
 
+
     /**
+     /**
      * Constructs a trader with its own username and password.
      *
      * @param name     the trader's username
      * @param password the trader's password
      * @param tradeLimit number of trades that can be done
+     * @param incompleteTradeLim the limit for how many incomplete trades can be done
+     * @param minimumAmountNeededToBorrow the minimum amount of items that must be lent before borrowing is allowed
      */
-
     public Trader(String name, String password, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow) {
         super(name, password);
         this.tradeLimit = tradeLimit;

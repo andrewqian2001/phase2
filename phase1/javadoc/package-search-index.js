@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"exceptions"},{"l":"main"},{"l":"tradableitems"},{"l":"trades"},{"l":"users"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"Database"},{"l":"Database.tradableitems"},{"l":"Database.trades"},{"l":"Database.users"},{"l":"exceptions"},{"l":"main"},{"l":"main.TradeSystem"},{"l":"main.TradeSystem.Accounts"},{"l":"main.TradeSystem.Managers"}]

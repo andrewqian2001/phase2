@@ -86,6 +86,7 @@ public class AdminAccount implements Account {
      * @param itemIndex  index of the item
      * @param isAccepted true if item is accepted, false if rejected
      * @throws EntryNotFoundException traderName / itemName not found
+     * @throws AuthorizationException if the user isn't a trader
      */
     public void processItemRequest(String traderID, int itemIndex, boolean isAccepted) throws EntryNotFoundException, AuthorizationException {
         adminManager.processItemRequest(traderID, itemIndex, isAccepted);
@@ -98,9 +99,6 @@ public class AdminAccount implements Account {
     public int getCurrentTradeLimit(){
         return loginManager.getDefaultTradeLimit();
     }
-
-
-
 
 
     /**
