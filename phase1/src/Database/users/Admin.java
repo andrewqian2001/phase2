@@ -17,12 +17,6 @@ public class Admin extends User implements Serializable{
         super(username,password);
     }
 
-    /**
-     * @return if this user has permission
-     */
-    public boolean hasPermission(Permission permission) {
-        return true;
-    }
 
     /**
      * @return if the user is frozen (always false since admins do not participate in Database.trades)

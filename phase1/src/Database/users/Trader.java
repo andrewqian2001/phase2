@@ -203,15 +203,4 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public boolean hasPermission(Permission permission) {
-        Permission permissions[] = {Permission.ADD_ITEM, Permission.TRADE};
-        for (Permission p : permissions) {
-            if (p == permission) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
 }

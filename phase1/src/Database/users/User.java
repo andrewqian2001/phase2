@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Represents a typical account
  */
-public class User extends DatabaseItem implements Serializable, Permissible {
+public class User extends DatabaseItem implements Serializable{
     private String username;
     private String password;
     private boolean isFrozen;
@@ -82,10 +82,4 @@ public class User extends DatabaseItem implements Serializable, Permissible {
         isUnfrozenRequested = unfrozenRequested;
     }
 
-    /**
-     * @return if this user has permission
-     */
-    public boolean hasPermission(Permission permission) {
-        return false;
-    }
 }
