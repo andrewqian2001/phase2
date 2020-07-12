@@ -3,7 +3,6 @@ package main.TradeSystem.Managers;
 import Database.Database;
 import Database.tradableitems.TradableItem;
 import Database.trades.Trade;
-import Database.users.AdminManager;
 import Database.users.Trader;
 import Database.users.User;
 import exceptions.*;
@@ -11,8 +10,6 @@ import main.DatabaseFilePaths;
 
 import java.io.IOException;
 import java.util.*;
-
-import main.TradeSystem.Managers.TradeManager;
 
 /**
  * Used for the actions of a Trader

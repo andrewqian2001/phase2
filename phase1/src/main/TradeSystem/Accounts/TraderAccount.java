@@ -1,9 +1,5 @@
 package main.TradeSystem.Accounts;
 
-import Database.trades.Trade;
-import Database.users.AdminManager;
-import Database.users.Trader;
-import Database.users.User;
 import exceptions.*;
 
 import java.io.IOException;
@@ -11,8 +7,6 @@ import java.util.*;
 
 import main.TradeSystem.Managers.TraderManager;
 import main.TradeSystem.Managers.TradeManager;
-
-import static javax.swing.text.html.HTML.Tag.U;
 
 /**
  * For interacting with traders
@@ -184,7 +178,7 @@ public class TraderAccount implements Account {
     }
 
     /**
-     * Gets a list of the items used in Database.trades
+     * Gets a list of the items used in trades
      *
      * @return list of unique items that the user has traded/received from a trade
      * @throws TradeNotFoundException trade wasn't found
@@ -319,7 +313,7 @@ public class TraderAccount implements Account {
     }
 
     /**
-     * Gets the tradeID given the index of the Database.users requested trade
+     * Gets the tradeID given the index of the users requested trade
      *
      * @param requestedTradeIndex index of the requested trade
      * @return the trade ID
@@ -476,7 +470,7 @@ public class TraderAccount implements Account {
     }
 
     /**
-     * Gets the tradeID given the index of the Database.users accepted trade
+     * Gets the tradeID given the index of the users accepted trade
      *
      * @param acceptedTradeIndex index of the accepted trade
      * @return the trade ID

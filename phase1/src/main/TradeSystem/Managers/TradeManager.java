@@ -611,7 +611,7 @@ public class TradeManager {
     }
 
     /**
-     * Gets a list of the items used in Database.trades
+     * Gets a list of the items used in trades
      *
      * @return list of unique items that the user has traded/received from a trade
      * @throws TradeNotFoundException trade wasn't found
