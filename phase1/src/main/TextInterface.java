@@ -57,10 +57,9 @@ public class TextInterface {
             login();
             // since this valid userID would be returned from a logged in user...
             // the exception will never be thrown
-            if (adminAccount != null){
+            if (adminAccount != null) {
                 adminMenu();
-            }
-            else if (traderAccount != null){
+            } else if (traderAccount != null) {
                 traderMenu();
             }
         }
@@ -204,7 +203,7 @@ public class TextInterface {
             try {
                 isFrozen = traderAccount.isFrozen();
                 ableToBorrow = traderAccount.canBorrow();
-            } catch (EntryNotFoundException | AuthorizationException e) {
+            } catch (AuthorizationException | UserNotFoundException e) {
                 System.out.println(e.getMessage());
             }
             System.out.println("1.\tView Trades");
@@ -337,7 +336,7 @@ public class TextInterface {
                 wantToFreeze = sc.nextLine();
                 adminAccount.freezeUser(wantToFreeze, freezeStatus);
                 success = true;
-            } catch (EntryNotFoundException e) {
+            } catch (UserNotFoundException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
@@ -444,7 +443,7 @@ public class TextInterface {
                         printTrade(currTraderAccount.getRequestedTradeId(i), true);
                 }
             }
-        } catch (EntryNotFoundException | AuthorizationException | IOException e) {
+        } catch (AuthorizationException | IOException | UserNotFoundException | TradableItemNotFoundException | TradeNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -453,9 +452,8 @@ public class TextInterface {
      * Prints all the details of the trade
      *
      * @param tradeID id of the trade
-     * @throws EntryNotFoundException
      */
-    private void printTrade(String tradeID, boolean isRequested) throws EntryNotFoundException, IOException, AuthorizationException {
+    private void printTrade(String tradeID, boolean isRequested) throws IOException, AuthorizationException, TradeNotFoundException, UserNotFoundException, TradableItemNotFoundException {
         TraderAccount otherTraderAccount = new TraderAccount(traderAccount.getTraderIdFromTrade(tradeID));
         String typeOfTrade = traderAccount.getUserOffer(tradeID).equals("") ? "borrowing from" : traderAccount.getUserOffer(tradeID).equals("") ? "lending to" : "2-way trading with";
         String isTemporaryString = traderAccount.isTradeTemporary(tradeID) ? "temporarily" : "permanently";
@@ -498,7 +496,7 @@ public class TextInterface {
                     }
                 }
             }
-        } catch (EntryNotFoundException | IOException | AuthorizationException e) {
+        } catch (IOException | AuthorizationException | UserNotFoundException | TradableItemNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -522,7 +520,7 @@ public class TextInterface {
                 try {
                     traderAccount.requestItem(itemName);
                     success = true;
-                } catch (EntryNotFoundException | AuthorizationException e) {
+                } catch (AuthorizationException | UserNotFoundException e) {
                     System.out.println(e.getMessage());
                     success = false;
                 }
@@ -575,7 +573,7 @@ public class TextInterface {
                 itemIndex = Integer.parseInt(sc.nextLine());
                 adminAccount.processItemRequest(traderName, itemIndex, isAccepted);
                 success = true;
-            } catch (EntryNotFoundException | AuthorizationException e) {
+            } catch (AuthorizationException | EntryNotFoundException e) {
                 System.out.println(e.getMessage());
                 success = false;
             }
@@ -593,7 +591,7 @@ public class TextInterface {
             for (String itemName : recentTradeItems) {
                 System.out.println("Item: " + itemName);
             }
-        } catch (EntryNotFoundException e) {
+        } catch (AuthorizationException | UserNotFoundException | TradableItemNotFoundException | TradeNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -607,7 +605,7 @@ public class TextInterface {
             for (int i = 0; i < freqTraders.length && freqTraders[i] != null; i++) {
                 System.out.printf("Trader #%d: %s\n", i + 1, freqTraders[i]);
             }
-        } catch (EntryNotFoundException e) {
+        } catch (AuthorizationException | UserNotFoundException | TradeNotFoundException e) {
             System.out.println(e.getMessage());
         }
         System.out.println(lineBreak);
@@ -635,7 +633,7 @@ public class TextInterface {
                 tradeLimit = Integer.parseInt(sc.nextLine());
                 adminAccount.setTradeLimit(tradeLimit);
                 success = true;
-            } catch (NumberFormatException | EntryNotFoundException e) {
+            } catch (NumberFormatException | UserNotFoundException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
@@ -651,9 +649,9 @@ public class TextInterface {
         // since this valid userID would be returned from a logged in user...
         // the exception will never be thrown
         try {
-            traderAccount.requestUnfreeze(this.userID, true);
+            traderAccount.requestUnfreeze(true);
             System.out.println("Done! Now please be patient while an admin un-freezes your account");
-        } catch (EntryNotFoundException e) {
+        } catch (AuthorizationException | UserNotFoundException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -737,14 +735,15 @@ public class TextInterface {
                 meetingLocation = sc.nextLine();
 
                 if (tradeType.equals("LEND"))
-                    success = traderAccount.lendItem(traderName, firstMeeting, secondMeeting, meetingLocation,
+                    traderAccount.lendItem(traderName, firstMeeting, secondMeeting, meetingLocation,
                             inventoryItemIndex);
                 else if (tradeType.equals("BORROW"))
-                    success = traderAccount.borrowItem(traderName, firstMeeting, secondMeeting, meetingLocation,
+                    traderAccount.borrowItem(traderName, firstMeeting, secondMeeting, meetingLocation,
                             traderInventoryItemIndex);
                 else
-                    success = traderAccount.trade(traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
-            } catch (EntryNotFoundException | ParseException | NumberFormatException | IndexOutOfBoundsException | AuthorizationException | IOException e) {
+                    traderAccount.trade(traderName, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
+                success = true;
+            } catch (ParseException | NumberFormatException | IndexOutOfBoundsException | AuthorizationException | IOException | UserNotFoundException | TradableItemNotFoundException | CannotTradeException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
@@ -782,11 +781,12 @@ public class TextInterface {
 //                }
                 // not sure if these 3 lines above are needed since we're now doing everything within the managers
 
-                //TODO: check if this works (especially acceptTrade)
-                success = isAccepted ? traderAccount.acceptTrade(tradeID) : traderAccount.rejectTrade(tradeID);
+                if (isAccepted) traderAccount.acceptTrade(tradeID);
+                else traderAccount.rejectTrade(tradeID);
+                success = true;
 
 
-            } catch (NumberFormatException | EntryNotFoundException | IndexOutOfBoundsException | AuthorizationException e) {
+            } catch (NumberFormatException | IndexOutOfBoundsException | AuthorizationException | UserNotFoundException | TradeNotFoundException | CannotTradeException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
@@ -977,7 +977,7 @@ public class TextInterface {
                     return;
                 }
                 success = traderAccount.confirmTrade(tradeID);
-            } catch (EntryNotFoundException | NumberFormatException | AuthorizationException | CannotTradeException e) {
+            } catch (NumberFormatException | AuthorizationException | CannotTradeException | UserNotFoundException | TradeNotFoundException e) {
                 System.out.println(e.getMessage());
             }
         } while (!success);
@@ -1014,9 +1014,10 @@ public class TextInterface {
                             "Ruh Roh! Looks like you have already confirmed to all the meetings for this trade\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
-                success = traderAccount.confirmIncompleteTrade(traderAccount.getAcceptedTradeId(acceptedTradeIndex));
+                traderAccount.confirmIncompleteTrade(traderAccount.getAcceptedTradeId(acceptedTradeIndex));
+                success = true;
 
-            } catch (EntryNotFoundException | NumberFormatException | AuthorizationException e) {
+            } catch (NumberFormatException | AuthorizationException | UserNotFoundException | TradeNotFoundException e) {
                 System.out.println(e.getMessage());
             }
         } while (!success);

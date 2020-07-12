@@ -215,8 +215,8 @@ public class TradeManager {
         }
         return false;
     }
+
     /**
-     *
      * edits the trade object
      *
      * @param tradeID                  id of the trade
@@ -253,13 +253,14 @@ public class TradeManager {
     }
 
     /**
-     *
      * return the 3 most traded with Traders
      *
      * @return a String array of the usernames of the 3 most traded with Traders
-     * @throws EntryNotFoundException cant find user id
+     * @throws AuthorizationException user isn't a trader
+     * @throws UserNotFoundException  user not found
+     * @throws TradeNotFoundException trade not found
      */
-    public String[] getFrequentTraders() throws EntryNotFoundException, AuthorizationException {
+    public String[] getFrequentTraders() throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
         String[] frequentTraders = new String[3];
         ArrayList<String> users = new ArrayList<>();
 
@@ -283,7 +284,7 @@ public class TradeManager {
 
         //converts frequentTraders from ID array to username array
         for (int i = 0; i < 3 && frequentTraders[i] != null; i++) {
-            frequentTraders[i] = userDatabase.populate(frequentTraders[i]).getUsername();
+            frequentTraders[i] = getTrader(frequentTraders[i]).getUsername();
         }
 
         return frequentTraders;
@@ -601,13 +602,39 @@ public class TradeManager {
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException trade doesn't belong to this user
      * @throws UserNotFoundException  user wasn't found
-     * @params traderID
      */
     public boolean hasUserConfirmedAllMeetings(String traderId, String tradeID) throws
             TradeNotFoundException, AuthorizationException, UserNotFoundException {
         if (hasSecondMeeting(tradeID))
             return getFirstMeetingConfirmed(tradeID, traderId) && getSecondMeetingConfirmed(tradeID, traderId);
         return getFirstMeetingConfirmed(tradeID, traderId);
+    }
+
+    /**
+     * Gets a list of the items used in Database.trades
+     *
+     * @return list of unique items that the user has traded/received from a trade
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
+     * @throws UserNotFoundException  user wasn't found
+     * @throws TradableItemNotFoundException tradable item not found
+     */
+    public Set<String> getRecentTradeItems() throws AuthorizationException, TradeNotFoundException,
+            UserNotFoundException, TradableItemNotFoundException {
+        ArrayList<String> completedTrades = getTrader(traderId).getCompletedTrades();
+        Set<String> recentTradeItemNames = new HashSet<>();
+        for (String tradeID : completedTrades) {
+            String[] tradableItemIDs = getItemsFromTrade(tradeID);
+            try {
+                if (!tradableItemIDs[0].equals(""))
+                    recentTradeItemNames.add(tradableItemDatabase.populate(tradableItemIDs[0]).getName());
+                if (!tradableItemIDs[1].equals(""))
+                    recentTradeItemNames.add(tradableItemDatabase.populate(tradableItemIDs[1]).getName());
+            } catch (EntryNotFoundException e) {
+                throw new TradableItemNotFoundException();
+            }
+        }
+        return recentTradeItemNames;
     }
 
 }

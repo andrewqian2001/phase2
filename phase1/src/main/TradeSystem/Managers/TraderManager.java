@@ -191,31 +191,14 @@ public class TraderManager {
         return getTrader(traderId);
     }
 
-    /**
-     * TODO: FIX or move to another class (i.e. TradeManager)
-     * Gets a list of the items used in Database.trades
-     *
-     * @return list of unique items that the user has traded/received from a trade
-     * @throws EntryNotFoundException cant find user id
-     */
-    public Set<String> getRecentTradeItems() throws EntryNotFoundException, AuthorizationException {
-        ArrayList<String> completedTrades = getTrader().getCompletedTrades();
-        Set<String> recentTradeItemNames = new HashSet<>();
-        for (String tradeID : completedTrades) {
-            String[] tradableItemIDs = tradeManager.getItemsFromTrade(tradeID);
-            recentTradeItemNames.add(trade(tradableItemIDs[0]));
-            if (!tradableItemIDs[1].equals(""))
-                recentTradeItemNames.add(getTradableItemName(tradableItemIDs[1]));
-        }
-        return recentTradeItemNames;
-    }
+
 
     /**
      * Gets the id of a User given their username
      *
      * @param username username of the User
      * @return id of the User
-     * @throws EntryNotFoundException cant find user id
+     * @throws UserNotFoundException cant find user id
      */
     public String getIdFromUsername(String username) throws UserNotFoundException {
         LinkedList<User> users = userDatabase.getItems();
@@ -224,67 +207,36 @@ public class TraderManager {
                 return user.getId();
         throw new UserNotFoundException("User with the username " + username + " not found.");
     }
-
     /**
-     * Get userId of the other user in the trade
+     * Gets the id of a tradable item by name
      *
-     * @param userID  id of the user
-     * @param tradeID id of the trade
-     * @return userId of the other user
-     * @throws EntryNotFoundException if the user or trade can not be found
+     * @param name item name
+     * @return id of the item
+     * @throws TradableItemNotFoundException can't find item with the name
      */
-    public String getTraderIdFromTrade(String userID, String tradeID) throws EntryNotFoundException {
-        return tradeManager.getOtherUser(tradeID, userID);
+    public String getIdFromTradableItemName(String name) throws TradableItemNotFoundException {
+        LinkedList<TradableItem> items = tradableItemDatabase.getItems();
+        for (TradableItem item: items)
+            if (item.getName().equals(name))
+                return item.getId();
+        throw new TradableItemNotFoundException();
     }
 
     /**
      * @param status if the user requested to be unfrozen
-     * @throws EntryNotFoundException can't find user id
      */
-    public void requestUnfreeze(boolean status) throws EntryNotFoundException, AuthorizationException {
+    public void requestUnfreeze(boolean status) throws AuthorizationException, UserNotFoundException {
         Trader t = getTrader();
         getTrader().setUnfrozenRequested(status);
         userDatabase.update(t);
     }
 
     /**
-     * TODO: fix or move to another class
-     * get the item index of the trade item
-     *
-     * @param userID  id of the user
-     * @param tradeId id of the trade
-     * @return item index of the trade item
-     * @throws EntryNotFoundException if the user or trade can not be found
-     */
-    public int getUserTradeItemIndex(String userID, String tradeId) throws EntryNotFoundException, AuthorizationException {
-        String[] items = tradeManager.getItemsFromTrade(tradeId);
-        ArrayList<String> inventory = getTrader().getAvailableItems();
-        if (tradeManager.isFirstUser(tradeId, userID)) {
-            if (items[0].equals("")) {
-                return -1;
-            }
-
-            for (int i = 0; i < inventory.size(); i++) {
-                if (items[0].equals(inventory.get(i))) return i;
-            }
-        } else {
-            if (items[1].equals("")) {
-                return -1;
-            }
-            for (int i = 0; i < inventory.size(); i++) {
-                if (items[1].equals(inventory.get(i))) return i;
-            }
-        }
-        throw new EntryNotFoundException("The trade item could not be found in the inventory.");
-    }
-
-
-
-    /**
      * Gets the username of a User given their ID
      *
      * @return username of the User
-     * @throws EntryNotFoundException cant find user id
+     * @throws UserNotFoundException cant find user id
+     * @throws AuthorizationException user is not a trader
      */
     public String getUsername() throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getUsername();

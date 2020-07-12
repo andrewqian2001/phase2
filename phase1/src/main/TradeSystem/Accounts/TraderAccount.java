@@ -54,9 +54,9 @@ public class TraderAccount implements Account {
      * Requests that the item be added to the user's inventory
      *
      * @param itemName name of tradable item
-     * @throws EntryNotFoundException can't find user id
+     * @throws UserNotFoundException can't find user id
      */
-    public void requestItem(String itemName) throws EntryNotFoundException, AuthorizationException {
+    public void requestItem(String itemName) throws UserNotFoundException, AuthorizationException {
         traderManager.addRequestItem(itemName);
     }
 
@@ -64,10 +64,12 @@ public class TraderAccount implements Account {
      * Adds item to wishList
      *
      * @param itemName name of tradable item
-     * @throws EntryNotFoundException can't find user id or cna't find item name
+     * @throws UserNotFoundException can't find user id or can't find item name
+     * @throws AuthorizationException user isn't a trader
+     * @throws TradableItemNotFoundException item name doesn't exist
      */
-    public void addToWishList(String itemName) throws EntryNotFoundException, AuthorizationException {
-        traderManager.addToWishList(itemName);
+    public void addToWishList(String itemName) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+        traderManager.addToWishList(traderManager.getIdFromTradableItemName(itemName));
     }
 
     /**
@@ -162,7 +164,7 @@ public class TraderAccount implements Account {
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException trade doesn't belong to this user
      */
-    public boolean isTradeTemporary(String tradeID) throws EntryNotFoundException, AuthorizationException {
+    public boolean isTradeTemporary(String tradeID) throws TradeNotFoundException, AuthorizationException {
         return tradeManager.hasSecondMeeting(tradeID);
     }
 
@@ -185,10 +187,14 @@ public class TraderAccount implements Account {
      * Gets a list of the items used in Database.trades
      *
      * @return list of unique items that the user has traded/received from a trade
-     * @throws EntryNotFoundException cant find user id
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
+     * @throws UserNotFoundException user is not a trader
+     * @throws TradableItemNotFoundException tradable item isn't found
      */
-    public Set<String> getRecentTradeItems() throws EntryNotFoundException, AuthorizationException {
-        return traderManager.getRecentTradeItems();
+    public Set<String> getRecentTradeItems() throws AuthorizationException, UserNotFoundException,
+            TradableItemNotFoundException, TradeNotFoundException {
+        return tradeManager.getRecentTradeItems();
     }
 
     /**
@@ -293,7 +299,6 @@ public class TraderAccount implements Account {
     }
 
     /**
-     *
      * edits the trade object
      *
      * @param tradeID                  id of the trade
@@ -302,7 +307,6 @@ public class TraderAccount implements Account {
      * @param meetingLocation          String of the meeting location
      * @param inventoryItemIndex       index of the user's trade item
      * @param traderInventoryItemIndex index of the trader's trade item
-     * @throws EntryNotFoundException        if user or trade can  not be found
      * @throws CannotTradeException          if the trade is not allowed
      * @throws AuthorizationException        if the user cannot access this trade
      * @throws TradableItemNotFoundException couldn't find the item
@@ -372,9 +376,8 @@ public class TraderAccount implements Account {
      * Makes this user request unfreeze (changes the status of whether an unfreeze was requested)
      *
      * @param status if the user requested to be unfrozen
-     * @throws EntryNotFoundException can't find user id
      */
-    public void requestUnfreeze(boolean status) throws EntryNotFoundException, AuthorizationException {
+    public void requestUnfreeze(boolean status) throws AuthorizationException, UserNotFoundException {
         traderManager.requestUnfreeze(status);
     }
 
@@ -383,9 +386,13 @@ public class TraderAccount implements Account {
      *
      * @param tradeId id of the trade
      * @return item index of the trade item
-     * @throws EntryNotFoundException if the user or trade can not be found
+     * @throws TradableItemNotFoundException tradable item not found
+     * @throws AuthorizationException user isn't a trader
+     * @throws TradeNotFoundException trade not found
+     * @throws UserNotFoundException trader not found
      */
-    public int getUserTradeItemIndex(String tradeId) throws EntryNotFoundException, AuthorizationException {
+    public int getUserTradeItemIndex(String tradeId) throws TradableItemNotFoundException, AuthorizationException,
+            TradeNotFoundException, UserNotFoundException {
         String[] items = tradeManager.getItemsFromTrade(tradeId);
         ArrayList<String> inventory = traderManager.getAvailableItems(traderId);
         if (tradeManager.isFirstUser(tradeId, traderId)) {
@@ -404,17 +411,18 @@ public class TraderAccount implements Account {
                 if (items[1].equals(inventory.get(i))) return i;
             }
         }
-        throw new EntryNotFoundException("The trade item could not be found in the inventory.");
+        throw new TradableItemNotFoundException();
     }
 
     /**
-     * TODO: implement in one of the managers
      * return the 3 most traded with Traders
      *
      * @return a String array of the usernames of the 3 most traded with Traders
-     * @throws EntryNotFoundException cant find user id
+     * @throws AuthorizationException user isn't a trader
+     * @throws TradeNotFoundException trade not found
+     * @throws UserNotFoundException trader not found
      */
-    public String[] getFrequentTraders() throws EntryNotFoundException, AuthorizationException {
+    public String[] getFrequentTraders() throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
 
         return tradeManager.getFrequentTraders();
     }
@@ -424,7 +432,7 @@ public class TraderAccount implements Account {
      * get first meeting time of the trade
      *
      * @param tradeID id of the trade
-     * @return Date object of the firstmeeting time
+     * @return Date object of the first meeting time
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException trade doesn't belong to this user
      */
@@ -461,9 +469,9 @@ public class TraderAccount implements Account {
      * Gets your own username
      *
      * @return username of the User
-     * @throws EntryNotFoundException cant find user id
+     * @throws UserNotFoundException cant find user id
      */
-    public String getUsername() throws EntryNotFoundException, AuthorizationException {
+    public String getUsername() throws UserNotFoundException, AuthorizationException {
         return traderManager.getUsername();
     }
 
