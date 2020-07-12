@@ -23,6 +23,10 @@ public enum DatabaseFilePaths {
         this.FILE_PATH = filePath;
     }
 
+    /**
+     * Gets the file path
+     * @return file path
+     */
     public String getFilePath() {
         return FILE_PATH;
     }
