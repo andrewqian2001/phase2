@@ -67,7 +67,7 @@ public class TradeManager {
 
         // This is used to check if the items are valid to trade
         getTradableItem(thisUserOfferId, traderId);
-        getTradableItem(thisUserOfferId, secondUserOfferId);
+        getTradableItem(secondUserOfferId, userId);
 
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
@@ -383,7 +383,9 @@ public class TradeManager {
     public Trader getTrader(String userId) throws UserNotFoundException, AuthorizationException {
         User trader;
         try {
+
             trader = userDatabase.populate(userId);
+
         } catch (EntryNotFoundException e) {
             throw new UserNotFoundException(userId);
         }
