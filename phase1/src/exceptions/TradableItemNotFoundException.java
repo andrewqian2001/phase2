@@ -12,4 +12,11 @@ public class TradableItemNotFoundException extends EntryNotFoundException {
     public TradableItemNotFoundException(String id) {
         super(id, "The item " + id + " was not found.");
     }
+
+    /**
+     * Exception with no msg
+     */
+    public TradableItemNotFoundException(){
+        super();
+    }
 }

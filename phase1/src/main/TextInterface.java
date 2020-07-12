@@ -931,9 +931,10 @@ public class TextInterface {
                     meetingLocation = tempInputString;
                 }
                 tempInputString = ""; // reset the input string
-                success = traderAccount.editTrade(traderID, tradeID, firstMeeting,
+                traderAccount.editTrade(tradeID, firstMeeting,
                         secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
-            } catch (EntryNotFoundException | NumberFormatException | IndexOutOfBoundsException | ParseException | CannotTradeException | AuthorizationException | IOException e) {
+                success = true;
+            } catch (NumberFormatException | ParseException | CannotTradeException | AuthorizationException | IOException | TradeNotFoundException | UserNotFoundException | TradableItemNotFoundException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }

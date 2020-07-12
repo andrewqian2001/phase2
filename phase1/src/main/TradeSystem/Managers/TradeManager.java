@@ -182,12 +182,13 @@ public class TradeManager {
 
     /**
      * For confirming a trade request
+     *
      * @param tradeId the trade id
      * @return if the request was confirmed
      * @throws TradeNotFoundException if the trade wasn't found
      * @throws AuthorizationException if the user is not a trader
-     * @throws UserNotFoundException if the user doesn't exist
-     * @throws CannotTradeException if trading limitations prevent the trade from happening
+     * @throws UserNotFoundException  if the user doesn't exist
+     * @throws CannotTradeException   if trading limitations prevent the trade from happening
      */
     public boolean confirmRequest(String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException, CannotTradeException {
         Trade trade = getTrade(tradeId);
@@ -301,7 +302,7 @@ public class TradeManager {
      * @throws UserNotFoundException  the trader wasn't found
      * @throws AuthorizationException the user was not a trader
      */
-    private Trader getTrader(String userId) throws UserNotFoundException, AuthorizationException {
+    public Trader getTrader(String userId) throws UserNotFoundException, AuthorizationException {
         User trader;
         try {
             trader = userDatabase.populate(userId);
@@ -320,7 +321,7 @@ public class TradeManager {
      * @throws TradeNotFoundException if the trade wasn't found
      * @throws AuthorizationException if the trade doesn't belong to this user
      */
-    private Trade getTrade(String tradeId) throws TradeNotFoundException, AuthorizationException {
+    public Trade getTrade(String tradeId) throws TradeNotFoundException, AuthorizationException {
         Trade trade;
         try {
             trade = tradeDatabase.populate(tradeId);
@@ -359,43 +360,16 @@ public class TradeManager {
     }
 
     /**
-     * Editing an existing trade
-     * @param tradeId the trade id
-     * @param meetingTime the new time of the trade
-     * @param secondMeetingTime the second meeting time of the trade
-     * @param meetingLocation the meeting location of the trade
-     * @param firstUserOffer the tradableitem id of the first user offer
-     * @param secondUserOffer the tradableitem id of the second user offer
-     * @return the id of the trade
-     * @throws CannotTradeException too many edits
-     * @throws EntryNotFoundException trade id wasn't found
-     */
-    public String editTrade(String tradeId, Date meetingTime, Date secondMeetingTime, String meetingLocation,
-                            String firstUserOffer, String secondUserOffer) throws CannotTradeException, EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeId);
-        if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) throw new CannotTradeException("Trade not allowed");
-        if (trade.getUserTurnToEdit().equals(trade.getFirstUserId())) trade.changeUserTurn();
-        trade.setMeetingTime(meetingTime);
-        trade.setSecondMeetingTime(secondMeetingTime);
-        trade.setMeetingLocation(meetingLocation);
-        trade.setFirstUserOffer(firstUserOffer);
-        trade.setSecondUserOffer(secondUserOffer);
-        trade.setNumEdits(trade.getNumEdits() + 1);
-
-        tradeDatabase.update(trade);
-        return trade.getId();
-    }
-
-    /**
      * Gets the other user in the trade
      *
      * @param tradeID id of the trade
-     * @param userId id of the user
+     * @param userId  id of the user
      * @return the user id of the other user
-     * @throws EntryNotFoundException trade id / user id  wasn't found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
      */
-    public String getOtherUser(String tradeID, String userId) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeID);
+    public String getOtherUser(String tradeID, String userId) throws TradeNotFoundException, AuthorizationException {
+        Trade trade = getTrade(tradeID);
         if (userId.equals(trade.getFirstUserId())) return trade.getSecondUserId();
         else return trade.getFirstUserId();
     }
@@ -403,20 +377,22 @@ public class TradeManager {
     /**
      * @param tradeID the id of the trade
      * @return meeting location of the trade
-     * @throws EntryNotFoundException tradeId is not found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
      */
-    public String getMeetingLocation(String tradeID) throws EntryNotFoundException {
-        return tradeDatabase.populate(tradeID).getMeetingLocation();
+    public String getMeetingLocation(String tradeID) throws TradeNotFoundException, AuthorizationException {
+        return getTrade(tradeID).getMeetingLocation();
     }
 
     /**
      * @param tradeId the id of the trade
-     * @param userId the id of the user
+     * @param userId  the id of the user
      * @return if the user that started the trade
-     * @throws EntryNotFoundException tradeId is not found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
      */
-    public boolean isFirstUser(String tradeId, String userId) throws EntryNotFoundException {
-        return userId.equals(tradeDatabase.populate(tradeId).getFirstUserId());
+    public boolean isFirstUser(String tradeId, String userId) throws TradeNotFoundException, AuthorizationException {
+        return userId.equals(getTrade(tradeId).getFirstUserId());
     }
 
     /**
@@ -424,46 +400,40 @@ public class TradeManager {
      *
      * @param tradeId id of the trade
      * @return true if the trade is in progress, false else
-     * @throws EntryNotFoundException tradeId is not found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
      */
-    public boolean isTradeInProgress(String tradeId) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeId);
+    public boolean isTradeInProgress(String tradeId) throws AuthorizationException, TradeNotFoundException {
+        Trade trade = getTrade(tradeId);
 
-        // If permanent trade, then the first meeting must be confirmed by both Database.users for it to not be in progress.
-        if (trade.getSecondMeetingTime()== null) {
+        if (trade.getSecondMeetingTime() == null) {
             return !(trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1());
         }
-        // Checks for temporary Database.trades, both meetings must be confirmed by both Database.users for it to not be in progress.
+
         return !(trade.isFirstUserConfirmed2() && trade.isFirstUserConfirmed2() &&
                 trade.isSecondUserConfirmed1() && trade.isSecondUserConfirmed2());
     }
 
     /**
-     *
      * @param tradeId is the id of the trade
      * @return if the first meeting happened
-     * @throws EntryNotFoundException trade id wasn't found
+     * @throws AuthorizationException user can't access this trade
+     * @throws TradeNotFoundException trade doesn't exist
      */
-    public boolean isFirstMeetingConfirmed(String tradeId) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeId);
-        if(trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()){
-            return true;
-        }
-        return false;
+    public boolean isFirstMeetingConfirmed(String tradeId) throws AuthorizationException, TradeNotFoundException {
+        Trade trade = getTrade(tradeId);
+        return trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1();
     }
 
     /**
-     *
      * @param tradeId is the id of the trade
      * @return if the second meeting happened
-     * @throws EntryNotFoundException trade id wasn't found
+     * @throws AuthorizationException user can't access this trade
+     * @throws TradeNotFoundException trade doesn't exist
      */
-    public boolean isSecondMeetingConfirmed(String tradeId) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeId);
-        if(trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2()){
-            return true;
-        }
-        return false;
+    public boolean isSecondMeetingConfirmed(String tradeId) throws AuthorizationException, TradeNotFoundException {
+        Trade trade = getTrade(tradeId);
+        return trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2();
     }
 
     /**
@@ -471,10 +441,11 @@ public class TradeManager {
      *
      * @param tradeID id of the trade
      * @return the Date of the first meeting time
-     * @throws EntryNotFoundException trade id wasn't found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
      */
-    public Date getFirstMeetingTime(String tradeID) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeID);
+    public Date getFirstMeetingTime(String tradeID) throws TradeNotFoundException, AuthorizationException {
+        Trade trade = getTrade(tradeID);
         return trade.getMeetingTime();
     }
 
@@ -483,10 +454,11 @@ public class TradeManager {
      *
      * @param tradeId ID of the trade
      * @return an array of itemIDs of the two items that were involved in the trade
-     * @throws EntryNotFoundException trade id wasn't found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
      */
-    public String[] getItemsFromTrade(String tradeId) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeId);
+    public String[] getItemsFromTrade(String tradeId) throws TradeNotFoundException, AuthorizationException {
+        Trade trade = getTrade(tradeId);
         return new String[]{trade.getFirstUserOffer(), trade.getSecondUserOffer()};
     }
 
@@ -495,9 +467,10 @@ public class TradeManager {
      *
      * @param tradeID id of the trade
      * @return true if the trade is temporary
-     * @throws EntryNotFoundException trade id wasn't found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
      */
-    public boolean hasSecondMeeting(String tradeID) throws EntryNotFoundException {
+    public boolean hasSecondMeeting(String tradeID) throws TradeNotFoundException, AuthorizationException {
         return getSecondMeetingTime(tradeID) != null;
     }
 
@@ -506,10 +479,11 @@ public class TradeManager {
      *
      * @param tradeID id of the trade
      * @return the Date of the second meeting time
-     * @throws EntryNotFoundException trade id wasnt found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
      */
-    public Date getSecondMeetingTime(String tradeID) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeID);
+    public Date getSecondMeetingTime(String tradeID) throws TradeNotFoundException, AuthorizationException {
+        Trade trade = getTrade(tradeID);
         return trade.getSecondMeetingTime();
     }
 
@@ -519,13 +493,15 @@ public class TradeManager {
      * @param tradeID id of the trade
      * @param userID  id of the user
      * @return true if the user confirmed the first meeting
-     * @throws EntryNotFoundException trade id wasn't found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
+     * @throws UserNotFoundException  user wasn't found
      */
-    public boolean getFirstMeetingConfirmed(String tradeID, String userID) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeID);
+    public boolean getFirstMeetingConfirmed(String tradeID, String userID) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+        Trade trade = getTrade(tradeID);
         if (trade.getFirstUserId().equals(userID)) return trade.isFirstUserConfirmed1();
         else if (trade.getSecondUserId().equals(userID)) return trade.isSecondUserConfirmed1();
-        else throw new EntryNotFoundException("The user " + userID + " was not found.");
+        else throw new UserNotFoundException(userID);
     }
 
     /**
@@ -534,22 +510,28 @@ public class TradeManager {
      * @param tradeID id of the trade
      * @param userID  id of the user
      * @return true if the user confirmed the second meeting
-     * @throws EntryNotFoundException trade id wasn't found
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
+     * @throws UserNotFoundException  user wasn't found
      */
-    public boolean getSecondMeetingConfirmed(String tradeID, String userID) throws EntryNotFoundException {
-        Trade trade = tradeDatabase.populate(tradeID);
+    public boolean getSecondMeetingConfirmed(String tradeID, String userID) throws UserNotFoundException, TradeNotFoundException, AuthorizationException {
+        Trade trade = getTrade(tradeID);
         if (trade.getFirstUserId().equals(userID)) return trade.isFirstUserConfirmed2();
         else if (trade.getSecondUserId().equals(userID)) return trade.isSecondUserConfirmed2();
-        else throw new EntryNotFoundException("The user " + userID + " was not found.");
+        else throw new UserNotFoundException(userID);
     }
 
     /**
-     * Return's whether
-     * @param tradeID
-     * @return
-     * @throws EntryNotFoundException
+     * @param traderId id of the trader
+     * @param tradeID  id of the trade
+     * @return if all meetings are confirmed
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException trade doesn't belong to this user
+     * @throws UserNotFoundException  user wasn't found
+     * @params traderID
      */
-    public boolean hasUserConfirmedAllMeetings(String traderId, String tradeID) throws EntryNotFoundException {
+    public boolean hasUserConfirmedAllMeetings(String traderId, String tradeID) throws
+            TradeNotFoundException, AuthorizationException, UserNotFoundException {
         if (hasSecondMeeting(tradeID))
             return getFirstMeetingConfirmed(tradeID, traderId) && getSecondMeetingConfirmed(tradeID, traderId);
         return getFirstMeetingConfirmed(tradeID, traderId);
