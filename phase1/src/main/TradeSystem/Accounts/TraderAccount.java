@@ -161,7 +161,6 @@ public class TraderAccount implements Account{
     /**
      * Gets a list of the items used in Database.trades
      *
-     * @param userId id of the user
      * @return list of unique items that the user has traded/received from a trade
      * @throws EntryNotFoundException cant find user id
      */
@@ -176,7 +175,7 @@ public class TraderAccount implements Account{
      * @return id of the User
      * @throws EntryNotFoundException cant find user id
      */
-    public String getIdFromUsername(String username) throws EntryNotFoundException {
+    public String getIdFromUsername(String username) throws UserNotFoundException {
         return traderManager.getIdFromUsername(username);
     }
     /**
@@ -250,7 +249,7 @@ public class TraderAccount implements Account{
      * TODO: JAMES HELP
      * edits the trade object
      * @param userID id of the user
-     * @param traderId id of the other user of the trade
+     * @param otherTraderId id of the other user of the trade
      * @param tradeID id of the trade
      * @param firstMeeting first meeting date object
      * @param secondMeeting second meeting date object
@@ -270,7 +269,6 @@ public class TraderAccount implements Account{
 
     /**
      * Gets the tradeID given the index of the Database.users requested trade
-     * @param userId id of the user
      * @param requestedTradeIndex index of the requested trade
      * @return the trade ID
      * @throws EntryNotFoundException userId not found
@@ -298,7 +296,7 @@ public class TraderAccount implements Account{
         return tradeManager.acceptTradeRequest(tradeID);
     }
 
-    /**
+    /**TODO: possibly not needed
      * Confirms that other trader did not show up to the trade
      * This method should increment the other traders incomplete trade count but not this traders
      * @param tradeID the trade id
@@ -323,8 +321,8 @@ public class TraderAccount implements Account{
      * @param status if the user requested to be unfrozen
      * @throws EntryNotFoundException can't find user id
      */
-    public void requestUnfreeze(String userId, boolean status) throws EntryNotFoundException {
-        userManager.setRequestFrozenStatus(userId, status);
+    public void requestUnfreeze(boolean status) throws EntryNotFoundException, AuthorizationException {
+        traderManager.requestUnfreeze(status);
     }
 
     /**

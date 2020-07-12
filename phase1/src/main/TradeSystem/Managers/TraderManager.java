@@ -1,6 +1,7 @@
 package main.TradeSystem.Managers;
 
 import Database.Database;
+import Database.trades.Trade;
 import Database.users.AdminManager;
 import Database.users.Trader;
 import Database.users.User;
@@ -19,7 +20,7 @@ import main.TradeSystem.Managers.TradeManager;
 public class TraderManager {
     private final Database<User> userDatabase;
     private final String traderId;
-    private final TradeManager tradeManager;
+    private final Database<Trade> tradeDatabase;
     /**
      * This is used for the actions that a trader user can do
      *
@@ -31,7 +32,7 @@ public class TraderManager {
     public TraderManager(String traderId) throws IOException, UserNotFoundException, AuthorizationException {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
         this.traderId = getTrader(traderId).getId();
-        tradeManager = new TradeManager(traderId);
+        tradeDatabase = new Database<Trade>(DatabaseFilePaths.TRADE.getFilePath());
     }
 
     /**
@@ -56,7 +57,7 @@ public class TraderManager {
      *                                found
      */
     private Trader findTraderbyId(String userId) throws EntryNotFoundException {
-        User user = findUserById(userId);
+        User user = userDatabase.populate(userId);
         if (user instanceof Trader) {
             return (Trader) user;
         }
@@ -203,12 +204,12 @@ public class TraderManager {
      * @return id of the User
      * @throws EntryNotFoundException cant find user id
      */
-    public String getIdFromUsername(String username) throws EntryNotFoundException {
-        LinkedList<User> users = user.getItems();
+    public String getIdFromUsername(String username) throws UserNotFoundException {
+        LinkedList<User> users = userDatabase.getItems();
         for (User user : users)
             if (user.getUsername().equals(username))
                 return user.getId();
-        throw new EntryNotFoundException("User with the username " + username + " not found.");
+        throw new UserNotFoundException("User with the username " + username + " not found.");
     }
 
     /**
@@ -223,7 +224,6 @@ public class TraderManager {
     }
 
     /**
-     * @param userId the user that wants to be unfrozen
      * @param status if the user requested to be unfrozen
      * @throws EntryNotFoundException can't find user id
      */
@@ -233,7 +233,7 @@ public class TraderManager {
         userDatabase.update(t);
     }
 
-    /**
+    /**TODO: fix or move to another class
      * get the item index of the trade item
      * @param userID id of the user
      * @param tradeId id of the trade
@@ -263,7 +263,7 @@ public class TraderManager {
         throw new EntryNotFoundException("The trade item could not be found in the inventory.");
     }
 
-    /**
+    /**TODO: fix or move to another class
      * return the 3 most traded with Traders
      *
      * @return a String array of the usernames of the 3 most traded with Traders
@@ -326,8 +326,14 @@ public class TraderManager {
         return allItems;
     }
 
-    public boolean canTrade(){
-        return
+    /**
+     *
+     * @return whether or not the current user can trade
+     * @throws UserNotFoundException if the current user could not be found
+     * @throws AuthorizationException
+     */
+    public boolean canTrade() throws UserNotFoundException, AuthorizationException {
+        return getTrader().canTrade();
     }
 
 

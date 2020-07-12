@@ -143,9 +143,13 @@ public class AdminManager {
      * @param newLimit the new trade limit
      * @throws EntryNotFoundException if the trader could not be found
      */
-    public void changeTraderLimits(String userId, int newLimit) throws EntryNotFoundException {
-        Trader trader = findTraderbyId(userId);
-        trader.setIncompleteTradeLim(newLimit);
+    public void changeTraderLimits(String userId, int newLimit) throws EntryNotFoundException, UserNotFoundException{
+        User trader = userDatabase.populate(userId);
+        if (!(trader instanceof Trader)){
+            throw new UserNotFoundException("This user is not a trader");
+        }
+
+        ((Trader)trader).setIncompleteTradeLim(newLimit);
         userDatabase.update(trader);
     }
 
@@ -231,15 +235,6 @@ public class AdminManager {
      */
     public String getUsername(String userId) throws EntryNotFoundException {
         return userDatabase.populate(userId).getUsername();
-    }
-
-    /**
-     * Gets the current weekly trade limit
-     * @return the current trade limit
-     * @throws EntryNotFoundException Can't find traders
-     */
-    public int getCurrentTradeLimit() throws EntryNotFoundException {
-        return ((Database.users.AdminManager) userManager).getTradeLimit();
     }
 
 }
