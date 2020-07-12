@@ -7,15 +7,15 @@ public enum DatabaseFilePaths {
     /**
      * For the file path of all users
      */
-    USER("./phase1/src/Database.users/Database.users.ser"),
+    USER("./phase1/src/Database/users/users.ser"),
     /**
      * file path of all trades
      */
-    TRADE("./phase1/src/Database.trades/Database.trades.ser"),
+    TRADE("./phase1/src/Database/trades/trades.ser"),
     /**
      * file path for all items that are traded
      */
-    TRADABLE_ITEM("./phase1/src/Database.tradableitems/Database.tradableitems.ser");
+    TRADABLE_ITEM("./phase1/src/Database/tradableitems/tradableitems.ser");
 
     private final String FILE_PATH;
 

@@ -60,6 +60,7 @@ public class TradeSystem implements Serializable {
      * @throws IOException issues with database
      */
     public Account getAccount() throws AuthorizationException, UserNotFoundException, IOException {
+        System.out.println(loginManager.getLastLoggedInType());
         switch(loginManager.getLastLoggedInType()){
             case ADMIN:
                 return new AdminAccount(lastLoggedInString);

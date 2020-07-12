@@ -36,7 +36,7 @@ public class LoginManager {
      *
      * @param username username of new user
      * @param password password of new user
-     * @param type the type of user
+     * @param type     the type of user
      * @return The ID of the newly created user
      * @throws UserAlreadyExistsException username is not unique
      */
@@ -68,16 +68,22 @@ public class LoginManager {
     public String login(String username, String password) throws UserNotFoundException {
         LinkedList<User> users = userDatabase.getItems();
         for (User user : users)
-            if (user.getUsername().equals(username) && (user.getPassword().equals(password)))
+            if (user.getUsername().equals(username) && (user.getPassword().equals(password))) {
+                if (user instanceof Admin)
+                    lastLoggedInType = UserTypes.ADMIN;
+                else
+                    lastLoggedInType = UserTypes.TRADER;
                 return user.getId();
+            }
         throw new UserNotFoundException();
     }
 
     /**
      * The last account that logged in
+     *
      * @return last account type that logged in
      */
-    public UserTypes getLastLoggedInType(){
+    public UserTypes getLastLoggedInType() {
         return lastLoggedInType;
     }
 
@@ -105,6 +111,7 @@ public class LoginManager {
 
     /**
      * default trade limit
+     *
      * @return the current default trade limit.
      */
     public int getDefaultTradeLimit() {
