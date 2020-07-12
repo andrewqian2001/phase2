@@ -180,8 +180,11 @@ public class TradeManager {
         Trade trade = getTrade(tradeId);
         if (trade.getFirstUserId().equals(tradeId)) trade.setFirstUserConfirmed1(status);
         else if ((trade.getSecondUserId().equals(tradeId))) trade.setSecondUserConfirmed1(status);
+
         tradeDatabase.update(trade);
     }
+
+
 
     /**
      * For confirming a trade request
@@ -197,15 +200,16 @@ public class TradeManager {
         Trade trade = getTrade(tradeId);
         Trader trader = getTrader(trade.getFirstUserId());
         Trader trader2 = getTrader(trade.getSecondUserId());
+
         if (!trader.canTrade() || !trader2.canTrade())
             throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
+
         if (trade.getFirstUserId().equals(traderId))
             trade.setHasFirstUserConfirmedRequest(true);
         else trade.setHasSecondUserConfirmedRequest(true);
 
         // This should always be true but this is a check anyway
         if (trade.isHasFirstUserConfirmedRequest() && trade.isHasSecondUserConfirmedRequest()) {
-
             trader.getAvailableItems().remove(trade.getFirstUserOffer());
             trader2.getAvailableItems().remove(trade.getSecondUserOffer());
             trader.getAcceptedTrades().add(tradeId);
@@ -316,6 +320,7 @@ public class TradeManager {
                 throw new AuthorizationException("First meeting hasn't been confirmed");
             trade.setSecondUserConfirmed2(status);
         }
+        /* feature has been added to TraderManager since idk if tradeManager should be editing traders?
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1() &&
                 trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2()) {
             Trader trader1 = getTrader(trade.getFirstUserId());
@@ -329,6 +334,8 @@ public class TradeManager {
             userDatabase.update(trader1);
             userDatabase.update(trader2);
         }
+        */
+
         tradeDatabase.update(trade);
     }
 
