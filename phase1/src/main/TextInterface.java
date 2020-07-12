@@ -978,7 +978,7 @@ public class TextInterface {
                             "Ruh Roh! Looks like you have already confirmed to all the meetings for this trade\nABORTING TRADE CONFIRMATION...");
                     return;
                 }
-                success = traderAccount.confirmTrade(tradeID);
+                success = traderAccount.confirmMeeting(tradeID, true);
             } catch (NumberFormatException | AuthorizationException | CannotTradeException | UserNotFoundException | TradeNotFoundException e) {
                 System.out.println(e.getMessage());
             }
