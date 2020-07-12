@@ -15,18 +15,18 @@ public class AdminAccount implements Account {
 
     private final AdminManager adminManager;
     private final LoginManager loginManager;
+    private String adminId;
 
     /**
      * For accessing actions that an admin can do
      *
      * @param adminId the id of the admin
      * @throws IOException            if database file has issues
-     * @throws UserNotFoundException  if this admin doesn't exist
-     * @throws AuthorizationException if this user isn't an admin
      */
-    public AdminAccount(String adminId) throws IOException, UserNotFoundException, AuthorizationException {
-        adminManager = new AdminManager(adminId);
+    public AdminAccount(String adminId) throws IOException {
+        adminManager = new AdminManager();
         loginManager = new LoginManager();
+        this.adminId = adminId;
     }
 
     /**

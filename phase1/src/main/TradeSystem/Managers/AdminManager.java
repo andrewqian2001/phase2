@@ -22,31 +22,17 @@ import java.util.LinkedList;
  * Used for executing actions that an admin has
  */
 public class AdminManager {
-    private Database<User> userDatabase;
-    private Database<Trade> tradeDatabase;
-    private Database<TradableItem> tradableItemDatabase;
-    private String adminId;
+    private final Database<User> userDatabase;
+    private final Database<TradableItem> tradableItemDatabase;
 
     /**
      * This is used for the actions that an admin user can do
      *
-     * @param adminId this is the user id of the admin account
      * @throws IOException            if something goes wrong with getting database
-     * @throws UserNotFoundException  if the user id passed in doesn't exist
-     * @throws AuthorizationException if the user id is of the wrong type
      */
-    public AdminManager(String adminId) throws IOException, UserNotFoundException, AuthorizationException {
+    public AdminManager() throws IOException{
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
-        tradeDatabase = new Database<Trade>(DatabaseFilePaths.TRADE.getFilePath());
         tradableItemDatabase = new Database<TradableItem>(DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
-        try {
-            User tmp = userDatabase.populate(adminId);
-            if (!(tmp instanceof Admin))
-                throw new AuthorizationException("This account is not an admin type.");
-            this.adminId = tmp.getId();
-        } catch (EntryNotFoundException e) {
-            throw new UserNotFoundException(adminId);
-        }
     }
 
     /**
