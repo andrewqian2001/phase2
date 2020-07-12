@@ -278,7 +278,7 @@ public class TraderAccount implements Account {
     }
 
     /**
-     * Confirms an accepted trade took place outside of the program, swaps items as necessary
+     * Confirms an accepted trade took place outside of the program
      *
      * @param tradeID id of the trade
      * @return true if the trade was successfully confirmed
@@ -287,28 +287,9 @@ public class TraderAccount implements Account {
      * @throws CannotTradeException   trading restrictions
      * @throws TradeNotFoundException if the trade isn't found
      */
-    public boolean confirmMeeting(String tradeID, boolean status) throws AuthorizationException, TradeNotFoundException,
+    public boolean confirmTrade(String tradeID) throws AuthorizationException, TradeNotFoundException,
             CannotTradeException, UserNotFoundException {
-        if(!tradeManager.isFirstMeetingConfirmed(tradeID)){
-            tradeManager.confirmFirstMeeting(tradeID, status); //updates the trade
-        }
-        else{
-            tradeManager.confirmSecondMeeting(tradeID, status); //updates the trade
-        }
-        //Below updates the traders
-        String trader2Id = tradeManager.getOtherUser(tradeID, traderId);
-        String Items[] = tradeManager.getItemsFromTrade(tradeID);
-        if(tradeManager.isFirstMeetingConfirmed(tradeID) && !tradeManager.hasSecondMeeting(tradeID)){ //permanent trade
-            traderManager.confirmMeeting(tradeID, trader2Id, Items[0] , Items[1], true);
-        }
-        //temporary trade
-        else if(tradeManager.isFirstMeetingConfirmed(tradeID) && !tradeManager.isSecondMeetingConfirmed(tradeID)){ //first meeting item exchange
-            traderManager.confirmMeeting(tradeID, trader2Id, Items[0] , Items[1], false);
-        }else if(tradeManager.isSecondMeetingConfirmed(tradeID)){   //second meeting item exchange
-            traderManager.confirmMeeting(tradeID, trader2Id, Items[1], Items[0], true);
-
-        }
-        return true;
+        return tradeManager.confirmRequest(tradeID);
     }
 
 

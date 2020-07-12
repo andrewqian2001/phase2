@@ -256,35 +256,6 @@ public class TraderManager {
     }
 
     /**
-     * When a meeting is confirmed by both trader, then both get updated
-     * @param tradeId id of first trader
-     * @param trader2Id id of 2nd trader
-     * @param item1 item of first trader
-     * @param item2 item of second trader
-     * @param lastMeeting is if the meeting is the last one
-     * @throws UserNotFoundException
-     * @throws AuthorizationException
-     */
-    /*
-    public void confirmMeeting(String tradeId, String trader2Id, String item1, String item2, boolean lastMeeting) throws UserNotFoundException, AuthorizationException {
-        Trader trader1 = getTrader(traderId);
-        Trader trader2 = getTrader(trader2Id);
-        trader1.getAvailableItems().add(item2);
-        System.out.println(item1);
-        System.out.println(item2);
-        trader2.getAvailableItems().add(item1);
-        if(lastMeeting){
-            trader1.getAcceptedTrades().remove(tradeId);
-            trader2.getAcceptedTrades().remove(tradeId);
-            trader1.getCompletedTrades().add(tradeId);
-            trader2.getCompletedTrades().add(tradeId);
-        }
-        userDatabase.update(trader1);
-        userDatabase.update(trader2);
-    }
-     */
-
-    /**
      * Gets the tradable item object
      *
      * @param itemID the ID of this item

@@ -15,8 +15,11 @@ public enum DatabaseFilePaths {
     /**
      * file path for all items that are traded
      */
-    TRADABLE_ITEM("./phase1/src/Database/tradableitems/tradableitems.ser");
-
+    TRADABLE_ITEM("./phase1/src/Database/tradableitems/tradableitems.ser"),
+    /**
+     * file path for trader config file
+     */
+    TRADER_CONFIG("./phase1/src/main/trader.properties");
     private final String FILE_PATH;
 
     DatabaseFilePaths(String filePath) {

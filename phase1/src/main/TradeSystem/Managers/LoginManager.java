@@ -9,17 +9,23 @@ import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
 import main.TradeSystem.Accounts.UserTypes;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.Properties;
 
 /**
  * Used for logging in and registering
  */
 public class LoginManager {
     private final Database<User> userDatabase;
-    private int defaultTradeLimit = 10;
-    private int defaultIncompleteTradeLim = 3;
-    private int defaultMinimumAmountNeededToBorrow = 1;
+
+    private final String DEFAULTTRADELIMIT = "defaultTradeLimit";
+    private final String DEFAULTINCOMPLETETRADELIM = "defaultIncompleteTradeLim";
+    private final String DEFAULTMINIMUMAMOUNTNEEDEDTOBORROW = "defaultMinimumAmountNeededToBorrow";
+
     private UserTypes lastLoggedInType = null;
 
     /**
@@ -41,6 +47,9 @@ public class LoginManager {
      * @throws UserAlreadyExistsException username is not unique
      */
     public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException {
+        int defaultTradeLimit = getProperty(DEFAULTTRADELIMIT);
+        int defaultIncompleteTradeLim = getProperty(DEFAULTINCOMPLETETRADELIM);
+        int defaultMinimumAmountNeededToBorrow = getProperty(DEFAULTMINIMUMAMOUNTNEEDEDTOBORROW);
         if (!isUsernameUnique(username))
             throw new UserAlreadyExistsException();
         switch (type) {
@@ -106,7 +115,7 @@ public class LoginManager {
      * @param tradeLimit initial trade limit of a trader user
      */
     public void setDefaultTradeLimit(int tradeLimit) {
-        defaultTradeLimit = tradeLimit;
+        setProperty(DEFAULTTRADELIMIT, tradeLimit);
     }
 
     /**
@@ -115,7 +124,7 @@ public class LoginManager {
      * @return the current default trade limit.
      */
     public int getDefaultTradeLimit() {
-        return defaultTradeLimit;
+        return getProperty(DEFAULTTRADELIMIT);
     }
 
     /**
@@ -124,7 +133,7 @@ public class LoginManager {
      * @param defaultIncompleteTradeLim initial incomplete trade limit of a trader user
      */
     public void setDefaultIncompleteTradeLim(int defaultIncompleteTradeLim) {
-        this.defaultIncompleteTradeLim = defaultIncompleteTradeLim;
+        setProperty(DEFAULTINCOMPLETETRADELIM, defaultIncompleteTradeLim);
     }
 
     /**
@@ -133,7 +142,51 @@ public class LoginManager {
      *
      * @param defaultMinimumAmountNeededToBorrow the number of items that need to be lent out before borrowing is allowed
      */
-        public void setDefaultMinimumAmountNeededToBorrow(int defaultMinimumAmountNeededToBorrow) {
-        this.defaultMinimumAmountNeededToBorrow = defaultMinimumAmountNeededToBorrow;
+    public void setDefaultMinimumAmountNeededToBorrow(int defaultMinimumAmountNeededToBorrow) {
+        setProperty(DEFAULTMINIMUMAMOUNTNEEDEDTOBORROW, defaultMinimumAmountNeededToBorrow);
+    }
+
+    /**
+     * Gets the current value of the specified trader property
+     * @param property_name the name of the trader property
+     * @return the value of the specified trader property
+     */
+    private int getProperty(String property_name){
+        File configFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+
+        try {
+            FileReader reader = new FileReader(configFile);
+            Properties props = new Properties();
+            props.load(reader);
+            reader.close();
+            return Integer.parseInt(props.getProperty(property_name));
+        } catch (FileNotFoundException ex) {
+            // file does not exist
+        } catch (IOException ex) {
+            // I/O error
+        }
+        return -1;
+    }
+
+
+    /**
+     * Sets the value of a property.
+     * @param propertyName the property to change
+     * @param propertyValue the new value of that property
+     */
+    private void setProperty(String propertyName, int propertyValue){
+        File configFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+
+        try {
+            FileReader reader = new FileReader(configFile);
+            Properties props = new Properties();
+            props.load(reader);
+            props.setProperty(propertyName, "" + propertyValue);
+            reader.close();
+        } catch (FileNotFoundException ex) {
+            // file does not exist
+        } catch (IOException ex) {
+            // I/O error
+        }
     }
 }
