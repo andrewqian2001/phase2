@@ -575,7 +575,7 @@ public class TextInterface {
                 itemIndex = Integer.parseInt(sc.nextLine());
                 adminAccount.processItemRequest(adminAccount.getUserId(traderName), itemIndex, isAccepted);
                 success = true;
-            } catch (AuthorizationException | EntryNotFoundException e) {
+            } catch (AuthorizationException | EntryNotFoundException | NumberFormatException e) {
                 System.out.println(e.getMessage());
                 success = false;
             }
