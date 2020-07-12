@@ -212,6 +212,8 @@ public class TradeManager {
             trader2.getAcceptedTrades().add(tradeId);
             trader.setTradeLimit(trader.getTradeLimit() - 1);
             trader2.setTradeLimit(trader2.getTradeLimit() - 1);
+            trader.getRequestedTrades().remove(tradeId);
+            trader2.getRequestedTrades().remove(tradeId);
             userDatabase.update(trader);
             userDatabase.update(trader2);
             return true;
