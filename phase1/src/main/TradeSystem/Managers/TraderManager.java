@@ -278,42 +278,7 @@ public class TraderManager {
         throw new EntryNotFoundException("The trade item could not be found in the inventory.");
     }
 
-    /**
-     * TODO: fix or move to another class
-     * return the 3 most traded with Traders
-     *
-     * @return a String array of the usernames of the 3 most traded with Traders
-     * @throws EntryNotFoundException cant find user id
-     */
-    public String[] getFrequentTraders() throws EntryNotFoundException, AuthorizationException {
-        String[] frequentTraders = new String[3];
-        ArrayList<String> users = new ArrayList<>();
 
-        // converts trade-id to other Database.users' id
-        for (String trade_id : getTrader().getCompletedTrades()) {
-            users.add(tradeManager.getOtherUser(trade_id, traderId));
-        }
-
-        Set<String> distinct = new HashSet<>(users);
-        int highest = 0;
-        for (int i = 0; i < 3; i++) {
-            for (String user_id : distinct) {
-                int possible_high = Collections.frequency(users, user_id);
-                if (possible_high > highest) {
-                    frequentTraders[i] = user_id;
-                    highest = possible_high;
-                }
-            }
-            distinct.remove(frequentTraders[i]);
-        }
-
-        //converts frequentTraders from ID array to username array
-        for (int i = 0; i < 3 && frequentTraders[i] != null; i++) {
-            frequentTraders[i] = userDatabase.populate(frequentTraders[i]).getUsername();
-        }
-
-        return frequentTraders;
-    }
 
     /**
      * Gets the username of a User given their ID

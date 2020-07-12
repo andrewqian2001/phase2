@@ -9,7 +9,7 @@ import exceptions.*;
 import main.DatabaseFilePaths;
 
 import java.io.IOException;
-import java.util.Date;
+import java.util.*;
 
 public class TradeManager {
     private Database<User> userDatabase;
@@ -214,6 +214,79 @@ public class TradeManager {
             return true;
         }
         return false;
+    }
+    /**
+     *
+     * edits the trade object
+     *
+     * @param tradeID                  id of the trade
+     * @param firstMeeting             first meeting date object
+     * @param secondMeeting            second meeting date object
+     * @param meetingLocation          String of the meeting location
+     * @param inventoryItemIndex       index of the user's trade item
+     * @param traderInventoryItemIndex index of the trader's trade item
+     * @throws EntryNotFoundException        if user or trade can  not be found
+     * @throws CannotTradeException          if the trade is not allowed
+     * @throws AuthorizationException        if the user cannot access this trade
+     * @throws TradableItemNotFoundException couldn't find the item
+     */
+    public void editTrade(String tradeID, Date firstMeeting, Date secondMeeting, String meetingLocation,
+                          int inventoryItemIndex, int traderInventoryItemIndex)
+            throws CannotTradeException, TradeNotFoundException, UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+
+        Trade trade = getTrade(tradeID);
+        Trader trader1 = getTrader(trade.getFirstUserId());
+        Trader trader2 = getTrader(trade.getSecondUserId());
+        ArrayList<String> items1 = trader2.getAvailableItems();
+        ArrayList<String> items2 = trader1.getAvailableItems();
+        if (trader1.getId().equals(traderId)) {
+            ArrayList<String> tmp = items1;
+            items2 = tmp;
+            items1 = items2;
+        }
+        try {
+            counterTradeOffer(tradeID, firstMeeting, secondMeeting, meetingLocation,
+                    items1.get(inventoryItemIndex), items2.get(traderInventoryItemIndex));
+        } catch (IndexOutOfBoundsException e) {
+            throw new TradableItemNotFoundException();
+        }
+    }
+
+    /**
+     *
+     * return the 3 most traded with Traders
+     *
+     * @return a String array of the usernames of the 3 most traded with Traders
+     * @throws EntryNotFoundException cant find user id
+     */
+    public String[] getFrequentTraders() throws EntryNotFoundException, AuthorizationException {
+        String[] frequentTraders = new String[3];
+        ArrayList<String> users = new ArrayList<>();
+
+        // converts trade-id to other Database.users' id
+        for (String trade_id : getTrader(traderId).getCompletedTrades()) {
+            users.add(getOtherUser(trade_id, traderId));
+        }
+
+        Set<String> distinct = new HashSet<>(users);
+        int highest = 0;
+        for (int i = 0; i < 3; i++) {
+            for (String user_id : distinct) {
+                int possible_high = Collections.frequency(users, user_id);
+                if (possible_high > highest) {
+                    frequentTraders[i] = user_id;
+                    highest = possible_high;
+                }
+            }
+            distinct.remove(frequentTraders[i]);
+        }
+
+        //converts frequentTraders from ID array to username array
+        for (int i = 0; i < 3 && frequentTraders[i] != null; i++) {
+            frequentTraders[i] = userDatabase.populate(frequentTraders[i]).getUsername();
+        }
+
+        return frequentTraders;
     }
 
     /**

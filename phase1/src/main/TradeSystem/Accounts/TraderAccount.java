@@ -293,7 +293,7 @@ public class TraderAccount implements Account {
     }
 
     /**
-     * TODO: implement method in TradeMananger
+     *
      * edits the trade object
      *
      * @param tradeID                  id of the trade
@@ -311,22 +311,7 @@ public class TraderAccount implements Account {
                           int inventoryItemIndex, int traderInventoryItemIndex)
             throws CannotTradeException, TradeNotFoundException, UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
-        Trade trade = tradeManager.getTrade(tradeID);
-        Trader trader1 = tradeManager.getTrader(trade.getFirstUserId());
-        Trader trader2 = tradeManager.getTrader(trade.getSecondUserId());
-        ArrayList<String> items1 = trader2.getAvailableItems();
-        ArrayList<String> items2 = trader1.getAvailableItems();
-        if (trader1.getId().equals(traderId)) {
-            ArrayList<String> tmp = items1;
-            items2 = tmp;
-            items1 = items2;
-        }
-        try {
-            tradeManager.counterTradeOffer(tradeID, firstMeeting, secondMeeting, meetingLocation,
-                    items1.get(inventoryItemIndex), items2.get(traderInventoryItemIndex));
-        } catch (IndexOutOfBoundsException e) {
-            throw new TradableItemNotFoundException();
-        }
+        tradeManager.editTrade(tradeID, firstMeeting, secondMeeting, meetingLocation, inventoryItemIndex, traderInventoryItemIndex);
     }
 
     /**
@@ -400,7 +385,7 @@ public class TraderAccount implements Account {
      * @return item index of the trade item
      * @throws EntryNotFoundException if the user or trade can not be found
      */
-    public int getUserTradeItemIndex(String tradeId) throws TradeNotFoundException, AuthorizationException {
+    public int getUserTradeItemIndex(String tradeId) throws EntryNotFoundException, AuthorizationException {
         String[] items = tradeManager.getItemsFromTrade(tradeId);
         ArrayList<String> inventory = traderManager.getAvailableItems(traderId);
         if (tradeManager.isFirstUser(tradeId, traderId)) {
@@ -429,34 +414,9 @@ public class TraderAccount implements Account {
      * @return a String array of the usernames of the 3 most traded with Traders
      * @throws EntryNotFoundException cant find user id
      */
-    public String[] getFrequentTraders() throws EntryNotFoundException {
-        String[] frequentTraders = new String[3];
-        ArrayList<String> users = new ArrayList<>();
+    public String[] getFrequentTraders() throws EntryNotFoundException, AuthorizationException {
 
-        // converts trade-id to other Database.users' id
-        for (String trade_id : ((Database.users.TraderManager) userManager).getCompletedTrades(traderId)) {
-            users.add(tradeManager.getOtherUser(trade_id, userID));
-        }
-
-        Set<String> distinct = new HashSet<>(users);
-        int highest = 0;
-        for (int i = 0; i < 3; i++) {
-            for (String user_id : distinct) {
-                int possible_high = Collections.frequency(users, user_id);
-                if (possible_high > highest) {
-                    frequentTraders[i] = user_id;
-                    highest = possible_high;
-                }
-            }
-            distinct.remove(frequentTraders[i]);
-        }
-
-        //converts frequentTraders from ID array to username array
-        for (int i = 0; i < 3 && frequentTraders[i] != null; i++) {
-            frequentTraders[i] = userManager.getUsername(frequentTraders[i]);
-        }
-
-        return frequentTraders;
+        return tradeManager.getFrequentTraders();
     }
 
 
