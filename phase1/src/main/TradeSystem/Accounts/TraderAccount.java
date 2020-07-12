@@ -290,6 +290,9 @@ public class TraderAccount implements Account {
     public boolean confirmMeeting(String tradeID, boolean status) throws AuthorizationException, TradeNotFoundException,
             CannotTradeException, UserNotFoundException {
         tradeManager.confirmFirstMeeting(tradeID, status); //updates the trade
+        if(tradeManager.isFirstMeetingConfirmed(tradeID)){
+            tradeManager.confirmSecondMeeting(tradeID, status); //updates the trade
+        }
         //Below updates the traders
         String trader2Id = tradeManager.getOtherUser(tradeID, traderId);
         String Items[] = tradeManager.getItemsFromTrade(tradeID);
@@ -301,6 +304,7 @@ public class TraderAccount implements Account {
             traderManager.confirmMeeting(tradeID, trader2Id, Items[0] , Items[1], false);
         }else if(tradeManager.isSecondMeetingConfirmed(tradeID)){   //second meeting item exchange
             traderManager.confirmMeeting(tradeID, trader2Id, Items[1], Items[0], true);
+
         }
         return true;
     }
