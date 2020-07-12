@@ -9,10 +9,7 @@ import exceptions.UserNotFoundException;
 import main.DatabaseFilePaths;
 import main.TradeSystem.Accounts.UserTypes;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.Properties;
 
@@ -50,6 +47,7 @@ public class LoginManager {
         int defaultTradeLimit = getProperty(DEFAULTTRADELIMIT);
         int defaultIncompleteTradeLim = getProperty(DEFAULTINCOMPLETETRADELIM);
         int defaultMinimumAmountNeededToBorrow = getProperty(DEFAULTMINIMUMAMOUNTNEEDEDTOBORROW);
+
         if (!isUsernameUnique(username))
             throw new UserAlreadyExistsException();
         switch (type) {
@@ -152,22 +150,24 @@ public class LoginManager {
      * @return the value of the specified trader property
      */
     private int getProperty(String property_name){
-        File configFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
-
         try {
-            FileReader reader = new FileReader(configFile);
-            Properties props = new Properties();
-            props.load(reader);
+            // get the file
+            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+            // initialize the reader of this file
+            FileReader reader = new FileReader(propertyFile);
+            // initialize properties object
+            Properties properties = new Properties();
+            // associate properties object with this file.
+            properties.load(reader);
+            // we're not going to use reader anymore, so close it
             reader.close();
-            return Integer.parseInt(props.getProperty(property_name));
-        } catch (FileNotFoundException ex) {
-            // file does not exist
+            // return the integer value of that property
+            return Integer.parseInt(properties.getProperty(property_name));
         } catch (IOException ex) {
             // I/O error
         }
         return -1;
     }
-
 
     /**
      * Sets the value of a property.
@@ -175,18 +175,25 @@ public class LoginManager {
      * @param propertyValue the new value of that property
      */
     private void setProperty(String propertyName, int propertyValue){
-        File configFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
-
         try {
-            FileReader reader = new FileReader(configFile);
-            Properties props = new Properties();
-            props.load(reader);
-            props.setProperty(propertyName, "" + propertyValue);
+            // get the file
+            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+            // initialize reader
+            FileReader reader = new FileReader(propertyFile);
+            // initialize properties object (to set data)
+            Properties properties = new Properties();
+            // associate this properties object with the file
+            properties.load(reader);
+            // set the property
+            properties.setProperty(propertyName, "" + propertyValue);
+
+            //update the file
+            FileWriter writer = new FileWriter(propertyFile);
+            properties.store(writer, "");
             reader.close();
-        } catch (FileNotFoundException ex) {
-            // file does not exist
+            writer.close();
         } catch (IOException ex) {
-            // I/O error
+            ex.printStackTrace();
         }
     }
 }
