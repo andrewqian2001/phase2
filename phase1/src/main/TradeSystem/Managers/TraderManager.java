@@ -265,6 +265,7 @@ public class TraderManager {
      * @throws UserNotFoundException
      * @throws AuthorizationException
      */
+    /*
     public void confirmMeeting(String tradeId, String trader2Id, String item1, String item2, boolean lastMeeting) throws UserNotFoundException, AuthorizationException {
         Trader trader1 = getTrader(traderId);
         Trader trader2 = getTrader(trader2Id);
@@ -281,6 +282,7 @@ public class TraderManager {
         userDatabase.update(trader1);
         userDatabase.update(trader2);
     }
+     */
 
     /**
      * Gets the tradable item object
