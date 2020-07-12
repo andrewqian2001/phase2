@@ -10,6 +10,9 @@ import exceptions.UserNotFoundException;
 import main.TradeSystem.Managers.AdminManager;
 import main.TradeSystem.Managers.LoginManager;
 
+/**
+ * Represents an admin account
+ */
 public class AdminAccount implements Account {
 
     private final AdminManager adminManager;
@@ -42,7 +45,8 @@ public class AdminAccount implements Account {
 
     /**
      * For freezing a user
-     * @param username the username of the user
+     *
+     * @param username     the username of the user
      * @param freezeStatus whether to freeze or unfreeze
      * @throws UserNotFoundException if the user wasn't found
      */
@@ -50,8 +54,10 @@ public class AdminAccount implements Account {
             throws UserNotFoundException {
         adminManager.setFrozen(adminManager.getUserId(username), freezeStatus);
     }
+
     /**
      * Sets the new weekly trade limit (Admin method)
+     *
      * @param tradeLimit the new weekly trade limit
      * @throws UserNotFoundException Can't find traders
      */
@@ -72,10 +78,11 @@ public class AdminAccount implements Account {
     }
 
     /**
+     * all unfreeze requests of every user
      *
      * @return all unfreeze requests of every user
      */
-    public ArrayList<String> getAllUnfreezeRequests(){
+    public ArrayList<String> getAllUnfreezeRequests() {
         return adminManager.getAllUnfreezeRequests();
     }
 
@@ -93,15 +100,17 @@ public class AdminAccount implements Account {
     }
 
     /**
+     * the current default trade limit
      *
      * @return the current default trade limit
      */
-    public int getCurrentTradeLimit(){
+    public int getCurrentTradeLimit() {
         return loginManager.getDefaultTradeLimit();
     }
 
 
     /**
+     * account type
      * @return type admin
      */
     @Override

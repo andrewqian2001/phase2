@@ -55,7 +55,7 @@ public class TraderManager {
      * @return the trade ID
      * @throws UserNotFoundException     userId not found
      * @throws IndexOutOfBoundsException index out of bounds
-     * @throws AuthorizationException if the user isn't a trader
+     * @throws AuthorizationException    if the user isn't a trader
      */
     public String getAcceptedTradeId(int acceptedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
         return getTrader().getAcceptedTrades().get(acceptedTradeIndex);
@@ -137,7 +137,7 @@ public class TraderManager {
      * Adds an item to this trader's wishlist
      *
      * @param tradableItemId the item to be added to this user's wishlist
-     * @throws UserNotFoundException if the trader with the given userId is not found
+     * @throws UserNotFoundException  if the trader with the given userId is not found
      * @throws AuthorizationException if the user isn't a trader
      */
     public void addToWishList(String tradableItemId) throws UserNotFoundException, AuthorizationException {
@@ -190,7 +190,6 @@ public class TraderManager {
     }
 
 
-
     /**
      * Gets the id of a User given their username
      *
@@ -205,6 +204,7 @@ public class TraderManager {
                 return user.getId();
         throw new UserNotFoundException("User with the username " + username + " not found.");
     }
+
     /**
      * Gets the id of a tradable item by name
      *
@@ -214,7 +214,7 @@ public class TraderManager {
      */
     public String getIdFromTradableItemName(String name) throws TradableItemNotFoundException {
         LinkedList<TradableItem> items = tradableItemDatabase.getItems();
-        for (TradableItem item: items)
+        for (TradableItem item : items)
             if (item.getName().equals(name))
                 return item.getId();
         throw new TradableItemNotFoundException();
@@ -223,7 +223,7 @@ public class TraderManager {
     /**
      * @param status if the user requested to be unfrozen
      * @throws AuthorizationException if the user is not a trader
-     * @throws UserNotFoundException if the user wasn't found
+     * @throws UserNotFoundException  if the user wasn't found
      */
     public void requestUnfreeze(boolean status) throws AuthorizationException, UserNotFoundException {
         Trader t = getTrader();
@@ -235,7 +235,7 @@ public class TraderManager {
      * Gets the username of a User given their ID
      *
      * @return username of the User
-     * @throws UserNotFoundException cant find user id
+     * @throws UserNotFoundException  cant find user id
      * @throws AuthorizationException user is not a trader
      */
     public String getUsername() throws UserNotFoundException, AuthorizationException {
@@ -261,6 +261,8 @@ public class TraderManager {
     }
 
     /**
+     * whether or not the current user can trade
+     *
      * @return whether or not the current user can trade
      * @throws UserNotFoundException  if the current user could not be found
      * @throws AuthorizationException if the user is not a trader

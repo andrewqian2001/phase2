@@ -17,6 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * Used for executing actions that an admin has
+ */
 public class AdminManager {
     private Database<User> userDatabase;
     private Database<Trade> tradeDatabase;

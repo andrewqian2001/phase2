@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Represents a trade between two Database.users
+ * Represents a trade between two users
  */
 public class Trade extends DatabaseItem implements Serializable {
     private Date meetingTime = null;
@@ -27,7 +27,6 @@ public class Trade extends DatabaseItem implements Serializable {
     private String userTurnToEdit;
 
     /**
-     * /**
      * Saves user ids
      *
      * @param firstUserId       the user id of the person initializing the trade
@@ -55,6 +54,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * if first meeting is confirmed by the first user
+     *
      * @return if the user that initialized the trade confirmed the first meeting
      */
     public boolean isFirstUserConfirmed1() {
@@ -62,6 +63,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * confirm the first meeting by the first user
+     *
      * @param firstUserConfirmed1 if the user that initialized the trade confirmed the first meeting
      */
     public void setFirstUserConfirmed1(boolean firstUserConfirmed1) {
@@ -69,6 +72,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * if the user that got sent the trade confirmed the first meeting
+     *
      * @return if the user that got sent the trade confirmed the first meeting
      */
     public boolean isSecondUserConfirmed1() {
@@ -76,6 +81,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * if the user that got sent the trade confirmed the first meeting
+     *
      * @param secondUserConfirmed1 if the user that got sent the trade confirmed the first meeting
      */
     public void setSecondUserConfirmed1(boolean secondUserConfirmed1) {
@@ -83,6 +90,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * if the user that initialized the trade confirmed the second meeting
+     *
      * @return if the user that initialized the trade confirmed the second meeting
      */
     public boolean isFirstUserConfirmed2() {
@@ -90,6 +99,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * if the user that initialized the trade confirmed the second meeting
+     *
      * @param firstUserConfirmed2 if the user that initialized the trade confirmed the second meeting
      */
     public void setFirstUserConfirmed2(boolean firstUserConfirmed2) {
@@ -97,6 +108,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * if the user that initialized the trade confirmed the second meeting
+     *
      * @return if the user that initialized the trade confirmed the second meeting
      */
     public boolean isSecondUserConfirmed2() {
@@ -104,6 +117,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * if the user that got sent the trade confirmed the second meeting
+     *
      * @param secondUserConfirmed2 if the user that got sent the trade confirmed the second meeting
      */
     public void setSecondUserConfirmed2(boolean secondUserConfirmed2) {
@@ -111,6 +126,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * the user id of the person initializing the trade
+     *
      * @return the user id of the person initializing the trade
      */
     public String getFirstUserId() {
@@ -118,6 +135,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * the user id of the person the trade is being sent to
+     *
      * @return the user id of the person the trade is being sent to
      */
     public String getSecondUserId() {
@@ -125,6 +144,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * number of times the trade has been edited
+     *
      * @return number of times the trade has been edited
      */
     public int getNumEdits() {
@@ -132,19 +153,26 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * the new meeting time for the first meeting
+     *
      * @param meetingTime the new meeting time for the first meeting
      */
-    public void setMeetingTime(Date meetingTime){
+    public void setMeetingTime(Date meetingTime) {
         this.meetingTime = meetingTime;
     }
 
     /**
+     * the new meeting time for the second meeting
+     *
      * @param meetingTime the new meeting time for the second meeting
      */
-    public void setSecondMeetingTime(Date meetingTime){
+    public void setSecondMeetingTime(Date meetingTime) {
         secondMeetingTime = meetingTime;
     }
+
     /**
+     * when the first trade is taking place
+     *
      * @return when the first trade is taking place
      */
     public Date getMeetingTime() {
@@ -152,6 +180,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * when the second trade is taking place
+     *
      * @return when the second trade is taking place
      */
     public Date getSecondMeetingTime() {
@@ -159,6 +189,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * where the trade is taking place
+     *
      * @return where the trade is taking place
      */
     public String getMeetingLocation() {
@@ -166,13 +198,17 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * new meeting location
+     *
      * @param location new meeting location
      */
-    public void setMeetingLocation(String location){
+    public void setMeetingLocation(String location) {
         meetingLocation = location;
     }
 
     /**
+     * the id of the item that the user that initialized the trade is willing to offer
+     *
      * @return the id of the item that the user that initialized the trade is willing to offer
      */
     public String getFirstUserOffer() {
@@ -180,6 +216,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * the id of the item that the user that got sent the trade is willing to offer
+     *
      * @return the id of the item that the user that got sent the trade is willing to offer
      */
     public String getSecondUserOffer() {
@@ -187,6 +225,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * what the first user gives away (id)
+     *
      * @param firstUserOffer what the first user gives away (id)
      */
     public void setFirstUserOffer(String firstUserOffer) {
@@ -194,6 +234,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * what the second user gives away (id)
+     *
      * @param secondUserOffer what the second user gives away (id)
      */
     public void setSecondUserOffer(String secondUserOffer) {
@@ -201,6 +243,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * how many edits can be done
+     *
      * @return how many edits can be done
      */
     public int getMaxAllowedEdits() {
@@ -208,6 +252,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * the user id of the person's turn to edit the trade
+     *
      * @return the user id of the person's turn to edit the trade
      */
     public String getUserTurnToEdit() {
@@ -224,13 +270,17 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * number of edits
+     *
      * @param num number of edits
      */
-    public void setNumEdits(int num){
+    public void setNumEdits(int num) {
         this.numEdits = num;
     }
 
     /**
+     * if the first user has confirmed the trade request
+     *
      * @return if the first user has confirmed the trade request
      */
     public boolean isHasFirstUserConfirmedRequest() {
@@ -238,6 +288,8 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * changing the status if the first user confirmed the trade
+     *
      * @param hasFirstUserConfirmedRequest changing the status if the first user confirmed the trade
      */
     public void setHasFirstUserConfirmedRequest(boolean hasFirstUserConfirmedRequest) {
@@ -245,12 +297,17 @@ public class Trade extends DatabaseItem implements Serializable {
     }
 
     /**
+     * if the second user has confirmed the trade request
+     *
      * @return if the second user has confirmed the trade request
      */
     public boolean isHasSecondUserConfirmedRequest() {
         return hasSecondUserConfirmedRequest;
     }
+
     /**
+     * changing the status if the second user confirmed the trade
+     *
      * @param hasSecondUserConfirmedRequest changing the status if the second user confirmed the trade
      */
     public void setHasSecondUserConfirmedRequest(boolean hasSecondUserConfirmedRequest) {

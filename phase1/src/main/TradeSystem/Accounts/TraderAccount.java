@@ -9,7 +9,7 @@ import main.TradeSystem.Managers.TraderManager;
 import main.TradeSystem.Managers.TradeManager;
 
 /**
- * For interacting with traders
+ * Represents a trader account
  */
 public class TraderAccount implements Account {
 
@@ -31,11 +31,16 @@ public class TraderAccount implements Account {
         this.traderId = traderId;
     }
 
+    /**
+     * the trader id
+     * @return trader id
+     */
     public String getTraderId() {
         return traderId;
     }
 
     /**
+     * whether this account is frozen
      * @return whether this account is frozen
      * @throws UserNotFoundException  if the user wasn't found
      * @throws AuthorizationException if the user isn't a trader
@@ -48,7 +53,7 @@ public class TraderAccount implements Account {
      * Requests that the item be added to the user's inventory
      *
      * @param itemName name of tradable item
-     * @throws UserNotFoundException if the user isn't found
+     * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
     public void requestItem(String itemName) throws UserNotFoundException, AuthorizationException {
@@ -59,8 +64,8 @@ public class TraderAccount implements Account {
      * Adds item to wishList
      *
      * @param itemName name of tradable item
-     * @throws UserNotFoundException can't find user id or can't find item name
-     * @throws AuthorizationException user isn't a trader
+     * @throws UserNotFoundException         can't find user id or can't find item name
+     * @throws AuthorizationException        user isn't a trader
      * @throws TradableItemNotFoundException item name doesn't exist
      */
     public void addToWishList(String itemName) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
@@ -68,6 +73,8 @@ public class TraderAccount implements Account {
     }
 
     /**
+     * whether or not the trader can borrow from another trader
+     *
      * @return whether or not the trader can borrow from another trader
      * @throws UserNotFoundException  the user doesn't exist
      * @throws AuthorizationException the user isn't a trader
@@ -87,6 +94,8 @@ public class TraderAccount implements Account {
 
 
     /**
+     * wish list of items of this trader
+     *
      * @return wish list of items of this trader
      * @throws UserNotFoundException  if the user is not found
      * @throws AuthorizationException if the user is not a trader
@@ -96,6 +105,7 @@ public class TraderAccount implements Account {
     }
 
     /**
+     * all the trades that have been requested with this trader
      * @return all the trades that have been requested with this trader
      * @throws UserNotFoundException  if the trader with the given userId is not found
      * @throws AuthorizationException if the user isn't a trader
@@ -105,6 +115,8 @@ public class TraderAccount implements Account {
     }
 
     /**
+     * all the trades that have been accepted by this trader
+     *
      * @return all the trades that have been accepted by this trader
      * @throws UserNotFoundException  if the trader with the given userId is not found
      * @throws AuthorizationException if the user isn't a trader
@@ -114,6 +126,8 @@ public class TraderAccount implements Account {
     }
 
     /**
+     * this trader's available items
+     *
      * @return this trader's available items
      * @throws UserNotFoundException  if the trader with the given userId is not found
      * @throws AuthorizationException if the user isn't a trader
@@ -173,6 +187,11 @@ public class TraderAccount implements Account {
     }
 
 
+    /**
+     * trader account type
+     *
+     * @return trader account type
+     */
     @Override
     public UserTypes getAccountType() {
         return UserTypes.TRADER;
@@ -182,9 +201,9 @@ public class TraderAccount implements Account {
      * Gets a list of the items used in trades
      *
      * @return list of unique items that the user has traded/received from a trade
-     * @throws TradeNotFoundException trade wasn't found
-     * @throws AuthorizationException trade doesn't belong to this user
-     * @throws UserNotFoundException user is not a trader
+     * @throws TradeNotFoundException        trade wasn't found
+     * @throws AuthorizationException        trade doesn't belong to this user
+     * @throws UserNotFoundException         user is not a trader
      * @throws TradableItemNotFoundException tradable item isn't found
      */
     public Set<String> getRecentTradeItems() throws AuthorizationException, UserNotFoundException,
@@ -271,9 +290,9 @@ public class TraderAccount implements Account {
      *
      * @param tradeID id of the trade
      * @return true if the trade was successfully confirmed
-     * @throws UserNotFoundException         userId not found
-     * @throws AuthorizationException        user isn't a trader
-     * @throws CannotTradeException          trading restrictions
+     * @throws UserNotFoundException  userId not found
+     * @throws AuthorizationException user isn't a trader
+     * @throws CannotTradeException   trading restrictions
      * @throws TradeNotFoundException if the trade isn't found
      */
     public boolean confirmTrade(String tradeID) throws AuthorizationException, TradeNotFoundException,
@@ -304,8 +323,8 @@ public class TraderAccount implements Account {
      * @throws CannotTradeException          if the trade is not allowed
      * @throws AuthorizationException        if the user cannot access this trade
      * @throws TradableItemNotFoundException couldn't find the item
-     * @throws UserNotFoundException if the user isn't found
-     * @throws TradeNotFoundException if the trade isn't found
+     * @throws UserNotFoundException         if the user isn't found
+     * @throws TradeNotFoundException        if the trade isn't found
      */
     public void editTrade(String tradeID, Date firstMeeting, Date secondMeeting, String meetingLocation,
                           int inventoryItemIndex, int traderInventoryItemIndex)
@@ -319,8 +338,8 @@ public class TraderAccount implements Account {
      *
      * @param requestedTradeIndex index of the requested trade
      * @return the trade ID
-     * @throws UserNotFoundException if the user isn't found
-     * @throws AuthorizationException if the user isn't a trader
+     * @throws UserNotFoundException     if the user isn't found
+     * @throws AuthorizationException    if the user isn't a trader
      * @throws IndexOutOfBoundsException index out of bounds
      */
     public String getRequestedTradeId(int requestedTradeIndex) throws UserNotFoundException, IndexOutOfBoundsException, AuthorizationException {
@@ -373,7 +392,7 @@ public class TraderAccount implements Account {
      * Makes this user request unfreeze (changes the status of whether an unfreeze was requested)
      *
      * @param status if the user requested to be unfrozen
-     * @throws UserNotFoundException if the user isn't found
+     * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
     public void requestUnfreeze(boolean status) throws AuthorizationException, UserNotFoundException {
@@ -386,9 +405,9 @@ public class TraderAccount implements Account {
      * @param tradeId id of the trade
      * @return item index of the trade item
      * @throws TradableItemNotFoundException tradable item not found
-     * @throws AuthorizationException user isn't a trader
-     * @throws TradeNotFoundException trade not found
-     * @throws UserNotFoundException trader not found
+     * @throws AuthorizationException        user isn't a trader
+     * @throws TradeNotFoundException        trade not found
+     * @throws UserNotFoundException         trader not found
      */
     public int getUserTradeItemIndex(String tradeId) throws TradableItemNotFoundException, AuthorizationException,
             TradeNotFoundException, UserNotFoundException {
@@ -419,7 +438,7 @@ public class TraderAccount implements Account {
      * @return a String array of the usernames of the 3 most traded with Traders
      * @throws AuthorizationException user isn't a trader
      * @throws TradeNotFoundException trade not found
-     * @throws UserNotFoundException trader not found
+     * @throws UserNotFoundException  trader not found
      */
     public String[] getFrequentTraders() throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
 
@@ -468,7 +487,7 @@ public class TraderAccount implements Account {
      * Gets your own username
      *
      * @return username of the User
-     * @throws UserNotFoundException if the user isn't found
+     * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
     public String getUsername() throws UserNotFoundException, AuthorizationException {

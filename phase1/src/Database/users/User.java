@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Represents a typical account
  */
-public class User extends DatabaseItem implements Serializable{
+public class User extends DatabaseItem implements Serializable {
     private String username;
     private String password;
     private boolean isFrozen;
@@ -26,20 +26,26 @@ public class User extends DatabaseItem implements Serializable{
     }
 
     /**
-     * @return this user's username.
+     * this user's username
+     *
+     * @return this user's username
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * @param username to be set to this user.
+     * to be set to this user
+     *
+     * @param username to be set to this user
      */
     public void setUsername(String username) {
         this.username = username;
     }
 
     /**
+     * this user's password
+     *
      * @return this user's password
      */
     public String getPassword() {
@@ -47,21 +53,27 @@ public class User extends DatabaseItem implements Serializable{
     }
 
     /**
-     * @param password to be set to this user.
+     * new password
+     *
+     * @param password to be set to this user
      */
     public void setPassword(String password) {
         this.password = password;
     }
 
     /**
-     * @return if this user is frozen.
+     * current frozen status
+     *
+     * @return if this user is frozen
      */
     public boolean isFrozen() {
         return isFrozen;
     }
 
     /**
-     * @param frozen if this user is now frozen.
+     * new frozen status
+     *
+     * @param frozen if this user is now frozen
      */
     public void setFrozen(boolean frozen) {
         isFrozen = frozen;
@@ -69,6 +81,8 @@ public class User extends DatabaseItem implements Serializable{
 
 
     /**
+     * if this user requested to be unfrozen
+     *
      * @return if this user requested to be unfrozen
      */
     public boolean isUnfrozenRequested() {
@@ -76,6 +90,8 @@ public class User extends DatabaseItem implements Serializable{
     }
 
     /**
+     * if this user requested to be unfrozen
+     *
      * @param unfrozenRequested if this user requested to be unfrozen
      */
     public void setUnfrozenRequested(boolean unfrozenRequested) {

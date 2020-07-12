@@ -1,8 +1,6 @@
 package main.TradeSystem;
 
 import exceptions.*;
-import Database.tradableitems.TradableItem;
-import Database.users.*;
 import main.TradeSystem.Accounts.Account;
 import main.TradeSystem.Accounts.AdminAccount;
 import main.TradeSystem.Accounts.TraderAccount;
@@ -10,8 +8,10 @@ import main.TradeSystem.Accounts.UserTypes;
 import main.TradeSystem.Managers.LoginManager;
 
 import java.io.*;
-import java.util.*;
 
+/**
+ * This is used to set up the type of account required after logging in
+ */
 public class TradeSystem implements Serializable {
 
     private final LoginManager loginManager;

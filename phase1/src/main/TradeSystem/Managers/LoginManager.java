@@ -73,6 +73,10 @@ public class LoginManager {
         throw new UserNotFoundException();
     }
 
+    /**
+     * The last account that logged in
+     * @return last account type that logged in
+     */
     public UserTypes getLastLoggedInType(){
         return lastLoggedInType;
     }
@@ -100,8 +104,8 @@ public class LoginManager {
     }
 
     /**
-     *
-     * @return the current defautl trade limit.
+     * default trade limit
+     * @return the current default trade limit.
      */
     public int getDefaultTradeLimit() {
         return defaultTradeLimit;

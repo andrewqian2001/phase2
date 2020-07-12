@@ -11,6 +11,9 @@ import main.DatabaseFilePaths;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Used for trading
+ */
 public class TradeManager {
     private Database<User> userDatabase;
     private Database<Trade> tradeDatabase;
@@ -451,6 +454,7 @@ public class TradeManager {
     }
 
     /**
+     * meeting location of the trade
      * @param tradeID the id of the trade
      * @return meeting location of the trade
      * @throws TradeNotFoundException trade wasn't found
@@ -461,6 +465,7 @@ public class TradeManager {
     }
 
     /**
+     * if this is the user that started the trade
      * @param tradeId the id of the trade
      * @param userId  the id of the user
      * @return if the user that started the trade
@@ -491,6 +496,7 @@ public class TradeManager {
     }
 
     /**
+     * if the first meeting is confirmed by both parties
      * @param tradeId is the id of the trade
      * @return if the first meeting happened
      * @throws AuthorizationException user can't access this trade
@@ -502,6 +508,7 @@ public class TradeManager {
     }
 
     /**
+     * if the second meeting is confirmed by both parties
      * @param tradeId is the id of the trade
      * @return if the second meeting happened
      * @throws AuthorizationException user can't access this trade
@@ -598,6 +605,7 @@ public class TradeManager {
     }
 
     /**
+     * if all meetings are confirmed
      * @param traderId id of the trader
      * @param tradeID  id of the trade
      * @return if all meetings are confirmed

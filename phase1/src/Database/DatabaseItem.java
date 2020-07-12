@@ -17,6 +17,7 @@ public abstract class DatabaseItem implements Serializable {
     }
 
     /**
+     * Gets the id of the item
      * @return the id of this item
      */
     public String getId() {

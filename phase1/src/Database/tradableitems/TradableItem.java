@@ -24,6 +24,7 @@ public class TradableItem extends DatabaseItem implements Serializable {
     }
 
     /**
+     * name of the item
      * @return name of the item
      */
     public String getName() {
@@ -31,6 +32,7 @@ public class TradableItem extends DatabaseItem implements Serializable {
     }
 
     /**
+     * description of the item
      * @return description of the item
      */
     public String getDesc() {

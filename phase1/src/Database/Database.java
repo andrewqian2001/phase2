@@ -114,6 +114,12 @@ public class Database<T extends DatabaseItem> implements Serializable {
         }
         throw new EntryNotFoundException("Could not find item " + id);
     }
+
+    /**
+     * whether the database contains the id
+     * @param id the id being checked
+     * @return whether the database contains the id
+     */
     public boolean contains(String id) {
         try {
             populate(id);
@@ -125,6 +131,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
     }
 
     /**
+     * list of items in the database file
      * @return LinkedList containing all the items in the file
      */
     public LinkedList<T> getItems() {
