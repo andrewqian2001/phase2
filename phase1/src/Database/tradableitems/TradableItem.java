@@ -9,8 +9,8 @@ import java.io.Serializable;
  */
 public class TradableItem extends DatabaseItem implements Serializable {
 
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
 
     /**
      * Constructs a tradable item.
@@ -25,6 +25,7 @@ public class TradableItem extends DatabaseItem implements Serializable {
 
     /**
      * name of the item
+     *
      * @return name of the item
      */
     public String getName() {
@@ -33,6 +34,7 @@ public class TradableItem extends DatabaseItem implements Serializable {
 
     /**
      * description of the item
+     *
      * @return description of the item
      */
     public String getDesc() {

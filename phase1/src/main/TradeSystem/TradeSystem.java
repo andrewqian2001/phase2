@@ -20,6 +20,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * For setting up the login manager
+     *
      * @throws IOException if database has issues
      */
     public TradeSystem() throws IOException {
@@ -28,6 +29,7 @@ public class TradeSystem implements Serializable {
 
     /**
      * Logging in
+     *
      * @param username username of the user
      * @param password password of the user
      * @return the user id
@@ -40,9 +42,10 @@ public class TradeSystem implements Serializable {
 
     /**
      * Making a new account
+     *
      * @param username username of the user
      * @param password password of the user
-     * @param type type of the account
+     * @param type     type of the account
      * @return the user id
      * @throws UserAlreadyExistsException if username isn't unique
      */
@@ -54,14 +57,15 @@ public class TradeSystem implements Serializable {
 
     /**
      * Getting the account
+     *
      * @return the account
      * @throws AuthorizationException if the account doesn't match the user id
-     * @throws UserNotFoundException if the user id doesn't exist
-     * @throws IOException issues with database
+     * @throws UserNotFoundException  if the user id doesn't exist
+     * @throws IOException            issues with database
      */
     public Account getAccount() throws AuthorizationException, UserNotFoundException, IOException {
         System.out.println(loginManager.getLastLoggedInType());
-        switch(loginManager.getLastLoggedInType()){
+        switch (loginManager.getLastLoggedInType()) {
             case ADMIN:
                 return new AdminAccount(lastLoggedInString);
             case TRADER:

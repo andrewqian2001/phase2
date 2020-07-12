@@ -17,7 +17,6 @@ import java.util.*;
 public class TraderManager {
     private final Database<User> userDatabase;
     private final String traderId;
-    private final Database<Trade> tradeDatabase;
     private final Database<TradableItem> tradableItemDatabase;
 
     /**
@@ -30,9 +29,8 @@ public class TraderManager {
      */
     public TraderManager(String traderId) throws IOException, UserNotFoundException, AuthorizationException {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
-        this.traderId = getTrader(traderId).getId();
-        tradeDatabase = new Database<Trade>(DatabaseFilePaths.TRADE.getFilePath());
         tradableItemDatabase = new Database<TradableItem>(DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
+        this.traderId = getTrader(traderId).getId();
     }
 
     /**

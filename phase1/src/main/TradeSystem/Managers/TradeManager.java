@@ -15,10 +15,10 @@ import java.util.*;
  * Used for trading
  */
 public class TradeManager {
-    private Database<User> userDatabase;
-    private Database<Trade> tradeDatabase;
-    private Database<TradableItem> tradableItemDatabase;
-    private String traderId;
+    private final Database<User> userDatabase;
+    private final Database<Trade> tradeDatabase;
+    private final Database<TradableItem> tradableItemDatabase;
+    private final String traderId;
 
     /**
      * For making trades

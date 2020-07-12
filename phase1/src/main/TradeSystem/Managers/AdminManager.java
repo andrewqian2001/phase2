@@ -28,9 +28,9 @@ public class AdminManager {
     /**
      * This is used for the actions that an admin user can do
      *
-     * @throws IOException            if something goes wrong with getting database
+     * @throws IOException if something goes wrong with getting database
      */
-    public AdminManager() throws IOException{
+    public AdminManager() throws IOException {
         userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
         tradableItemDatabase = new Database<TradableItem>(DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
     }
@@ -130,9 +130,10 @@ public class AdminManager {
 
     /**
      * Changes the specified user's trade limit
-     * @param userId the user who's trade limit will be changed
+     *
+     * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
-     * @throws UserNotFoundException if the user isn't found
+     * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
     public void changeTraderLimits(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
@@ -161,7 +162,7 @@ public class AdminManager {
      *
      * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
-     * @throws UserNotFoundException if the user isn't found
+     * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
     public void changeIncompleteTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
@@ -175,7 +176,7 @@ public class AdminManager {
      *
      * @param userId   the user who's trade limit will be changed
      * @param newLimit the new trade limit
-     * @throws UserNotFoundException if the user isn't found
+     * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
     public void changeWeeklyTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
@@ -228,6 +229,7 @@ public class AdminManager {
     public String getUsername(String userId) throws EntryNotFoundException {
         return userDatabase.populate(userId).getUsername();
     }
+
     /**
      * Gets the tradable item object
      *

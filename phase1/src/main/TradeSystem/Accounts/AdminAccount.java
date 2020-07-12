@@ -21,7 +21,7 @@ public class AdminAccount implements Account {
      * For accessing actions that an admin can do
      *
      * @param adminId the id of the admin
-     * @throws IOException            if database file has issues
+     * @throws IOException if database file has issues
      */
     public AdminAccount(String adminId) throws IOException {
         adminManager = new AdminManager();
@@ -128,6 +128,7 @@ public class AdminAccount implements Account {
 
     /**
      * Gets the user id from username
+     *
      * @param username the username
      * @return the user id
      * @throws UserNotFoundException if the user wasn't found
@@ -138,6 +139,7 @@ public class AdminAccount implements Account {
 
     /**
      * account type
+     *
      * @return type admin
      */
     @Override

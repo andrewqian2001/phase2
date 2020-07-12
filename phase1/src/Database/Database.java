@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  * @param <T> the entry must have an id to identify different entries
  */
 public class Database<T extends DatabaseItem> implements Serializable {
-    private String filePath;
+    private final String filePath;
 
     private static final Logger logger = Logger.getLogger(Database.class.getName());
     private static final Handler consoleHandler = new ConsoleHandler();

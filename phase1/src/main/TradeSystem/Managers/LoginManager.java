@@ -133,7 +133,7 @@ public class LoginManager {
      *
      * @param defaultMinimumAmountNeededToBorrow the number of items that need to be lent out before borrowing is allowed
      */
-    public void setDefaultMinimumAmountNeededToBorrow(int defaultMinimumAmountNeededToBorrow) {
+        public void setDefaultMinimumAmountNeededToBorrow(int defaultMinimumAmountNeededToBorrow) {
         this.defaultMinimumAmountNeededToBorrow = defaultMinimumAmountNeededToBorrow;
     }
 }
