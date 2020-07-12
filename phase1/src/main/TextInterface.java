@@ -153,6 +153,8 @@ public class TextInterface {
             System.out.println("6.\tApprove Item Request");
             System.out.println("7.\tReject Item Request");
             System.out.println("8.\tChange Weekly Trade Limit Value");
+            System.out.println("9.\tChange Incomplete Trade Limit Value");
+            System.out.println("10.\tChange Minimum Amount Needed To Lend Until One Can Borrow Value");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -182,7 +184,13 @@ public class TextInterface {
                     processItemRequest(false);
                     break;
                 case 8:
-                    changeWeeklyTradeLimit();
+                    changeLimit(TraderProperties.TRADELIMIT);
+                    break;
+                case 9:
+                    changeLimit(TraderProperties.INCOMPLETETRADELIM);
+                    break;
+                case 10:
+                    changeLimit(TraderProperties.MINIMUMAMOUNTNEEDEDTOBORROW);
                     break;
                 default:
                     System.out.println("Invalid Selection, please try again");
@@ -615,32 +623,35 @@ public class TextInterface {
 
 
     /**
-     * Prompts admin to change the current trade limit
+     * Prompts admin to change the value of a property, or limit.
      */
-    private void changeWeeklyTradeLimit() {
-        int tradeLimit = 0;
+    private void changeLimit(TraderProperties property) {
+        int limit = 0;
         try {
-            tradeLimit = adminAccount.getDefaultLimit(TraderProperties.TRADELIMIT);
+            limit = adminAccount.getDefaultLimit(property);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            tradeLimit = 0;
+            limit = 0;
         }
         boolean success = false;
-        if (tradeLimit == 0) System.out.println("There are no Traders in the System!");
-        else System.out.println("The current weekly trade limit is " + tradeLimit);
+        int new_limit = 0;
+        System.out.println("The current limit is " + limit);
         do {
             try {
-                System.out.println("Enter the new value for the trade limit");
+                System.out.println("Enter the new value for the limit");
                 System.out.print("=> ");
-                tradeLimit = Integer.parseInt(sc.nextLine());
-                adminAccount.setLimit(TraderProperties.TRADELIMIT, tradeLimit);
+                new_limit = Integer.parseInt(sc.nextLine());
+                adminAccount.setLimit(property, new_limit);
                 success = true;
             } catch (NumberFormatException | UserNotFoundException e) {
                 success = false;
                 System.out.println(e.getMessage());
             }
         } while (!success);
-        System.out.println("Done! The new weekly trade limit is now" + tradeLimit);
+        if (property == TraderProperties.TRADELIMIT)
+            System.out.println("Done! The new weekly trade limit is now " + new_limit);
+        else
+            System.out.println("Done! The new limit is now " + new_limit);
     }
 
     /**
