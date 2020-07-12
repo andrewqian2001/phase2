@@ -275,6 +275,8 @@ public class TraderManager {
         if(lastMeeting){
             trader1.getAcceptedTrades().remove(tradeId);
             trader2.getAcceptedTrades().remove(tradeId);
+            trader1.getCompletedTrades().add(tradeId);
+            trader2.getCompletedTrades().add(tradeId);
         }
         userDatabase.update(trader1);
         userDatabase.update(trader2);
