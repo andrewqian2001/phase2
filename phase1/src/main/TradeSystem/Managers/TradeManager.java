@@ -357,14 +357,13 @@ public class TradeManager {
      * @param secondUserOffer   the tradable item id of the second user offer
      * @return the id of the trade
      * @throws CannotTradeException   too many edits
-     * @throws UserNotFoundException  couldn't find the user in the database
      * @throws TradeNotFoundException this trade doesn't exist
      * @throws AuthorizationException this trade doesn't belong to this user
      */
     public String counterTradeOffer(String tradeId, Date meetingTime, Date secondMeetingTime, String
             meetingLocation,
                                     String firstUserOffer, String secondUserOffer) throws
-            CannotTradeException, UserNotFoundException, TradeNotFoundException, AuthorizationException {
+            CannotTradeException, TradeNotFoundException, AuthorizationException {
         Trade trade = getTrade(tradeId);
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) {
             this.denyTrade(tradeId);

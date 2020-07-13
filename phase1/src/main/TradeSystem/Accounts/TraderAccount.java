@@ -359,7 +359,6 @@ public class TraderAccount implements Account {
      * Accepts a requested trade
      *
      * @param tradeID the trade id
-     * @return if trade went through
      * @throws UserNotFoundException  if user wasn't found
      * @throws AuthorizationException if user isn't a trader
      * @throws CannotTradeException   if user has trading restrictions

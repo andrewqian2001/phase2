@@ -77,6 +77,7 @@ public class AdminAccount implements Account {
     /**
      * Sets the new weekly trade limit (Admin method)
      *
+     * @param property the property to be changed
      * @param tradeLimit the new weekly trade limit
      * @throws UserNotFoundException Can't find traders
      */
