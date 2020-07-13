@@ -332,8 +332,10 @@ public class TradeManager {
             trader2.getCompletedTrades().add(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
-            trader1.getAvailableItems().remove(trade.getSecondUserOffer());
-            trader2.getAvailableItems().remove(trade.getFirstUserOffer());
+            if (hasSecondMeeting(tradeId)) {
+                trader1.getAvailableItems().remove(trade.getSecondUserOffer());
+                trader2.getAvailableItems().remove(trade.getFirstUserOffer());
+            }
             trader1.setTradeCount(trader1.getTradeCount()+1);
             trader2.setTradeCount(trader2.getTradeCount()+1);
             userDatabase.update(trader1);
