@@ -178,9 +178,8 @@ public class TradeManager {
      */
     public void confirmFirstMeeting(String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException {
         Trade trade = getTrade(tradeId);
-        if (trade.getFirstUserId().equals(tradeId)) trade.setFirstUserConfirmed1(status);
-        else if ((trade.getSecondUserId().equals(tradeId))) trade.setSecondUserConfirmed1(status);
-
+        if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
+        else if ((trade.getSecondUserId().equals(traderId))) trade.setSecondUserConfirmed1(status);
         tradeDatabase.update(trade);
     }
 
@@ -318,7 +317,6 @@ public class TradeManager {
                 throw new AuthorizationException("First meeting hasn't been confirmed");
             trade.setSecondUserConfirmed2(status);
         }
-
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1() &&
                 trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2()) {
             Trader trader1 = getTrader(trade.getFirstUserId());

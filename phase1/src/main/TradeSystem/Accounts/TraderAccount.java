@@ -289,7 +289,11 @@ public class TraderAccount implements Account {
      */
     public boolean confirmTrade(String tradeID) throws AuthorizationException, TradeNotFoundException,
             CannotTradeException, UserNotFoundException {
-        return tradeManager.confirmRequest(tradeID);
+        if(tradeManager.isFirstMeetingConfirmed(tradeID))
+            tradeManager.confirmSecondMeeting(tradeID, true);
+        else
+            tradeManager.confirmFirstMeeting(tradeID, true);
+        return true;
     }
 
 
@@ -361,8 +365,8 @@ public class TraderAccount implements Account {
      * @throws CannotTradeException   if user has trading restrictions
      * @throws TradeNotFoundException if the trade wasn't found
      */
-    public boolean acceptTrade(String tradeID) throws UserNotFoundException, AuthorizationException, CannotTradeException, TradeNotFoundException {
-        return tradeManager.confirmRequest(tradeID);
+    public void acceptTrade(String tradeID) throws UserNotFoundException, AuthorizationException, CannotTradeException, TradeNotFoundException {
+        tradeManager.confirmRequest(tradeID);
     }
 
     /**
