@@ -185,13 +185,13 @@ public class TextInterface {
                     processItemRequest(false);
                     break;
                 case 8:
-                    changeLimit(TraderProperties.TRADELIMIT);
+                    changeLimit(TraderProperties.TRADE_LIMIT);
                     break;
                 case 9:
-                    changeLimit(TraderProperties.INCOMPLETETRADELIM);
+                    changeLimit(TraderProperties.INCOMPLETE_TRADE_LIM);
                     break;
                 case 10:
-                    changeLimit(TraderProperties.MINIMUMAMOUNTNEEDEDTOBORROW);
+                    changeLimit(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
                     break;
                 case 11:
                     getUsersWhoShouldBeFrozen();
@@ -660,7 +660,7 @@ public class TextInterface {
                 System.out.println(e.getMessage());
             }
         } while (!success);
-        if (property == TraderProperties.TRADELIMIT)
+        if (property == TraderProperties.TRADE_LIMIT)
             System.out.println("Done! The new weekly trade limit is now " + new_limit);
         else
             System.out.println("Done! The new limit is now " + new_limit);
