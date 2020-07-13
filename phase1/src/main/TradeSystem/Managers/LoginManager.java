@@ -41,9 +41,9 @@ public class LoginManager {
      * @throws UserAlreadyExistsException username is not unique
      */
     public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException {
-        int defaultTradeLimit = getProperty(TraderProperties.TRADELIMIT);
-        int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETETRADELIM);
-        int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUMAMOUNTNEEDEDTOBORROW);
+        int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
+        int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
+        int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
 
         if (!isUsernameUnique(username))
             throw new UserAlreadyExistsException();

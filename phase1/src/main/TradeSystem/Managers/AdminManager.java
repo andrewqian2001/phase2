@@ -122,13 +122,13 @@ public class AdminManager {
         for (User user : allUsers)
             if (user instanceof Trader) {
                 switch(traderProperty){
-                    case TRADELIMIT:
+                    case TRADE_LIMIT:
                         ((Trader) user).setTradeLimit(limit);
                         break;
-                    case INCOMPLETETRADELIM:
+                    case INCOMPLETE_TRADE_LIM:
                         ((Trader) user).setIncompleteTradeLim(limit);
                         break;
-                    case MINIMUMAMOUNTNEEDEDTOBORROW:
+                    case MINIMUM_AMOUNT_NEEDED_TO_BORROW:
                         ((Trader) user).setMinimumAmountNeededToBorrow(limit);
                 }
 
@@ -152,13 +152,13 @@ public class AdminManager {
     public void setLimitSpecific(TraderProperties property, String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userId);
         switch (property){
-            case MINIMUMAMOUNTNEEDEDTOBORROW:
+            case MINIMUM_AMOUNT_NEEDED_TO_BORROW:
                 trader.setMinimumAmountNeededToBorrow(newLimit);
                 break;
-            case INCOMPLETETRADELIM:
+            case INCOMPLETE_TRADE_LIM:
                 trader.setIncompleteTradeLim(newLimit);
                 break;
-            case TRADELIMIT:
+            case TRADE_LIMIT:
                 trader.setTradeLimit(newLimit);
         }
         userDatabase.update(trader);

@@ -5,15 +5,15 @@ public enum TraderProperties {
     /**
      * tradeLimit property
      */
-    TRADELIMIT("defaultTradeLimit"),
+    TRADE_LIMIT("defaultTradeLimit"),
     /**
      * incompleteTradeLimit property
      */
-    INCOMPLETETRADELIM("defaultIncompleteTradeLim"),
+    INCOMPLETE_TRADE_LIM("defaultIncompleteTradeLim"),
     /**
      * minimumAmountNeededToBorrow property
      */
-    MINIMUMAMOUNTNEEDEDTOBORROW("defaultMinimumAmountNeededToBorrow");
+    MINIMUM_AMOUNT_NEEDED_TO_BORROW("defaultMinimumAmountNeededToBorrow");
 
 
     private final String PROPERTY;
