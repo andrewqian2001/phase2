@@ -155,6 +155,7 @@ public class TextInterface {
             System.out.println("8.\tChange Weekly Trade Limit Value");
             System.out.println("9.\tChange Incomplete Trade Limit Value");
             System.out.println("10.\tChange Minimum Amount Needed To Lend Until One Can Borrow Value");
+            System.out.println("11.\tView Users Who Should Be Frozen");
             System.out.println("0.\tLOG OUT");
             promptChoice();
             System.out.println(lineBreak);
@@ -191,6 +192,9 @@ public class TextInterface {
                     break;
                 case 10:
                     changeLimit(TraderProperties.MINIMUMAMOUNTNEEDEDTOBORROW);
+                    break;
+                case 11:
+                    getUsersWhoShouldBeFrozen();
                     break;
                 default:
                     System.out.println("Invalid Selection, please try again");
@@ -350,6 +354,14 @@ public class TextInterface {
             }
         } while (!success);
         System.out.printf("Done! Trader \"%s\" has now been %s\n", wantToFreeze, freezeStatus ? "frozen" : "unfrozen");//change 2 statements positions
+    }
+
+    private void getUsersWhoShouldBeFrozen(){
+        System.out.println("Users who should be frozen:\n");
+        for (String username : adminAccount.getShouldBeFrozen()){
+            System.out.printf("\t%s", username);
+        }
+
     }
 
     /**

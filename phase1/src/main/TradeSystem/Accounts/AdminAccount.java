@@ -142,6 +142,14 @@ public class AdminAccount implements Account {
     }
 
     /**
+     * Get all usernames of users who should be frozen
+     * @return A list of usernames of users who should be frozen
+     */
+    public ArrayList<String> getShouldBeFrozen(){
+        return adminManager.getShouldBeFrozen();
+    }
+
+    /**
      * account type
      *
      * @return type admin

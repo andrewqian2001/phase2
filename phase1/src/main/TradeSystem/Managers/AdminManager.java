@@ -269,4 +269,18 @@ public class AdminManager {
         }
     }
 
+    /**
+     * Get all usernames of users who should be frozen
+     * @return A list of usernames of users who should be frozen
+     */
+    public ArrayList<String> getShouldBeFrozen(){
+        ArrayList<String> result = new ArrayList<>();
+        for (User user : userDatabase.getItems()){
+            if (user instanceof Trader && ((Trader) user).shouldBeFrozen()){
+                result.add(user.getUsername());
+            }
+        }
+        return result;
+    }
+
 }
