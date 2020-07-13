@@ -214,8 +214,6 @@ public class TradeManager {
             trader2.getAvailableItems().remove(trade.getSecondUserOffer());
             trader.getAcceptedTrades().add(tradeId);
             trader2.getAcceptedTrades().add(tradeId);
-            trader.setTradeLimit(trader.getTradeLimit() - 1);
-            trader2.setTradeLimit(trader2.getTradeLimit() - 1);
             trader.getRequestedTrades().remove(tradeId);
             trader2.getRequestedTrades().remove(tradeId);
             userDatabase.update(trader);
@@ -331,6 +329,8 @@ public class TradeManager {
             trader1.getAcceptedTrades().remove(tradeId);
             trader1.getAvailableItems().add(trade.getSecondUserOffer());
             trader2.getAvailableItems().add(trade.getFirstUserOffer());
+            trader1.setTradeCount(trader1.getTradeCount()+1);
+            trader2.setTradeCount(trader2.getTradeCount()+1);
             userDatabase.update(trader1);
             userDatabase.update(trader2);
         }

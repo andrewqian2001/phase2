@@ -79,7 +79,7 @@ public class Trader extends User implements Serializable {
      * @return if the trader can trade
      */
     public boolean canTrade() {
-        return !isFrozen() && acceptedTrades.size() < tradeLimit;
+        return !isFrozen() && tradeCount < tradeLimit;
     }
 
 
