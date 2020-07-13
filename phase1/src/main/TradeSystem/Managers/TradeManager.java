@@ -175,11 +175,18 @@ public class TradeManager {
      * @param status  if the meeting is confirmed and the trade happened
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException this trade doesn't belong to this user
+     * @throws UserNotFoundException  if the user doesn't exist
      */
-    public void confirmFirstMeeting(String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException {
+    public void confirmFirstMeeting(String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
         if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
         else if ((trade.getSecondUserId().equals(traderId))) trade.setSecondUserConfirmed1(status);
+        if (trade.isFirstUserConfirmed1() && trade.isFirstUserConfirmed2()){
+            Trader trader1 = getTrader(trade.getFirstUserId());
+            Trader trader2 = getTrader(trade.getSecondUserId());
+            trader1.getAvailableItems().add(trade.getSecondUserOffer());
+            trader2.getAvailableItems().add(trade.getFirstUserOffer());
+        }
         tradeDatabase.update(trade);
     }
 
@@ -325,8 +332,8 @@ public class TradeManager {
             trader2.getCompletedTrades().add(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
-            trader1.getAvailableItems().add(trade.getSecondUserOffer());
-            trader2.getAvailableItems().add(trade.getFirstUserOffer());
+            trader1.getAvailableItems().remove(trade.getSecondUserOffer());
+            trader2.getAvailableItems().remove(trade.getFirstUserOffer());
             trader1.setTradeCount(trader1.getTradeCount()+1);
             trader2.setTradeCount(trader2.getTradeCount()+1);
             userDatabase.update(trader1);
@@ -357,10 +364,6 @@ public class TradeManager {
                                     String firstUserOffer, String secondUserOffer) throws
             CannotTradeException, UserNotFoundException, TradeNotFoundException, AuthorizationException {
         Trade trade = getTrade(tradeId);
-        Trader currTrader = getTrader(traderId);
-        Trader otherTrader;
-        if (trade.getFirstUserId().equals(traderId)) otherTrader = getTrader(trade.getFirstUserId());
-        else otherTrader = getTrader(trade.getSecondUserId());
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) {
             this.denyTrade(tradeId);
             throw new CannotTradeException("Too many edits. Trade is cancelled.");
