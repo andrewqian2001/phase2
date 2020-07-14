@@ -186,6 +186,8 @@ public class TradeManager {
             Trader trader2 = getTrader(trade.getSecondUserId());
             trader1.getAvailableItems().add(trade.getSecondUserOffer());
             trader2.getAvailableItems().add(trade.getFirstUserOffer());
+            trader1.getWishlist().remove(trade.getSecondUserOffer());
+            trader2.getWishlist().remove(trade.getFirstUserOffer());
             if (!hasSecondMeeting(tradeId)){
                 trader1.getAcceptedTrades().remove(tradeId);
                 trader2.getAcceptedTrades().remove(tradeId);
@@ -340,6 +342,8 @@ public class TradeManager {
             trader2.getCompletedTrades().add(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
+            trader1.getWishlist().remove(trade.getFirstUserOffer());
+            trader2.getWishlist().remove(trade.getSecondUserOffer());
             if (hasSecondMeeting(tradeId)) {
                 trader1.getAvailableItems().remove(trade.getSecondUserOffer());
                 trader2.getAvailableItems().remove(trade.getFirstUserOffer());
