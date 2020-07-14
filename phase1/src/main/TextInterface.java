@@ -989,7 +989,6 @@ public class TextInterface {
                 System.out.print("=> ");
                 acceptedTradeIndex = Integer.parseInt(sc.nextLine());
                 String tradeID = traderAccount.getAcceptedTradeId(acceptedTradeIndex);
-                System.out.println(traderAccount.getAcceptedTrades());
                 if (!traderAccount.isTradeInProgress(tradeID)) {
                     System.out.println(
                             "Ruh Roh! Looks like this trade has already finished taking place\nABORTING TRADE CONFIRMATION...");

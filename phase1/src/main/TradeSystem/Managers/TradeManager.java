@@ -105,8 +105,8 @@ public class TradeManager {
         if (!secondTrader.canBorrow() || !trader.canTrade())
             throw new CannotTradeException("Cannot trade due to trading restrictions");
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot lend to yourself");
-        if (secondTrader.getTradeLimit() < 0)
-            throw new CannotTradeException("There is a trading limit restriction");
+//        if (secondTrader.getTradeLimit() < 0)
+//            throw new CannotTradeException("There is a trading limit restriction");
         if (trader.getAcceptedTrades().size() >= trader.getIncompleteTradeLim() ||
                 secondTrader.getAcceptedTrades().size() >= secondTrader.getIncompleteTradeLim())
             throw new CannotTradeException("Too many active trades.");
@@ -181,11 +181,19 @@ public class TradeManager {
         Trade trade = getTrade(tradeId);
         if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
         else if ((trade.getSecondUserId().equals(traderId))) trade.setSecondUserConfirmed1(status);
-        if (trade.isFirstUserConfirmed1() && trade.isFirstUserConfirmed2()){
+        if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()){
             Trader trader1 = getTrader(trade.getFirstUserId());
             Trader trader2 = getTrader(trade.getSecondUserId());
             trader1.getAvailableItems().add(trade.getSecondUserOffer());
             trader2.getAvailableItems().add(trade.getFirstUserOffer());
+            if (!hasSecondMeeting(tradeId)){
+                trader1.getAcceptedTrades().remove(tradeId);
+                trader2.getAcceptedTrades().remove(tradeId);
+                trader1.getCompletedTrades().add(tradeId);
+                trader2.getCompletedTrades().add(tradeId);
+            }
+            userDatabase.update(trader1);
+            userDatabase.update(trader2);
         }
         tradeDatabase.update(trade);
     }
@@ -335,6 +343,8 @@ public class TradeManager {
             if (hasSecondMeeting(tradeId)) {
                 trader1.getAvailableItems().remove(trade.getSecondUserOffer());
                 trader2.getAvailableItems().remove(trade.getFirstUserOffer());
+                trader1.getAvailableItems().add(trade.getFirstUserOffer());
+                trader2.getAvailableItems().add(trade.getSecondUserOffer());
             }
             trader1.setTradeCount(trader1.getTradeCount()+1);
             trader2.setTradeCount(trader2.getTradeCount()+1);

@@ -289,8 +289,9 @@ public class TraderAccount implements Account {
      */
     public boolean confirmTrade(String tradeID) throws AuthorizationException, TradeNotFoundException,
             CannotTradeException, UserNotFoundException {
-        if(tradeManager.isFirstMeetingConfirmed(tradeID))
+        if(tradeManager.isFirstMeetingConfirmed(tradeID)) {
             tradeManager.confirmSecondMeeting(tradeID, true);
+        }
         else
             tradeManager.confirmFirstMeeting(tradeID, true);
         return true;

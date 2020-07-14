@@ -121,9 +121,13 @@ public class AdminManager {
         LinkedList<User> allUsers = userDatabase.getItems();
         for (User user : allUsers)
             if (user instanceof Trader) {
+                Trader t = (Trader) user;
                 switch(traderProperty){
                     case TRADE_LIMIT:
-                        ((Trader) user).setTradeLimit(limit);
+                        //the following line makes it so that if the trader had "x" more trades left this week,
+                        // they will still have "x" trades left
+                        t.setTradeCount(t.getTradeCount() + limit - t.getTradeLimit());
+                        t.setTradeLimit(limit);
                         break;
                     case INCOMPLETE_TRADE_LIM:
                         ((Trader) user).setIncompleteTradeLim(limit);
