@@ -1011,7 +1011,6 @@ public class TextInterface {
     /**
      * Prompts user to confirm that the other trader did not show up to IRL trade
      */
-    //TODO: we should probably delete this and instead set a time limit until the trade is auto detected as incomplete
     private void confirmIncompleteTrade() {
         boolean success = false;
         int acceptedTradeIndex = -1;
