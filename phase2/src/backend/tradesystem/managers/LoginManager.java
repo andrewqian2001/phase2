@@ -53,6 +53,7 @@ public class LoginManager extends Manager{
                 lastLoggedInType = UserTypes.ADMIN;
                 return updateUserDatabase(new Admin(username, password));
             case TRADER:
+                tryToRefreshTradeCount();
             default:
                 lastLoggedInType = UserTypes.TRADER;
                 return updateUserDatabase(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
