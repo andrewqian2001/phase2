@@ -26,11 +26,11 @@ public class TraderManager extends Manager {
     /**
      * Makes this user request an item
      *
+     * @param id trader id
      * @param name name of the item
      * @param desc description of the item
      * @throws UserNotFoundException  if the user was not found
      * @throws AuthorizationException if the user isn't a trader
-     * @params id trader id
      */
     public void addRequestItem(String id, String name, String desc) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(id);

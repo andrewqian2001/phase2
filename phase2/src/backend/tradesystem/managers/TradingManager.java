@@ -284,6 +284,7 @@ public class TradingManager extends Manager {
      * @throws CannotTradeException   too many edits
      * @throws TradeNotFoundException this trade doesn't exist
      * @throws AuthorizationException this trade doesn't belong to this user
+     * @throws UserNotFoundException user wasn't found
      */
     public Trade counterTradeOffer(String traderId, String tradeId, Date meetingTime, Date secondMeetingTime, String
             meetingLocation, String thisTraderOffer, String thatTraderOffer) throws

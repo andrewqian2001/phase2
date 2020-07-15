@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Handles anything about getting info on trading and on traders, but this does not handle trading itself
  */
-public class TradingInfoManager extends Manager{
+public class TradingInfoManager extends Manager {
     /**
      * Initialize the objects to get items from databases
      *
@@ -52,6 +52,7 @@ public class TradingInfoManager extends Manager{
                 items.add(item);
         return (TradableItem[]) items.toArray();
     }
+
     /**
      * return the 3 most traded with Traders
      *
@@ -64,7 +65,7 @@ public class TradingInfoManager extends Manager{
     public Trader[] getFrequentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
         ArrayList<Trader> traders = new ArrayList<>();
         ArrayList<String> completedTradesIds = getTrader(traderId).getCompletedTrades();
-        for (int i = completedTradesIds.size() - 1; i >= Math.max(completedTradesIds.size() - 3, 0); i--){
+        for (int i = completedTradesIds.size() - 1; i >= Math.max(completedTradesIds.size() - 3, 0); i--) {
             Trade trade = getTrade(completedTradesIds.get(i));
             if (trade.getFirstUserId().equals(traderId)) traders.add((getTrader(trade.getSecondUserId())));
             else traders.add(getTrader(trade.getFirstUserId()));
@@ -72,15 +73,15 @@ public class TradingInfoManager extends Manager{
         return (Trader[]) traders.toArray();
     }
 
+
     /**
      * Gets a list of the items used in trades
-     *
+     * @param traderId the trader id
      * @return list of tradable items that were recently traded
-     * @throws TradeNotFoundException        trade wasn't found
-     * @throws AuthorizationException        trade doesn't belong to this user
-     * @throws UserNotFoundException         user wasn't found
-     * @throws TradableItemNotFoundException tradable item not found
-     * @params traderId the trader id
+     * @throws AuthorizationException user is not a trader
+     * @throws TradeNotFoundException trade not found
+     * @throws UserNotFoundException trader id is bad
+     * @throws TradableItemNotFoundException tradable item is not found
      */
     public ArrayList<TradableItem> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
             UserNotFoundException, TradableItemNotFoundException {
