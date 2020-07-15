@@ -12,7 +12,6 @@ import exceptions.UserNotFoundException;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Properties;
 
 /**
@@ -40,7 +39,7 @@ public class LoginManager extends Manager{
      * @return The ID of the newly created user
      * @throws UserAlreadyExistsException username is not unique
      */
-    public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException {
+    public User registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException {
         int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
         int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
         int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
@@ -50,12 +49,12 @@ public class LoginManager extends Manager{
         switch (type) {
             case ADMIN:
                 lastLoggedInType = UserTypes.ADMIN;
-                return updateUserDatabase(new Admin(username, password)).getId();
+                return updateUserDatabase(new Admin(username, password));
             case TRADER:
             default:
                 lastLoggedInType = UserTypes.TRADER;
                 return updateUserDatabase(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
-                        defaultMinimumAmountNeededToBorrow)).getId();
+                        defaultMinimumAmountNeededToBorrow));
         }
 
     }
@@ -108,7 +107,7 @@ public class LoginManager extends Manager{
      * @param propertyType the type of property
      * @return the value of the specified trader property
      */
-    public int getProperty(TraderProperties propertyType){
+    private int getProperty(TraderProperties propertyType){
         try {
             // get the file
             File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
@@ -128,31 +127,31 @@ public class LoginManager extends Manager{
         return -1;
     }
 
-    /**
-     * Sets the value of a property.
-     * @param propertyName the property to change
-     * @param propertyValue the new value of that property
-     */
-    public void setProperty(TraderProperties propertyName, int propertyValue){
-        try {
-            // get the file
-            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
-            // initialize reader
-            FileReader reader = new FileReader(propertyFile);
-            // initialize properties object (to set data)
-            Properties properties = new Properties();
-            // associate this properties object with the file
-            properties.load(reader);
-            // set the property
-            properties.setProperty(propertyName.getProperty(), "" + propertyValue);
-
-            //update the file
-            FileWriter writer = new FileWriter(propertyFile);
-            properties.store(writer, "");
-            reader.close();
-            writer.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+//    /**
+//     * Sets the value of a property.
+//     * @param propertyName the property to change
+//     * @param propertyValue the new value of that property
+//     */
+//    public void setProperty(TraderProperties propertyName, int propertyValue){
+//        try {
+//            // get the file
+//            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+//            // initialize reader
+//            FileReader reader = new FileReader(propertyFile);
+//            // initialize properties object (to set data)
+//            Properties properties = new Properties();
+//            // associate this properties object with the file
+//            properties.load(reader);
+//            // set the property
+//            properties.setProperty(propertyName.getProperty(), "" + propertyValue);
+//
+//            //update the file
+//            FileWriter writer = new FileWriter(propertyFile);
+//            properties.store(writer, "");
+//            reader.close();
+//            writer.close();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//    }
 }
