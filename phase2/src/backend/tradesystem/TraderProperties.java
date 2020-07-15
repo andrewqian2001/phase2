@@ -17,7 +17,11 @@ public enum TraderProperties {
     /**
      * minimumAmountNeededToBorrow property
      */
-    MINIMUM_AMOUNT_NEEDED_TO_BORROW("defaultMinimumAmountNeededToBorrow");
+    MINIMUM_AMOUNT_NEEDED_TO_BORROW("defaultMinimumAmountNeededToBorrow"),
+    /**
+     * lastTradeLimitUpdate property (stores the date the program last updated trade limits)
+     */
+    LAST_TRADE_COUNT_UPDATE("lastTradeCountUpdate");
 
 
     private final String PROPERTY;

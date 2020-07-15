@@ -1,14 +1,16 @@
 package backend.tradesystem.managers;
 
+import backend.DatabaseFilePaths;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.TraderProperties;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
 
 /**
  * This deals with everything relating to trade limits
@@ -78,35 +80,6 @@ public class HandleTradeLimitsManager extends Manager{
             case TRADE_LIMIT:
                 trader.setTradeLimit(newLimit);
         }
-        updateUserDatabase(trader);
-    }
-
-
-    /**
-     * Changes the specified user's incomplete trade limit
-     *
-     * @param userId   the user who's trade limit will be changed
-     * @param newLimit the new trade limit
-     * @throws UserNotFoundException  if the user isn't found
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public void changeIncompleteTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
-        Trader trader = getTrader(userId);
-        trader.setIncompleteTradeLim(newLimit);
-        updateUserDatabase(trader);
-    }
-
-    /**
-     * Changes the specified user's weekly trade limit
-     *
-     * @param userId   the user who's trade limit will be changed
-     * @param newLimit the new trade limit
-     * @throws UserNotFoundException  if the user isn't found
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public void changeWeeklyTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
-        Trader trader = getTrader(userId);
-        trader.setTradeLimit(newLimit);
         updateUserDatabase(trader);
     }
 }

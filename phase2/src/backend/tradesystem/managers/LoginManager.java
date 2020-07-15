@@ -12,6 +12,7 @@ import exceptions.UserNotFoundException;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -40,6 +41,7 @@ public class LoginManager extends Manager{
      * @throws UserAlreadyExistsException username is not unique
      */
     public User registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException {
+
         int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
         int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
         int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
@@ -73,8 +75,10 @@ public class LoginManager extends Manager{
             if (user.getUsername().equals(username) && (user.getPassword().equals(password))) {
                 if (user instanceof Admin)
                     lastLoggedInType = UserTypes.ADMIN;
-                else
+                else{
+                    tryToRefreshTradeCount();
                     lastLoggedInType = UserTypes.TRADER;
+                }
                 return user.getId();
             }
         throw new UserNotFoundException();
@@ -102,6 +106,20 @@ public class LoginManager extends Manager{
         return true;
     }
 
+
+    /**
+     *Tries to refresh the trade count of all traders (this only happens every week).
+     */
+    private void tryToRefreshTradeCount(){
+        Date date = new Date();
+        int curr_time = (int)(date.getTime()/(1000 * 60 * 60 * 24 * 7));
+        int last_time = getProperty(TraderProperties.LAST_TRADE_COUNT_UPDATE);
+        if(last_time - curr_time != 0) {
+            refreshTradeCount();
+            setProperty(TraderProperties.LAST_TRADE_COUNT_UPDATE, curr_time);
+        }
+    }
+
     /**
      * Gets the current value of the specified trader property
      * @param propertyType the type of property
@@ -127,31 +145,52 @@ public class LoginManager extends Manager{
         return -1;
     }
 
-//    /**
-//     * Sets the value of a property.
-//     * @param propertyName the property to change
-//     * @param propertyValue the new value of that property
-//     */
-//    public void setProperty(TraderProperties propertyName, int propertyValue){
-//        try {
-//            // get the file
-//            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
-//            // initialize reader
-//            FileReader reader = new FileReader(propertyFile);
-//            // initialize properties object (to set data)
-//            Properties properties = new Properties();
-//            // associate this properties object with the file
-//            properties.load(reader);
-//            // set the property
-//            properties.setProperty(propertyName.getProperty(), "" + propertyValue);
-//
-//            //update the file
-//            FileWriter writer = new FileWriter(propertyFile);
-//            properties.store(writer, "");
-//            reader.close();
-//            writer.close();
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//    }
+    /**
+     * Sets the value of a property.
+     * @param propertyName the property to change
+     * @param propertyValue the new value of that property
+     */
+    private void setProperty(TraderProperties propertyName, int propertyValue){
+        try {
+            // get the file
+            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+            // initialize reader
+            FileReader reader = new FileReader(propertyFile);
+            // initialize properties object (to set data)
+            Properties properties = new Properties();
+            // associate this properties object with the file
+            properties.load(reader);
+            // set the property
+            properties.setProperty(propertyName.getProperty(), "" + propertyValue);
+
+            //update the file
+            FileWriter writer = new FileWriter(propertyFile);
+            properties.store(writer, "");
+            reader.close();
+            writer.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Refreshes the trade count of all the traders
+     */
+    private void refreshTradeCount(){
+        ArrayList<User> users = getUserDatabase().getItems();
+        for(int i = 0; i < users.size(); i++){
+            User user = users.get(i);
+            if (user instanceof Trader){
+                ((Trader)user).setTradeCount(0);
+                users.set(i, user);
+            }
+        }
+
+        try {
+            getUserDatabase().save(users);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
