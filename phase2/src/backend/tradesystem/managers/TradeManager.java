@@ -201,7 +201,7 @@ public class TradeManager extends Manager {
      * @throws UserNotFoundException  if the user doesn't exist
      * @throws CannotTradeException   if trading limitations prevent the trade from happening
      */
-    public boolean confirmRequest(String traderId, String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException, CannotTradeException {
+    public boolean acceptRequest(String traderId, String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException, CannotTradeException {
         Trade trade = getTrade(tradeId);
         Trader trader = getTrader(trade.getFirstUserId());
         Trader trader2 = getTrader(trade.getSecondUserId());
