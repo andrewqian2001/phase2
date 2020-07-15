@@ -12,8 +12,4 @@ public enum UserTypes {
      * Trader
      */
     TRADER,
-    /**
-     * Default user type
-     */
-    DEFAULT
 }

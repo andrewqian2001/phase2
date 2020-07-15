@@ -1,4 +1,5 @@
-package exceptions;
+package backend.exceptions;
+
 
 /**
  * If a user doesn't have authority

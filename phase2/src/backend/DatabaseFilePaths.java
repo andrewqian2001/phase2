@@ -7,15 +7,15 @@ public enum DatabaseFilePaths {
     /**
      * For the file path of all users
      */
-    USER("./phase1/src/backend/database/users/users.ser"),
+    USER("./phase1/src/backend/databasefiles/users.ser"),
     /**
      * file path of all trades
      */
-    TRADE("./phase1/src/backend/database/trades/trades.ser"),
+    TRADE("./phase1/src/backend/databasefiles/trades.ser"),
     /**
      * file path for all items that are traded
      */
-    TRADABLE_ITEM("./phase1/src/backend/database/tradableitems.ser"),
+    TRADABLE_ITEM("./phase1/src/backend/databasefiles/tradableitems.ser"),
     /**
      * file path for trader config file
      */
