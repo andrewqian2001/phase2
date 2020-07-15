@@ -2,7 +2,6 @@ package backend.tradesystem.managers;
 
 
 import backend.exceptions.*;
-import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
 
@@ -12,14 +11,14 @@ import java.util.*;
 /**
  * Used for trading
  */
-public class TradeManager extends Manager {
+public class TradingManager extends Manager {
 
     /**
      * Initialize the objects to get items from databases
      *
      * @throws IOException if something goes wrong with getting database
      */
-    public TradeManager() throws IOException {
+    public TradingManager() throws IOException {
         super();
     }
 
@@ -36,7 +35,6 @@ public class TradeManager extends Manager {
      * @param secondUserOfferId the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      * @return the trade object
-     * @throws TradableItemNotFoundException the items passed in for trading doesn't exist
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        the item for trading cannot be traded
      * @throws CannotTradeException          cannot request a trade
@@ -44,7 +42,7 @@ public class TradeManager extends Manager {
     public Trade requestTrade(String traderId, String userId,
                               Date meetingTime, Date secondMeetingTime,
                               String meetingLocation, String thisUserOfferId, String secondUserOfferId, int allowedEdits)
-            throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
+            throws  UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);
         Trader secondTrader = getTrader(userId);
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot trade with yourself");
@@ -81,7 +79,6 @@ public class TradeManager extends Manager {
      * @param thisUserOfferId   the item id of that this current user is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      * @return the trade object
-     * @throws TradableItemNotFoundException the items passed in for trading doesn't exist
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        the item for trading cannot be traded
      * @throws CannotTradeException          cannot request a trade
@@ -89,9 +86,10 @@ public class TradeManager extends Manager {
     public Trade requestLend(String traderId, String userId,
                              Date meetingTime, Date secondMeetingTime,
                              String meetingLocation, String thisUserOfferId, int allowedEdits)
-            throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
+            throws UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);//lender
         Trader secondTrader = getTrader(userId);//borrower
+
         if (!secondTrader.canTrade())
             throw new CannotTradeException("Cannot trade due to trading restrictions");
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot lend to yourself");
@@ -108,6 +106,7 @@ public class TradeManager extends Manager {
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, thisUserOfferId, "", allowedEdits);
+
         String tradeId = updateTradeDatabase(trade).getId();
         trader.getRequestedTrades().add(tradeId);
         secondTrader.getRequestedTrades().add(tradeId);
@@ -146,6 +145,7 @@ public class TradeManager extends Manager {
      * @param tradeId trade id
      * @throws TradeNotFoundException if the trade id wasn't found
      * @throws AuthorizationException if the trade doesn't belong to this user
+     * @throws UserNotFoundException if the traders in the trade weren't found
      */
     public void denyTrade(String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
@@ -168,6 +168,7 @@ public class TradeManager extends Manager {
      */
     public void confirmFirstMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
+        if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
         else if ((trade.getSecondUserId().equals(traderId))) trade.setSecondUserConfirmed1(status);
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()) {
@@ -203,6 +204,7 @@ public class TradeManager extends Manager {
      */
     public boolean confirmRequest(String traderId, String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException, CannotTradeException {
         Trade trade = getTrade(tradeId);
+        if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         Trader trader = getTrader(trade.getFirstUserId());
         Trader trader2 = getTrader(trade.getSecondUserId());
 
@@ -228,44 +230,6 @@ public class TradeManager extends Manager {
         return false;
     }
 
-    /**
-     * edits the trade object
-     *
-     * @param traderId                 the trader confirming the meeting
-     * @param tradeID                  id of the trade
-     * @param firstMeeting             first meeting date object
-     * @param secondMeeting            second meeting date object
-     * @param meetingLocation          String of the meeting location
-     * @param inventoryItemIndex       index of the user's trade item
-     * @param traderInventoryItemIndex index of the trader's trade item
-     * @throws CannotTradeException          if the trade is not allowed
-     * @throws AuthorizationException        if the user cannot access this trade
-     * @throws TradableItemNotFoundException couldn't find the item
-     * @throws UserNotFoundException         if the user isn't found
-     * @throws TradeNotFoundException        if the trade isn't found
-     */
-    public void editTrade(String traderId, String tradeID, Date firstMeeting, Date secondMeeting, String meetingLocation,
-                          int inventoryItemIndex, int traderInventoryItemIndex)
-            throws CannotTradeException, TradeNotFoundException, UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
-
-        Trade trade = getTrade(tradeID);
-        Trader trader1 = getTrader(trade.getFirstUserId());
-        Trader trader2 = getTrader(trade.getSecondUserId());
-        ArrayList<String> items1 = trader2.getAvailableItems();
-        ArrayList<String> items2 = trader1.getAvailableItems();
-        if (trader1.getId().equals(traderId)) {
-            ArrayList<String> tmp = items1;
-            items2 = tmp;
-            items1 = items2;
-        }
-        try {
-            counterTradeOffer(traderId, tradeID, firstMeeting, secondMeeting, meetingLocation,
-                    items1.get(inventoryItemIndex), items2.get(traderInventoryItemIndex));
-        } catch (IndexOutOfBoundsException e) {
-            throw new TradableItemNotFoundException();
-        }
-    }
-
 
     /**
      * Confirms the second meeting
@@ -279,6 +243,8 @@ public class TradeManager extends Manager {
      */
     public void confirmSecondMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
+
+        if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1())
             throw new AuthorizationException("First meeting hasn't been confirmed");
         if (trade.getFirstUserId().equals(traderId)) {
@@ -312,18 +278,18 @@ public class TradeManager extends Manager {
      * @param meetingTime       the new time of the trade
      * @param secondMeetingTime the second meeting time of the trade
      * @param meetingLocation   the meeting location of the trade
-     * @param firstUserOffer    the tradable item id of the first user offer
-     * @param secondUserOffer   the tradable item id of the second user offer
+     * @param thisTraderOffer    the tradable item id that the current trader is offering
+     * @param thatTraderOffer   the tradable item id that the current trader wants from the other trader
      * @return the id of the trade
      * @throws CannotTradeException   too many edits
      * @throws TradeNotFoundException this trade doesn't exist
      * @throws AuthorizationException this trade doesn't belong to this user
      */
-    public String counterTradeOffer(String traderId, String tradeId, Date meetingTime, Date secondMeetingTime, String
-            meetingLocation,
-                                    String firstUserOffer, String secondUserOffer) throws
+    public Trade counterTradeOffer(String traderId, String tradeId, Date meetingTime, Date secondMeetingTime, String
+            meetingLocation, String thisTraderOffer, String thatTraderOffer) throws
             CannotTradeException, TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
+        if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) {
             this.denyTrade(tradeId);
             throw new CannotTradeException("Too many edits. Trade is cancelled.");
@@ -333,44 +299,20 @@ public class TradeManager extends Manager {
         trade.setMeetingTime(meetingTime);
         trade.setSecondMeetingTime(secondMeetingTime);
         trade.setMeetingLocation(meetingLocation);
-        trade.setFirstUserOffer(firstUserOffer);
-        trade.setSecondUserOffer(secondUserOffer);
+        if (trade.getFirstUserId().equals(traderId)) {
+            trade.setFirstUserOffer(thisTraderOffer);
+            trade.setSecondUserOffer(thatTraderOffer);
+        }
+        else {
+            trade.setSecondUserOffer(thisTraderOffer);
+            trade.setFirstUserOffer(thatTraderOffer);
+        }
         trade.setNumEdits(trade.getNumEdits() + 1);
 
         updateTradeDatabase(trade);
-        return trade.getId();
+        return trade;
     }
 
-
-    /**
-     * Gets a list of the items used in trades
-     *
-     * @return list of tradable items that were recently traded
-     * @throws TradeNotFoundException        trade wasn't found
-     * @throws AuthorizationException        trade doesn't belong to this user
-     * @throws UserNotFoundException         user wasn't found
-     * @throws TradableItemNotFoundException tradable item not found
-     * @params traderId the trader id
-     */
-    public ArrayList<TradableItem> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
-            UserNotFoundException, TradableItemNotFoundException {
-        ArrayList<String> completedTrades = getTrader(traderId).getCompletedTrades();
-        ArrayList<TradableItem> recentTradeItems = new ArrayList<>();
-        for (String tradeID : completedTrades) {
-            Trade trade = getTrade(tradeID);
-            String firstItemId = trade.getFirstUserOffer();
-            String secondItemId = trade.getSecondUserOffer();
-            try {
-                if (!firstItemId.equals(""))
-                    recentTradeItems.add(getTradableItem(firstItemId));
-                if (!secondItemId.equals(""))
-                    recentTradeItems.add(getTradableItem(secondItemId));
-            } catch (EntryNotFoundException e) {
-                throw new TradableItemNotFoundException();
-            }
-        }
-        return recentTradeItems;
-    }
 
 //    /**
 //     * When a meeting is confirmed by both trader, then both get updated

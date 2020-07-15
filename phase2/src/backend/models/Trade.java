@@ -312,4 +312,13 @@ public class Trade extends DatabaseItem implements Serializable {
     public void setHasSecondUserConfirmedRequest(boolean hasSecondUserConfirmedRequest) {
         this.hasSecondUserConfirmedRequest = hasSecondUserConfirmedRequest;
     }
+
+    /**
+     * checks if the trader is part of this trade
+     * @param traderId the trader id
+     * @return whether the trader is part of this trade
+     */
+    public boolean isTraderInTrade(String traderId){
+        return this.getFirstUserId().equals(traderId) || this.getSecondUserId().equals(traderId);
+    }
 }

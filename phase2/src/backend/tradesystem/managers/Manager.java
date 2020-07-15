@@ -9,10 +9,13 @@ import backend.models.users.Trader;
 import backend.models.users.User;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * This is used to help make accessing and modifying the database files to be easier,
- * while giving the generic EntryNotFoundException more meaning
+ * while giving the generic EntryNotFoundException more meaning.
+ *
+ * This contains general methods that is useful in all applications.
  */
 public class Manager {
 
@@ -149,6 +152,19 @@ public class Manager {
      */
     protected TradableItem updateTradableItemDatabase(TradableItem item) {
         return tradableItemDatabase.update(item);
-
+    }
+    /**
+     * Gets a user by username
+     *
+     * @param username username of the User
+     * @return the user
+     * @throws UserNotFoundException cant find username
+     */
+    public User getUserByUsername(String username) throws UserNotFoundException {
+        ArrayList<User> users = getUserDatabase().getItems();
+        for (User user : users)
+            if (user.getUsername().equals(username))
+                return user;
+        throw new UserNotFoundException();
     }
 }
