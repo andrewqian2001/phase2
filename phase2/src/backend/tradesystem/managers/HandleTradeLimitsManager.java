@@ -1,12 +1,7 @@
 package backend.tradesystem.managers;
 
-import backend.Database;
-import backend.DatabaseFilePaths;
 import backend.exceptions.AuthorizationException;
-import backend.exceptions.EntryNotFoundException;
-import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.TraderProperties;
@@ -14,94 +9,18 @@ import backend.tradesystem.TraderProperties;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 
 /**
- * Used for executing actions that an admin has
+ * This deals with everything relating to trade limits
  */
-public class AdminManager extends Manager{
-
-
+public class HandleTradeLimitsManager extends Manager{
     /**
      * Initialize the objects to get items from databases
      *
      * @throws IOException if something goes wrong with getting database
      */
-    public AdminManager() throws IOException {
+    public HandleTradeLimitsManager() throws IOException {
         super();
-    }
-
-    /**
-     * Freeze or unfreeze a user
-     *
-     * @param userID       the user id
-     * @param freezeStatus to freeze the user
-     * @throws UserNotFoundException can't find user id
-     */
-    public void setFrozen(String userID, boolean freezeStatus) throws UserNotFoundException {
-        try {
-            User user = getUser(userID);
-            user.setFrozen(freezeStatus);
-            updateUserDatabase(user);
-        } catch (EntryNotFoundException e) {
-            throw new UserNotFoundException(userID);
-        }
-    }
-
-    /**
-     * Gets a list of all Unfreeze Request
-     *
-     * @return a list of all unfreeze requests
-     */
-    public ArrayList<String> getAllUnfreezeRequests() {
-        ArrayList<String> result = new ArrayList<>();
-        for (User user : getUserDatabase().getItems()) {
-            if (user.isUnfrozenRequested()) {
-                result.add(user.getUsername());
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Gets a hashmap of trader ids to an arraylist of their requested items
-     *
-     * @return a hashmap of trader ids to an arraylist of their requested items
-     */
-    public HashMap<String, ArrayList<String>> getAllItemRequests() {
-        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
-
-        for (User user : getUserDatabase().getItems()) {
-            if (user instanceof Trader) {
-                ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
-                if (requestedItems.size() > 0)
-                    allItems.put(user.getId(), requestedItems);
-            }
-        }
-        return allItems;
-    }
-
-
-    /**
-     * Process the item request of a user
-     *
-     * @param traderID   ID of the trader
-     * @param reqItemID  the requested item to be confirmed or rejected
-     * @param isAccepted true if item is accepted, false if rejected
-     * @throws TradableItemNotFoundException tradable item id isn't found
-     * @throws AuthorizationException if the user isn't a trader
-     * @throws UserNotFoundException trader isn't found
-     */
-    public void processItemRequest(String traderID, String reqItemID, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
-        Trader trader = getTrader(traderID);
-        ArrayList<String> itemIDs = trader.getRequestedItems();
-        if (!itemIDs.contains(reqItemID)) throw new TradableItemNotFoundException(reqItemID);
-        if (isAccepted) {
-            trader.getAvailableItems().add(reqItemID);
-        }
-        trader.getRequestedItems().remove(reqItemID);
-        updateUserDatabase(trader);
     }
 
     /**
@@ -163,22 +82,6 @@ public class AdminManager extends Manager{
     }
 
 
-
-    /**
-     * Return traders that should be frozen
-     *
-     * @return true if the user should be frozen, false otherwise
-     */
-    public ArrayList<String> getFreezable() {
-        ArrayList<String> freezable = new ArrayList<>();
-        for (User user : getUserDatabase().getItems()) {
-            if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()) {
-                freezable.add(user.getId());
-            }
-        }
-        return freezable;
-    }
-
     /**
      * Changes the specified user's incomplete trade limit
      *
@@ -206,19 +109,4 @@ public class AdminManager extends Manager{
         trader.setTradeLimit(newLimit);
         updateUserDatabase(trader);
     }
-
-    /**
-     * Get all usernames of users who should be frozen
-     * @return A list of usernames of users who should be frozen
-     */
-    public ArrayList<String> getShouldBeFrozen(){
-        ArrayList<String> result = new ArrayList<>();
-        for (User user : getUserDatabase().getItems()){
-            if (user instanceof Trader && ((Trader) user).shouldBeFrozen()){
-                result.add(user.getUsername());
-            }
-        }
-        return result;
-    }
-
 }

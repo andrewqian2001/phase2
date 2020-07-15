@@ -1,6 +1,9 @@
 package backend.tradesystem;
 
 
+/**
+ * Represents properties that are stored in a file
+ */
 public enum TraderProperties {
 
     /**

@@ -21,7 +21,6 @@ public class Trader extends User implements Serializable {
     private int totalItemsLent;
     private int minimumAmountNeededToBorrow;
     private int tradeCount;
-    private boolean shouldBeFrozen;
 
 
     /**
@@ -38,22 +37,6 @@ public class Trader extends User implements Serializable {
         this.tradeLimit = tradeLimit;
         this.incompleteTradeLim = incompleteTradeLim;
         this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
-    }
-
-    /**
-     * Sets the value of shouldBeFrozen
-     * @param shouldBeFrozen the new value of shouldBeFrozen
-     */
-    public void setShouldBeFrozen(boolean shouldBeFrozen) {
-        this.shouldBeFrozen = shouldBeFrozen;
-    }
-
-    /**
-     *
-     * @return whether the trader should be frozen
-     */
-    public boolean shouldBeFrozen() {
-        return shouldBeFrozen;
     }
 
     /**
