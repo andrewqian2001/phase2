@@ -1,6 +1,7 @@
 package Database.trades;
 
-import Database.DatabaseItem;
+
+import backend.models.DatabaseItem;
 
 import java.io.Serializable;
 import java.util.Date;

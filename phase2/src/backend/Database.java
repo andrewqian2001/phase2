@@ -5,7 +5,7 @@ import backend.exceptions.EntryNotFoundException;
 import backend.models.DatabaseItem;
 
 import java.io.*;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -35,8 +35,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
         consoleHandler.setLevel(Level.WARNING);
         logger.addHandler(consoleHandler);
         this.filePath = filePath;
-        File file = new File(filePath);
-        if (!file.exists()) file.createNewFile();
+        new File(filePath).createNewFile();
     }
 
     /**
@@ -46,7 +45,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @return the old item in the entry, if it doesn't exist then the new item is returned
      */
     public T update(T newItem) {
-        LinkedList<T> allItems;
+        ArrayList<T> allItems;
         T oldItem = newItem;
         try {
             allItems = getItems();
@@ -75,28 +74,16 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * Deletes an entry in the list of items if it exists
      *
      * @param id the entry id
-     * @return the deleted item
-     * @throws EntryNotFoundException if the entry id doesn't exist in the list
      */
-    public T delete(String id) throws EntryNotFoundException {
-        LinkedList<T> allItems;
-        T oldItem;
-        try {
-            allItems = getItems();
-            for (int i = 0; i < allItems.size(); i++) {
-                T currItem = allItems.get(i);
-                if (currItem.getId().equals(id)) {
-                    oldItem = currItem;
-                    allItems.remove(i);
-                    save(allItems);
-                    return oldItem;
-                }
+    public void delete(String id) {
+        ArrayList<T> allItems;
+        allItems = getItems();
+        for (T item: allItems){
+            if (item.getId().equals(id)) {
+                allItems.remove(item);
+                return;
             }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Input could not be read.", e);
         }
-        throw new EntryNotFoundException("Could not delete item " + id);
-
     }
 
     /**
@@ -107,26 +94,24 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @throws EntryNotFoundException if the id given does not exist in the list of items
      */
     public T populate(String id) throws EntryNotFoundException {
-        LinkedList<T> allItems;
-        allItems = getItems();
-        for (int i = 0; i < allItems.size(); i++) {
-            T currItem = allItems.get(i);
-            if (currItem.getId().equals(id))
-                return currItem;
+        ArrayList<T> allItems = getItems();
+        for (T item: allItems) {
+            if (item.getId().equals(id))
+                return item;
         }
         throw new EntryNotFoundException("Could not find item " + id);
     }
 
     /**
      * whether the database contains the id
+     *
      * @param id the id being checked
      * @return whether the database contains the id
      */
     public boolean contains(String id) {
         try {
             populate(id);
-        }
-        catch (EntryNotFoundException e){
+        } catch (EntryNotFoundException e) {
             return false;
         }
         return true;
@@ -134,26 +119,26 @@ public class Database<T extends DatabaseItem> implements Serializable {
 
     /**
      * list of items in the database file
-     * @return LinkedList containing all the items in the file
+     *
+     * @return all the items in the file
      */
-    public LinkedList<T> getItems() {
+    public ArrayList<T> getItems() {
         if (!new File(this.filePath).exists()) {
             logger.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
-            return new LinkedList<T>();
+            return new ArrayList<T>();
         }
-
         try {
             InputStream buffer = new BufferedInputStream(new FileInputStream(this.filePath));
             ObjectInput input = new ObjectInputStream(buffer);
-            LinkedList<T> items = (LinkedList<T>) input.readObject();
+            Object tmp = input.readObject();
             input.close();
-            return items;
+            return (ArrayList<T>) tmp;
         } catch (IOException e) {
             logger.log(Level.INFO, "Empty file was used.");
         } catch (ClassNotFoundException e) {
             logger.log(Level.SEVERE, "Input could not be read.", e);
         }
-        return new LinkedList<T>();
+        return new ArrayList<T>();
 
     }
 
@@ -163,7 +148,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @param items the items that are being saved to the file
      * @throws FileNotFoundException if the file doesn't exist
      */
-    public void save(LinkedList<T> items) throws FileNotFoundException {
+    public void save(ArrayList<T> items) throws FileNotFoundException {
         if (!new File(this.filePath).exists()) {
             logger.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
             throw new FileNotFoundException();

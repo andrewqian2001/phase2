@@ -20,18 +20,16 @@ import java.util.LinkedList;
 /**
  * Used for executing actions that an admin has
  */
-public class AdminManager {
-    private final Database<User> userDatabase;
-    private final Database<TradableItem> tradableItemDatabase;
+public class AdminManager extends Manager{
+
 
     /**
-     * This is used for the actions that an admin user can do
+     * Initialize the objects to get items from databases
      *
      * @throws IOException if something goes wrong with getting database
      */
     public AdminManager() throws IOException {
-        userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
-        tradableItemDatabase = new Database<TradableItem>(DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
+        super();
     }
 
     /**
@@ -43,9 +41,9 @@ public class AdminManager {
      */
     public void setFrozen(String userID, boolean freezeStatus) throws UserNotFoundException {
         try {
-            User user = userDatabase.populate(userID);
+            User user = getUser(userID);
             user.setFrozen(freezeStatus);
-            userDatabase.update(user);
+            updateUserDatabase(user);
         } catch (EntryNotFoundException e) {
             throw new UserNotFoundException(userID);
         }
@@ -58,7 +56,7 @@ public class AdminManager {
      */
     public ArrayList<String> getAllUnfreezeRequests() {
         ArrayList<String> result = new ArrayList<>();
-        for (User user : userDatabase.getItems()) {
+        for (User user : getUserDatabase().getItems()) {
             if (user.isUnfrozenRequested()) {
                 result.add(user.getUsername());
             }
@@ -74,7 +72,7 @@ public class AdminManager {
     public HashMap<String, ArrayList<String>> getAllItemRequests() {
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
-        for (User user : userDatabase.getItems()) {
+        for (User user : getUserDatabase().getItems()) {
             if (user instanceof Trader) {
                 ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
                 if (requestedItems.size() > 0)
@@ -89,23 +87,21 @@ public class AdminManager {
      * Process the item request of a user
      *
      * @param traderID   ID of the trader
-     * @param itemIndex  index of the item
+     * @param reqItemID  the requested item to be confirmed or rejected
      * @param isAccepted true if item is accepted, false if rejected
-     * @throws EntryNotFoundException traderName / itemName not found
+     * @throws TradableItemNotFoundException tradable item id isn't found
      * @throws AuthorizationException if the user isn't a trader
+     * @throws UserNotFoundException trader isn't found
      */
-    public void processItemRequest(String traderID, int itemIndex, boolean isAccepted) throws EntryNotFoundException, AuthorizationException {
+    public void processItemRequest(String traderID, String reqItemID, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         Trader trader = getTrader(traderID);
         ArrayList<String> itemIDs = trader.getRequestedItems();
-        if (itemIndex < 0 || itemIndex >= itemIDs.size()) {
-            throw new EntryNotFoundException("Invalid index.");
-        }
-        String reqItemID = itemIDs.get(itemIndex);
+        if (!itemIDs.contains(reqItemID)) throw new TradableItemNotFoundException(reqItemID);
         if (isAccepted) {
             trader.getAvailableItems().add(reqItemID);
         }
         trader.getRequestedItems().remove(reqItemID);
-        userDatabase.update(trader);
+        updateUserDatabase(trader);
     }
 
     /**
@@ -116,7 +112,7 @@ public class AdminManager {
      * @throws UserNotFoundException couldn't get traders
      */
     public void setLimit(TraderProperties traderProperty, int limit) throws UserNotFoundException {
-        LinkedList<User> allUsers = userDatabase.getItems();
+        ArrayList<User> allUsers = getUserDatabase().getItems();
         for (User user : allUsers)
             if (user instanceof Trader) {
                 Trader t = (Trader) user;
@@ -136,7 +132,7 @@ public class AdminManager {
 
             }
         try {
-            userDatabase.save(allUsers);
+            getUserDatabase().save(allUsers);
         } catch (FileNotFoundException e) {
             throw new UserNotFoundException();
         }
@@ -163,7 +159,7 @@ public class AdminManager {
             case TRADE_LIMIT:
                 trader.setTradeLimit(newLimit);
         }
-        userDatabase.update(trader);
+        updateUserDatabase(trader);
     }
 
 
@@ -175,7 +171,7 @@ public class AdminManager {
      */
     public ArrayList<String> getFreezable() {
         ArrayList<String> freezable = new ArrayList<>();
-        for (User user : userDatabase.getItems()) {
+        for (User user : getUserDatabase().getItems()) {
             if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()) {
                 freezable.add(user.getId());
             }
@@ -194,7 +190,7 @@ public class AdminManager {
     public void changeIncompleteTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userId);
         trader.setIncompleteTradeLim(newLimit);
-        userDatabase.update(trader);
+        updateUserDatabase(trader);
     }
 
     /**
@@ -208,67 +204,7 @@ public class AdminManager {
     public void changeWeeklyTradeLimit(String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userId);
         trader.setTradeLimit(newLimit);
-        userDatabase.update(trader);
-    }
-
-    /**
-     * For getting a user object from a user id
-     *
-     * @param userID the user id
-     * @return the user object
-     * @throws UserNotFoundException  if the user id wasn't found
-     * @throws AuthorizationException this is not a trader
-     */
-    public Trader getTrader(String userID) throws UserNotFoundException, AuthorizationException {
-        try {
-            User tmp = userDatabase.populate(userID);
-            if (!(tmp instanceof Trader)) throw new AuthorizationException("This is not a trader");
-            return (Trader) tmp;
-        } catch (EntryNotFoundException e) {
-            throw new UserNotFoundException(userID);
-        }
-    }
-
-    /**
-     * Gets the userID of a user given their username
-     *
-     * @param username the username of the user
-     * @return the ID of the user
-     * @throws UserNotFoundException could not find user
-     */
-    public String getUserId(String username) throws UserNotFoundException {
-        LinkedList<User> users = userDatabase.getItems();
-        for (User user : users)
-            if (user.getUsername().equals(username))
-                return user.getId();
-        throw new UserNotFoundException();
-    }
-
-    /**
-     * Gets the username of a User given their ID NOTE: This will most likely be
-     * deleted before rollout since theres no use for this
-     *
-     * @param userId id of the User
-     * @return username of the User
-     * @throws EntryNotFoundException cant find user id
-     */
-    public String getUsername(String userId) throws EntryNotFoundException {
-        return userDatabase.populate(userId).getUsername();
-    }
-
-    /**
-     * Gets the tradable item object
-     *
-     * @param itemID the ID of this item
-     * @return the item object
-     * @throws TradableItemNotFoundException if the item could not be found in the database
-     */
-    public TradableItem getTradableItem(String itemID) throws TradableItemNotFoundException {
-        try {
-            return tradableItemDatabase.populate(itemID);
-        } catch (EntryNotFoundException e) {
-            throw new TradableItemNotFoundException(itemID);
-        }
+        updateUserDatabase(trader);
     }
 
     /**
@@ -277,7 +213,7 @@ public class AdminManager {
      */
     public ArrayList<String> getShouldBeFrozen(){
         ArrayList<String> result = new ArrayList<>();
-        for (User user : userDatabase.getItems()){
+        for (User user : getUserDatabase().getItems()){
             if (user instanceof Trader && ((Trader) user).shouldBeFrozen()){
                 result.add(user.getUsername());
             }

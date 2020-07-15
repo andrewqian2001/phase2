@@ -1,35 +1,34 @@
 package backend.tradesystem.managers;
 
 
-import Database.Database;
-import Database.users.Admin;
-import Database.users.Trader;
-import Database.users.User;
+import backend.DatabaseFilePaths;
+import backend.models.users.Admin;
+import backend.models.users.Trader;
+import backend.models.users.User;
+import backend.tradesystem.TraderProperties;
+import backend.tradesystem.UserTypes;
 import exceptions.UserAlreadyExistsException;
 import exceptions.UserNotFoundException;
-import main.DatabaseFilePaths;
-import main.TradeSystem.Accounts.UserTypes;
-import main.TraderProperties;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Properties;
 
 /**
  * Used for logging in and registering
  */
-public class LoginManager {
-    private final Database<User> userDatabase;
+public class LoginManager extends Manager{
 
     private UserTypes lastLoggedInType = null;
 
     /**
-     * For logging in and registering accounts
+     * Initialize the objects to get items from databases
      *
-     * @throws IOException if the database file is bad
+     * @throws IOException if something goes wrong with getting database
      */
     public LoginManager() throws IOException {
-        userDatabase = new Database<User>(DatabaseFilePaths.USER.getFilePath());
+        super();
     }
 
     /**
@@ -51,12 +50,11 @@ public class LoginManager {
         switch (type) {
             case ADMIN:
                 lastLoggedInType = UserTypes.ADMIN;
-                return userDatabase.update(new Admin(username, password)).getId();
+                return updateUserDatabase(new Admin(username, password)).getId();
             case TRADER:
-            case DEFAULT:
             default:
                 lastLoggedInType = UserTypes.TRADER;
-                return userDatabase.update(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
+                return updateUserDatabase(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
                         defaultMinimumAmountNeededToBorrow)).getId();
         }
 
@@ -71,7 +69,7 @@ public class LoginManager {
      * @throws UserNotFoundException could not find the user
      */
     public String login(String username, String password) throws UserNotFoundException {
-        LinkedList<User> users = userDatabase.getItems();
+        ArrayList<User> users = getUserDatabase().getItems();
         for (User user : users)
             if (user.getUsername().equals(username) && (user.getPassword().equals(password))) {
                 if (user instanceof Admin)
@@ -99,7 +97,7 @@ public class LoginManager {
      * @return if username is unique
      */
     public boolean isUsernameUnique(String username) {
-        for (User user : userDatabase.getItems())
+        for (User user : getUserDatabase().getItems())
             if (user.getUsername().equals(username))
                 return false;
         return true;
