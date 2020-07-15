@@ -100,8 +100,8 @@ public class TradeManager {
                              Date meetingTime, Date secondMeetingTime,
                              String meetingLocation, String thisUserOfferId, int allowedEdits)
             throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
-        Trader trader = getTrader(traderId);//borrower
-        Trader secondTrader = getTrader(userId);//lender
+        Trader trader = getTrader(traderId);//lender
+        Trader secondTrader = getTrader(userId);//borrower
         if (!secondTrader.canTrade())
             throw new CannotTradeException("Cannot trade due to trading restrictions");
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot lend to yourself");
@@ -112,7 +112,7 @@ public class TradeManager {
             throw new CannotTradeException("Too many active trades.");
 
         // This is used to check if the items are valid to trade
-        getTradableItem(thisUserOfferId, userId);
+        getTradableItem(thisUserOfferId, traderId);
 
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
