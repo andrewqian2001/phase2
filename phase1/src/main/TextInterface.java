@@ -701,14 +701,14 @@ public class TextInterface {
         boolean success = false;
         do {
             try {
+                System.out.println("Enter the username of the Trader you would like to perform the trade action");
+                System.out.print("=> ");
+                traderName = sc.nextLine();
                 if (!tradeType.equals("BORROW")) {
                     if (traderAccount.getAvailableItems().size() == 0) {
                         System.out.println("Ruh Roh! Looks like you have no available items to trade\nABORTING TRADE...");
                         return;
                     }
-                    System.out.println("Enter the username of the Trader you would like to lend your item to");
-                    System.out.print("=> ");
-                    traderName = sc.nextLine();
                     if (traderAccount.getIdFromUsername(traderName).equals(this.userID)) {
                         System.out.println("A Trader cannot perform borrow/lend/trade action to him/herself");
                         return;
@@ -720,9 +720,6 @@ public class TextInterface {
                     inventoryItemIndex = Integer.parseInt(sc.nextLine());
                 }
                 if (!tradeType.equals("LEND")) {
-                    System.out.println("Enter the username of the Trader you would like to borrow from");
-                    System.out.print("=> ");
-                    traderName = sc.nextLine();
                     TraderAccount otherTraderAccount = new TraderAccount(traderAccount.getIdFromUsername(traderName));
                     if (otherTraderAccount.getAvailableItems().size() == 0) {
                         System.out.printf("Ruh Roh! %s does not have any available items to trade\nABORTING TRADE...\n", traderName);
