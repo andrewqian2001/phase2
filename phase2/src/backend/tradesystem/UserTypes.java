@@ -1,4 +1,5 @@
-package main.TradeSystem.Accounts;
+package backend.tradesystem;
+
 
 /**
  * Represents different user account types

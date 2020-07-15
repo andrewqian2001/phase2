@@ -1,6 +1,8 @@
-package Database;
+package backend;
 
-import exceptions.EntryNotFoundException;
+
+import backend.exceptions.EntryNotFoundException;
+import backend.models.DatabaseItem;
 
 import java.io.*;
 import java.util.LinkedList;

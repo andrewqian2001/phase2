@@ -1,4 +1,4 @@
-package exceptions;
+package backend.exceptions;
 
 /**
  * When the tradable item entry is not found

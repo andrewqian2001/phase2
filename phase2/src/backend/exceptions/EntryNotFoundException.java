@@ -1,4 +1,4 @@
-package exceptions;
+package backend.exceptions;
 
 /**
  * The entry was not found in the database

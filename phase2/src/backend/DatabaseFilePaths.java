@@ -1,4 +1,5 @@
-package main;
+package backend;
+
 
 /**
  * For paths to database files

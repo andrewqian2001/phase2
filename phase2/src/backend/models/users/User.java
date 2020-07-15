@@ -1,6 +1,7 @@
-package Database.users;
+package backend.models.users;
 
-import Database.DatabaseItem;
+
+import backend.models.DatabaseItem;
 
 import java.io.Serializable;
 

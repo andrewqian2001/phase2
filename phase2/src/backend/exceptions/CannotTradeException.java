@@ -1,4 +1,4 @@
-package exceptions;
+package backend.exceptions;
 
 /**
  * If the trade cannot happen

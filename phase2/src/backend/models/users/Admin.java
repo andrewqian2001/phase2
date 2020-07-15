@@ -1,4 +1,4 @@
-package Database.users;
+package backend.models.users;
 
 import java.io.Serializable;
 

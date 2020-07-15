@@ -1,4 +1,5 @@
-package main.TradeSystem.Managers;
+package backend.tradesystem.managers;
+
 
 import Database.Database;
 import Database.users.Admin;

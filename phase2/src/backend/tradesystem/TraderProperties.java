@@ -1,4 +1,5 @@
-package main;
+package backend.tradesystem;
+
 
 public enum TraderProperties {
 

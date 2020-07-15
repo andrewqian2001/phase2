@@ -1,17 +1,15 @@
-package main.TradeSystem.Managers;
+package backend.tradesystem.managers;
 
-import Database.Database;
-import Database.tradableitems.TradableItem;
-import Database.trades.Trade;
-import Database.users.Admin;
-import Database.users.Trader;
-import Database.users.User;
-import exceptions.AuthorizationException;
-import exceptions.EntryNotFoundException;
-import exceptions.TradableItemNotFoundException;
-import exceptions.UserNotFoundException;
-import main.DatabaseFilePaths;
-import main.TraderProperties;
+import backend.Database;
+import backend.DatabaseFilePaths;
+import backend.exceptions.AuthorizationException;
+import backend.exceptions.EntryNotFoundException;
+import backend.exceptions.TradableItemNotFoundException;
+import backend.exceptions.UserNotFoundException;
+import backend.models.TradableItem;
+import backend.models.users.Trader;
+import backend.models.users.User;
+import backend.tradesystem.TraderProperties;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

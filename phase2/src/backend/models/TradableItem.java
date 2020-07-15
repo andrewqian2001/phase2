@@ -1,6 +1,5 @@
-package Database.tradableitems;
+package backend.models;
 
-import Database.DatabaseItem;
 
 import java.io.Serializable;
 

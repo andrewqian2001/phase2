@@ -1,4 +1,4 @@
-package exceptions;
+package backend.exceptions;
 
 /**
  * The trade entry doesn't exist
