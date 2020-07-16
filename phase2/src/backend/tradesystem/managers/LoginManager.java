@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.Properties;
 
 /**
- * Used for logging in and registering
+ * Used for logging in and registering, as well as any setup that has be done
  */
 public class LoginManager extends Manager{
 
