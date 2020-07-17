@@ -2,13 +2,12 @@ package main;
 
 import java.io.*;
 
+/**
+ * This is where the program starts running
+ */
 public class Main {
     public static void main(String[] args) throws IOException {
         TextInterface tInterface = new TextInterface();
-        try {
-            tInterface.run();
-        } catch(IOException e) {
-            System.out.println("Ruh Roh!");
-        }
+        tInterface.run();
     }
 }

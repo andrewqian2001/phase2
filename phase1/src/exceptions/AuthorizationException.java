@@ -1,7 +1,17 @@
 package exceptions;
 
+/**
+ * If a user doesn't have authority
+ */
 public class AuthorizationException extends Exception {
-    public AuthorizationException(String errMsg){
-        super(errMsg);
-    }
+    /**
+     * New exception without err message
+     */
+    public AuthorizationException(){super();}
+
+    /**
+     * New exception with err message
+     * @param msg the err message
+     */
+    public AuthorizationException(String msg){super(msg);}
 }

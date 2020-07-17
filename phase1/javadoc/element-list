@@ -1,0 +1,9 @@
+Database
+Database.tradableitems
+Database.trades
+Database.users
+exceptions
+main
+main.TradeSystem
+main.TradeSystem.Accounts
+main.TradeSystem.Managers
