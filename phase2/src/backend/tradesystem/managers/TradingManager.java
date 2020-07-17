@@ -80,7 +80,7 @@ public class TradingManager extends Manager {
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      * @return the trade object
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
-     * @throws AuthorizationException        the item for trading cannot be traded
+     * @throws AuthorizationException        no authority to lend
      * @throws CannotTradeException          cannot request a trade
      */
     public Trade requestLend(String traderId, String userId,
@@ -89,12 +89,11 @@ public class TradingManager extends Manager {
             throws UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);//lender
         Trader secondTrader = getTrader(userId);//borrower
-
+        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
+        if (trader.isIdle()) throw new CannotTradeException("This account cannot lend because it is on idle");
         if (!secondTrader.canTrade())
             throw new CannotTradeException("Cannot trade due to trading restrictions");
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot lend to yourself");
-//        if (secondTrader.getTradeLimit() < 0)
-//            throw new CannotTradeException("There is a trading limit restriction");
         if (trader.getAcceptedTrades().size() >= trader.getIncompleteTradeLim() ||
                 secondTrader.getAcceptedTrades().size() >= secondTrader.getIncompleteTradeLim())
             throw new CannotTradeException("Too many active trades.");
@@ -291,6 +290,8 @@ public class TradingManager extends Manager {
             CannotTradeException, TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
         if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
+        if (!getTrader(trade.getFirstUserId()).canTrade() || !getTrader(trade.getSecondUserId()).canTrade())
+            throw new CannotTradeException("Could not send a counter trade offer, one of the two traders cannot trade");
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) {
             this.denyTrade(tradeId);
             throw new CannotTradeException("Too many edits. Trade is cancelled.");
@@ -313,33 +314,4 @@ public class TradingManager extends Manager {
         updateTradeDatabase(trade);
         return trade;
     }
-
-
-//    /**
-//     * When a meeting is confirmed by both trader, then both get updated
-//     * @param tradeId id of first trader
-//     * @param trader2Id id of 2nd trader
-//     * @param item1 item of first trader
-//     * @param item2 item of second trader
-//     * @param lastMeeting is if the meeting is the last one
-//     * @throws UserNotFoundException
-//     * @throws AuthorizationException
-//     */
-//    public void confirmMeeting(String tradeId, String trader2Id, String item1, String item2, boolean lastMeeting) throws UserNotFoundException, AuthorizationException {
-//        Trader trader1 = getTrader(traderId);
-//        Trader trader2 = getTrader(trader2Id);
-//        trader1.getAvailableItems().add(item2);
-//        System.out.println(item1);
-//        System.out.println(item2);
-//        trader2.getAvailableItems().add(item1);
-//        if(lastMeeting){
-//            trader1.getAcceptedTrades().remove(tradeId);
-//            trader2.getAcceptedTrades().remove(tradeId);
-//            trader1.getCompletedTrades().add(tradeId);
-//            trader2.getCompletedTrades().add(tradeId);
-//        }
-//        userDatabase.update(trader1);
-//        userDatabase.update(trader2);
-//    }
-
 }
