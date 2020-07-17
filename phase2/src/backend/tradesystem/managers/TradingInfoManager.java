@@ -58,13 +58,15 @@ public class TradingInfoManager extends Manager {
      *
      * @param traderId the trader being checked for
      * @return a String array of the usernames of the 3 most traded with Traders
-     * @throws AuthorizationException user isn't a trader
+     * @throws AuthorizationException trader is not allowed to know the frequent traders
      * @throws UserNotFoundException  user not found
      * @throws TradeNotFoundException trade not found
      */
     public Trader[] getFrequentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
         ArrayList<Trader> traders = new ArrayList<>();
-        ArrayList<String> completedTradesIds = getTrader(traderId).getCompletedTrades();
+        Trader trader = getTrader(traderId);
+        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
+        ArrayList<String> completedTradesIds = trader.getCompletedTrades();
         for (int i = completedTradesIds.size() - 1; i >= Math.max(completedTradesIds.size() - 3, 0); i--) {
             Trade trade = getTrade(completedTradesIds.get(i));
             if (trade.getFirstUserId().equals(traderId)) traders.add((getTrader(trade.getSecondUserId())));
@@ -79,14 +81,16 @@ public class TradingInfoManager extends Manager {
      *
      * @param traderId the trader id
      * @return list of tradable items that were recently traded
-     * @throws AuthorizationException        user is not a trader
+     * @throws AuthorizationException        trader not allowed to get recently traded items
      * @throws TradeNotFoundException        trade not found
      * @throws UserNotFoundException         trader id is bad
      * @throws TradableItemNotFoundException tradable item is not found
      */
     public ArrayList<TradableItem> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
             UserNotFoundException, TradableItemNotFoundException {
-        ArrayList<String> completedTrades = getTrader(traderId).getCompletedTrades();
+        Trader trader = getTrader(traderId);
+        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
+        ArrayList<String> completedTrades = trader.getCompletedTrades();
         ArrayList<TradableItem> recentTradeItems = new ArrayList<>();
         for (String tradeID : completedTrades) {
             Trade trade = getTrade(tradeID);
@@ -104,9 +108,19 @@ public class TradingInfoManager extends Manager {
         return recentTradeItems;
     }
 
+    /**
+     * Used for suggesting what items that otherTrader will want from thisTrader
+     * @param thisTraderId the trader that wants to know what otherTrader will wnat
+     * @param otherTraderId the other trader
+     * @return list of items that otherTrader will want
+     * @throws UserNotFoundException if user isn't found
+     * @throws AuthorizationException thisTrader isn't allowed to get suggestions
+     * @throws TradableItemNotFoundException if the tradable item isn't found
+     */
     public ArrayList<TradableItem> suggestLend(String thisTraderId, String otherTraderId) throws
             UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
         Trader thisTrader = getTrader(thisTraderId);
+        if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
         Trader otherTrader = getTrader(otherTraderId);
         ArrayList<TradableItem> suggestions = new ArrayList<>();
         for (String wishlistId : thisTrader.getWishlist()) {

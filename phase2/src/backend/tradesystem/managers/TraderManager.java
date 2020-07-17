@@ -30,10 +30,11 @@ public class TraderManager extends Manager {
      * @param name name of the item
      * @param desc description of the item
      * @throws UserNotFoundException  if the user was not found
-     * @throws AuthorizationException if the user isn't a trader
+     * @throws AuthorizationException not allowed to request an item
      */
     public void addRequestItem(String id, String name, String desc) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(id);
+        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         TradableItem item = new TradableItem(name, desc);
         updateTradableItemDatabase(item);
         trader.getRequestedItems().add(item.getId());
@@ -47,12 +48,13 @@ public class TraderManager extends Manager {
      * @param traderId the trader id
      * @param itemId   the tradable item id to be added
      * @throws UserNotFoundException         if the trader with the given userId is not found
-     * @throws AuthorizationException        if the user isn't a trader
+     * @throws AuthorizationException        not allowed to add to the wishlist
      * @throws TradableItemNotFoundException the item wasn't found
      */
     public void addToWishList(String traderId, String itemId) throws UserNotFoundException, AuthorizationException,
             TradableItemNotFoundException {
         Trader trader = getTrader(traderId);
+        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         if (!getTradableItemDatabase().contains(itemId)) throw new TradableItemNotFoundException(itemId);
         trader.getWishlist().add(itemId);
         updateUserDatabase(trader);

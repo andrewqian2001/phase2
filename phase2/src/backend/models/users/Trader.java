@@ -21,6 +21,10 @@ public class Trader extends User implements Serializable {
     private int totalItemsLent;
     private int minimumAmountNeededToBorrow;
     private int tradeCount;
+    private boolean isIdle = false;
+
+
+
 
 
     /**
@@ -38,6 +42,23 @@ public class Trader extends User implements Serializable {
         this.incompleteTradeLim = incompleteTradeLim;
         this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
     }
+
+    /**
+     * Makes the trader have an idle status
+     * @param idle whether the trader is idle
+     */
+    public void setIdle(boolean idle) {
+        isIdle = idle;
+    }
+
+    /**
+     * if the user is idle
+     * @return if the user is idle
+     */
+    public boolean isIdle() {
+        return isIdle;
+    }
+
 
     /**
      * minimum amount needed to lend before borrowing
@@ -63,7 +84,7 @@ public class Trader extends User implements Serializable {
      * @return if the trader can trade
      */
     public boolean canTrade() {
-        return !isFrozen() && tradeCount < tradeLimit;
+        return !isFrozen() && tradeCount < tradeLimit && !isIdle();
     }
 
 
