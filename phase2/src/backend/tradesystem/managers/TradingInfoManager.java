@@ -76,11 +76,12 @@ public class TradingInfoManager extends Manager {
 
     /**
      * Gets a list of the items used in trades
+     *
      * @param traderId the trader id
      * @return list of tradable items that were recently traded
-     * @throws AuthorizationException user is not a trader
-     * @throws TradeNotFoundException trade not found
-     * @throws UserNotFoundException trader id is bad
+     * @throws AuthorizationException        user is not a trader
+     * @throws TradeNotFoundException        trade not found
+     * @throws UserNotFoundException         trader id is bad
      * @throws TradableItemNotFoundException tradable item is not found
      */
     public ArrayList<TradableItem> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
@@ -101,5 +102,21 @@ public class TradingInfoManager extends Manager {
             }
         }
         return recentTradeItems;
+    }
+
+    public ArrayList<TradableItem> suggestLend(String thisTraderId, String otherTraderId) throws
+            UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+        Trader thisTrader = getTrader(thisTraderId);
+        Trader otherTrader = getTrader(otherTraderId);
+        ArrayList<TradableItem> suggestions = new ArrayList<>();
+        for (String wishlistId : thisTrader.getWishlist()) {
+            for (String tradableItemId : otherTrader.getAvailableItems()) {
+                if (wishlistId.equals(tradableItemId)) {
+                    suggestions.add(getTradableItem(wishlistId));
+                    break;
+                }
+            }
+        }
+        return suggestions;
     }
 }
