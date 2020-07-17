@@ -60,6 +60,21 @@ public class TraderManager extends Manager {
         updateUserDatabase(trader);
     }
 
+    /**
+     * Set idle status, an idle trader has some limitations such as being unable to trade
+     * @param traderId the trader
+     * @param status whether the trader is idle
+     * @throws UserNotFoundException if the trader isn't found
+     * @throws AuthorizationException if unable to go idle
+     */
+    public void setIdle(String traderId, boolean status) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(traderId);
+        if (status && trader.getAcceptedTrades().size() > 0)
+            throw new AuthorizationException("Cannot go idle until ongoing trades have been resolved");
+        trader.setIdle(status);
+        updateUserDatabase(trader);
+    }
+
 
 
 
