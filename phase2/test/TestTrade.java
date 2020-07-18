@@ -27,8 +27,8 @@ public class TestTrade {
     private final String TRADABLE_ITEM_PATH = "./phase1/test/testTradableItems.ser";
     private final String TRADE_PATH = "./phase1/test/testTrades.ser";
 
-    @BeforeClass
-    public void setUp() {
+    @Before
+    public void beforeEach() {
         try {
             traderManager = new TraderManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH);
             loginManager = new LoginManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH);
@@ -62,23 +62,8 @@ public class TestTrade {
         }
     }
 
-    @Before
-    public void beforeEach() {
-
-    }
-
     @After
     public void afterEach() {
-
-    }
-
-    @Test
-    public void testTemporaryTrade() {
-//        assertEquals("Should return the previous seed value\n", 1, 2);
-    }
-
-    @AfterClass
-    public void tearDown() {
         String[] paths = {USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH};
         for (String path : paths) {
             try {
@@ -90,4 +75,10 @@ public class TestTrade {
             }
         }
     }
+
+    @Test
+    public void testTemporaryTrade() {
+        assertEquals("Should return the previous seed value\n", 1, 2);
+    }
+
 }
