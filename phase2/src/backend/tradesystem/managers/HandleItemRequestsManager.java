@@ -22,6 +22,16 @@ public class HandleItemRequestsManager extends  Manager{
     public HandleItemRequestsManager() throws IOException {
         super();
     }
+    /**
+     * Making the database objects with set file paths
+     * @param userFilePath the user database file path
+     * @param tradableItemFilePath the tradable item database file path
+     * @param tradeFilePath the trade database file path
+     * @throws IOException issues with getting the file path
+     */
+    public HandleItemRequestsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
+    }
 
     /**
      * Gets a hashmap of trader ids to an arraylist of their requested items

@@ -1,10 +1,12 @@
+import backend.tradesystem.managers.TraderManager;
 import org.junit.*;
 import static org.junit.Assert.*;
 
 public class TradeTest {
+    private TraderManager traderManager;
     @Before
     public void setUp() {
-
+        traderManager = new TraderManager()
     }
 
 
