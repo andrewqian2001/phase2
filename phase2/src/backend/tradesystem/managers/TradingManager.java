@@ -203,7 +203,7 @@ public class TradingManager extends Manager {
 
 
     /**
-     * For confirming a trade request
+     * For accepting a trade request
      *
      * @param traderId the trader confirming the meeting
      * @param tradeId  the trade id
@@ -221,6 +221,11 @@ public class TradingManager extends Manager {
 
         if (!trader.canTrade() || !trader2.canTrade())
             throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
+
+        if (!trader.getAvailableItems().contains(trade.getFirstUserOffer()) ||
+                !trader2.getAvailableItems().contains(trade.getSecondUserOffer())){
+            throw new CannotTradeException("One of the traders no longer has the required item for the trade");
+        }
 
         // if first user is borrowing
         if (trade.getFirstUserOffer().equals("")){
