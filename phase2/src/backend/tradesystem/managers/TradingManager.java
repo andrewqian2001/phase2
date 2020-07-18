@@ -62,7 +62,7 @@ public class TradingManager extends Manager {
 
         // This is used to check if the items are valid to trade
         if (!trader.getAvailableItems().contains(thisUserOfferId) ||
-                !trader.getAvailableItems().contains(secondUserOfferId))
+                !secondTrader.getAvailableItems().contains(secondUserOfferId))
             throw new AuthorizationException("The trade offer contains an item that the user does not have");
 
         Trade trade = new Trade(traderId, userId,
@@ -187,7 +187,7 @@ public class TradingManager extends Manager {
             trader2.getAvailableItems().add(trade.getFirstUserOffer());
             trader1.getWishlist().remove(trade.getSecondUserOffer());
             trader2.getWishlist().remove(trade.getFirstUserOffer());
-            if (trade.getSecondMeetingTime() != null) {
+            if (trade.getSecondMeetingTime() == null) {
                 trader1.getAcceptedTrades().remove(tradeId);
                 trader2.getAcceptedTrades().remove(tradeId);
                 trader1.getCompletedTrades().add(tradeId);

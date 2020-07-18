@@ -20,7 +20,7 @@ public enum DatabaseFilePaths {
     /**
      * file path for trader config file
      */
-    TRADER_CONFIG("./phase1/src/backend/tradesystem/managers/trader.properties");
+    TRADER_CONFIG("./phase2/src/backend/tradesystem/managers/trader.properties");
     private final String FILE_PATH;
 
     DatabaseFilePaths(String filePath) {

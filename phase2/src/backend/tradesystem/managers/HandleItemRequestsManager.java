@@ -68,7 +68,7 @@ public class HandleItemRequestsManager extends  Manager{
      * @throws AuthorizationException if the user isn't a trader
      * @throws UserNotFoundException trader isn't found
      */
-    public void processItemRequest(String traderID, String reqItemID, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
+    public Trader processItemRequest(String traderID, String reqItemID, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         Trader trader = getTrader(traderID);
         ArrayList<String> itemIDs = trader.getRequestedItems();
         if (!itemIDs.contains(reqItemID)) throw new TradableItemNotFoundException(reqItemID);
@@ -77,5 +77,6 @@ public class HandleItemRequestsManager extends  Manager{
         }
         trader.getRequestedItems().remove(reqItemID);
         updateUserDatabase(trader);
+        return trader;
     }
 }

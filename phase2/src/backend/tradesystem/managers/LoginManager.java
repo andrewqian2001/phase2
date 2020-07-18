@@ -24,6 +24,7 @@ import java.util.Properties;
 public class LoginManager extends Manager{
 
     private UserTypes lastLoggedInType = null;
+    private final String traderPropertyFilePath;
 
     /**
      * Initialize the objects to get items from databases
@@ -32,6 +33,7 @@ public class LoginManager extends Manager{
      */
     public LoginManager() throws IOException {
         super();
+        traderPropertyFilePath = DatabaseFilePaths.TRADER_CONFIG.getFilePath();
     }
     /**
      * Making the database objects with set file paths
@@ -40,8 +42,9 @@ public class LoginManager extends Manager{
      * @param tradeFilePath the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public LoginManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+    public LoginManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String traderPropertyFilePath) throws IOException {
         super(userFilePath, tradableItemFilePath, tradeFilePath);
+        this.traderPropertyFilePath = traderPropertyFilePath;
     }
 
     /**
@@ -82,7 +85,7 @@ public class LoginManager extends Manager{
      * @return the user id of the logged in user
      * @throws UserNotFoundException could not find the user
      */
-    public String login(String username, String password) throws UserNotFoundException {
+    public User login(String username, String password) throws UserNotFoundException {
         ArrayList<User> users = getUserDatabase().getItems();
         for (User user : users)
             if (user.getUsername().equals(username) && (user.getPassword().equals(password))) {
@@ -93,7 +96,7 @@ public class LoginManager extends Manager{
                     removeInvalidRequests(user.getId());
                     lastLoggedInType = UserTypes.TRADER;
                 }
-                return user.getId();
+                return user;
             }
         throw new UserNotFoundException();
     }
@@ -142,7 +145,7 @@ public class LoginManager extends Manager{
     private int getProperty(TraderProperties propertyType){
         try {
             // get the file
-            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+            File propertyFile = new File(traderPropertyFilePath);
             // initialize the reader of this file
             FileReader reader = new FileReader(propertyFile);
             // initialize properties object
@@ -167,7 +170,7 @@ public class LoginManager extends Manager{
     private void setProperty(TraderProperties propertyName, int propertyValue){
         try {
             // get the file
-            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+            File propertyFile = new File(traderPropertyFilePath);
             // initialize reader
             FileReader reader = new FileReader(propertyFile);
             // initialize properties object (to set data)
