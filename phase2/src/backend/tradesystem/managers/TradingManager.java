@@ -400,7 +400,7 @@ public class TradingManager extends Manager {
         Trade trade = getTrade(tradeID);
         Trader first_trader = getTrader(trade.getFirstUserId());
         Trader second_trader = getTrader(trade.getSecondUserId());
-        if (trade.getSecondMeetingTime() != null) {
+        if (trade.getSecondMeetingTime() == null) {
             if (!first_trader.getAvailableItems().remove(trade.getSecondUserOffer())) {
                 throw new CannotUndoException("The first trader no longer has the item acquired from this trade.");
             }
