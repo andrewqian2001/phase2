@@ -14,7 +14,7 @@ import java.util.ArrayList;
 /**
  * This is used to help make accessing and modifying the database files to be easier,
  * while giving the generic EntryNotFoundException more meaning.
- *
+ * <p>
  * This contains general methods that is useful in all applications.
  */
 public class Manager {
@@ -24,6 +24,18 @@ public class Manager {
     private final Database<TradableItem> tradableItemDatabase;
     private final Database<Trade> tradeDatabase;
 
+    /**
+     * Making the database objects with set file paths
+     * @param userFilePath the user database file path
+     * @param tradableItemFilePath the tradable item database file path
+     * @param tradeFilePath the trade database file path
+     * @throws IOException issues with getting the file path
+     */
+    public Manager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        userDatabase = new Database<>(userFilePath);
+        tradableItemDatabase = new Database<>(tradableItemFilePath);
+        tradeDatabase = new Database<>(tradeFilePath);
+    }
 
     /**
      * Initialize the objects to get items from databases
@@ -31,10 +43,9 @@ public class Manager {
      * @throws IOException if something goes wrong with getting database
      */
     public Manager() throws IOException {
-        userDatabase = new Database<>(DatabaseFilePaths.USER.getFilePath());
-        tradableItemDatabase = new Database<>(DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
-        tradeDatabase = new Database<>(DatabaseFilePaths.TRADE.getFilePath());
+        this(DatabaseFilePaths.USER.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(), DatabaseFilePaths.TRADE.getFilePath());
     }
+
 
     /**
      * For getting the trader object
@@ -153,6 +164,7 @@ public class Manager {
     protected TradableItem updateTradableItemDatabase(TradableItem item) {
         return tradableItemDatabase.update(item);
     }
+
     /**
      * Gets a user by username
      *
