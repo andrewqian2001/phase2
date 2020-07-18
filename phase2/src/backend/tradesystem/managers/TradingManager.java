@@ -4,8 +4,6 @@ package backend.tradesystem.managers;
 import backend.exceptions.*;
 import backend.models.Trade;
 import backend.models.users.Trader;
-
-import javax.swing.undo.CannotUndoException;
 import java.io.IOException;
 import java.util.*;
 
