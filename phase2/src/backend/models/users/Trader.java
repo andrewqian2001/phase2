@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * represents a trader(user who can trade)
+ * represents a trader (user who can trade)
  */
 
 public class Trader extends User implements Serializable {
@@ -24,6 +24,9 @@ public class Trader extends User implements Serializable {
     private boolean isIdle = false;
 
 
+    private String city;
+
+
 
 
     /**
@@ -34,12 +37,30 @@ public class Trader extends User implements Serializable {
      * @param tradeLimit                  number of trades that can be done
      * @param incompleteTradeLim          the limit for how many incomplete trades can be done
      * @param minimumAmountNeededToBorrow the minimum amount of items that must be lent before borrowing is allowed
+     * @param city the city of the trader
      */
-    public Trader(String name, String password, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow) {
+    public Trader(String name, String password, String city, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow) {
         super(name, password);
         this.tradeLimit = tradeLimit;
         this.incompleteTradeLim = incompleteTradeLim;
         this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
+        this.city = city;
+    }
+
+    /**
+     * the city of the trader
+     * @return city of the trader
+     */
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * Sets the city of the trader
+     * @param city city of the trader
+     */
+    public void setCity(String city) {
+        this.city = city;
     }
 
     /**

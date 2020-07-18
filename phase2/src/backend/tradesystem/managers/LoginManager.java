@@ -56,10 +56,9 @@ public class LoginManager extends Manager{
                 tryToRefreshTradeCount();
             default:
                 lastLoggedInType = UserTypes.TRADER;
-                return updateUserDatabase(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
+                return updateUserDatabase(new Trader(username, password, "", defaultTradeLimit, defaultIncompleteTradeLim,
                         defaultMinimumAmountNeededToBorrow));
         }
-
     }
 
     /**

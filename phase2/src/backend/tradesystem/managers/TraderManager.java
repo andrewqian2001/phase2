@@ -75,8 +75,16 @@ public class TraderManager extends Manager {
         updateUserDatabase(trader);
     }
 
-
-
-
-
+    /**
+     * Sets the city of the trader
+     * @param traderId the trader
+     * @param city the city
+     * @throws UserNotFoundException if the trader doesn't exist
+     * @throws AuthorizationException if the user isn't a trader
+     */
+    public void setCity(String traderId, String city) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(traderId);
+        trader.setCity(city);
+        updateUserDatabase(trader);
+    }
 }
