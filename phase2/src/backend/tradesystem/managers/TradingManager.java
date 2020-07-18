@@ -335,12 +335,26 @@ public class TradingManager extends Manager {
             meetingLocation, String thisTraderOffer, String thatTraderOffer) throws
             CannotTradeException, TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
+        Trader trader1 = getTrader(trade.getFirstUserId());
+        Trader trader2 = getTrader(trade.getSecondUserId());
+
         if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         if (!getTrader(trade.getFirstUserId()).canTrade() || !getTrader(trade.getSecondUserId()).canTrade())
             throw new CannotTradeException("Could not send a counter trade offer, one of the two traders cannot trade");
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) {
             this.denyTrade(tradeId);
             throw new CannotTradeException("Too many edits. Trade is cancelled.");
+        }
+        // if the trader sending the request is the first user...
+        if (trader1.getId().equals(traderId)){
+            if (!trader1.getAvailableItems().contains(thisTraderOffer) || !trader2.getAvailableItems().contains(thatTraderOffer)){
+                throw new CannotTradeException("One of the traders does not have the required item!");
+            }
+        }
+        else{
+            if (!trader1.getAvailableItems().contains(thatTraderOffer) || !trader2.getAvailableItems().contains(thisTraderOffer)){
+                throw new CannotTradeException("One of the traders does not have the required item!");
+            }
         }
         if (trade.getUserTurnToEdit().equals(traderId)) trade.changeUserTurn();
         else throw new CannotTradeException("A previous trade offer has already been sent");
