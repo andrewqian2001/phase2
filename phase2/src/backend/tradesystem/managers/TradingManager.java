@@ -127,7 +127,6 @@ public class TradingManager extends Manager {
      * @param thatUserOfferId   the item id to borrow
      * @param allowedEdits      number of edits allowed before the trade is cancelled
      * @return the trade object
-     * @throws TradableItemNotFoundException the items passed in for trading doesn't exist
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        the item for trading cannot be traded
      * @throws CannotTradeException          cannot request a trade
@@ -135,7 +134,9 @@ public class TradingManager extends Manager {
     public Trade requestBorrow(String traderId, String userId,
                                Date meetingTime, Date secondMeetingTime,
                                String meetingLocation, String thatUserOfferId, int allowedEdits) throws
-            TradableItemNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
+             UserNotFoundException, AuthorizationException, CannotTradeException {
+        Trader trader = getTrader(traderId);
+        if (!trader.canBorrow()) throw new CannotTradeException("Too many borrows");
         return requestLend(traderId, userId, meetingTime, secondMeetingTime, meetingLocation, thatUserOfferId, allowedEdits);
     }
 
@@ -213,11 +214,33 @@ public class TradingManager extends Manager {
         if (!trader.canTrade() || !trader2.canTrade())
             throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
 
+        // if first user is borrowing
+        if (trade.getFirstUserOffer().equals("")){
+            if (trader.canBorrow())
+                trader.setTotalItemsBorrowed(trader.getTotalItemsBorrowed() + 1);
+            else {
+                trade.setHasFirstUserConfirmedRequest(false);
+                throw new CannotTradeException("Cannot lend/borrow due to one of the traders having trading limitations");
+            }
+        }
+        // if second user is borrowing
+        if (trade.getFirstUserOffer().equals("")){
+            if (trader2.canBorrow())
+                trader2.setTotalItemsBorrowed(trader.getTotalItemsBorrowed() + 1);
+            else {
+                trade.setHasSecondUserConfirmedRequest(false);
+                throw new CannotTradeException("Cannot lend/borrow due to one of the traders having trading limitations");
+            }
+        }
         if (trade.getFirstUserId().equals(traderId))
             trade.setHasFirstUserConfirmedRequest(true);
-        else trade.setHasSecondUserConfirmedRequest(true);
+        else
+            trade.setHasSecondUserConfirmedRequest(true);
 
-        // This should always be true but this is a check anyway
+        updateUserDatabase(trader);
+        updateUserDatabase(trader2);
+
+        // If both users accepted then move items from the inventory
         if (trade.isHasFirstUserConfirmedRequest() && trade.isHasSecondUserConfirmedRequest()) {
             trader.getAvailableItems().remove(trade.getFirstUserOffer());
             trader2.getAvailableItems().remove(trade.getSecondUserOffer());
@@ -363,12 +386,10 @@ public class TradingManager extends Manager {
         Trader secondTrader = getTrader(trade.getSecondUserId());
         if (!firstTrader.getAcceptedTrades().contains(trade.getId()))
             throw new CannotTradeException("The trade is not accepted");
+
+        // Remove trades
         firstTrader.getAcceptedTrades().remove(tradeID);
         secondTrader.getAcceptedTrades().remove(tradeID);
-
-        // Move to requested trades
-        firstTrader.getRequestedTrades().add(tradeID);
-        secondTrader.getRequestedTrades().add(tradeID);
 
         // Take back items
         firstTrader.getAvailableItems().add(trade.getFirstUserOffer());

@@ -26,7 +26,6 @@ public class Trader extends User implements Serializable {
 
 
 
-
     /**
      * Constructs a trader with its own username and password.
      *
@@ -68,6 +67,7 @@ public class Trader extends User implements Serializable {
     public void setMinimumAmountNeededToBorrow(int minimumAmountNeededToBorrow) {
         this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
     }
+
 
     /**
      * If the trader can borrow
