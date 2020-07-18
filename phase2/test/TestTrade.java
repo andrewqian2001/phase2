@@ -98,7 +98,6 @@ public class TestTrade {
             //makes sure that the items are still in each person's inventory
             assertEquals(trader1.getAvailableItems().get(0), item1);
             assertEquals(trader2.getAvailableItems().get(0), item2);
-
             trader1.getAvailableItems().remove(item1);
             userDatabase.update(trader1);
             // make sure trader1 can no longer accept the trade
@@ -164,11 +163,11 @@ public class TestTrade {
 
     private void update(){
         try {
-            trader1 = (Trader) loginManager.login("user", "pass");
-            trader2 = (Trader) loginManager.login("user1", "pass");
-            admin = (Admin) loginManager.login("admin", "pass");
+            trader1 = traderManager.getTrader(trader1.getId());
+            trader2 = traderManager.getTrader(trader2.getId());
+            admin = (Admin) traderManager.getUser(admin.getId());
 
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | AuthorizationException e) {
             e.printStackTrace();
         }
 
