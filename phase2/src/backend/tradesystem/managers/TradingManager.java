@@ -5,6 +5,7 @@ import backend.exceptions.*;
 import backend.models.Trade;
 import backend.models.users.Trader;
 
+import javax.swing.undo.CannotUndoException;
 import java.io.IOException;
 import java.util.*;
 
@@ -245,10 +246,12 @@ public class TradingManager extends Manager {
      */
     public void confirmSecondMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
+        if (trade.getSecondMeetingTime() == null) return;
 
         if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
-        if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1())
+        if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1()) {
             throw new AuthorizationException("First meeting hasn't been confirmed");
+        }
         if (trade.getFirstUserId().equals(traderId)) {
             trade.setFirstUserConfirmed2(status);
         } else if ((trade.getSecondUserId().equals(traderId))) {
@@ -262,11 +265,10 @@ public class TradingManager extends Manager {
             trader2.getCompletedTrades().add(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
-            // I believe this solves a bug with temporary trades - Ilan
-//            trader1.getAvailableItems().add(trade.getFirstUserOffer());
-//            trader2.getAvailableItems().add(trade.getSecondUserOffer());
-//            trader1.getAvailableItems().remove(trade.getSecondUserOffer());
-//            trader2.getAvailableItems().remove(trade.getFirstUserOffer());
+            trader1.getAvailableItems().add(trade.getFirstUserOffer());
+            trader2.getAvailableItems().add(trade.getSecondUserOffer());
+            trader1.getAvailableItems().remove(trade.getSecondUserOffer());
+            trader2.getAvailableItems().remove(trade.getFirstUserOffer());
             trader1.getWishlist().remove(trade.getFirstUserOffer());
             trader2.getWishlist().remove(trade.getSecondUserOffer());
             trader1.setTradeCount(trader1.getTradeCount() + 1);
@@ -325,65 +327,57 @@ public class TradingManager extends Manager {
 
 
     /**
-     * Undoes a trade request.
+     * Cancels a trade request
      * @param tradeID The id of the trade request
      * @throws TradeNotFoundException trade doesn't exist in the user's requested trades
      * @throws UserNotFoundException the trader(s) can not be found
      * @throws AuthorizationException couldn't find a trader type associated with the trade
-     * @throws CannotUndoException if the undo can not be preformed
      */
-    public void undoTradeRequest(String tradeID) throws TradeNotFoundException, UserNotFoundException, AuthorizationException, CannotUndoException {
+    public void rescindTradeRequest(String tradeID) throws TradeNotFoundException, UserNotFoundException, AuthorizationException {
         Trade trade = getTrade(tradeID);
-        Trader first_trader = getTrader(trade.getFirstUserId());
-        Trader second_trader = getTrader(trade.getSecondUserId());
-
-
-        if (!first_trader.getRequestedTrades().remove(tradeID)){
-            throw new CannotUndoException("This is not a trade request");
+        Trader firstTrader = getTrader(trade.getFirstUserId());
+        Trader secondTrader = getTrader(trade.getSecondUserId());
+        if (!firstTrader.getRequestedTrades().remove(tradeID)){
+            throw new TradeNotFoundException("Trade request wasn't found");
         }
-        second_trader.getRequestedTrades().remove(tradeID);
-        first_trader.getAvailableItems().add(trade.getFirstUserOffer());
-        second_trader.getAvailableItems().add(trade.getSecondUserOffer());
-
+        secondTrader.getRequestedTrades().remove(tradeID);
         getTradeDatabase().delete(tradeID);
-        updateUserDatabase(first_trader);
-        updateUserDatabase(second_trader);
+        updateUserDatabase(firstTrader);
+        updateUserDatabase(secondTrader);
     }
 
     /**
-     * TODO: need to fix this for temporary trades (i.e. what if one meeting is confirmed, but another isnt?)
-     * Undoes an accepted trade (moves it back to the requested trades)
+     * If the first meeting of a trade is not accepted yet, the trade can still be cancelled
+     * This method only should be used carefully since rescinding an ongoing trade after the real life trade has
+     * happened has dire consequences (scamming is able to happen)
      * @param tradeID the id of the trade to undo
      * @throws TradeNotFoundException trade doesn't exist in the user's accepted trades
      * @throws UserNotFoundException the trader(s) can not be found
      * @throws AuthorizationException couldn't find a trader type associated with the trade
-     * @throws CannotUndoException if the undo can not be preformed
+     * @throws CannotTradeException cannot complete this request because the trade could not be reversed
      */
-    public void undoTradeAccept(String tradeID) throws TradeNotFoundException, UserNotFoundException, AuthorizationException, CannotUndoException {
+    public void rescindOngoingTrade(String tradeID) throws
+            TradeNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
         Trade trade = getTrade(tradeID);
-        Trader first_trader = getTrader(trade.getFirstUserId());
-        Trader second_trader = getTrader(trade.getSecondUserId());
-
-        if (!first_trader.getAcceptedTrades().remove(tradeID)){
-            throw new CannotUndoException("This is not an accepted trade");
-        }
-        second_trader.getAcceptedTrades().remove(tradeID);
-
-        // Request is no longer confirmed
-        trade.setHasFirstUserConfirmedRequest(false);
-        trade.setHasSecondUserConfirmedRequest(false);
+        Trader firstTrader = getTrader(trade.getFirstUserId());
+        Trader secondTrader = getTrader(trade.getSecondUserId());
+        if (!firstTrader.getAcceptedTrades().contains(trade.getId()))
+            throw new CannotTradeException("The trade is not accepted");
+        firstTrader.getAcceptedTrades().remove(tradeID);
+        secondTrader.getAcceptedTrades().remove(tradeID);
 
         // Move to requested trades
-        first_trader.getRequestedTrades().add(tradeID);
-        second_trader.getRequestedTrades().add(tradeID);
+        firstTrader.getRequestedTrades().add(tradeID);
+        secondTrader.getRequestedTrades().add(tradeID);
 
-        //take back items
-        first_trader.getAvailableItems().add(trade.getFirstUserOffer());
-        second_trader.getAvailableItems().add(trade.getSecondUserOffer());
+        // Take back items
+        firstTrader.getAvailableItems().add(trade.getFirstUserOffer());
+        secondTrader.getAvailableItems().add(trade.getSecondUserOffer());
 
-        updateUserDatabase(first_trader);
-        updateUserDatabase(second_trader);
-        updateTradeDatabase(trade);
+        // Update database
+        getTradeDatabase().delete(trade.getId());
+        updateUserDatabase(firstTrader);
+        updateUserDatabase(secondTrader);
 
     }
 

@@ -1,7 +1,7 @@
 package backend.exceptions;
 
 /**
- * If the trade cannot happen
+ * Refers to everything about how trading cannot happen
  */
 public class CannotTradeException extends Exception {
     /**
