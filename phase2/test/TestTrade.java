@@ -53,11 +53,7 @@ public class TestTrade {
             System.err.println("ERRORS WITH SETTING UP DATABASE FILES");
         } catch (UserAlreadyExistsException ignored) {
             System.err.println("REGISTERING USER ERROR");
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        } catch (AuthorizationException e) {
-            e.printStackTrace();
-        } catch (TradableItemNotFoundException e) {
+        } catch (UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
             e.printStackTrace();
         }
     }
