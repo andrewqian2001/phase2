@@ -188,7 +188,7 @@ public class TestTrade {
                 assertEquals("One of the traders does not have the required item!", e.getMessage());
             }
 
-            tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(), null, "...",
+            tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(123), new Date(456), "Home",
                     item4, item3);
             //Trade should have same ID and location in trades
             update();
@@ -202,6 +202,9 @@ public class TestTrade {
             assertEquals(editedTrade.getId(), trade1.getId());
             assertEquals(editedTrade.getFirstUserOffer(), item3);
             assertEquals(editedTrade.getSecondUserOffer(), item4);
+            assertEquals(editedTrade.getMeetingTime(), new Date(123));
+            assertEquals(editedTrade.getMeetingLocation(), "Home");
+            assertEquals(editedTrade.getSecondMeetingTime(), new Date(456));
 
             try {
                 tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), new Date(), null, "...",
