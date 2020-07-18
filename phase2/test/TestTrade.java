@@ -7,13 +7,11 @@ import backend.models.users.User;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.*;
 import backend.Database;
-import main.TradeSystem.Managers.TradeManager;
 import java.util.Date;
 import org.junit.*;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static org.junit.Assert.*;
 
