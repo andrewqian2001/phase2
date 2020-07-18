@@ -342,7 +342,6 @@ public class TradingManager extends Manager {
         if (!getTrader(trade.getFirstUserId()).canTrade() || !getTrader(trade.getSecondUserId()).canTrade())
             throw new CannotTradeException("Could not send a counter trade offer, one of the two traders cannot trade");
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) {
-            this.denyTrade(tradeId);
             throw new CannotTradeException("Too many edits. Trade is cancelled.");
         }
         // if the trader sending the request is the first user...
@@ -369,8 +368,8 @@ public class TradingManager extends Manager {
             trade.setSecondUserOffer(thisTraderOffer);
             trade.setFirstUserOffer(thatTraderOffer);
         }
-        trade.setNumEdits(trade.getNumEdits() + 1);
 
+        trade.setNumEdits(trade.getNumEdits() + 1);
         updateTradeDatabase(trade);
         return trade;
     }

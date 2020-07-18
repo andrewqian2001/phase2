@@ -158,7 +158,100 @@ public class TestTrade {
 
     @Test
     public void testEditTrade(){
+        try {
+            String item1 = trader1.getAvailableItems().get(0);
+            String item2 = trader2.getAvailableItems().get(0);
+            String item3 = trader1.getAvailableItems().get(1);
+            String item4 = trader2.getAvailableItems().get(1);
 
+            Trade trade1 = tradingManager.requestTrade(trader1.getId(), trader2.getId(), new Date(), null, "home",
+                    item1, item2, 1);
+
+            ///Trade is requested
+            update();
+            assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
+            assertEquals(trader1.getRequestedTrades().get(0), trade1.getId());
+
+            try {
+                tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), new Date(), null, "...",
+                        item3, item4);
+                fail("This user should not be able to send an edited trade offer");
+            } catch (CannotTradeException e) {
+                assertEquals("A previous trade offer has already been sent", e.getMessage());
+            }
+
+            try {
+                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(), null, "...",
+                        item3, item4);
+                fail("This user is giving items they don't have");
+            } catch (CannotTradeException e) {
+                assertEquals("One of the traders does not have the required item!", e.getMessage());
+            }
+
+            tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(), null, "...",
+                    item4, item3);
+            //Trade should have same ID and location in trades
+            update();
+            assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
+            assertEquals(trader1.getRequestedTrades().get(0), trade1.getId());
+
+            Trade editedTrade = tradingManager.getTrade(trader1.getRequestedTrades().get(0));
+
+            // Comparing edited trade to the parameters we passed to it
+            update();
+            assertEquals(editedTrade.getId(), trade1.getId());
+            assertEquals(editedTrade.getFirstUserOffer(), item3);
+            assertEquals(editedTrade.getSecondUserOffer(), item4);
+
+            try {
+                tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), new Date(), null, "...",
+                        item2, item1);
+                fail("You cant send an offer for an item you dont have");
+            } catch (CannotTradeException e) {
+                assertEquals("One of the traders does not have the required item!", e.getMessage());
+            }
+
+            try {
+                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(), null, "...",
+                        item2, item1);
+                fail("This trader already sent an offer.");
+            } catch (CannotTradeException e) {
+                assertEquals("A previous trade offer has already been sent", e.getMessage());
+            }
+
+            tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), new Date(), null, "...",
+                    item1, item2);
+
+            //Trade should have same ID and location in trades
+            update();
+            assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
+            assertEquals(trader1.getRequestedTrades().get(0), trade1.getId());
+
+            editedTrade = tradingManager.getTrade(trader1.getRequestedTrades().get(0));
+
+            // Comparing edited trade to the parameters we passed to it
+            update();
+            assertEquals(editedTrade.getId(), trade1.getId());
+            assertEquals(editedTrade.getFirstUserOffer(), item1);
+            assertEquals(editedTrade.getSecondUserOffer(), item2);
+
+            try{
+                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(), null, "...",
+                        item4, item3);
+                fail("Trade limit should be exceeded");
+            }
+            catch(CannotTradeException e){
+                assertEquals("Too many edits. Trade is cancelled.", e.getMessage());
+            }
+        } catch (CannotTradeException e) {
+            e.printStackTrace();
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        } catch (AuthorizationException e) {
+            e.printStackTrace();
+        } catch (TradeNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void update(){
