@@ -2,8 +2,11 @@ package backend.tradesystem.managers;
 
 
 import backend.DatabaseFilePaths;
+import backend.exceptions.AuthorizationException;
+import backend.exceptions.EntryNotFoundException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.Trade;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
@@ -87,6 +90,7 @@ public class LoginManager extends Manager{
                     lastLoggedInType = UserTypes.ADMIN;
                 else{
                     tryToRefreshTradeCount();
+                    removeInvalidRequests(user.getId());
                     lastLoggedInType = UserTypes.TRADER;
                 }
                 return user.getId();
@@ -195,12 +199,40 @@ public class LoginManager extends Manager{
                 users.set(i, user);
             }
         }
-
         try {
             getUserDatabase().save(users);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
     }
+
+    /**
+     * Removes all invalid trade requests that this user has
+     * @param traderID the id of the trader
+     */
+    private void removeInvalidRequests(String traderID){
+
+        try {
+            Trader someTrader = getTrader(traderID);
+            for (String tradeID : someTrader.getRequestedTrades()) {
+                Trade t = getTrade(tradeID);
+                Trader firstTrader = getTrader(t.getFirstUserId());
+                Trader secondTrader = getTrader(t.getSecondUserId());
+                boolean isValid = firstTrader.getAvailableItems().contains(t.getFirstUserOffer()) &&
+                        secondTrader.getAvailableItems().contains(t.getSecondUserOffer());
+
+                if (!isValid){
+                    firstTrader.getRequestedTrades().remove(tradeID);
+                    secondTrader.getRequestedTrades().remove(tradeID);
+                    getTradeDatabase().delete(tradeID);
+                    getUserDatabase().update(firstTrader);
+                    getUserDatabase().update(secondTrader);
+                }
+            }
+        }
+        catch (EntryNotFoundException | AuthorizationException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
