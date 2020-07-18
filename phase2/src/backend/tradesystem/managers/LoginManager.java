@@ -2,13 +2,13 @@ package backend.tradesystem.managers;
 
 
 import backend.DatabaseFilePaths;
+import backend.exceptions.UserAlreadyExistsException;
+import backend.exceptions.UserNotFoundException;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserNotFoundException;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -41,14 +41,16 @@ public class TraderManager extends Manager {
      * @param desc description of the item
      * @throws UserNotFoundException  if the user was not found
      * @throws AuthorizationException not allowed to request an item
+     * @return the item that was requested
      */
-    public void addRequestItem(String id, String name, String desc) throws UserNotFoundException, AuthorizationException {
+    public TradableItem addRequestItem(String id, String name, String desc) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(id);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         TradableItem item = new TradableItem(name, desc);
         updateTradableItemDatabase(item);
         trader.getRequestedItems().add(item.getId());
         updateUserDatabase(trader);
+        return item;
     }
 
 

@@ -3,6 +3,7 @@ package backend.tradesystem.managers;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.models.users.User;
 
@@ -37,15 +38,20 @@ public class HandleItemRequestsManager extends  Manager{
      * Gets a hashmap of trader ids to an arraylist of their requested items
      *
      * @return a hashmap of trader ids to an arraylist of their requested items
+     * @throws TradableItemNotFoundException if the tradable item doesn't exist in the database
      */
-    public HashMap<String, ArrayList<String>> getAllItemRequests() {
-        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+    public HashMap<Trader, ArrayList<TradableItem>> getAllItemRequests() throws TradableItemNotFoundException {
+        HashMap<Trader, ArrayList<TradableItem>> allItems = new HashMap<>();
 
         for (User user : getUserDatabase().getItems()) {
             if (user instanceof Trader) {
                 ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
-                if (requestedItems.size() > 0)
-                    allItems.put(user.getId(), requestedItems);
+                ArrayList<TradableItem> populatedItems = new ArrayList<>();
+                for (String item: requestedItems){
+                    populatedItems.add(getTradableItem(item));
+                }
+                if (populatedItems.size() > 0)
+                    allItems.put((Trader) user, populatedItems);
             }
         }
         return allItems;

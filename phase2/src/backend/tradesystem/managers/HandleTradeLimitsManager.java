@@ -1,6 +1,5 @@
 package backend.tradesystem.managers;
 
-import backend.DatabaseFilePaths;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
@@ -9,8 +8,6 @@ import backend.tradesystem.TraderProperties;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Properties;
 
 /**
  * This deals with everything relating to trade limits
