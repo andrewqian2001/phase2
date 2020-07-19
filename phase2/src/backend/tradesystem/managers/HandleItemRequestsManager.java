@@ -67,6 +67,7 @@ public class HandleItemRequestsManager extends  Manager{
      * @throws TradableItemNotFoundException tradable item id isn't found
      * @throws AuthorizationException if the user isn't a trader
      * @throws UserNotFoundException trader isn't found
+     * @return the updated trader
      */
     public Trader processItemRequest(String traderID, String reqItemID, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         Trader trader = getTrader(traderID);
