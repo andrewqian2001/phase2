@@ -184,8 +184,10 @@ public class TradingManager extends Manager {
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()) {
             Trader trader1 = getTrader(trade.getFirstUserId());
             Trader trader2 = getTrader(trade.getSecondUserId());
-            trader1.getAvailableItems().add(trade.getSecondUserOffer());
-            trader2.getAvailableItems().add(trade.getFirstUserOffer());
+            if (!trade.getSecondUserOffer().equals(""))
+                trader1.getAvailableItems().add(trade.getSecondUserOffer());
+            if (!trade.getFirstUserOffer().equals(""))
+                trader2.getAvailableItems().add(trade.getFirstUserOffer());
             trader1.getWishlist().remove(trade.getSecondUserOffer());
             trader2.getWishlist().remove(trade.getFirstUserOffer());
             if (trade.getSecondMeetingTime() == null) {
@@ -302,8 +304,10 @@ public class TradingManager extends Manager {
             trader2.getCompletedTrades().add(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
-            trader1.getAvailableItems().add(trade.getFirstUserOffer());
-            trader2.getAvailableItems().add(trade.getSecondUserOffer());
+            if (!trade.getFirstUserOffer().equals(""))
+                trader1.getAvailableItems().add(trade.getFirstUserOffer());
+            if(!trade.getSecondUserOffer().equals(""))
+                trader2.getAvailableItems().add(trade.getSecondUserOffer());
             trader1.getAvailableItems().remove(trade.getSecondUserOffer());
             trader2.getAvailableItems().remove(trade.getFirstUserOffer());
             trader1.getWishlist().remove(trade.getFirstUserOffer());
