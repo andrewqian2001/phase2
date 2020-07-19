@@ -36,6 +36,7 @@ public class LoginManager extends Manager{
      * @param userFilePath the user database file path
      * @param tradableItemFilePath the tradable item database file path
      * @param tradeFilePath the trade database file path
+     * @param traderPropertyFilePath the path for the trader properties file
      * @throws IOException issues with getting the file path
      */
     public LoginManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String traderPropertyFilePath) throws IOException {

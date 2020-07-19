@@ -19,11 +19,20 @@ public class Admin extends User implements Serializable{
 
 
     /**
-     * if the user is frozen (always false since admins do not participate in trades)
-     * @return if the user is frozen (always false since admins do not participate in trades)
+     * if the user is frozen, admins cannot be frozen so this is always false
+     * @return admins cannot be frozen
      */
+    @Override
     public boolean isFrozen() {
         return false;
     }
 
+    /**
+     * An admin's frozen status is always false
+     * @param frozen regardless of input, frozen status is always false
+     */
+    @Override
+    public void setFrozen(boolean frozen){
+        this.setFrozen(false);
+    }
 }
