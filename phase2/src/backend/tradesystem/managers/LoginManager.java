@@ -54,7 +54,6 @@ public class LoginManager extends Manager{
      * @throws BadPasswordException password isn't valid
      */
     public User registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException {
-
         int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
         int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
         int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
@@ -165,7 +164,7 @@ public class LoginManager extends Manager{
         if (password.contains(" ")) throw new BadPasswordException("No white space allowed");
         if (password.length() < 11) throw new BadPasswordException("Length of password must be at least 12");
         if (password.toLowerCase().equals(password)) throw new BadPasswordException("Must have at least one capital letter");
-        if (!password.contains(".*[0-9]+.*")) throw new BadPasswordException("Must contain at least one number");
+        if (!password.matches(".*[0-9]+.*")) throw new BadPasswordException("Must contain at least one number");
     }
 
     /**

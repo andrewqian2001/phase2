@@ -42,9 +42,9 @@ public class TestTrade {
             userDatabase = new Database<>(USER_PATH);
             tradeDatabase = new Database<>(TRADE_PATH);
             tradableItemDatabase = new Database<>(TRADABLE_ITEM_PATH);
-            trader1 = (Trader) loginManager.registerUser("user", "pass", UserTypes.TRADER);
-            trader2 = (Trader) loginManager.registerUser("user1", "pass", UserTypes.TRADER);
-            admin = (Admin) loginManager.registerUser("admin", "pass", UserTypes.ADMIN);
+            trader1 = (Trader) loginManager.registerUser("user", "passssssssS11", UserTypes.TRADER);
+            trader2 = (Trader) loginManager.registerUser("user1", "passssssssS11", UserTypes.TRADER);
+            admin = (Admin) loginManager.registerUser("admin", "passssssssS11", UserTypes.ADMIN);
             trader1 = traderManager.addRequestItem(trader1.getId(), "apple", "sweet");
             trader1 = traderManager.addRequestItem(trader1.getId(), "apple1", "sweet1");
             trader1 = traderManager.addRequestItem(trader1.getId(), "apple2", "sweet2");
@@ -58,11 +58,12 @@ public class TestTrade {
             trader2 = handleRequestsManager.processItemRequest(trader2.getId(), trader2.getRequestedItems().get(0), true);
             trader2 = handleRequestsManager.processItemRequest(trader2.getId(), trader2.getRequestedItems().get(0), true);
         } catch (IOException ignored) {
-            System.err.println("ERRORS WITH SETTING UP DATABASE FILES");
+            fail("ERRORS WITH SETTING UP DATABASE FILES");
         } catch (UserAlreadyExistsException ignored) {
-            System.err.println("REGISTERING USER ERROR");
-        } catch (UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
+            fail("REGISTERING USER ERROR");
+        } catch (UserNotFoundException | AuthorizationException | TradableItemNotFoundException | BadPasswordException e) {
             e.printStackTrace();
+            fail();
         }
     }
 
