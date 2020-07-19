@@ -99,13 +99,12 @@ public class TradingManager extends Manager {
             throws UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);//lender
         Trader secondTrader = getTrader(userId);//borrower
-        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
-        if (trader.isIdle()) throw new CannotTradeException("This account cannot lend because it is on idle");
+        if (!trader.canTrade()) throw new CannotTradeException("You cannot trade at the moment.");
         if (!secondTrader.canTrade())
-            throw new CannotTradeException("Cannot trade due to trading restrictions");
+            throw new CannotTradeException("The other trader cannot trade at the moment");
         if (userId.equals(traderId)) throw new CannotTradeException("Cannot lend to yourself");
-        if (trader.getAcceptedTrades().size() >= trader.getIncompleteTradeLim() ||
-                secondTrader.getAcceptedTrades().size() >= secondTrader.getIncompleteTradeLim())
+        if (trader.getIncompleteTradeCount() >= trader.getIncompleteTradeLim() ||
+                secondTrader.getIncompleteTradeCount() >= secondTrader.getIncompleteTradeLim())
             throw new CannotTradeException("Too many active trades.");
 
         // This is used to check if the items are valid to trade
@@ -144,7 +143,7 @@ public class TradingManager extends Manager {
     public Trade requestBorrow(String traderId, String userId,
                                Date meetingTime, Date secondMeetingTime,
                                String meetingLocation, String thatUserOfferId, int allowedEdits, String message) throws
-             UserNotFoundException, AuthorizationException, CannotTradeException {
+            UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);
         if (!trader.canBorrow()) throw new CannotTradeException("Too many borrows");
         return requestLend(traderId, userId, meetingTime, secondMeetingTime, meetingLocation, thatUserOfferId, allowedEdits, message);
