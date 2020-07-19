@@ -15,3 +15,6 @@ TRADING PROCESS:
     4. Confrim trades that are accepted (NOTE: temporary trades need to be confirmed twice, one for the first meeting and another time for
     the second)
 
+    Some More notes:
+        - Lending to one user does NOT count as that other user borrowing (or vice versa).
+
