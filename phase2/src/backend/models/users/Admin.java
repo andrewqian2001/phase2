@@ -1,11 +1,17 @@
 package backend.models.users;
 
+import backend.models.Report;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Represents an admin
  */
 public class Admin extends User implements Serializable{
+
+
+    final ArrayList<Report> reports;
 
     /**
      * Constructs an admin with a given username and password.
@@ -15,6 +21,20 @@ public class Admin extends User implements Serializable{
      */
     public Admin(String username, String password){
         super(username,password);
+        this.reports = new ArrayList<>();;
+    }
+    public ArrayList<Report> getReports() {
+        return reports;
+    }
+
+    /**
+     * Adding a new report
+     * @param fromUserId the user that sent the report
+     * @param toUserId the user being reported on
+     * @param message the message of the report
+     */
+    public void addReport(String fromUserId, String toUserId, String message){
+        reports.add(new Report(fromUserId, toUserId, message));
     }
 
 
