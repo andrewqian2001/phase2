@@ -166,43 +166,7 @@ public class TradingManager extends Manager {
         getTradeDatabase().delete(tradeId);
     }
 
-    /**
-     * Confirms the first meeting
-     *
-     * @param traderId the trader confirming the meeting
-     * @param tradeId  id of the trade
-     * @param status   if the meeting is confirmed and the trade happened
-     * @throws TradeNotFoundException trade wasn't found
-     * @throws AuthorizationException this trade doesn't belong to this user
-     * @throws UserNotFoundException  if the user doesn't exist
-     */
-    public void confirmFirstMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
-        Trade trade = getTrade(tradeId);
-        if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
-        if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
-        else if ((trade.getSecondUserId().equals(traderId))) trade.setSecondUserConfirmed1(status);
-        if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()) {
-            Trader trader1 = getTrader(trade.getFirstUserId());
-            Trader trader2 = getTrader(trade.getSecondUserId());
-            if (!trade.getSecondUserOffer().equals(""))
-                trader1.getAvailableItems().add(trade.getSecondUserOffer());
-            if (!trade.getFirstUserOffer().equals(""))
-                trader2.getAvailableItems().add(trade.getFirstUserOffer());
-            trader1.getWishlist().remove(trade.getSecondUserOffer());
-            trader2.getWishlist().remove(trade.getFirstUserOffer());
-            if (trade.getSecondMeetingTime() == null) {
-                trader1.getAcceptedTrades().remove(tradeId);
-                trader2.getAcceptedTrades().remove(tradeId);
-                trader1.getCompletedTrades().add(tradeId);
-                trader2.getCompletedTrades().add(tradeId);
-                trader1.setTradeCount(trader1.getTradeCount() + 1);
-                trader2.setTradeCount(trader2.getTradeCount() + 1);
-            }
-            updateUserDatabase(trader1);
-            updateUserDatabase(trader2);
-        }
-        updateTradeDatabase(trade);
-    }
+
 
 
     /**
@@ -271,7 +235,47 @@ public class TradingManager extends Manager {
         return false;
     }
 
-
+    /**
+     * Confirms the first meeting
+     *
+     * @param traderId the trader confirming the meeting
+     * @param tradeId  id of the trade
+     * @param status   if the meeting is confirmed and the trade happened
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException this trade doesn't belong to this user
+     * @throws UserNotFoundException  if the user doesn't exist
+     */
+    public void confirmFirstMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+        Trade trade = getTrade(tradeId);
+        if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
+        if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
+        else if ((trade.getSecondUserId().equals(traderId))) trade.setSecondUserConfirmed1(status);
+        if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()) {
+            Trader trader1 = getTrader(trade.getFirstUserId());
+            Trader trader2 = getTrader(trade.getSecondUserId());
+            if (!trade.getSecondUserOffer().equals(""))
+                trader1.getAvailableItems().add(trade.getSecondUserOffer());
+            if (!trade.getFirstUserOffer().equals(""))
+                trader2.getAvailableItems().add(trade.getFirstUserOffer());
+            trader1.getWishlist().remove(trade.getSecondUserOffer());
+            trader2.getWishlist().remove(trade.getFirstUserOffer());
+            if (trade.getSecondMeetingTime() == null) {
+                trader1.getAcceptedTrades().remove(tradeId);
+                trader2.getAcceptedTrades().remove(tradeId);
+                trader1.getCompletedTrades().add(tradeId);
+                trader2.getCompletedTrades().add(tradeId);
+                trader1.setTradeCount(trader1.getTradeCount() + 1);
+                trader2.setTradeCount(trader2.getTradeCount() + 1);
+                if (trade.getFirstUserOffer().equals(""))
+                    trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed()+1);
+                if (trade.getSecondUserOffer().equals(""))
+                    trader1.setTotalItemsLent(trader1.getTotalItemsLent() + 1);
+            }
+            updateUserDatabase(trader1);
+            updateUserDatabase(trader2);
+        }
+        updateTradeDatabase(trade);
+    }
 
     /**
      * Confirms the second meeting
@@ -304,10 +308,17 @@ public class TradingManager extends Manager {
             trader2.getCompletedTrades().add(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
+
             if (!trade.getFirstUserOffer().equals(""))
                 trader1.getAvailableItems().add(trade.getFirstUserOffer());
+            else
+                trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed()+1);
+
             if(!trade.getSecondUserOffer().equals(""))
                 trader2.getAvailableItems().add(trade.getSecondUserOffer());
+            else
+                trader1.setTotalItemsLent(trader1.getTotalItemsLent()+1);
+
             trader1.getAvailableItems().remove(trade.getSecondUserOffer());
             trader2.getAvailableItems().remove(trade.getFirstUserOffer());
             trader1.getWishlist().remove(trade.getFirstUserOffer());
