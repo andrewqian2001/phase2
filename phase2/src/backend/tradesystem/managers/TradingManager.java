@@ -194,24 +194,6 @@ public class TradingManager extends Manager {
             throw new CannotTradeException("One of the traders no longer has the required item for the trade");
         }
 
-        // if first user is borrowing
-        if (trade.getFirstUserOffer().equals("")){
-            if (trader.canBorrow())
-                trader.setTotalItemsBorrowed(trader.getTotalItemsBorrowed() + 1);
-            else {
-                trade.setHasFirstUserConfirmedRequest(false);
-                throw new CannotTradeException("Cannot lend/borrow due to one of the traders having trading limitations");
-            }
-        }
-        // if second user is borrowing
-        if (trade.getFirstUserOffer().equals("")){
-            if (trader2.canBorrow())
-                trader2.setTotalItemsBorrowed(trader.getTotalItemsBorrowed() + 1);
-            else {
-                trade.setHasSecondUserConfirmedRequest(false);
-                throw new CannotTradeException("Cannot lend/borrow due to one of the traders having trading limitations");
-            }
-        }
         if (trade.getFirstUserId().equals(traderId))
             trade.setHasFirstUserConfirmedRequest(true);
         else
