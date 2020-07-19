@@ -80,10 +80,10 @@ public class TestTrade {
         }
     }
 
-    @Test
-    public void testTemporaryTrade() {
-        assertEquals("Should return the previous seed value\n", 1, 2);
-    }
+//    @Test
+//    public void testTemporaryTrade() {
+//        assertEquals("Should return the previous seed value\n", 1, 2);
+//    }
 
     @Test
     public void testPermanentTrade(){
@@ -104,21 +104,15 @@ public class TestTrade {
             try {
                 tradingManager.acceptRequest(trader1.getId(), trade.getId());
                 fail("Accept request should not work");
-            } catch (TradeNotFoundException e) {
-                fail("Trade was not found for some reason");
             } catch (CannotTradeException e){
                 //GOOD!
             }
             trader1.getAvailableItems().add(item1);
             userDatabase.update(trader1);
             //make sure trader1 can accept the trade
-            try{
-                tradingManager.acceptRequest(trader1.getId(), trade.getId());
-                // Once trader2 accepts ...
-                assertTrue(tradingManager.acceptRequest(trader2.getId(), trade.getId()));
-            } catch (TradeNotFoundException e) {
-                fail("Trade was not found for some reason");
-            }
+            tradingManager.acceptRequest(trader1.getId(), trade.getId());
+            // Once trader2 accepts ...
+            assertTrue(tradingManager.acceptRequest(trader2.getId(), trade.getId()));
             update();
             // make sure the trades are correctly in their respective lists
             assertEquals(trader1.getAcceptedTrades().get(0), trader2.getAcceptedTrades().get(0));
@@ -146,6 +140,7 @@ public class TestTrade {
 
 
         } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
+            fail(e.getMessage());
             e.printStackTrace();
         }
     }
