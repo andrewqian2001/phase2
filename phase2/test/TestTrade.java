@@ -92,7 +92,7 @@ public class TestTrade {
             String item1 = trader1.getAvailableItems().get(0);
             String item2 = trader2.getAvailableItems().get(0);
             Trade trade = tradingManager.requestTrade(trader1.getId(), trader2.getId(), new Date(), null, "home",
-                    item1, item2, 3);
+                    item1, item2, 3, "This is a trade");
             // make sure that the trades are requested
             update();
             assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
@@ -155,7 +155,7 @@ public class TestTrade {
             String item4 = trader2.getAvailableItems().get(1);
 
             Trade trade1 = tradingManager.requestTrade(trader1.getId(), trader2.getId(), new Date(), null, "home",
-                    item1, item2, 1);
+                    item1, item2, 1, "This is a trade");
 
             ///Trade is requested
             update();
