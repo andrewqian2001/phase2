@@ -37,8 +37,7 @@ public class TradingManager extends Manager {
      * @param traderId          the trader confirming the meeting
      * @param userId            the id of the user being traded with
      * @param meetingTime       when the meeting takes place
-     * @param secondMeetingTime when the second meeting takes place (make this time to be the same or earlier
-     *                          than the first meeting time for a permanent trade)
+     * @param secondMeetingTime when the second meeting takes place (this time should be null for a permanent trade)
      * @param meetingLocation   where the meeting takes place
      * @param thisUserOfferId   the item id of that this current user is willing to offer
      * @param secondUserOfferId the item id that the user who got sent the trade is willing to offer

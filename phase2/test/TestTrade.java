@@ -145,13 +145,7 @@ public class TestTrade {
             assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
 
 
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        } catch (AuthorizationException e) {
-            e.printStackTrace();
-        } catch (CannotTradeException e) {
-            e.printStackTrace();
-        } catch (TradeNotFoundException e) {
+        } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -246,13 +240,7 @@ public class TestTrade {
             catch(CannotTradeException e){
                 assertEquals("Too many edits. Trade is cancelled.", e.getMessage());
             }
-        } catch (CannotTradeException e) {
-            e.printStackTrace();
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        } catch (AuthorizationException e) {
-            e.printStackTrace();
-        } catch (TradeNotFoundException e) {
+        } catch (CannotTradeException | UserNotFoundException | AuthorizationException | TradeNotFoundException e) {
             e.printStackTrace();
         }
     }
