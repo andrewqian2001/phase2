@@ -47,6 +47,7 @@ public class MessageManager extends Manager {
      */
     public void sendMessage(String userId, String toUserId, String message) throws UserNotFoundException, AuthorizationException {
         if (userId.equals(toUserId)) throw new AuthorizationException("Cannot send a message to self");
+        if (getUser(userId).isFrozen()) throw new AuthorizationException("You are frozen and cant send a message.");
         getUser(userId); // Ensures the user exists
         User toUser = getUser(toUserId);
         toUser.addMessage(userId, message);
@@ -91,8 +92,10 @@ public class MessageManager extends Manager {
      * @param message    what the report is about
      * @return whether or not the report successfully went through
      */
-    public boolean reportUser(String fromUserId, String toUserId, String message) {
+    public boolean reportUser(String fromUserId, String toUserId, String message) throws UserNotFoundException, AuthorizationException {
         boolean successful = false;
+        if (fromUserId.equals(toUserId)) throw new AuthorizationException("You cannot report yourself.");
+        if (getUser(fromUserId).isFrozen()) throw new AuthorizationException("This user is frozen and can't report others.");
         Report report = new Report(fromUserId, toUserId, message);
         for (User user : getUserDatabase().getItems()) {
             if (user instanceof Admin) {
