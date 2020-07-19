@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Admin extends User implements Serializable{
 
 
-    final ArrayList<Report> reports;
+    ArrayList<Report> reports;
 
     /**
      * Constructs an admin with a given username and password.
@@ -21,22 +21,24 @@ public class Admin extends User implements Serializable{
      */
     public Admin(String username, String password){
         super(username,password);
-        this.reports = new ArrayList<>();;
+        this.reports = new ArrayList<>();
     }
+
+    /**
+     * Getting reports
+     * @return the reports
+     */
     public ArrayList<Report> getReports() {
         return reports;
     }
 
     /**
-     * Adding a new report
-     * @param fromUserId the user that sent the report
-     * @param toUserId the user being reported on
-     * @param message the message of the report
+     * Setting reports
+     * @param reports reports
      */
-    public void addReport(String fromUserId, String toUserId, String message){
-        reports.add(new Report(fromUserId, toUserId, message));
+    public void setReports(ArrayList<Report> reports){
+        this.reports = reports;
     }
-
 
     /**
      * if the user is frozen, admins cannot be frozen so this is always false
