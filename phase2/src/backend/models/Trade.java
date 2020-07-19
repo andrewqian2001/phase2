@@ -22,6 +22,7 @@ public class Trade extends DatabaseItem implements Serializable {
     private boolean isSecondUserConfirmed2 = false;
     private final String FIRST_USER_ID, SECOND_USER_ID;
     private final int MAX_ALLOWED_NUM_EDITS;
+    private String message;
 
     private String userTurnToEdit;
 
@@ -36,10 +37,11 @@ public class Trade extends DatabaseItem implements Serializable {
      * @param firstUserOffer    the item id that the user who initialized the trade is willing to offer
      * @param secondUserOffer   the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
+     * @param message           the message that goes with the trade
      */
     public Trade(String firstUserId, String secondUserId,
                  Date meetingTime, Date secondMeetingTime,
-                 String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits) {
+                 String meetingLocation, String firstUserOffer, String secondUserOffer, int allowedEdits, String message) {
         super();
         this.FIRST_USER_ID = firstUserId;
         this.SECOND_USER_ID = secondUserId;
@@ -50,6 +52,23 @@ public class Trade extends DatabaseItem implements Serializable {
         this.meetingLocation = meetingLocation;
         this.firstUserOffer = firstUserOffer;
         this.secondUserOffer = secondUserOffer;
+        this.message = message;
+    }
+
+    /**
+     * The message along with the trade offer
+     * @return the message
+     */
+    public String getMessage() {
+        return message;
+    }
+
+    /**
+     * Sets the message with the trade offer
+     * @param message the message
+     */
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     /**
@@ -315,10 +334,11 @@ public class Trade extends DatabaseItem implements Serializable {
 
     /**
      * checks if the trader is part of this trade
+     *
      * @param traderId the trader id
      * @return whether the trader is part of this trade
      */
-    public boolean isTraderInTrade(String traderId){
+    public boolean isTraderInTrade(String traderId) {
         return this.getFirstUserId().equals(traderId) || this.getSecondUserId().equals(traderId);
     }
 }

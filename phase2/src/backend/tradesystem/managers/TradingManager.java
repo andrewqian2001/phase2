@@ -42,6 +42,7 @@ public class TradingManager extends Manager {
      * @param thisUserOfferId   the item id of that this current user is willing to offer
      * @param secondUserOfferId the item id that the user who got sent the trade is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
+     * @param message message sent with the trade offer
      * @return the trade object
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        the item for trading cannot be traded
@@ -49,7 +50,7 @@ public class TradingManager extends Manager {
      */
     public Trade requestTrade(String traderId, String userId,
                               Date meetingTime, Date secondMeetingTime,
-                              String meetingLocation, String thisUserOfferId, String secondUserOfferId, int allowedEdits)
+                              String meetingLocation, String thisUserOfferId, String secondUserOfferId, int allowedEdits, String message)
             throws  UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);
         Trader secondTrader = getTrader(userId);
@@ -66,7 +67,7 @@ public class TradingManager extends Manager {
 
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
-                meetingLocation, thisUserOfferId, secondUserOfferId, allowedEdits);
+                meetingLocation, thisUserOfferId, secondUserOfferId, allowedEdits, message);
         String tradeId = updateTradeDatabase(trade).getId();
         trader.getRequestedTrades().add(tradeId);
         secondTrader.getRequestedTrades().add(tradeId);
@@ -86,6 +87,7 @@ public class TradingManager extends Manager {
      * @param meetingLocation   where the meeting takes place
      * @param thisUserOfferId   the item id of that this current user is willing to offer
      * @param allowedEdits      number of edits allowed before the trade is cancelled
+     * @param message message along with the lend offer
      * @return the trade object
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        no authority to lend
@@ -93,7 +95,7 @@ public class TradingManager extends Manager {
      */
     public Trade requestLend(String traderId, String userId,
                              Date meetingTime, Date secondMeetingTime,
-                             String meetingLocation, String thisUserOfferId, int allowedEdits)
+                             String meetingLocation, String thisUserOfferId, int allowedEdits, String message)
             throws UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);//lender
         Trader secondTrader = getTrader(userId);//borrower
@@ -112,7 +114,7 @@ public class TradingManager extends Manager {
 
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
-                meetingLocation, thisUserOfferId, "", allowedEdits);
+                meetingLocation, thisUserOfferId, "", allowedEdits, message);
 
         String tradeId = updateTradeDatabase(trade).getId();
         trader.getRequestedTrades().add(tradeId);
@@ -133,6 +135,7 @@ public class TradingManager extends Manager {
      * @param meetingLocation   where the meeting takes place
      * @param thatUserOfferId   the item id to borrow
      * @param allowedEdits      number of edits allowed before the trade is cancelled
+     * @param message message along with the borrow request
      * @return the trade object
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        the item for trading cannot be traded
@@ -140,11 +143,11 @@ public class TradingManager extends Manager {
      */
     public Trade requestBorrow(String traderId, String userId,
                                Date meetingTime, Date secondMeetingTime,
-                               String meetingLocation, String thatUserOfferId, int allowedEdits) throws
+                               String meetingLocation, String thatUserOfferId, int allowedEdits, String message) throws
              UserNotFoundException, AuthorizationException, CannotTradeException {
         Trader trader = getTrader(traderId);
         if (!trader.canBorrow()) throw new CannotTradeException("Too many borrows");
-        return requestLend(traderId, userId, meetingTime, secondMeetingTime, meetingLocation, thatUserOfferId, allowedEdits);
+        return requestLend(traderId, userId, meetingTime, secondMeetingTime, meetingLocation, thatUserOfferId, allowedEdits, message);
     }
 
     /**
