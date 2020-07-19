@@ -223,8 +223,8 @@ public class TradingManager extends Manager {
         if (!trader.canTrade() || !trader2.canTrade())
             throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
 
-        if (!trader.getAvailableItems().contains(trade.getFirstUserOffer()) ||
-                !trader2.getAvailableItems().contains(trade.getSecondUserOffer())){
+        if ((!trader.getAvailableItems().contains(trade.getFirstUserOffer()) && !trade.getFirstUserOffer().equals("") )||
+                (!trader2.getAvailableItems().contains(trade.getSecondUserOffer()) && !trade.getSecondUserOffer().equals(""))){
             throw new CannotTradeException("One of the traders no longer has the required item for the trade");
         }
 
