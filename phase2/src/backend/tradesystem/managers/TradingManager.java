@@ -65,6 +65,9 @@ public class TradingManager extends Manager {
                 !secondTrader.getAvailableItems().contains(secondUserOfferId))
             throw new AuthorizationException("The trade offer contains an item that the user does not have");
 
+        if (!datesAreValid(meetingTime, secondMeetingTime)){
+            throw new CannotTradeException("The two suggested dates are not possible");
+        }
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, thisUserOfferId, secondUserOfferId, allowedEdits, message);
@@ -110,6 +113,10 @@ public class TradingManager extends Manager {
         // This is used to check if the items are valid to trade
         if (!trader.getAvailableItems().contains(thisUserOfferId))
             throw new AuthorizationException("The trade offer contains an item that the user does not have");
+
+        if (!datesAreValid(meetingTime, secondMeetingTime)){
+            throw new CannotTradeException("The two suggested dates are not possible");
+        }
 
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
@@ -424,6 +431,16 @@ public class TradingManager extends Manager {
         updateUserDatabase(firstTrader);
         updateUserDatabase(secondTrader);
 
+    }
+
+    /**
+     * Checks whether two given dates are valid
+     * @param d1 the first date time
+     * @param d2 the second date time
+     * @return true if the two dates are valid dates
+     */
+    private boolean datesAreValid(Date d1, Date d2){
+        return (new Date()).getTime() <= d1.getTime() && (d2 == null || d2.getTime() < d1.getTime());
     }
 
 }
