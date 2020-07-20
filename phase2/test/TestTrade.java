@@ -331,9 +331,27 @@ public class TestTrade {
             update();
             assertEquals(3, trader2.getAvailableItems().size());
             assertEquals(2, trader1.getAvailableItems().size());
+
             tradingManager.confirmFirstMeeting(trader1.getId(), t.getId(), true);
             tradingManager.confirmFirstMeeting(trader2.getId(), t.getId(), true);
-            //CONTINUE TO SEE IF WHETHER LEND COUNT GETS CHANGED WITH TEMP TRADES AT CORRECT PLACES
+
+
+            update();
+            assertEquals(1, trader1.getTradeCount());
+            assertEquals(1, trader2.getTradeCount());
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(3, trader2.getAvailableItems().size());
+            assertEquals(3, trader1.getAvailableItems().size());
+            tradingManager.confirmSecondMeeting(trader1.getId(), t.getId(), true);
+            tradingManager.confirmSecondMeeting(trader2.getId(), t.getId(), true);
+            update();
+            assertEquals(2, trader1.getTradeCount());
+            assertEquals(2, trader2.getTradeCount());
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(1, trader2.getTotalItemsLent());
+            assertEquals(4, trader2.getAvailableItems().size());
+            assertEquals(2, trader1.getAvailableItems().size());
 
         } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException | CannotTradeException e) {
             e.printStackTrace();
