@@ -5,6 +5,7 @@ import javax.swing.*;
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.users.User;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.LoginManager;
 
@@ -87,7 +88,8 @@ public class Login {
             public void actionPerformed(ActionEvent e) {
                 System.out.printf("USERNAME=%s\tPASSWORD=%s\n", usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
                 try {
-                    loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                    User loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                    System.out.println(loggedInUser.getId());
                 } catch(UserNotFoundException exception) {
                     System.out.println(exception.getMessage());
                 }
@@ -107,7 +109,8 @@ public class Login {
             public void actionPerformed(ActionEvent e) {
                 System.out.printf("USERNAME=%s\tPASSWORD=%s\n", usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
                 try {
-                    loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                    User loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                    System.out.println(loggedInUser.getId());
                 } catch(BadPasswordException | UserAlreadyExistsException exception) {
                     System.out.println(exception.getMessage());
                 }
