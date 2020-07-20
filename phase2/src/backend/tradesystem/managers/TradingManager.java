@@ -65,6 +65,9 @@ public class TradingManager extends Manager {
                 !secondTrader.getAvailableItems().contains(secondUserOfferId))
             throw new AuthorizationException("The trade offer contains an item that the user does not have");
 
+        if (!datesAreValid(meetingTime, secondMeetingTime)){
+            throw new CannotTradeException("The suggested date(s) are not possible");
+        }
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
                 meetingLocation, thisUserOfferId, secondUserOfferId, allowedEdits, message);
@@ -110,6 +113,10 @@ public class TradingManager extends Manager {
         // This is used to check if the items are valid to trade
         if (!trader.getAvailableItems().contains(thisUserOfferId))
             throw new AuthorizationException("The trade offer contains an item that the user does not have");
+
+        if (!datesAreValid(meetingTime, secondMeetingTime)){
+            throw new CannotTradeException("The suggested date(s) are not possible");
+        }
 
         Trade trade = new Trade(traderId, userId,
                 meetingTime, secondMeetingTime,
@@ -189,7 +196,7 @@ public class TradingManager extends Manager {
         if (!trader.canTrade() || !trader2.canTrade())
             throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
 
-        if ((!trader.getAvailableItems().contains(trade.getFirstUserOffer()) && !trade.getFirstUserOffer().equals("") )||
+        if ((!trader.getAvailableItems().contains(trade.getFirstUserOffer()) && !trade.getFirstUserOffer().equals(""))||
                 (!trader2.getAvailableItems().contains(trade.getSecondUserOffer()) && !trade.getSecondUserOffer().equals(""))){
             throw new CannotTradeException("One of the traders no longer has the required item for the trade");
         }
@@ -361,10 +368,14 @@ public class TradingManager extends Manager {
         if (trade.getFirstUserId().equals(traderId)) {
             trade.setFirstUserOffer(thisTraderOffer);
             trade.setSecondUserOffer(thatTraderOffer);
+            trade.setHasFirstUserConfirmedRequest(true);
+            trade.setHasSecondUserConfirmedRequest(false);
         }
         else {
             trade.setSecondUserOffer(thisTraderOffer);
             trade.setFirstUserOffer(thatTraderOffer);
+            trade.setHasFirstUserConfirmedRequest(false);
+            trade.setHasSecondUserConfirmedRequest(true);
         }
 
         trade.setNumEdits(trade.getNumEdits() + 1);
@@ -424,6 +435,16 @@ public class TradingManager extends Manager {
         updateUserDatabase(firstTrader);
         updateUserDatabase(secondTrader);
 
+    }
+
+    /**
+     * Checks whether two given dates are valid
+     * @param d1 the first date time
+     * @param d2 the second date time
+     * @return true if the two dates are valid dates
+     */
+    private boolean datesAreValid(Date d1, Date d2){
+        return System.currentTimeMillis() <= d1.getTime() && (d2 == null || d1.getTime() < d2.getTime());
     }
 
 }
