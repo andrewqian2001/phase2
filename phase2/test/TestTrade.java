@@ -99,7 +99,7 @@ public class TestTrade {
         try {
             String item1 = trader1.getAvailableItems().get(0);
             String item2 = trader2.getAvailableItems().get(0);
-            Trade trade = tradingManager.requestTrade(trader1.getId(), trader2.getId(), new Date(), null, "home",
+            Trade trade = tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
                     item1, item2, 3, "This is a trade");
             // make sure that the trades are requested
             update();
@@ -168,7 +168,7 @@ public class TestTrade {
             String item3 = trader1.getAvailableItems().get(1);
             String item4 = trader2.getAvailableItems().get(1);
 
-            Trade trade1 = tradingManager.requestTrade(trader1.getId(), trader2.getId(), new Date(), null, "home",
+            Trade trade1 = tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
                     item1, item2, 1, "This is a trade");
 
             ///Trade is requested
@@ -177,7 +177,7 @@ public class TestTrade {
             assertEquals(trader1.getRequestedTrades().get(0), trade1.getId());
 
             try {
-                tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), new Date(), null, "...",
+                tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), goodDate, null, "...",
                         item3, item4);
                 fail("This user should not be able to send an edited trade offer");
             } catch (CannotTradeException e) {
@@ -185,14 +185,14 @@ public class TestTrade {
             }
 
             try {
-                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(), null, "...",
+                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), goodDate, null, "...",
                         item3, item4);
                 fail("This user is giving items they don't have");
             } catch (CannotTradeException e) {
                 assertEquals("One of the traders does not have the required item!", e.getMessage());
             }
 
-            tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(123), new Date(456), "Home",
+            tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), goodDate, goodDate2, "Home",
                     item4, item3);
             //Trade should have same ID and location in trades
             update();
@@ -206,12 +206,12 @@ public class TestTrade {
             assertEquals(editedTrade.getId(), trade1.getId());
             assertEquals(editedTrade.getFirstUserOffer(), item3);
             assertEquals(editedTrade.getSecondUserOffer(), item4);
-            assertEquals(editedTrade.getMeetingTime(), new Date(123));
+            assertEquals(editedTrade.getMeetingTime(), goodDate);
             assertEquals(editedTrade.getMeetingLocation(), "Home");
-            assertEquals(editedTrade.getSecondMeetingTime(), new Date(456));
+            assertEquals(editedTrade.getSecondMeetingTime(), goodDate2);
 
             try {
-                tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), new Date(), null, "...",
+                tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), goodDate, null, "...",
                         item2, item1);
                 fail("You cant send an offer for an item you dont have");
             } catch (CannotTradeException e) {
@@ -219,14 +219,14 @@ public class TestTrade {
             }
 
             try {
-                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(), null, "...",
+                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), goodDate, null, "...",
                         item2, item1);
                 fail("This trader already sent an offer.");
             } catch (CannotTradeException e) {
                 assertEquals("A previous trade offer has already been sent", e.getMessage());
             }
 
-            tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), new Date(), null, "...",
+            tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), goodDate, null, "...",
                     item1, item2);
 
             //Trade should have same ID and location in trades
@@ -243,7 +243,7 @@ public class TestTrade {
             assertEquals(editedTrade.getSecondUserOffer(), item2);
 
             try{
-                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), new Date(), null, "...",
+                tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), goodDate, null, "...",
                         item4, item3);
                 fail("Trade limit should be exceeded");
             }
@@ -333,7 +333,7 @@ public class TestTrade {
             assertEquals(2, trader1.getAvailableItems().size());
             tradingManager.confirmFirstMeeting(trader1.getId(), t.getId(), true);
             tradingManager.confirmFirstMeeting(trader2.getId(), t.getId(), true);
-
+            //CONTINUE TO SEE IF WHETHER LEND COUNT GETS CHANGED WITH TEMP TRADES AT CORRECT PLACES
 
         } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException | CannotTradeException e) {
             e.printStackTrace();
