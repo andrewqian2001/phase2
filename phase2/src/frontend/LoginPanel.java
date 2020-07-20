@@ -33,6 +33,8 @@ public class LoginPanel extends JPanel {
     private Color red = new Color(155, 29, 32);
     private Color blue = new Color(34, 116, 165);
 
+    public User loggedInUser;
+
     public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.setSize(720, 840);
         this.setBorder(BorderFactory.createEmptyBorder(100, 50, 50, 50));
@@ -79,7 +81,7 @@ public class LoginPanel extends JPanel {
                 System.out.printf("USERNAME=%s\tPASSWORD=%s\n", usernameInput.getText(),
                         String.valueOf(passwordInput.getPassword()));
                 try {
-                    User loggedInUser = loginManager.login(usernameInput.getText(),
+                     LoginPanel.this.loggedInUser = loginManager.login(usernameInput.getText(),
                             String.valueOf(passwordInput.getPassword()));
                     System.out.println(loggedInUser.getId());
                 } catch (UserNotFoundException exception) {
@@ -100,7 +102,7 @@ public class LoginPanel extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 System.out.printf("USERNAME=%s\tPASSWORD=%s\n", usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
                 try {
-                    User loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                    LoginPanel.this.loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
                     System.out.println(loggedInUser.getId());
                 } catch(BadPasswordException | UserAlreadyExistsException exception) {
                     System.out.println(exception.getMessage());
