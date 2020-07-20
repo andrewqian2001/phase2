@@ -1,15 +1,15 @@
 package frontend;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.FontFormatException;
 import java.io.IOException;
 
 public class WindowManager {
-
-    public void start() throws IOException, FontFormatException {
+    public void start() {
         Login l = new Login();
-        l.initialize();
+        try {
+            l.initialize();
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
     }
 }

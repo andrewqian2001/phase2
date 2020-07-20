@@ -4,9 +4,11 @@ package backend.tradesystem.managers;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.Review;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Used for the actions of a Trader
@@ -98,5 +100,44 @@ public class TraderManager extends Manager {
         Trader trader = getTrader(traderId);
         trader.setCity(city);
         updateUserDatabase(trader);
+    }
+
+    /**
+     * Adds a new review
+     * @param fromUser the user who sent the review
+     * @param toUser the user who received the review
+     * @param rating rating must be between 0 to 10, if greater or less than those bounds then it will assume those bounds
+     * @param message the message of the review
+     * @return the new review
+     * @throws UserNotFoundException if the user ids don't exist
+     * @throws AuthorizationException if the users aren't traders
+     */
+    public Review addReview(String fromUser, String toUser, double rating, String message) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(toUser);
+        getTrader(fromUser); // Makes sure this trader exists
+        if (rating < 0) rating = 0;
+        else if (rating > 10) rating = 10;
+        Review review = new Review(fromUser, toUser, rating, message);
+        trader.addReview(review);
+        return review;
+    }
+
+    /**
+     * Remove a review
+     * @param userThatHasReview the user that needs to have a review removed
+     * @param reviewId the review being removed
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
+     */
+    public void removeReview(String userThatHasReview, String reviewId) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(userThatHasReview);
+        ArrayList<Review> reviews = trader.getReviews();
+        for (Review review: reviews){
+            if (review.getId().equals(reviewId)) {
+                reviews.remove(review);
+                updateUserDatabase(trader);
+                return;
+            }
+        }
     }
 }
