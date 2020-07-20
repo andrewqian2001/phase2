@@ -1,11 +1,22 @@
 package frontend;
 
 import javax.swing.*;
+
+import backend.exceptions.BadPasswordException;
+import backend.exceptions.UserAlreadyExistsException;
+import backend.exceptions.UserNotFoundException;
+import backend.tradesystem.UserTypes;
+import backend.tradesystem.managers.LoginManager;
+
 import java.awt.*;
+import java.awt.event.*;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 public class Login {
     public void initialize() throws IOException, FontFormatException {
+
+        LoginManager loginManager = new LoginManager();
 
         //TODO: Move these fonts outside of this class (maybe to windowmanager)
         Font regular = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Regular.ttf"));
@@ -70,6 +81,18 @@ public class Login {
         loginButton.setOpaque(true);
         loginButton.setBorderPainted(false);
         buttonContainer.add(loginButton);
+
+        //TODO: Finish
+        loginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.printf("USERNAME=%s\tPASSWORD=%s\n", usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                try {
+                    loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                } catch(UserNotFoundException exception) {
+                    System.out.println(exception.getMessage());
+                }
+            }
+        });
         
         JButton registerButton = new JButton("Register");
         registerButton.setFont(bold.deriveFont(25f));
@@ -78,6 +101,18 @@ public class Login {
         registerButton.setOpaque(true);
         registerButton.setBorderPainted(false);
         buttonContainer.add(registerButton);
+
+        //TODO: Finish    
+        registerButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.printf("USERNAME=%s\tPASSWORD=%s\n", usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                try {
+                    loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                } catch(BadPasswordException | UserAlreadyExistsException exception) {
+                    System.out.println(exception.getMessage());
+                }
+            }
+        });
 
         panel.add(buttonContainer);
 
