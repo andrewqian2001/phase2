@@ -4,6 +4,7 @@ import backend.models.Trade;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
+import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.*;
 import backend.Database;
@@ -12,6 +13,7 @@ import org.junit.*;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
@@ -31,6 +33,8 @@ public class TestTrade {
     private final String TRADABLE_ITEM_PATH = "./phase2/test/testTradableItems.ser";
     private final String TRADE_PATH = "./phase2/test/testTrades.ser";
     private final String TRADER_PROPERTY_FILE_PATH = "./phase2/test/trader.properties";
+    private Date goodDate = new Date(System.currentTimeMillis() + 99999999);
+    private Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
 
     @Before
     public void beforeEach() {
@@ -79,6 +83,10 @@ public class TestTrade {
             } catch (IOException ignored) {
             }
         }
+        setProperty(TraderProperties.INCOMPLETE_TRADE_LIM, 3);
+        setProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW, 1);
+        setProperty(TraderProperties.TRADE_LIMIT, 10);
+
     }
 
 //    @Test
@@ -138,6 +146,12 @@ public class TestTrade {
             // check that the items are in the correct pos
             assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
             assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(1, trader1.getTradeCount());
+            assertEquals(1, trader2.getTradeCount());
+            assertEquals(0, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
 
 
         } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
@@ -241,6 +255,92 @@ public class TestTrade {
         }
     }
 
+    @Test
+    public void testLendTrade(){
+        try {
+            String item1 = trader1.getAvailableItems().get(0);
+            String item2 = trader2.getAvailableItems().get(0);
+
+
+            trader1.setTradeCount(10);
+            userDatabase.update(trader1);
+
+            try {
+                tradingManager.requestLend(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        item1, 1, "This is a lend");
+                fail("Trade limit is exceeded");
+            }
+            catch (CannotTradeException e){
+                assertEquals("You cannot trade at the moment.", e.getMessage());
+            }
+            trader1.setTradeCount(0);
+            userDatabase.update(trader1);
+            Trade t = tradingManager.requestLend(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        item1, 1, "This is a lend");
+
+            update();
+            assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
+            assertEquals(trader1.getAvailableItems().size(), 3);
+            assertEquals(trader2.getAvailableItems().size(), 3);
+            tradingManager.acceptRequest(trader1.getId(), t.getId());
+            tradingManager.acceptRequest(trader2.getId(), t.getId());
+            update();
+            assertEquals(trader1.getAcceptedTrades().get(0), trader2.getAcceptedTrades().get(0));
+            assertEquals(trader1.getRequestedTrades().size(), 0);
+            assertEquals(0, trader2.getRequestedTrades().size());
+
+            tradingManager.confirmFirstMeeting(trader1.getId(), t.getId(), true);
+
+            update();
+            assertEquals(trader1.getAvailableItems().size(), 2);
+            assertEquals(trader2.getAvailableItems().size(), 3);
+
+            tradingManager.confirmFirstMeeting(trader2.getId(), t.getId(), true);
+
+            update();
+            assertEquals(1, trader1.getCompletedTrades().size());
+            assertEquals(0, trader1.getAcceptedTrades().size());
+            assertEquals(2, trader1.getAvailableItems().size());
+
+            assertEquals(1, trader2.getCompletedTrades().size());
+            assertEquals(0, trader2.getAcceptedTrades().size());
+            assertEquals(4, trader2.getAvailableItems().size());
+            assertEquals(item1, trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1));
+
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(1, trader1.getTradeCount());
+            assertEquals(1, trader2.getTradeCount());
+
+            String item3 = trader1.getAvailableItems().get(0);
+            String item4 = trader2.getAvailableItems().get(0);
+            try {
+                tradingManager.requestLend(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                        item3, 1, "This is a lend2");
+                fail("Offering an item i dont' have");
+            }
+            catch (AuthorizationException e){
+                assertEquals("The trade offer contains an item that the user does not have", e.getMessage());
+            }
+            t= tradingManager.requestLend(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                    item4, 1, "This is a lend2");
+
+            tradingManager.acceptRequest(trader1.getId(), t.getId());
+            update();
+            assertEquals(3, trader2.getAvailableItems().size());
+            assertEquals(2, trader1.getAvailableItems().size());
+            tradingManager.confirmFirstMeeting(trader1.getId(), t.getId(), true);
+            tradingManager.confirmFirstMeeting(trader2.getId(), t.getId(), true);
+
+
+        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException | CannotTradeException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     private void update(){
         try {
             trader1 = traderManager.getTrader(trader1.getId());
@@ -251,6 +351,59 @@ public class TestTrade {
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Gets the current value of the specified trader property
+     * @param propertyType the type of property
+     * @return the value of the specified trader property
+     */
+    private int getProperty(TraderProperties propertyType){
+        try {
+            // get the file
+            File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
+            // initialize the reader of this file
+            FileReader reader = new FileReader(propertyFile);
+            // initialize properties object
+            Properties properties = new Properties();
+            // associate properties object with this file.
+            properties.load(reader);
+            // we're not going to use reader anymore, so close it
+            reader.close();
+            // return the integer value of that property
+            return Integer.parseInt(properties.getProperty(propertyType.getProperty()));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return -1;
+    }
+
+    /**
+     * Sets the value of a property.
+     * @param propertyName the property to change
+     * @param propertyValue the new value of that property
+     */
+    private void setProperty(TraderProperties propertyName, int propertyValue){
+        try {
+            // get the file
+            File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
+            // initialize reader
+            FileReader reader = new FileReader(propertyFile);
+            // initialize properties object (to set data)
+            Properties properties = new Properties();
+            // associate this properties object with the file
+            properties.load(reader);
+            // set the property
+            properties.setProperty(propertyName.getProperty(), "" + propertyValue);
+
+            //update the file
+            FileWriter writer = new FileWriter(propertyFile);
+            properties.store(writer, "");
+            reader.close();
+            writer.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

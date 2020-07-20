@@ -211,7 +211,6 @@ public class TradingManager extends Manager {
 
         // If both users accepted then move items from the inventory
         if (trade.isHasFirstUserConfirmedRequest() && trade.isHasSecondUserConfirmedRequest()) {
-            System.out.println("YAY");
             trader.getAvailableItems().remove(trade.getFirstUserOffer());
             trader2.getAvailableItems().remove(trade.getSecondUserOffer());
             trader.getAcceptedTrades().add(tradeId);
