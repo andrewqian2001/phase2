@@ -6,7 +6,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import backend.exceptions.BadPasswordException;
+import backend.exceptions.UserAlreadyExistsException;
+import backend.exceptions.UserNotFoundException;
+import backend.models.users.User;
+import backend.tradesystem.UserTypes;
+import backend.tradesystem.managers.LoginManager;
+
 import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
 
 public class LoginPanel extends JPanel {
 
@@ -16,16 +26,20 @@ public class LoginPanel extends JPanel {
     private JPanel buttonContainer;
     private JButton loginButton, registerButton;
 
+    private LoginManager loginManager;
+
     // Color Palette
     private Color backgroundColor = new Color(15, 20, 23);
     private Color red = new Color(155, 29, 32);
     private Color blue = new Color(34, 116, 165);
 
-    public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) {
+    public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.setSize(720, 840);
         this.setBorder(BorderFactory.createEmptyBorder(100, 50, 50, 50));
         this.setLayout(new GridLayout(8, 1));
         this.setBackground(backgroundColor);
+
+        loginManager = new LoginManager();
 
         title = new JLabel("TradeSystem");
         title.setFont(boldItalic.deriveFont(50f));
@@ -60,7 +74,7 @@ public class LoginPanel extends JPanel {
         loginButton.setBorderPainted(false);
         buttonContainer.add(loginButton);
 
-        /* loginButton.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.printf("USERNAME=%s\tPASSWORD=%s\n", usernameInput.getText(),
                         String.valueOf(passwordInput.getPassword()));
@@ -72,7 +86,7 @@ public class LoginPanel extends JPanel {
                     System.out.println(exception.getMessage());
                 }
             }
-        }); */
+        });
 
         registerButton = new JButton("Register");
         registerButton.setFont(bold.deriveFont(25f));
@@ -82,7 +96,7 @@ public class LoginPanel extends JPanel {
         registerButton.setBorderPainted(false);
         buttonContainer.add(registerButton);
 
-        /* registerButton.addActionListener(new ActionListener() {
+        registerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.printf("USERNAME=%s\tPASSWORD=%s\n", usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
                 try {
@@ -92,7 +106,7 @@ public class LoginPanel extends JPanel {
                     System.out.println(exception.getMessage());
                 }
             }
-        }); */
+        });
 
         this.add(title);
         this.add(usernameTitle);
