@@ -8,7 +8,7 @@ import java.io.*;
  */
 public class Main {
     public static void main(String[] args) throws IOException, FontFormatException {
-        WindowManager login = new WindowManager();
-        login.start();
+        WindowManager windowManager = new WindowManager();
+        windowManager.start();
     }
 }
