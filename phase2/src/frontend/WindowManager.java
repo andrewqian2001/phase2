@@ -58,6 +58,7 @@ public class WindowManager extends JFrame {
             } catch (UserNotFoundException exception) {
                 System.out.println(exception.getMessage());
             }
+            WindowManager.this.login();
         });
 
         loginPanel.registerButton.addActionListener(e -> {
@@ -68,6 +69,7 @@ public class WindowManager extends JFrame {
             } catch(BadPasswordException | UserAlreadyExistsException exception) {
                 System.out.println(exception.getMessage());
             }
+            WindowManager.this.login();
         });
     }
 }
