@@ -18,7 +18,7 @@ public class WindowManager extends JFrame {
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.add(loginPanel, BorderLayout.CENTER);
-        this.pack();
+        this.setSize(loginPanel.getSize());
     }
 
     public void start() {
