@@ -11,8 +11,11 @@ import backend.tradesystem.managers.LoginManager;
 import frontend.panels.AdminPanel;
 import frontend.panels.TraderPanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 public class WindowManager extends JFrame {
@@ -27,10 +30,12 @@ public class WindowManager extends JFrame {
         bold = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Bold.ttf"));
         italic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Italic.ttf"));
         boldItalic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-BoldItalic.ttf"));
+        BufferedImage myImage = ImageIO.read(new File("phase2\\src\\frontend\\images\\LoginPanelBg.jpg"));
 
         loginPanel = new LoginPanel(regular, bold, italic, boldItalic);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setContentPane(new ImagePanel(myImage));
         this.add(loginPanel, BorderLayout.CENTER);
         this.setSize(loginPanel.getSize());
         this.setResizable(false);
@@ -59,7 +64,7 @@ public class WindowManager extends JFrame {
                 WindowManager.this.loggedInUser = loginManager.login(loginPanel.usernameInput.getText(), String.valueOf(loginPanel.passwordInput.getPassword()));
                 WindowManager.this.login();
             } catch (UserNotFoundException exception) {
-                loginPanel.notifyLogin("Username or Password is incorrect. Please try again");
+                loginPanel.notifyLogin("<html><b><i>Username or Password is incorrect.<br/>Please try again</i></b></html>");
             }
             
         });
@@ -74,5 +79,17 @@ public class WindowManager extends JFrame {
             }
             
         });
+    }
+}
+
+class ImagePanel extends JComponent {
+    private Image image;
+    public ImagePanel(Image image) {
+        this.image = image;
+    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(image, 0, 0, this);
     }
 }
