@@ -4,21 +4,19 @@ import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
+import backend.models.users.Admin;
 import backend.models.users.User;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.LoginManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowStateListener;
 import java.io.IOException;
 
 public class WindowManager extends JFrame {
     protected Font regular, bold, italic, boldItalic;
     private LoginPanel loginPanel;
-    private JPanel userPanel; // either TraderPanel or AdminPanel
+    private JPanel userPanel;
     private User loggedInUser;
     private LoginManager loginManager;
 
@@ -33,43 +31,46 @@ public class WindowManager extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.add(loginPanel, BorderLayout.CENTER);
         this.setSize(loginPanel.getSize());
+        this.setResizable(false);
     }
 
     public void login() {
         if(loggedInUser instanceof Trader) {
-            userPanel = new TraderPanel();
+            userPanel = new TraderPanel((Trader) loggedInUser, regular, bold, italic, boldItalic);
         } else {
-            userPanel = new AdminPanel();
+            userPanel = new AdminPanel((Admin) loggedInUser, regular, bold, italic, boldItalic);
         }
+        //TODO: Move these into the run() method later
+        this.remove(loginPanel);
+        this.add(userPanel, BorderLayout.CENTER);
+        this.setSize(userPanel.getSize());
+        this.setResizable(false);
     }
 
-    public void start() throws IOException {
+    public void run() throws IOException {
         this.setVisible(true);
 
+        //TODO: Move to a better place
         loginManager = new LoginManager();
-
         loginPanel.loginButton.addActionListener(e -> {
-            System.out.printf("USERNAME=%s\tPASSWORD=%s\n", loginPanel.usernameInput.getText(),
-                    String.valueOf(loginPanel.passwordInput.getPassword()));
             try {
-                WindowManager.this.loggedInUser = loginManager.login(loginPanel.usernameInput.getText(),
-                        String.valueOf(loginPanel.passwordInput.getPassword()));
-                System.out.println(loggedInUser.getId());
+                WindowManager.this.loggedInUser = loginManager.login(loginPanel.usernameInput.getText(), String.valueOf(loginPanel.passwordInput.getPassword()));
+                WindowManager.this.login();
             } catch (UserNotFoundException exception) {
-                System.out.println(exception.getMessage());
+                loginPanel.notifyLogin("Username or Password is incorrect. Please try again");
             }
-            WindowManager.this.login();
+            
         });
-
         loginPanel.registerButton.addActionListener(e -> {
-            System.out.printf("USERNAME=%s\tPASSWORD=%s\n", loginPanel.usernameInput.getText(), String.valueOf(loginPanel.passwordInput.getPassword()));
             try {
                 WindowManager.this.loggedInUser = loginManager.registerUser(loginPanel.usernameInput.getText(), String.valueOf(loginPanel.passwordInput.getPassword()), UserTypes.TRADER);
-                System.out.println(loggedInUser.getId());
-            } catch(BadPasswordException | UserAlreadyExistsException exception) {
-                System.out.println(exception.getMessage());
+                WindowManager.this.login();
+            } catch(BadPasswordException exception) { 
+                loginPanel.notifyLogin("Invalid Password: " + exception.getMessage());
+            }   catch(UserAlreadyExistsException exception) { 
+                loginPanel.notifyLogin("The username '" + loginPanel.usernameInput.getText() +  "' is taken. Please try again.");
             }
-            WindowManager.this.login();
+            
         });
     }
 }

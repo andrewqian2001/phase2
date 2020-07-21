@@ -7,20 +7,11 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import backend.exceptions.BadPasswordException;
-import backend.exceptions.UserAlreadyExistsException;
-import backend.exceptions.UserNotFoundException;
-import backend.models.users.User;
-import backend.tradesystem.UserTypes;
-import backend.tradesystem.managers.LoginManager;
-
 import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
 
 public class LoginPanel extends JPanel {
 
-    private JLabel title, usernameTitle, passwordTitle;
+    private JLabel title, usernameTitle, passwordTitle, loginNotification;
     protected JTextField usernameInput;
     protected JPasswordField passwordInput;
     private JPanel buttonContainer;
@@ -28,15 +19,16 @@ public class LoginPanel extends JPanel {
 
 
     // Color Palette
-    private Color backgroundColor = new Color(15, 20, 23);
-    private Color red = new Color(155, 29, 32);
-    private Color blue = new Color(34, 116, 165);
+    private Color bg = new Color(15, 20, 23);
+    private Color red = new Color(219, 58, 52);
+    private Color blue = new Color(8, 76, 97);
+    private Color purple = new Color(121,35,89);
 
     public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) {
         this.setSize(720, 840);
         this.setBorder(BorderFactory.createEmptyBorder(100, 50, 50, 50));
         this.setLayout(new GridLayout(8, 1));
-        this.setBackground(backgroundColor);
+        this.setBackground(bg);
 
         title = new JLabel("TradeSystem");
         title.setFont(boldItalic.deriveFont(50f));
@@ -74,10 +66,16 @@ public class LoginPanel extends JPanel {
         registerButton = new JButton("Register");
         registerButton.setFont(bold.deriveFont(25f));
         registerButton.setForeground(Color.WHITE);
-        registerButton.setBackground(red);
+        registerButton.setBackground(purple);
         registerButton.setOpaque(true);
         registerButton.setBorderPainted(false);
         buttonContainer.add(registerButton);
+
+        loginNotification = new JLabel();
+        loginNotification.setFont(boldItalic.deriveFont(20f));
+        loginNotification.setForeground(red);
+        loginNotification.setHorizontalAlignment(JLabel.CENTER);
+        loginNotification.setVisible(false);
 
         this.add(title);
         this.add(usernameTitle);
@@ -85,6 +83,13 @@ public class LoginPanel extends JPanel {
         this.add(passwordTitle);
         this.add(passwordInput);
         this.add(buttonContainer);
+        this.add(loginNotification);
+
+    }
+
+    public void notifyLogin(String msg) {
+        loginNotification.setText(msg);
+        loginNotification.setVisible(true);
     }
     
 }
