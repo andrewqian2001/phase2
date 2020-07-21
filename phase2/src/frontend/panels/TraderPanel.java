@@ -3,10 +3,11 @@ package frontend.panels;
 import frontend.panels.trader_subpanels.*;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+
 import java.awt.*;
 import java.awt.event.*;
 
@@ -129,5 +130,10 @@ public class TraderPanel extends JPanel implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         cardLayout.show(menuPanelContainer, e.getActionCommand());
+        for(Component button : menuContainer.getComponents()) {
+            if(button instanceof JButton) 
+                button.setEnabled(true);
+        }
+        ((JButton) e.getSource()).setEnabled(false);
     }
 }
