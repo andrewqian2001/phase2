@@ -26,8 +26,9 @@ public class LoginPanel extends JPanel {
     public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) {
         this.setSize(480, 720);
         this.setBorder(BorderFactory.createEmptyBorder(60, 50, 20, 50));
+        this.setBackground(bg);
         this.setLayout(new GridLayout(4, 1));
-        this.setOpaque(false);
+        // this.setOpaque(false);
 
         title = new JLabel("TradeSystem");
         title.setFont(boldItalic.deriveFont(60f));
