@@ -64,7 +64,7 @@ public class WindowManager extends JFrame {
                 WindowManager.this.loggedInUser = loginManager.login(loginPanel.usernameInput.getText(), String.valueOf(loginPanel.passwordInput.getPassword()));
                 WindowManager.this.login();
             } catch (UserNotFoundException exception) {
-                loginPanel.notifyLogin("<html><b><i>Username or Password is incorrect.<br/>Please try again</i></b></html>");
+                loginPanel.notifyLogin("<html><b><i>Username or Password is incorrect. Please try again</i></b></html>");
             }
             
         });
@@ -73,9 +73,9 @@ public class WindowManager extends JFrame {
                 WindowManager.this.loggedInUser = loginManager.registerUser(loginPanel.usernameInput.getText(), String.valueOf(loginPanel.passwordInput.getPassword()), UserTypes.TRADER);
                 WindowManager.this.login();
             } catch(BadPasswordException exception) { 
-                loginPanel.notifyLogin("Invalid Password: " + exception.getMessage());
-            }   catch(UserAlreadyExistsException exception) { 
-                loginPanel.notifyLogin("The username '" + loginPanel.usernameInput.getText() +  "' is taken. Please try again.");
+                loginPanel.notifyLogin("<html><b><i>Invalid Password: " + exception.getMessage() + "</i></b></html>");
+            } catch(UserAlreadyExistsException exception) {
+                loginPanel.notifyLogin("<html><b><i>The username '" + loginPanel.usernameInput.getText() +  "' is taken. Please try again.</i></b></html>");
             }
             
         });
