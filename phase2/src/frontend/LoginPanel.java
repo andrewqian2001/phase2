@@ -1,11 +1,8 @@
 package frontend;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
 
 public class LoginPanel extends JPanel {
 
@@ -76,7 +73,7 @@ public class LoginPanel extends JPanel {
         //TODO: Remove/Uncomment before submitting/pushing
         usernameInput = new JTextField("navn");
         passwordInput = new JPasswordField("Password123");
-
+        
         buttonContainer = new JPanel();
         buttonContainer.setLayout(new GridBagLayout());
         buttonContainer.setOpaque(false);
