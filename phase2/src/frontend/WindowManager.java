@@ -10,6 +10,7 @@ import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.LoginManager;
 import frontend.panels.AdminPanel;
 import frontend.panels.TraderPanel;
+import frontend.panels.ImagePanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -80,18 +81,5 @@ public class WindowManager extends JFrame {
             }
             
         });
-    }
-}
-
-//TODO: Move this to another file (or find a class-less alternative)
-class ImagePanel extends JComponent {
-    private Image image;
-    public ImagePanel(Image image) {
-        this.image = image;
-    }
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(image, 0, 0, this);
     }
 }
