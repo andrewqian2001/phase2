@@ -104,7 +104,7 @@ public class LoginPanel extends JPanel {
         info.setOpaque(false);
 
         loginNotification = new JLabel();
-        loginNotification.setFont(boldItalic.deriveFont(20f));
+        loginNotification.setFont(boldItalic.deriveFont(15f));
         loginNotification.setForeground(red);
         loginNotification.setHorizontalAlignment(JLabel.CENTER);
         loginNotification.setVisible(false);
