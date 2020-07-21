@@ -76,8 +76,7 @@ public class WindowManager extends JFrame {
             } catch(BadPasswordException exception) { 
                 loginPanel.notifyLogin("<html>Invalid Password: " + exception.getMessage() + "</html>");
             } catch(UserAlreadyExistsException exception) {
-                loginPanel.notifyLogin("<html>The username '" + loginPanel.usernameInput.getText() + loginPanel.usernameInput
-                        .getText() + loginPanel.usernameInput.getText() + "' is taken.</html>");
+                loginPanel.notifyLogin("<html>The username '" + loginPanel.usernameInput.getText() + "' is taken.</html>");
             }
             
         });

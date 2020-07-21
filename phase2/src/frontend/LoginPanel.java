@@ -71,9 +71,9 @@ public class LoginPanel extends JPanel {
         inputs.add(passwordInput, gbc);
 
         //TODO: Remove/Uncomment before submitting/pushing
-        usernameInput = new JTextField("navn");
-        passwordInput = new JPasswordField("Password123");
-        
+        // usernameInput = new JTextField("navn");
+        // passwordInput = new JPasswordField("Password123");
+
         buttonContainer = new JPanel();
         buttonContainer.setLayout(new GridBagLayout());
         buttonContainer.setOpaque(false);
