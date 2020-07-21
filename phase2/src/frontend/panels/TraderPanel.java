@@ -39,19 +39,19 @@ public class TraderPanel extends JPanel {
         menuContainer = new JPanel(new GridLayout(8,1));
         menuContainer.setBackground(bg);
 
-        usernameTitle = new JLabel(trader.getUsername());
+        usernameTitle = new JLabel((trader.getUsername().length() > 12 ? trader.getUsername().substring(0,12) + "..." : trader.getUsername()));
         usernameTitle.setFont(regular.deriveFont(35f));
         usernameTitle.setForeground(Color.WHITE);
+        usernameTitle.setBorder(BorderFactory.createEmptyBorder(0,10,10,0));
         usernameTitle.setHorizontalAlignment(JLabel.CENTER);
 
-        userIdTitle = new JLabel("ID: #" + trader.getId());
+        userIdTitle = new JLabel("ID: #" + trader.getId().substring(trader.getId().length() - 12));
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(gray);
         userIdTitle.setHorizontalAlignment(JLabel.CENTER);
 
         tradePanelButton = new JButton("Trades");
         tradePanelButton.setFont(bold.deriveFont(25f));
-        tradePanelButton.setHorizontalTextPosition(JButton.LEFT);
         tradePanelButton.setForeground(Color.WHITE);
         tradePanelButton.setBackground(gray);
         tradePanelButton.setOpaque(true);
