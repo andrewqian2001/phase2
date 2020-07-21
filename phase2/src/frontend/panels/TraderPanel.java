@@ -7,6 +7,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.plaf.metal.MetalButtonUI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -137,6 +138,11 @@ public class TraderPanel extends JPanel implements ActionListener {
         }
         ((JButton) e.getSource()).setEnabled(false);
         ((JButton) e.getSource()).setOpaque(true);
+        ((JButton) e.getSource()).setUI(new MetalButtonUI() {
+            protected Color getDisabledTextColor() {
+                return Color.BLACK;
+            }
+        });
 
         menuContainer.repaint();
     }
