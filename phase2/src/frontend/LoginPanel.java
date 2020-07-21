@@ -40,7 +40,8 @@ public class LoginPanel extends JPanel {
         usernameTitle.setForeground(Color.WHITE);
         usernameTitle.setHorizontalAlignment(JLabel.LEFT);
 
-        usernameInput = new JTextField();
+        usernameInput = new JTextField("navn");
+        // usernameInput = new JTextField();
         usernameInput.setFont(regular.deriveFont(20f));
 
         passwordTitle = new JLabel("Password:");
@@ -48,7 +49,8 @@ public class LoginPanel extends JPanel {
         passwordTitle.setForeground(Color.WHITE);
         passwordTitle.setHorizontalAlignment(JLabel.LEFT);
 
-        passwordInput = new JPasswordField();
+        passwordInput = new JPasswordField("Password123");
+        // passwordInput = new JPasswordField();
 
         buttonContainer = new JPanel();
         buttonContainer.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));

@@ -3,6 +3,7 @@ package frontend.panels;
 import frontend.panels.trader_subpanels.*;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,7 +14,7 @@ import backend.models.users.Trader;
 public class TraderPanel extends JPanel {
 
     private JLabel usernameTitle, userIdTitle;
-    private JPanel tradePanel, inventoryPanel, wishlistPanel, notificationsPanel, searchPanel, menuButtonContainer;
+    private JPanel tradePanel, inventoryPanel, wishlistPanel, notificationsPanel, searchPanel, menuContainer;
     private JButton tradePanelButton, inventoryPanelButton, wishlistPanelButton, notificationsPanelButton,
             searchPanelButton, logoutButton;
 
@@ -26,19 +27,8 @@ public class TraderPanel extends JPanel {
 
     public TraderPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) {
         this.setSize(1600, 900);
-        this.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
-        this.setLayout(new GridLayout(5,5)); //TODO: Set proper layout
         this.setBackground(bg);
-
-        usernameTitle = new JLabel(trader.getUsername());
-        usernameTitle.setFont( regular.deriveFont(35f));
-        usernameTitle.setForeground(Color.WHITE);
-        usernameTitle.setHorizontalAlignment(JLabel.CENTER);
-        
-        userIdTitle = new JLabel("ID: #" + trader.getId());
-        userIdTitle.setFont(regular.deriveFont(20f));
-        userIdTitle.setForeground(gray);
-        userIdTitle.setHorizontalAlignment(JLabel.CENTER);
+        this.setLayout(new BorderLayout());
 
         tradePanel = new  TradePanel();
         inventoryPanel = new InventoryPanel();
@@ -46,9 +36,18 @@ public class TraderPanel extends JPanel {
         notificationsPanel = new NotificationsPanel();
         searchPanel = new SearchPanel();
 
-        //TODO: Make this container bigger
-        menuButtonContainer = new JPanel(new GridLayout(6,1));
-        menuButtonContainer.setBackground(bg);
+        menuContainer = new JPanel(new GridLayout(8,1));
+        menuContainer.setBackground(bg);
+
+        usernameTitle = new JLabel(trader.getUsername());
+        usernameTitle.setFont(regular.deriveFont(35f));
+        usernameTitle.setForeground(Color.WHITE);
+        usernameTitle.setHorizontalAlignment(JLabel.CENTER);
+
+        userIdTitle = new JLabel("ID: #" + trader.getId());
+        userIdTitle.setFont(regular.deriveFont(20f));
+        userIdTitle.setForeground(gray);
+        userIdTitle.setHorizontalAlignment(JLabel.CENTER);
 
         tradePanelButton = new JButton("Trades");
         tradePanelButton.setFont(bold.deriveFont(25f));
@@ -94,16 +93,16 @@ public class TraderPanel extends JPanel {
         logoutButton.setOpaque(true);
         logoutButton.setBorderPainted(false);
 
-        menuButtonContainer.add(tradePanelButton);
-        menuButtonContainer.add(inventoryPanelButton);
-        menuButtonContainer.add(wishlistPanelButton);
-        menuButtonContainer.add(notificationsPanelButton);
-        menuButtonContainer.add(searchPanelButton);
-        menuButtonContainer.add(logoutButton);
+        menuContainer.add(usernameTitle);
+        menuContainer.add(userIdTitle);
+        menuContainer.add(tradePanelButton);
+        menuContainer.add(inventoryPanelButton);
+        menuContainer.add(wishlistPanelButton);
+        menuContainer.add(notificationsPanelButton);
+        menuContainer.add(searchPanelButton);
+        menuContainer.add(logoutButton);
 
-        this.add(usernameTitle);
-        this.add(userIdTitle);
-        this.add(menuButtonContainer);
+        this.add(menuContainer, BorderLayout.WEST);
         
     }
 }
