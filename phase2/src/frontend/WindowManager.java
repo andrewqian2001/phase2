@@ -30,12 +30,12 @@ public class WindowManager extends JFrame {
         bold = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Bold.ttf"));
         italic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Italic.ttf"));
         boldItalic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-BoldItalic.ttf"));
-        // BufferedImage myImage = ImageIO.read(new File("./images/LoginPanelBg.jpg"));
+        BufferedImage myImage = ImageIO.read(new File("phase2/src/frontend/images/LoginPanelBg.jpg"));
 
         loginPanel = new LoginPanel(regular, bold, italic, boldItalic);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // this.setContentPane(new ImagePanel(myImage));
+        this.setContentPane(new ImagePanel(myImage));
         this.add(loginPanel, BorderLayout.CENTER);
         this.setSize(loginPanel.getSize());
         this.setResizable(false);
