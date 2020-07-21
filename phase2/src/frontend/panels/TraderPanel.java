@@ -4,43 +4,42 @@ import frontend.panels.trader_subpanels.*;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
 
 import java.awt.*;
 import java.awt.event.*;
 
 import backend.models.users.Trader;
 
-public class TraderPanel extends JPanel implements ActionListener{
+public class TraderPanel extends JPanel implements ActionListener {
 
     private JLabel usernameTitle, userIdTitle;
-    private JPanel tradePanel, inventoryPanel, wishlistPanel, notificationsPanel, searchPanel, menuContainer, menuPanelContainer;
+    private JPanel tradePanel, inventoryPanel, wishlistPanel, notificationsPanel, searchPanel, menuContainer,
+            menuPanelContainer;
     private JButton tradePanelButton, inventoryPanelButton, wishlistPanelButton, notificationsPanelButton,
             searchPanelButton, logoutButton;
     private CardLayout cardLayout;
 
-
-    //TODO: Set different colors
+    // TODO: Set different colors
     private Color bg = new Color(214, 214, 214);
-    private Color current = new Color (159,159,159);
-    private Color gray = new Color(75,75,75);
+    private Color current = new Color(159, 159, 159);
+    private Color gray = new Color(75, 75, 75);
     private Color red = new Color(219, 58, 52);
-
 
     public TraderPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) {
         this.setSize(1600, 900);
         this.setBackground(bg);
         this.setLayout(new BorderLayout());
 
-        tradePanel = new  TradePanel();
+        tradePanel = new TradePanel();
         inventoryPanel = new InventoryPanel();
         wishlistPanel = new WishlistPanel();
         notificationsPanel = new NotificationsPanel();
         searchPanel = new SearchPanel();
 
-        menuContainer = new JPanel(new GridLayout(8,1));
+        menuContainer = new JPanel(new GridLayout(8, 1));
         menuContainer.setBackground(bg);
 
         menuPanelContainer = new JPanel();
@@ -48,10 +47,11 @@ public class TraderPanel extends JPanel implements ActionListener{
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
-        usernameTitle = new JLabel((trader.getUsername().length() > 12 ? trader.getUsername().substring(0,12) + "..." : trader.getUsername()));
+        usernameTitle = new JLabel((trader.getUsername().length() > 12 ? trader.getUsername().substring(0, 12) + "..."
+                : trader.getUsername()));
         usernameTitle.setFont(regular.deriveFont(35f));
         usernameTitle.setForeground(Color.BLACK);
-        usernameTitle.setBorder(BorderFactory.createEmptyBorder(0,10,10,0));
+        usernameTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
         usernameTitle.setHorizontalAlignment(JLabel.CENTER);
 
         userIdTitle = new JLabel("ID: #" + trader.getId().substring(trader.getId().length() - 12));
@@ -98,7 +98,6 @@ public class TraderPanel extends JPanel implements ActionListener{
         searchPanelButton.setOpaque(false);
         searchPanelButton.setBorderPainted(false);
         searchPanelButton.addActionListener(this);
-        
 
         logoutButton = new JButton("Logout");
         logoutButton.setFont(boldItalic.deriveFont(25f));
@@ -122,40 +121,23 @@ public class TraderPanel extends JPanel implements ActionListener{
         menuPanelContainer.add(notificationsPanel, "Notifications");
         menuPanelContainer.add(searchPanel, "Search");
 
-
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
-        
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         cardLayout.show(menuPanelContainer, e.getActionCommand());
-        for(Component button : menuContainer.getComponents()) {
-            if(button instanceof JButton)
-                button.setEnabled(true);
+        for (Component button : menuContainer.getComponents()) {
+            if (button instanceof JButton && !button.equals(logoutButton)) {
+                ((JButton) button).setEnabled(true);
+                ((JButton) button).setOpaque(false);
+            }
         }
         ((JButton) e.getSource()).setEnabled(false);
-
-        tradePanelButton.setOpaque(false);
-        inventoryPanelButton.setOpaque(false);
-        wishlistPanelButton.setOpaque(false);
-        notificationsPanelButton.setOpaque(false);
-        searchPanelButton.setOpaque(false);
-
-        if (tradePanelButton.equals(e.getSource())) {
-            tradePanelButton.setOpaque(true);
-        } else if (inventoryPanelButton.equals(e.getSource())) {
-            inventoryPanelButton.setOpaque(true);
-        } else if (wishlistPanelButton.equals(e.getSource())) {
-            wishlistPanelButton.setOpaque(true);
-        } else if (notificationsPanelButton.equals(e.getSource())) {
-            notificationsPanelButton.setOpaque(true);
-        } else {
-            searchPanelButton.setOpaque(true);
-        }
+        ((JButton) e.getSource()).setOpaque(true);
 
         menuContainer.repaint();
-
     }
 }
