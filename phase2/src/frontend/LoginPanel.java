@@ -1,20 +1,19 @@
 package frontend;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
+import javax.imageio.ImageIO;
+import javax.swing.*;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
 public class LoginPanel extends JPanel {
 
-    private JLabel title, usernameTitle, passwordTitle, loginNotification;
+    private JLabel title, usernameTitle, passwordTitle, loginNotification, copyright;
     protected JTextField usernameInput;
     protected JPasswordField passwordInput;
-    private JPanel buttonContainer;
+    private JPanel buttonContainer, info, inputs;
+    private GridBagConstraints gbc;
     protected JButton loginButton, registerButton;
 
 
@@ -25,69 +24,102 @@ public class LoginPanel extends JPanel {
     private Color purple = new Color(121,35,89);
 
     public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) {
-        this.setSize(720, 840);
-        this.setBorder(BorderFactory.createEmptyBorder(100, 50, 50, 50));
-        this.setLayout(new GridLayout(8, 1));
-        this.setBackground(bg);
+        this.setSize(480, 720);
+        this.setBorder(BorderFactory.createEmptyBorder(60, 50, 20, 50));
+        this.setLayout(new GridLayout(4, 1));
+        this.setOpaque(false);
 
         title = new JLabel("TradeSystem");
-        title.setFont(boldItalic.deriveFont(50f));
+        title.setFont(boldItalic.deriveFont(60f));
         title.setForeground(Color.WHITE);
         title.setHorizontalAlignment(JLabel.CENTER);
 
-        usernameTitle = new JLabel("Username:");
-        usernameTitle.setFont(italic.deriveFont(25f));
-        usernameTitle.setForeground(Color.WHITE);
-        usernameTitle.setHorizontalAlignment(JLabel.LEFT);
+        inputs = new JPanel();
+        inputs.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
+        inputs.setLayout(new GridBagLayout());
+        gbc = new GridBagConstraints();
+        gbc.insets = new Insets(0,0,40,10);
+        inputs.setOpaque(false);
 
-       
+        usernameTitle = new JLabel("Username:");
+        usernameTitle.setFont(italic.deriveFont(20f));
+        usernameTitle.setForeground(Color.WHITE);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        inputs.add(usernameTitle, gbc);
+
         usernameInput = new JTextField();
         usernameInput.setFont(regular.deriveFont(20f));
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        inputs.add(usernameInput, gbc);
+
+        gbc.insets = new Insets(0,0,0,10);
 
         passwordTitle = new JLabel("Password:");
-        passwordTitle.setFont(italic.deriveFont(25f));
+        passwordTitle.setFont(italic.deriveFont(20f));
         passwordTitle.setForeground(Color.WHITE);
         passwordTitle.setHorizontalAlignment(JLabel.LEFT);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0.0;
+        inputs.add(passwordTitle, gbc);
 
         passwordInput = new JPasswordField();
+        passwordInput.setFont(regular.deriveFont(20f));
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        inputs.add(passwordInput, gbc);
 
         // usernameInput = new JTextField("navn");
         // passwordInput = new JPasswordField("Password123");
 
         buttonContainer = new JPanel();
-        buttonContainer.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
-        buttonContainer.setBackground(new Color(15, 20, 23));
-        buttonContainer.setLayout(new GridLayout(1, 2, 20, 0));
+        buttonContainer.setLayout(new GridBagLayout());
+        buttonContainer.setOpaque(false);
 
+        gbc.insets = new Insets(0,80,0,80);
         loginButton = new JButton("Login");
-        loginButton.setForeground(Color.WHITE);
-        loginButton.setFont(bold.deriveFont(25f));
-        loginButton.setBackground(blue);
-        loginButton.setOpaque(true);
+        loginButton.setForeground(new Color(98,123,255));
+        loginButton.setFont(bold.deriveFont(20f));
+        loginButton.setOpaque(false);
+        loginButton.setContentAreaFilled(false);
         loginButton.setBorderPainted(false);
-        buttonContainer.add(loginButton);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        buttonContainer.add(loginButton, gbc);
 
         registerButton = new JButton("Register");
-        registerButton.setFont(bold.deriveFont(25f));
-        registerButton.setForeground(Color.WHITE);
-        registerButton.setBackground(purple);
-        registerButton.setOpaque(true);
+        registerButton.setFont(bold.deriveFont(20f));
+        registerButton.setForeground(Color.RED);
+        registerButton.setOpaque(false);
+        registerButton.setContentAreaFilled(false);
         registerButton.setBorderPainted(false);
-        buttonContainer.add(registerButton);
+        gbc.gridy = 1;
+        buttonContainer.add(registerButton, gbc);
+
+        info = new JPanel();
+        info.setLayout(new GridLayout(2,0));
+        info.setOpaque(false);
 
         loginNotification = new JLabel();
         loginNotification.setFont(boldItalic.deriveFont(20f));
         loginNotification.setForeground(red);
         loginNotification.setHorizontalAlignment(JLabel.CENTER);
         loginNotification.setVisible(false);
+        info.add(loginNotification);
+
+        copyright = new JLabel("Copyright © 2020 group_56. All rights reserved.");
+        copyright.setFont(regular.deriveFont(10f));
+        copyright.setForeground(new Color(169,169,169));
+        copyright.setHorizontalAlignment(JLabel.CENTER);
+        info.add(copyright);
 
         this.add(title);
-        this.add(usernameTitle);
-        this.add(usernameInput);
-        this.add(passwordTitle);
-        this.add(passwordInput);
+        this.add(inputs);
         this.add(buttonContainer);
-        this.add(loginNotification);
+        this.add(info);
 
     }
 
