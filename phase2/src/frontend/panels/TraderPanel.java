@@ -34,11 +34,11 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.setBackground(bg);
         this.setLayout(new BorderLayout());
 
-        tradePanel = new TradePanel();
-        inventoryPanel = new InventoryPanel();
-        wishlistPanel = new WishlistPanel();
-        notificationsPanel = new NotificationsPanel();
-        searchPanel = new SearchPanel();
+        tradePanel = new TradePanel(trader, regular, bold, italic, boldItalic);
+        inventoryPanel = new InventoryPanel(trader, regular, bold, italic, boldItalic);
+        wishlistPanel = new WishlistPanel(trader, regular, bold, italic, boldItalic);
+        notificationsPanel = new NotificationsPanel(trader, regular, bold, italic, boldItalic);
+        searchPanel = new SearchPanel(trader, regular, bold, italic, boldItalic);
 
         menuContainer = new JPanel(new GridLayout(8, 1));
         menuContainer.setBackground(bg);
