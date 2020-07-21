@@ -11,6 +11,7 @@ import javax.swing.plaf.metal.MetalButtonUI;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 import backend.models.users.Trader;
 
@@ -29,7 +30,7 @@ public class TraderPanel extends JPanel implements ActionListener {
     private Color gray = new Color(75, 75, 75);
     private Color red = new Color(219, 58, 52);
 
-    public TraderPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) {
+    public TraderPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.setSize(1600, 900);
         this.setBackground(bg);
         this.setLayout(new BorderLayout());

@@ -42,7 +42,7 @@ public class WindowManager extends JFrame {
         this.setResizable(false);
     }
 
-    public void login() {
+    public void login() throws IOException {
         if(loggedInUser instanceof Trader) {
             userPanel = new TraderPanel((Trader) loggedInUser, regular, bold, italic, boldItalic);
         } else {
@@ -66,6 +66,8 @@ public class WindowManager extends JFrame {
                 WindowManager.this.login();
             } catch (UserNotFoundException exception) {
                 loginPanel.notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
+            } catch (IOException exception) {
+                System.out.println(exception.getMessage());
             }
             
         });
@@ -77,6 +79,8 @@ public class WindowManager extends JFrame {
                 loginPanel.notifyLogin("<html><b><i>Invalid Password: " + exception.getMessage() + "</i></b></html>");
             } catch(UserAlreadyExistsException exception) {
                 loginPanel.notifyLogin("<html><b><i>The username '" + loginPanel.usernameInput.getText() + "' is taken.</i></b></html>");
+            } catch(IOException exception) {
+                System.out.println(exception.getMessage());
             }
             
         });
