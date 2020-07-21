@@ -8,6 +8,8 @@ import backend.models.users.Admin;
 import backend.models.users.User;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.LoginManager;
+import frontend.panels.AdminPanel;
+import frontend.panels.TraderPanel;
 
 import javax.swing.*;
 import java.awt.*;
