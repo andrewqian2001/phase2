@@ -73,8 +73,8 @@ public class LoginPanel extends JPanel {
         gbc.weightx = 1.0;
         inputs.add(passwordInput, gbc);
 
-        // usernameInput = new JTextField("navn");
-        // passwordInput = new JPasswordField("Password123");
+        usernameInput = new JTextField("navn");
+        passwordInput = new JPasswordField("Password123");
 
         buttonContainer = new JPanel();
         buttonContainer.setLayout(new GridBagLayout());

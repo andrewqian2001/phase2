@@ -22,7 +22,8 @@ public class TraderPanel extends JPanel implements ActionListener{
 
 
     //TODO: Set different colors
-    private Color bg = new Color(15, 20, 23);
+    private Color bg = new Color(214, 214, 214);
+    private Color current = new Color (159,159,159);
     private Color gray = new Color(75,75,75);
     private Color red = new Color(219, 58, 52);
 
@@ -48,7 +49,7 @@ public class TraderPanel extends JPanel implements ActionListener{
 
         usernameTitle = new JLabel((trader.getUsername().length() > 12 ? trader.getUsername().substring(0,12) + "..." : trader.getUsername()));
         usernameTitle.setFont(regular.deriveFont(35f));
-        usernameTitle.setForeground(Color.WHITE);
+        usernameTitle.setForeground(Color.BLACK);
         usernameTitle.setBorder(BorderFactory.createEmptyBorder(0,10,10,0));
         usernameTitle.setHorizontalAlignment(JLabel.CENTER);
 
@@ -59,41 +60,41 @@ public class TraderPanel extends JPanel implements ActionListener{
 
         tradePanelButton = new JButton("Trades");
         tradePanelButton.setFont(bold.deriveFont(25f));
-        tradePanelButton.setForeground(Color.WHITE);
-        tradePanelButton.setBackground(gray);
+        tradePanelButton.setForeground(Color.BLACK);
+        tradePanelButton.setBackground(current);
         tradePanelButton.setOpaque(true);
         tradePanelButton.setBorderPainted(false);
         tradePanelButton.addActionListener(this);
 
         inventoryPanelButton = new JButton("Inventory");
         inventoryPanelButton.setFont(bold.deriveFont(25f));
-        inventoryPanelButton.setForeground(Color.WHITE);
-        inventoryPanelButton.setBackground(gray);
-        inventoryPanelButton.setOpaque(true);
+        inventoryPanelButton.setForeground(Color.BLACK);
+        inventoryPanelButton.setBackground(current);
+        inventoryPanelButton.setOpaque(false);
         inventoryPanelButton.setBorderPainted(false);
         inventoryPanelButton.addActionListener(this);
 
         wishlistPanelButton = new JButton("Wishlist");
         wishlistPanelButton.setFont(bold.deriveFont(25f));
-        wishlistPanelButton.setForeground(Color.WHITE);
-        wishlistPanelButton.setBackground(gray);
-        wishlistPanelButton.setOpaque(true);
+        wishlistPanelButton.setForeground(Color.BLACK);
+        wishlistPanelButton.setBackground(current);
+        wishlistPanelButton.setOpaque(false);
         wishlistPanelButton.setBorderPainted(false);
         wishlistPanelButton.addActionListener(this);
 
         notificationsPanelButton = new JButton("Notifications");
         notificationsPanelButton.setFont(bold.deriveFont(25f));
-        notificationsPanelButton.setForeground(Color.WHITE);
-        notificationsPanelButton.setBackground(gray);
-        notificationsPanelButton.setOpaque(true);
+        notificationsPanelButton.setForeground(Color.BLACK);
+        notificationsPanelButton.setBackground(current);
+        notificationsPanelButton.setOpaque(false);
         notificationsPanelButton.setBorderPainted(false);
         notificationsPanelButton.addActionListener(this);
 
         searchPanelButton = new JButton("Search");
         searchPanelButton.setFont(bold.deriveFont(25f));
-        searchPanelButton.setForeground(Color.WHITE);
-        searchPanelButton.setBackground(gray);
-        searchPanelButton.setOpaque(true);
+        searchPanelButton.setForeground(Color.BLACK);
+        searchPanelButton.setBackground(current);
+        searchPanelButton.setOpaque(false);
         searchPanelButton.setBorderPainted(false);
         searchPanelButton.addActionListener(this);
         
@@ -129,5 +130,26 @@ public class TraderPanel extends JPanel implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         cardLayout.show(menuPanelContainer, e.getActionCommand());
+
+        tradePanelButton.setOpaque(false);
+        inventoryPanelButton.setOpaque(false);
+        wishlistPanelButton.setOpaque(false);
+        notificationsPanelButton.setOpaque(false);
+        searchPanelButton.setOpaque(false);
+
+        if (tradePanelButton.equals(e.getSource())) {
+            tradePanelButton.setOpaque(true);
+        } else if (inventoryPanelButton.equals(e.getSource())) {
+            inventoryPanelButton.setOpaque(true);
+        } else if (wishlistPanelButton.equals(e.getSource())) {
+            wishlistPanelButton.setOpaque(true);
+        } else if (notificationsPanelButton.equals(e.getSource())) {
+            notificationsPanelButton.setOpaque(true);
+        } else {
+            searchPanelButton.setOpaque(true);
+        }
+
+        menuContainer.repaint();
+
     }
 }
