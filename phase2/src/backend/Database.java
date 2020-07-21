@@ -78,10 +78,14 @@ public class Database<T extends DatabaseItem> implements Serializable {
     public void delete(String id) {
         ArrayList<T> allItems;
         allItems = getItems();
-        for (T item: allItems){
+        for (T item : allItems) {
             if (item.getId().equals(id)) {
                 allItems.remove(item);
-                return;
+                try {
+                    save(allItems);
+                    return;
+                } catch (FileNotFoundException e) {
+                }
             }
         }
     }
@@ -95,7 +99,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
      */
     public T populate(String id) throws EntryNotFoundException {
         ArrayList<T> allItems = getItems();
-        for (T item: allItems) {
+        for (T item : allItems) {
             if (item.getId().equals(id))
                 return item;
         }

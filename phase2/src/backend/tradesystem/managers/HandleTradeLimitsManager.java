@@ -1,6 +1,5 @@
 package backend.tradesystem.managers;
 
-import backend.DatabaseFilePaths;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
@@ -9,8 +8,6 @@ import backend.tradesystem.TraderProperties;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Properties;
 
 /**
  * This deals with everything relating to trade limits
@@ -23,6 +20,16 @@ public class HandleTradeLimitsManager extends Manager{
      */
     public HandleTradeLimitsManager() throws IOException {
         super();
+    }
+    /**
+     * Making the database objects with set file paths
+     * @param userFilePath the user database file path
+     * @param tradableItemFilePath the tradable item database file path
+     * @param tradeFilePath the trade database file path
+     * @throws IOException issues with getting the file path
+     */
+    public HandleTradeLimitsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
     /**

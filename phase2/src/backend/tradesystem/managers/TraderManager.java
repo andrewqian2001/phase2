@@ -4,9 +4,11 @@ package backend.tradesystem.managers;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.Review;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Used for the actions of a Trader
@@ -21,6 +23,16 @@ public class TraderManager extends Manager {
     public TraderManager() throws IOException {
         super();
     }
+    /**
+     * Making the database objects with set file paths
+     * @param userFilePath the user database file path
+     * @param tradableItemFilePath the tradable item database file path
+     * @param tradeFilePath the trade database file path
+     * @throws IOException issues with getting the file path
+     */
+    public TraderManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
+    }
 
 
     /**
@@ -31,14 +43,16 @@ public class TraderManager extends Manager {
      * @param desc description of the item
      * @throws UserNotFoundException  if the user was not found
      * @throws AuthorizationException not allowed to request an item
+     * @return the item that was requested
      */
-    public void addRequestItem(String id, String name, String desc) throws UserNotFoundException, AuthorizationException {
+    public Trader addRequestItem(String id, String name, String desc) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(id);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         TradableItem item = new TradableItem(name, desc);
         updateTradableItemDatabase(item);
         trader.getRequestedItems().add(item.getId());
         updateUserDatabase(trader);
+        return trader;
     }
 
 
@@ -75,8 +89,55 @@ public class TraderManager extends Manager {
         updateUserDatabase(trader);
     }
 
+    /**
+     * Sets the city of the trader
+     * @param traderId the trader
+     * @param city the city
+     * @throws UserNotFoundException if the trader doesn't exist
+     * @throws AuthorizationException if the user isn't a trader
+     */
+    public void setCity(String traderId, String city) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(traderId);
+        trader.setCity(city);
+        updateUserDatabase(trader);
+    }
 
+    /**
+     * Adds a new review
+     * @param fromUser the user who sent the review
+     * @param toUser the user who received the review
+     * @param rating rating must be between 0 to 10, if greater or less than those bounds then it will assume those bounds
+     * @param message the message of the review
+     * @return the new review
+     * @throws UserNotFoundException if the user ids don't exist
+     * @throws AuthorizationException if the users aren't traders
+     */
+    public Review addReview(String fromUser, String toUser, double rating, String message) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(toUser);
+        getTrader(fromUser); // Makes sure this trader exists
+        if (rating < 0) rating = 0;
+        else if (rating > 10) rating = 10;
+        Review review = new Review(fromUser, toUser, rating, message);
+        trader.addReview(review);
+        return review;
+    }
 
-
-
+    /**
+     * Remove a review
+     * @param userThatHasReview the user that needs to have a review removed
+     * @param reviewId the review being removed
+     * @throws UserNotFoundException if the user isn't found
+     * @throws AuthorizationException if the user isn't a trader
+     */
+    public void removeReview(String userThatHasReview, String reviewId) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(userThatHasReview);
+        ArrayList<Review> reviews = trader.getReviews();
+        for (Review review: reviews){
+            if (review.getId().equals(reviewId)) {
+                reviews.remove(review);
+                updateUserDatabase(trader);
+                return;
+            }
+        }
+    }
 }

@@ -20,6 +20,16 @@ public class HandleFrozenManager extends Manager {
     public HandleFrozenManager() throws IOException {
         super();
     }
+    /**
+     * Making the database objects with set file paths
+     * @param userFilePath the user database file path
+     * @param tradableItemFilePath the tradable item database file path
+     * @param tradeFilePath the trade database file path
+     * @throws IOException issues with getting the file path
+     */
+    public HandleFrozenManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
+    }
 
     /**
      * @param userId the user id

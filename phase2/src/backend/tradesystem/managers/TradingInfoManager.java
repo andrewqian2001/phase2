@@ -21,6 +21,16 @@ public class TradingInfoManager extends Manager {
     public TradingInfoManager() throws IOException {
         super();
     }
+    /**
+     * Making the database objects with set file paths
+     * @param userFilePath the user database file path
+     * @param tradableItemFilePath the tradable item database file path
+     * @param tradeFilePath the trade database file path
+     * @throws IOException issues with getting the file path
+     */
+    public TradingInfoManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
+    }
 
 
     /**
@@ -34,6 +44,21 @@ public class TradingInfoManager extends Manager {
             if (user instanceof Trader)
                 allTraders.add((Trader) user);
         return allTraders;
+    }
+
+    /**
+     * Gets all the traders within the same city
+     * @param city the city name
+     * @return list of all traders within the same city
+     */
+    public ArrayList<Trader> getAllTradersInCity(String city) {
+        ArrayList<Trader> allTraders = getAllTraders();
+        ArrayList<Trader> updatedTraders = new ArrayList<>();
+        for (Trader trader : allTraders) {
+            if (trader.getCity().equalsIgnoreCase(city))
+                updatedTraders.add(trader);
+        }
+        return updatedTraders;
     }
 
 
@@ -110,11 +135,12 @@ public class TradingInfoManager extends Manager {
 
     /**
      * Used for suggesting what items that otherTrader will want from thisTrader
-     * @param thisTraderId the trader that wants to know what otherTrader will wnat
+     *
+     * @param thisTraderId  the trader that wants to know what otherTrader will wnat
      * @param otherTraderId the other trader
      * @return list of items that otherTrader will want
-     * @throws UserNotFoundException if user isn't found
-     * @throws AuthorizationException thisTrader isn't allowed to get suggestions
+     * @throws UserNotFoundException         if user isn't found
+     * @throws AuthorizationException        thisTrader isn't allowed to get suggestions
      * @throws TradableItemNotFoundException if the tradable item isn't found
      */
     public ArrayList<TradableItem> suggestLend(String thisTraderId, String otherTraderId) throws

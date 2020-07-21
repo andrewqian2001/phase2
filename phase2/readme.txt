@@ -1,6 +1,6 @@
 1. initial admin:
 username: admin
-password: password
+password: Adminpassword1
 
 2. Run the Main class in src -> main to run the program
 
@@ -14,4 +14,7 @@ TRADING PROCESS:
 
     4. Confrim trades that are accepted (NOTE: temporary trades need to be confirmed twice, one for the first meeting and another time for
     the second)
+
+    Some More notes:
+        - Lending to one user does NOT count as that other user borrowing (or vice versa).
 

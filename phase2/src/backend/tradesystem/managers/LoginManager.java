@@ -2,13 +2,13 @@ package backend.tradesystem.managers;
 
 
 import backend.DatabaseFilePaths;
+import backend.exceptions.*;
+import backend.models.Trade;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
-import exceptions.UserAlreadyExistsException;
-import exceptions.UserNotFoundException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.Properties;
  */
 public class LoginManager extends Manager{
 
-    private UserTypes lastLoggedInType = null;
+    private final String traderPropertyFilePath;
 
     /**
      * Initialize the objects to get items from databases
@@ -29,6 +29,19 @@ public class LoginManager extends Manager{
      */
     public LoginManager() throws IOException {
         super();
+        traderPropertyFilePath = DatabaseFilePaths.TRADER_CONFIG.getFilePath();
+    }
+    /**
+     * Making the database objects with set file paths
+     * @param userFilePath the user database file path
+     * @param tradableItemFilePath the tradable item database file path
+     * @param tradeFilePath the trade database file path
+     * @param traderPropertyFilePath the path for the trader properties file
+     * @throws IOException issues with getting the file path
+     */
+    public LoginManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String traderPropertyFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
+        this.traderPropertyFilePath = traderPropertyFilePath;
     }
 
     /**
@@ -39,27 +52,24 @@ public class LoginManager extends Manager{
      * @param type     the type of user
      * @return The ID of the newly created user
      * @throws UserAlreadyExistsException username is not unique
+     * @throws BadPasswordException password isn't valid
      */
-    public User registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException {
-
+    public User registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException {
         int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
         int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
         int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
-
+        validatePassword(password);
         if (!isUsernameUnique(username))
             throw new UserAlreadyExistsException();
         switch (type) {
             case ADMIN:
-                lastLoggedInType = UserTypes.ADMIN;
                 return updateUserDatabase(new Admin(username, password));
             case TRADER:
                 tryToRefreshTradeCount();
             default:
-                lastLoggedInType = UserTypes.TRADER;
-                return updateUserDatabase(new Trader(username, password, defaultTradeLimit, defaultIncompleteTradeLim,
+                return updateUserDatabase(new Trader(username, password, "", defaultTradeLimit, defaultIncompleteTradeLim,
                         defaultMinimumAmountNeededToBorrow));
         }
-
     }
 
     /**
@@ -70,28 +80,33 @@ public class LoginManager extends Manager{
      * @return the user id of the logged in user
      * @throws UserNotFoundException could not find the user
      */
-    public String login(String username, String password) throws UserNotFoundException {
+    public User login(String username, String password) throws UserNotFoundException {
         ArrayList<User> users = getUserDatabase().getItems();
         for (User user : users)
             if (user.getUsername().equals(username) && (user.getPassword().equals(password))) {
-                if (user instanceof Admin)
-                    lastLoggedInType = UserTypes.ADMIN;
-                else{
+                if (user instanceof Trader){
                     tryToRefreshTradeCount();
-                    lastLoggedInType = UserTypes.TRADER;
+                    removeInvalidRequests(user.getId());
                 }
-                return user.getId();
+                return user;
             }
         throw new UserNotFoundException();
     }
 
     /**
-     * The last account that logged in
-     *
-     * @return last account type that logged in
+     * Get the type of user
+     * @param userId the user id
+     * @return the user type of the user
+     * @throws UserNotFoundException if the user id wasn't found
      */
-    public UserTypes getLastLoggedInType() {
-        return lastLoggedInType;
+    public UserTypes getType(String userId) throws UserNotFoundException {
+        User user = getUser(userId);
+        if (user instanceof Admin)
+            return UserTypes.ADMIN;
+        else{
+            return UserTypes.TRADER;
+        }
+
     }
 
     /**
@@ -107,6 +122,51 @@ public class LoginManager extends Manager{
         return true;
     }
 
+    /**
+     * Change the username of an existing user
+     * @param userId the existing user
+     * @param username the new username
+     * @return the new User
+     * @throws UserAlreadyExistsException if the username is taken
+     * @throws UserNotFoundException the userId wasn't found
+     */
+    public User changeUsername(String userId, String username) throws UserAlreadyExistsException, UserNotFoundException {
+        if (!isUsernameUnique(username)) {
+            throw new UserAlreadyExistsException();
+        }
+        User user = getUser(userId);
+        user.setUsername(username);
+        updateUserDatabase(user);
+        return user;
+    }
+
+    /**
+     * Change password of the user
+     * @param userId the user
+     * @param password the new password
+     * @return the new user
+     * @throws BadPasswordException if the password isn't valid
+     * @throws UserNotFoundException if the user wasn't found
+     */
+    public User changePassword(String userId, String password) throws BadPasswordException, UserNotFoundException {
+        validatePassword(password);
+        User user = getUser(userId);
+        user.setPassword(password);
+        updateUserDatabase(user);
+        return user;
+    }
+
+    /**
+     * Checks if password is valid
+     * @param password must have no white space, length greater than 11, has a capital letter, has a number
+     * @throws BadPasswordException if the password is not valid
+     */
+    private void validatePassword(String password) throws BadPasswordException{
+        if (password.contains(" ")) throw new BadPasswordException("No white space allowed");
+        if (password.length() < 11) throw new BadPasswordException("Length of password must be at least 12");
+        if (password.toLowerCase().equals(password)) throw new BadPasswordException("Must have at least one capital letter");
+        if (!password.matches(".*[0-9]+.*")) throw new BadPasswordException("Must contain at least one number");
+    }
 
     /**
      *Tries to refresh the trade count of all traders (this only happens every week).
@@ -129,7 +189,7 @@ public class LoginManager extends Manager{
     private int getProperty(TraderProperties propertyType){
         try {
             // get the file
-            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+            File propertyFile = new File(traderPropertyFilePath);
             // initialize the reader of this file
             FileReader reader = new FileReader(propertyFile);
             // initialize properties object
@@ -154,7 +214,7 @@ public class LoginManager extends Manager{
     private void setProperty(TraderProperties propertyName, int propertyValue){
         try {
             // get the file
-            File propertyFile = new File(DatabaseFilePaths.TRADER_CONFIG.getFilePath());
+            File propertyFile = new File(traderPropertyFilePath);
             // initialize reader
             FileReader reader = new FileReader(propertyFile);
             // initialize properties object (to set data)
@@ -186,12 +246,40 @@ public class LoginManager extends Manager{
                 users.set(i, user);
             }
         }
-
         try {
             getUserDatabase().save(users);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
     }
+
+    /**
+     * Removes all invalid trade requests that this user has
+     * @param traderID the id of the trader
+     */
+    private void removeInvalidRequests(String traderID){
+
+        try {
+            Trader someTrader = getTrader(traderID);
+            for (String tradeID : someTrader.getRequestedTrades()) {
+                Trade t = getTrade(tradeID);
+                Trader firstTrader = getTrader(t.getFirstUserId());
+                Trader secondTrader = getTrader(t.getSecondUserId());
+                boolean isValid = firstTrader.getAvailableItems().contains(t.getFirstUserOffer()) &&
+                        secondTrader.getAvailableItems().contains(t.getSecondUserOffer());
+
+                if (!isValid){
+                    firstTrader.getRequestedTrades().remove(tradeID);
+                    secondTrader.getRequestedTrades().remove(tradeID);
+                    getTradeDatabase().delete(tradeID);
+                    getUserDatabase().update(firstTrader);
+                    getUserDatabase().update(secondTrader);
+                }
+            }
+        }
+        catch (EntryNotFoundException | AuthorizationException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
