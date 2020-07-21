@@ -73,9 +73,10 @@ public class WindowManager extends JFrame {
                 WindowManager.this.loggedInUser = loginManager.registerUser(loginPanel.usernameInput.getText(), String.valueOf(loginPanel.passwordInput.getPassword()), UserTypes.TRADER);
                 WindowManager.this.login();
             } catch(BadPasswordException exception) { 
-                loginPanel.notifyLogin("Invalid Password: " + exception.getMessage());
+                loginPanel.notifyLogin("<html>Invalid Password: " + exception.getMessage() + "</html>");
             } catch(UserAlreadyExistsException exception) {
-                loginPanel.notifyLogin("The username '" + loginPanel.usernameInput.getText() +  "' is taken.");
+                loginPanel.notifyLogin("<html>The username '" + loginPanel.usernameInput.getText() + loginPanel.usernameInput
+                        .getText() + loginPanel.usernameInput.getText() + "' is taken.</html>");
             }
             
         });
