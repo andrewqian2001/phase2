@@ -1,17 +1,18 @@
 package frontend.panels;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalButtonUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 import backend.models.users.Admin;
 import frontend.panels.admin_subpanels.ControlPanel;
 import frontend.panels.admin_subpanels.OverviewPanel;
-import frontend.panels.trader_subpanels.*;
-import javafx.scene.layout.GridPane;
 
 public class AdminPanel extends JPanel implements ActionListener {
 
@@ -26,7 +27,7 @@ public class AdminPanel extends JPanel implements ActionListener {
     private Color gray = new Color(75, 75, 75);
     private Color red = new Color(219, 58, 52);
 
-    public AdminPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) {
+    public AdminPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.setSize(1600, 900);
         this.setBackground(bg);
         this.setLayout(new BorderLayout());
@@ -43,9 +44,9 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
-        JPanel emptyPanel1 = new JPanel();
-        emptyPanel1.setOpaque(false);
-        menuContainer.add(emptyPanel1);
+        BufferedImage myImage = ImageIO.read(new File("phase2/src/frontend/images/Icon.png"));
+        JLabel image = new JLabel(new ImageIcon(myImage));
+        menuContainer.add(image);
 
         JPanel info = new JPanel();
         info.setLayout(new GridLayout(2,1));
