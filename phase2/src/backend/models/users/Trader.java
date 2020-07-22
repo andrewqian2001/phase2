@@ -115,7 +115,7 @@ public class Trader extends User implements Serializable {
      * @return if the trader can borrow
      */
     public boolean canBorrow() {
-        return canTrade() && totalItemsLent - totalItemsBorrowed > minimumAmountNeededToBorrow;
+        return canTrade() && totalItemsLent - totalItemsBorrowed >= minimumAmountNeededToBorrow;
     }
 
     /**

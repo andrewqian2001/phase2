@@ -115,7 +115,7 @@ public class TradingManager extends Manager {
             throw new AuthorizationException("The trade offer contains an item that the user does not have");
 
         if (!datesAreValid(meetingTime, secondMeetingTime)){
-            throw new CannotTradeException("The suggested date(s) are not possible");
+            throw new AuthorizationException("The suggested date(s) are not possible");
         }
 
         Trade trade = new Trade(traderId, userId,
@@ -151,9 +151,40 @@ public class TradingManager extends Manager {
                                Date meetingTime, Date secondMeetingTime,
                                String meetingLocation, String thatUserOfferId, int allowedEdits, String message) throws
             UserNotFoundException, AuthorizationException, CannotTradeException {
-        Trader trader = getTrader(traderId);
-        if (!trader.canBorrow()) throw new CannotTradeException("Too many borrows");
-        return requestLend(traderId, userId, meetingTime, secondMeetingTime, meetingLocation, thatUserOfferId, allowedEdits, message);
+        // NOTE: bottom line cannot be done since then the trade will be initialized with userId having already
+        // accepted the trade request
+//        return requestLend(userId, traderId, meetingTime, secondMeetingTime, meetingLocation, thatUserOfferId, allowedEdits, message);
+
+        Trader trader = getTrader(traderId);//borrower
+        Trader secondTrader = getTrader(userId);//lender
+        if (!trader.canTrade()) throw new CannotTradeException("You cannot trade at the moment.");
+        if (!trader.canBorrow()) throw new CannotTradeException("You have too many borrows. Try lending.");
+        if (!secondTrader.canTrade())
+            throw new CannotTradeException("The other trader cannot trade at the moment");
+        if (userId.equals(traderId)) throw new CannotTradeException("Cannot lend to yourself");
+        if (trader.getIncompleteTradeCount() >= trader.getIncompleteTradeLim() ||
+                secondTrader.getIncompleteTradeCount() >= secondTrader.getIncompleteTradeLim())
+            throw new CannotTradeException("Too many active trades.");
+
+        // This is used to check if the items are valid to trade
+        if (!secondTrader.getAvailableItems().contains(thatUserOfferId))
+            throw new AuthorizationException("The trade offer contains an item that the user does not have");
+
+        if (!datesAreValid(meetingTime, secondMeetingTime)){
+            throw new AuthorizationException("The suggested date(s) are not possible");
+        }
+
+        Trade trade = new Trade(traderId, userId,
+                meetingTime, secondMeetingTime,
+                meetingLocation, "", thatUserOfferId, allowedEdits, message);
+
+        String tradeId = updateTradeDatabase(trade).getId();
+        trader.getRequestedTrades().add(tradeId);
+        secondTrader.getRequestedTrades().add(tradeId);
+        updateUserDatabase(trader);
+        updateUserDatabase(secondTrader);
+        return trade;
+
     }
 
     /**
