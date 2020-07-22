@@ -11,6 +11,7 @@ import backend.models.users.Admin;
 import frontend.panels.admin_subpanels.ControlPanel;
 import frontend.panels.admin_subpanels.OverviewPanel;
 import frontend.panels.trader_subpanels.*;
+import javafx.scene.layout.GridPane;
 
 public class AdminPanel extends JPanel implements ActionListener {
 
@@ -42,17 +43,27 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
+        JPanel emptyPanel1 = new JPanel();
+        emptyPanel1.setOpaque(false);
+        menuContainer.add(emptyPanel1);
+
+        JPanel info = new JPanel();
+        info.setLayout(new GridLayout(2,1));
+        info.setOpaque(false);
+
         usernameTitle = new JLabel((admin.getUsername().length() > 12 ? admin.getUsername().substring(0, 12) + "..."
                 : admin.getUsername()));
         usernameTitle.setFont(regular.deriveFont(35f));
         usernameTitle.setForeground(Color.WHITE);
         usernameTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        menuContainer.add(usernameTitle);
+        info.add(usernameTitle);
 
         userIdTitle = new JLabel("ID: #" + admin.getId().substring(admin.getId().length() - 12));
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(gray);
-        menuContainer.add(userIdTitle);
+        info.add(userIdTitle);
+
+        menuContainer.add(info);
 
         overviewPanelButton = new JButton("Overview");
         overviewPanelButton.setFont(bold.deriveFont(25f));
@@ -81,12 +92,12 @@ public class AdminPanel extends JPanel implements ActionListener {
         searchPanelButton.addActionListener(this);
         menuContainer.add(searchPanelButton);
 
-        JPanel emptyPanel1 = new JPanel();
-        emptyPanel1.setOpaque(false);
-        menuContainer.add(emptyPanel1);
         JPanel emptyPanel2 = new JPanel();
         emptyPanel2.setOpaque(false);
         menuContainer.add(emptyPanel2);
+        JPanel emptyPanel3 = new JPanel();
+        emptyPanel3.setOpaque(false);
+        menuContainer.add(emptyPanel3);
 
         logoutButton = new JButton("Logout");
         logoutButton.setFont(boldItalic.deriveFont(25f));
@@ -118,7 +129,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         ((JButton) e.getSource()).setOpaque(true);
         ((JButton) e.getSource()).setUI(new MetalButtonUI() {
             protected Color getDisabledTextColor() {
-                return Color.BLACK;
+                return Color.WHITE;
             }
         });
 
