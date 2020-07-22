@@ -32,9 +32,9 @@ public class AdminPanel extends JPanel implements ActionListener {
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
-        overviewPanel = new OverviewPanel();
+        overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
         searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
-        controlPanel = new ControlPanel();
+        controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
 
         menuContainer = new JPanel(new GridBagLayout());
         menuContainer.setOpaque(false);
@@ -51,7 +51,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         iconText.setFont(regular.deriveFont(48f));
         iconText.setForeground(Color.WHITE);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.weighty = 0.22;
+        gbc.weighty = 0.16;
         gbc.gridy = 0;
         menuContainer.add(iconText,gbc);
 
@@ -61,7 +61,7 @@ public class AdminPanel extends JPanel implements ActionListener {
 
         usernameTitle = new JLabel((admin.getUsername().length() > 12 ? admin.getUsername().substring(0, 12) + "..."
                 : admin.getUsername()));
-        usernameTitle.setFont(regular.deriveFont(35f));
+        usernameTitle.setFont(bold.deriveFont(24f));
         usernameTitle.setForeground(Color.WHITE);
         usernameTitle.setHorizontalAlignment(SwingConstants.CENTER);
         info.add(usernameTitle);
@@ -82,7 +82,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         overviewPanelButton.setOpaque(true);
         overviewPanelButton.setBorderPainted(false);
         overviewPanelButton.addActionListener(this);
-        gbc.weighty = 0.1;
+        gbc.weighty = 0.12;
         gbc.gridy = 2;
         menuContainer.add(overviewPanelButton,gbc);
 
@@ -106,7 +106,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         gbc.gridy = 4;
         menuContainer.add(searchPanelButton,gbc);
 
-        gbc.weighty = 0.35;
+        gbc.weighty = 0.36;
         JPanel emptyPanel2 = new JPanel();
         emptyPanel2.setOpaque(false);
         gbc.gridy = 5;
