@@ -1,5 +1,7 @@
 package frontend;
 
+import backend.TemporarySetup;
+
 import java.awt.*;
 import java.io.*;
 
@@ -12,6 +14,9 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class Main {
     public static void main(String[] args) {
         try {
+            //THE NEXT LINE SHOULD BE REMOVED AFTER WE'RE DONE (sets up two traders)
+            new TemporarySetup();
+
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             WindowManager windowManager = new WindowManager();
             windowManager.run();
