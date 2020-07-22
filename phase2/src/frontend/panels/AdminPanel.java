@@ -27,26 +27,33 @@ public class AdminPanel extends JPanel implements ActionListener {
     private Color gray = new Color(75, 75, 75);
     private Color red = new Color(219, 58, 52);
 
-    public AdminPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    public AdminPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) {
         this.setSize(1600, 900);
-        this.setBackground(bg);
+        this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
         overviewPanel = new OverviewPanel();
         searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
         controlPanel = new ControlPanel();
 
-        menuContainer = new JPanel(new GridLayout(8,1));
-        menuContainer.setBackground(bg);
+        menuContainer = new JPanel(new GridBagLayout());
+        menuContainer.setOpaque(false);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
 
         menuPanelContainer = new JPanel();
         cardLayout = new CardLayout();
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
-        BufferedImage myImage = ImageIO.read(new File("phase2/src/frontend/images/Icon.png"));
-        JLabel image = new JLabel(new ImageIcon(myImage));
-        menuContainer.add(image);
+        JLabel iconText = new JLabel(admin.getUsername().substring(0, 1));
+        iconText.setFont(regular.deriveFont(48f));
+        iconText.setForeground(Color.WHITE);
+        iconText.setHorizontalAlignment(SwingConstants.CENTER);
+        gbc.weighty = 0.22;
+        gbc.gridy = 0;
+        menuContainer.add(iconText,gbc);
 
         JPanel info = new JPanel();
         info.setLayout(new GridLayout(2,1));
@@ -63,8 +70,10 @@ public class AdminPanel extends JPanel implements ActionListener {
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(gray);
         info.add(userIdTitle);
+        gbc.weighty = 0.03;
+        gbc.gridy = 1;
 
-        menuContainer.add(info);
+        menuContainer.add(info,gbc);
 
         overviewPanelButton = new JButton("Overview");
         overviewPanelButton.setFont(bold.deriveFont(25f));
@@ -73,7 +82,9 @@ public class AdminPanel extends JPanel implements ActionListener {
         overviewPanelButton.setOpaque(true);
         overviewPanelButton.setBorderPainted(false);
         overviewPanelButton.addActionListener(this);
-         menuContainer.add(overviewPanelButton);
+        gbc.weighty = 0.1;
+        gbc.gridy = 2;
+        menuContainer.add(overviewPanelButton,gbc);
 
         controlPanelButton = new JButton("ControlPanel");
         controlPanelButton.setFont(bold.deriveFont(25f));
@@ -82,7 +93,8 @@ public class AdminPanel extends JPanel implements ActionListener {
         controlPanelButton.setOpaque(false);
         controlPanelButton.setBorderPainted(false);
         controlPanelButton.addActionListener(this);
-        menuContainer.add(controlPanelButton);
+        gbc.gridy = 3;
+        menuContainer.add(controlPanelButton,gbc);
 
         searchPanelButton = new JButton("Search");
         searchPanelButton.setFont(bold.deriveFont(25f));
@@ -91,14 +103,14 @@ public class AdminPanel extends JPanel implements ActionListener {
         searchPanelButton.setOpaque(false);
         searchPanelButton.setBorderPainted(false);
         searchPanelButton.addActionListener(this);
-        menuContainer.add(searchPanelButton);
+        gbc.gridy = 4;
+        menuContainer.add(searchPanelButton,gbc);
 
+        gbc.weighty = 0.35;
         JPanel emptyPanel2 = new JPanel();
         emptyPanel2.setOpaque(false);
-        menuContainer.add(emptyPanel2);
-        JPanel emptyPanel3 = new JPanel();
-        emptyPanel3.setOpaque(false);
-        menuContainer.add(emptyPanel3);
+        gbc.gridy = 5;
+        menuContainer.add(emptyPanel2,gbc);
 
         logoutButton = new JButton("Logout");
         logoutButton.setFont(boldItalic.deriveFont(25f));
@@ -106,7 +118,9 @@ public class AdminPanel extends JPanel implements ActionListener {
         logoutButton.setBackground(red);
         logoutButton.setOpaque(true);
         logoutButton.setBorderPainted(false);
-        menuContainer.add(logoutButton);
+        gbc.weighty = 0.1;
+        gbc.gridy = 6;
+        menuContainer.add(logoutButton,gbc);
 
         menuPanelContainer.add(overviewPanel, "Overview");
         menuPanelContainer.add(searchPanel, "Search");
