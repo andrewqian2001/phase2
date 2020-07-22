@@ -1,7 +1,5 @@
 package frontend;
 
-import backend.TemporarySetup;
-
 import java.awt.*;
 import java.io.*;
 

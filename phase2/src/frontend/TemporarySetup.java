@@ -1,4 +1,4 @@
-package backend;
+package frontend;
 
 import backend.exceptions.*;
 import backend.models.TradableItem;
