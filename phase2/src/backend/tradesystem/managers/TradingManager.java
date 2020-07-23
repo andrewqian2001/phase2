@@ -104,9 +104,6 @@ public class TradingManager extends Manager {
         getTradeDatabase().delete(tradeId);
     }
 
-
-
-
     /**
      * For accepting a trade request
      *
@@ -128,7 +125,7 @@ public class TradingManager extends Manager {
         if (!trader.canTrade() || !trader2.canTrade())
             throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
 
-        // Check to see
+        // Check to see that the items are available to trade
         if ((!trader.getAvailableItems().contains(trade.getFirstUserOffer()) && !trade.getFirstUserOffer().equals(""))||
                 (!trader2.getAvailableItems().contains(trade.getSecondUserOffer()) && !trade.getSecondUserOffer().equals(""))){
             throw new CannotTradeException("One of the traders no longer has the required item for the trade");
@@ -142,7 +139,7 @@ public class TradingManager extends Manager {
         updateUserDatabase(trader);
         updateUserDatabase(trader2);
 
-        // If both users accepted then move items from the inventory
+        // If both users accepted then move items out of the inventory
         if (trade.isHasFirstUserConfirmedRequest() && trade.isHasSecondUserConfirmedRequest()) {
             trader.getAvailableItems().remove(trade.getFirstUserOffer());
             trader2.getAvailableItems().remove(trade.getSecondUserOffer());
@@ -172,15 +169,22 @@ public class TradingManager extends Manager {
         if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
         else if ((trade.getSecondUserId().equals(traderId))) trade.setSecondUserConfirmed1(status);
+
+        // If both users confirmed the first meeting meeting...
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()) {
             Trader trader1 = getTrader(trade.getFirstUserId());
             Trader trader2 = getTrader(trade.getSecondUserId());
+
+            // Add the necessary items to each traders inventory
             if (!trade.getSecondUserOffer().equals(""))
                 trader1.getAvailableItems().add(trade.getSecondUserOffer());
             if (!trade.getFirstUserOffer().equals(""))
                 trader2.getAvailableItems().add(trade.getFirstUserOffer());
+
             trader1.getWishlist().remove(trade.getSecondUserOffer());
             trader2.getWishlist().remove(trade.getFirstUserOffer());
+
+            // If the trade happened to be permanent...
             if (trade.getSecondMeetingTime() == null) {
                 trader1.getAcceptedTrades().remove(tradeId);
                 trader2.getAcceptedTrades().remove(tradeId);
@@ -193,6 +197,7 @@ public class TradingManager extends Manager {
                 if (trade.getSecondUserOffer().equals(""))
                     trader1.setTotalItemsLent(trader1.getTotalItemsLent() + 1);
             }
+
             updateUserDatabase(trader1);
             updateUserDatabase(trader2);
         }
@@ -209,33 +214,42 @@ public class TradingManager extends Manager {
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException  if the other user of the trade is not found
      */
-    private void confirmSecondMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+    private void confirmSecondMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException, CannotTradeException {
         Trade trade = getTrade(tradeId);
+        Trader trader1 = getTrader(trade.getFirstUserId());
+        Trader trader2 = getTrader(trade.getSecondUserId());
         if (trade.getSecondMeetingTime() == null) return;
 
         if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1()) {
             throw new AuthorizationException("First meeting hasn't been confirmed");
         }
+        if (!trader1.getAvailableItems().contains(trade.getSecondUserOffer()) ||
+                !trader2.getAvailableItems().contains(trade.getFirstUserOffer()))
+            throw new CannotTradeException("One of the two users does not have the required items to trade.");
         if (trade.getFirstUserId().equals(traderId)) {
             trade.setFirstUserConfirmed2(status);
         } else if ((trade.getSecondUserId().equals(traderId))) {
             trade.setSecondUserConfirmed2(status);
         }
+
+
+        // If the second meeting has been confirmed...
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1() &&
                 trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2()) {
-            Trader trader1 = getTrader(trade.getFirstUserId());
-            Trader trader2 = getTrader(trade.getSecondUserId());
+
             trader1.getCompletedTrades().add(tradeId);
             trader2.getCompletedTrades().add(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
 
+            // Update available items of first user / borrowed count
             if (!trade.getFirstUserOffer().equals(""))
                 trader1.getAvailableItems().add(trade.getFirstUserOffer());
             else
                 trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed()+1);
 
+            // Update available items of the second trader / lent item count
             if(!trade.getSecondUserOffer().equals(""))
                 trader2.getAvailableItems().add(trade.getSecondUserOffer());
             else
@@ -264,7 +278,7 @@ public class TradingManager extends Manager {
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException  if the other user of the trade is not found
      */
-    public void confirmMeetingGeneral(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+    public void confirmMeetingGeneral(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException, CannotTradeException {
         Trade t = getTrade(tradeId);
         if (t.isFirstUserConfirmed1() && t.isSecondUserConfirmed1()) {
             confirmSecondMeeting(traderId, tradeId, status);
