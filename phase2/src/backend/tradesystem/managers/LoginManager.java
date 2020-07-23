@@ -20,7 +20,7 @@ import java.util.Properties;
  */
 public class LoginManager extends Manager{
 
-    private final String traderPropertyFilePath;
+    private final String TRADER_PROPERTY_FILE_PATH;
 
     /**
      * Initialize the objects to get items from databases
@@ -29,7 +29,7 @@ public class LoginManager extends Manager{
      */
     public LoginManager() throws IOException {
         super();
-        traderPropertyFilePath = DatabaseFilePaths.TRADER_CONFIG.getFilePath();
+        TRADER_PROPERTY_FILE_PATH = DatabaseFilePaths.TRADER_CONFIG.getFilePath();
     }
     /**
      * Making the database objects with set file paths
@@ -189,7 +189,7 @@ public class LoginManager extends Manager{
     private int getProperty(TraderProperties propertyType){
         try {
             // get the file
-            File propertyFile = new File(traderPropertyFilePath);
+            File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
             // initialize the reader of this file
             FileReader reader = new FileReader(propertyFile);
             // initialize properties object
@@ -214,7 +214,7 @@ public class LoginManager extends Manager{
     private void setProperty(TraderProperties propertyName, int propertyValue){
         try {
             // get the file
-            File propertyFile = new File(traderPropertyFilePath);
+            File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
             // initialize reader
             FileReader reader = new FileReader(propertyFile);
             // initialize properties object (to set data)
