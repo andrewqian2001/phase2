@@ -116,7 +116,7 @@ public class TradingInfoManager extends Manager {
         Trader[] frequentTraders = new Trader[3];
         ArrayList<String> traders = new ArrayList<>();
 
-        // converts trade-id to other Database.users' id
+
         for (String tradeId : getTrader(traderId).getCompletedTrades()) {
             Trade trade = getTrade(tradeId);
             if (trade.getFirstUserId().equals(traderId)) traders.add(trade.getSecondUserId());
