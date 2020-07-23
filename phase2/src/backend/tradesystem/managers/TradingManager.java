@@ -265,7 +265,7 @@ public class TradingManager extends Manager {
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException  if the user doesn't exist
      */
-    public void confirmFirstMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+    private void confirmFirstMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
         if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
@@ -307,7 +307,7 @@ public class TradingManager extends Manager {
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException  if the other user of the trade is not found
      */
-    public void confirmSecondMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+    private void confirmSecondMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
         if (trade.getSecondMeetingTime() == null) return;
 
@@ -349,6 +349,27 @@ public class TradingManager extends Manager {
             updateUserDatabase(trader2);
         }
         updateTradeDatabase(trade);
+    }
+
+    /**
+     * Confirms either the first or second meeting depending on which one is not confirmed.
+     * This method makes sure that the user can only confirm a second meeting once both traders
+     * have confirmed the first.
+     * @param traderId the trader confirming the meeting
+     * @param tradeId  id of the trade
+     * @param status   if the meeting is confirmed and the trade happened
+     * @throws TradeNotFoundException trade wasn't found
+     * @throws AuthorizationException this trade doesn't belong to this user
+     * @throws UserNotFoundException  if the other user of the trade is not found
+     */
+    public void confirmMeetingGeneral(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+        Trade t = getTrade(tradeId);
+        if (t.isFirstUserConfirmed1() && t.isSecondUserConfirmed1()) {
+            confirmSecondMeeting(traderId, tradeId, status);
+        }
+        else{
+            confirmFirstMeeting(traderId, tradeId, status);
+        }
     }
 
     /**
