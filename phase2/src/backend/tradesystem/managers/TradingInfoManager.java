@@ -133,7 +133,7 @@ public class TradingInfoManager extends Manager {
                     highest = possible_high;
                 }
             }
-            distinct.remove(frequentTraders[i]);
+            distinct.remove(frequentTraders[i].getId());
         }
 
         return frequentTraders;
