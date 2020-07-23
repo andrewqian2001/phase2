@@ -1,0 +1,9 @@
+Factory design pattern:
+LoginManager - when registering for a new user, the type of user is specified when registering and an instance of that specific user type is followed through
+
+
+Dependency injection pattern:
+Admin - contains a list of Report objects without instancing them
+Trader - contains a list of Review objects without instancing them
+TradingManager - request trade doesn't instance a new Trade object, it takes in a Trade object
+
