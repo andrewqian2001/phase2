@@ -41,7 +41,7 @@ public class LoginManager extends Manager{
      */
     public LoginManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String traderPropertyFilePath) throws IOException {
         super(userFilePath, tradableItemFilePath, tradeFilePath);
-        this.traderPropertyFilePath = traderPropertyFilePath;
+        this.TRADER_PROPERTY_FILE_PATH = traderPropertyFilePath;
     }
 
     /**
