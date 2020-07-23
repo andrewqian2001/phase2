@@ -46,7 +46,7 @@ public class TradingManager extends Manager {
         String traderId1 = trade.getFirstUserId();
         String traderId2 = trade.getSecondUserId();
         String firstUserOfferId = trade.getFirstUserOffer();
-        String secondUserOfferId = trade.getSecondUserId();
+        String secondUserOfferId = trade.getSecondUserOffer();
         Date meetingTime = trade.getMeetingTime();
         Date secondMeetingTime = trade.getSecondMeetingTime();
         Trader trader = getTrader(traderId1);
@@ -60,11 +60,11 @@ public class TradingManager extends Manager {
         if (!secondTrader.canTrade())
             throw new CannotTradeException("The user requested cannot trade due to trading restrictions");
         if (firstUserOfferId.equals("") && !trader.canBorrow())
-            throw new CannotTradeException("This user has not lent enough to borrow.");
+            throw new CannotTradeException("You have too many borrows. Try lending");
 
         // This is used to check if the items are in each user's inventory
-        if (!trader.getAvailableItems().contains(firstUserOfferId) ||
-                !secondTrader.getAvailableItems().contains(secondUserOfferId))
+        if ((!firstUserOfferId.equals("") && !trader.getAvailableItems().contains(firstUserOfferId)) ||
+                (!secondUserOfferId.equals("") && !secondTrader.getAvailableItems().contains(secondUserOfferId)))
             throw new AuthorizationException("The trade offer contains an item that the user does not have");
 
         // Check whether the two dates are valid.
@@ -126,8 +126,7 @@ public class TradingManager extends Manager {
             throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
 
         // Check to see that the items are available to trade
-        if ((!trader.getAvailableItems().contains(trade.getFirstUserOffer()) && !trade.getFirstUserOffer().equals(""))||
-                (!trader2.getAvailableItems().contains(trade.getSecondUserOffer()) && !trade.getSecondUserOffer().equals(""))){
+        if (!hasItem(trader, trade.getFirstUserOffer()) || !hasItem(trader2, trade.getSecondUserOffer())){
             throw new CannotTradeException("One of the traders no longer has the required item for the trade");
         }
 
@@ -224,8 +223,7 @@ public class TradingManager extends Manager {
         if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1()) {
             throw new AuthorizationException("First meeting hasn't been confirmed");
         }
-        if (!trader1.getAvailableItems().contains(trade.getSecondUserOffer()) ||
-                !trader2.getAvailableItems().contains(trade.getFirstUserOffer()))
+        if (!hasItem(trader1, trade.getSecondUserOffer()) || !hasItem(trader2, trade.getFirstUserOffer()))
             throw new CannotTradeException("One of the two users does not have the required items to trade.");
         if (trade.getFirstUserId().equals(traderId)) {
             trade.setFirstUserConfirmed2(status);
@@ -413,6 +411,17 @@ public class TradingManager extends Manager {
      */
     private boolean datesAreValid(Date d1, Date d2){
         return System.currentTimeMillis() <= d1.getTime() && (d2 == null || d1.getTime() < d2.getTime());
+    }
+
+
+    /**
+     * Return whether this trader has this item, or if the item is just "" (meaning no item).
+     * @param trader the
+     * @param item
+     * @return
+     */
+    private boolean hasItem(Trader trader, String item){
+        return (item.equals("") || trader.getAvailableItems().contains(item));
     }
 
 }
