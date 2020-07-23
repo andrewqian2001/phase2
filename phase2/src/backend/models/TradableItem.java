@@ -8,8 +8,8 @@ import java.io.Serializable;
  */
 public class TradableItem extends DatabaseItem implements Serializable {
 
-    private final String name;
-    private final String description;
+    private final String NAME;
+    private final String DESCRIPTION;
 
     /**
      * Constructs a tradable item.
@@ -18,8 +18,8 @@ public class TradableItem extends DatabaseItem implements Serializable {
      * @param description The description of the TradableItem
      */
     public TradableItem(String name, String description) {
-        this.name = name;
-        this.description = description;
+        this.NAME = name;
+        this.DESCRIPTION = description;
     }
 
     /**
@@ -28,7 +28,7 @@ public class TradableItem extends DatabaseItem implements Serializable {
      * @return name of the item
      */
     public String getName() {
-        return name;
+        return NAME;
     }
 
     /**
@@ -37,6 +37,6 @@ public class TradableItem extends DatabaseItem implements Serializable {
      * @return description of the item
      */
     public String getDesc() {
-        return description;
+        return DESCRIPTION;
     }
 }
