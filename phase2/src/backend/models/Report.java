@@ -6,9 +6,9 @@ import java.io.Serializable;
  * Represents what goes into reporting someone
  */
 public class Report extends DatabaseItem implements Serializable {
-    private final String fromUserId;
-    private final String reportOnUserId;
-    private final String message;
+    private final String FROM_USER_ID;
+    private final String REPORT_ON_USER_ID;
+    private final String MESSAGE;
 
     /**
      * Makes a new report
@@ -18,9 +18,9 @@ public class Report extends DatabaseItem implements Serializable {
      * @param message        the report description
      */
     public Report(String fromUserId, String reportOnUserId, String message) {
-        this.fromUserId = fromUserId;
-        this.reportOnUserId = reportOnUserId;
-        this.message = message;
+        this.FROM_USER_ID = fromUserId;
+        this.REPORT_ON_USER_ID = reportOnUserId;
+        this.MESSAGE = message;
     }
 
     /**
@@ -29,7 +29,7 @@ public class Report extends DatabaseItem implements Serializable {
      * @return The user that sent the report
      */
     public String getFromUserId() {
-        return fromUserId;
+        return FROM_USER_ID;
     }
 
     /**
@@ -38,7 +38,7 @@ public class Report extends DatabaseItem implements Serializable {
      * @return the user that got reported on
      */
     public String getReportOnUserId() {
-        return reportOnUserId;
+        return REPORT_ON_USER_ID;
     }
 
     /**
@@ -46,6 +46,6 @@ public class Report extends DatabaseItem implements Serializable {
      * @return what the report is about
      */
     public String getMessage() {
-        return message;
+        return MESSAGE;
     }
 }
