@@ -55,6 +55,7 @@ public class TradePanel extends JPanel {
         
         this.add(ongoingTradesTitle);
         getOngoingTradesPanel();
+        this.add(ongoingTradesContainer);
         this.add(tradeRequestsTitle);
         getTradeRequestPanels();
         this.add(tradeRequestsContainer);
@@ -64,6 +65,7 @@ public class TradePanel extends JPanel {
     }
     
     private void getOngoingTradesPanel() {
+        System.out.println(trader.getWishlist().size());
         for(String tradeID : trader.getAcceptedTrades()) {
         // for(int i = 0; i < 3; i++) {
             try {
@@ -85,10 +87,15 @@ public class TradePanel extends JPanel {
                 tradeMeetingTime.setForeground(Color.BLACK);
                 tradeMeetingTime.setHorizontalAlignment(JLabel.LEFT);
 
+                System.out.println(tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername());
+                System.out.println(ongoingTrade.getMeetingLocation());
+                System.out.println(ongoingTrade.getMeetingTime().toString());
+                System.out.println();
+
                 ongoingTradePanel.add(otherTraderName);
                 ongoingTradePanel.add(tradeLocation);
                 ongoingTradePanel.add(tradeMeetingTime);
-                ongoingTradesContainer.add(ongoingTradePanel);
+                this.ongoingTradesContainer.add(ongoingTradePanel);
             } catch(TradeNotFoundException | UserNotFoundException exception) {
             // } catch(Exception exception) {
                 System.out.println(exception.getMessage());
