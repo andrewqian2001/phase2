@@ -25,7 +25,7 @@ public class WindowManager extends JFrame {
     private JPanel userPanel;
     private User loggedInUser;
     private LoginManager loginManager;
-    private BufferedImage LoginBg, AdminBg;
+    private BufferedImage LoginBg, AdminBg, TraderBg;
 
     public WindowManager() throws IOException, FontFormatException {
         regular = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Regular.ttf"));
@@ -33,8 +33,8 @@ public class WindowManager extends JFrame {
         italic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Italic.ttf"));
         boldItalic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-BoldItalic.ttf"));
         LoginBg = ImageIO.read(new File("phase2/src/frontend/images/LoginPanelBg.jpg"));
-        AdminBg = ImageIO.read(new File("phase2/src/frontend/images/Icon.jpg"));
-
+        AdminBg = ImageIO.read(new File("phase2/src/frontend/images/IconAdmin.jpg"));
+        TraderBg = ImageIO.read(new File("phase2/src/frontend/images/IconTrader.jpg"));
         loginPanel = new LoginPanel(regular, bold, italic, boldItalic);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -47,6 +47,7 @@ public class WindowManager extends JFrame {
     public void login() throws IOException {
         if(loggedInUser instanceof Trader) {
             userPanel = new TraderPanel((Trader) loggedInUser, regular, bold, italic, boldItalic);
+            this.setContentPane(new ImagePanel(TraderBg));
         } else {
             userPanel = new AdminPanel((Admin) loggedInUser, regular, bold, italic, boldItalic);
             this.setContentPane(new ImagePanel(AdminBg));
