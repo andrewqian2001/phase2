@@ -14,7 +14,8 @@ import backend.tradesystem.managers.TradingManager;
 
 public class TradePanel extends JPanel {
 
-    private JScrollPane ongoingTradesContainer, tradeRequestsContainer;
+    private JPanel ongoingTradesContainer, tradeRequestsContainer;
+    private JScrollPane tradeRequestsScrollPane, ongoingTradesScrollPane;
     private JButton addTradeButton;
     private JLabel ongoingTradesTitle, tradeRequestsTitle;
     private Font regular, bold, italic, boldItalic;
@@ -22,6 +23,9 @@ public class TradePanel extends JPanel {
     private Trader trader;
 
     private Color bg = new Color(51, 51, 51);
+    private Color detailsButton = new Color(142,142,142);
+    private Color confirmButton = new Color(27,158,36);
+    private Color red = new Color(219, 58, 52);
 
     public TradePanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.trader = trader;
@@ -32,13 +36,14 @@ public class TradePanel extends JPanel {
 
         tradeManager = new TradingManager();
 
-        this.setSize(1000, 900); // fix this later
+        this.setPreferredSize(new Dimension(1000, 900)); // fix this later
         this.setBackground(bg);
-        this.setLayout(new GridLayout(5,1)); //FIX
 
-        tradeRequestsContainer = new JScrollPane();
+        tradeRequestsScrollPane = new JScrollPane();
+        tradeRequestsScrollPane.setPreferredSize(new Dimension(1200, 300));
         
-        ongoingTradesContainer = new JScrollPane();
+        ongoingTradesScrollPane = new JScrollPane();
+        ongoingTradesScrollPane.setPreferredSize(new Dimension(1200, 300));
         
         ongoingTradesTitle = new JLabel("Ongoing Trades");
         ongoingTradesTitle.setFont(regular.deriveFont(20f));
@@ -55,49 +60,128 @@ public class TradePanel extends JPanel {
         
         this.add(ongoingTradesTitle);
         getOngoingTradesPanel();
-        this.add(ongoingTradesContainer);
+        ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
+        this.add(ongoingTradesScrollPane);
+        
         this.add(tradeRequestsTitle);
         getTradeRequestPanels();
-        this.add(tradeRequestsContainer);
+        tradeRequestsScrollPane.setViewportView(tradeRequestsContainer);
+        this.add(tradeRequestsScrollPane);
     }
 
     private void getTradeRequestPanels() {
+        tradeRequestsContainer = new JPanel(new GridLayout(5, 1));
+        // tradeRequestsContainer = new JPanel(new GridLayout(trader.getRequestedTrades().size(), 1));
+        // for(String tradeID : trader.getRequestedTrades()) {
+        for (int i = 0; i < 5; i++) {
+            try {
+                // Trade ongoingTrade = tradeManager.getTrade(tradeID);
+                JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 5, 10, 0));
+                tradeRequestPanel.setSize(900, 10);
+                // JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
+                JLabel otherTraderName = new JLabel("otherTraderName");
+                otherTraderName.setFont(regular.deriveFont(20f));
+                otherTraderName.setForeground(Color.BLACK);
+                otherTraderName.setHorizontalAlignment(JLabel.CENTER);
+
+                JLabel tradeLocation = new JLabel("Mom's Basement");
+                tradeLocation.setFont(regular.deriveFont(20f));
+                tradeLocation.setForeground(Color.BLACK);
+                tradeLocation.setHorizontalAlignment(JLabel.CENTER);
+                
+                JLabel otherTraderItemName = new JLabel("Guitar");
+                otherTraderItemName.setFont(regular.deriveFont(20f));
+                otherTraderItemName.setForeground(Color.BLACK);
+                otherTraderItemName.setHorizontalAlignment(JLabel.CENTER);
+
+                JLabel traderItemName = new JLabel("Fried Chicken");
+                traderItemName.setFont(regular.deriveFont(20f));
+                traderItemName.setForeground(Color.BLACK);
+                traderItemName.setHorizontalAlignment(JLabel.CENTER);
+
+                JButton tradeDetailsButton = new JButton("Details");
+                tradeDetailsButton.setFont(bold.deriveFont(20f));
+                tradeDetailsButton.setForeground(Color.WHITE);
+                tradeDetailsButton.setBackground(detailsButton);
+                tradeDetailsButton.setOpaque(true);
+                tradeDetailsButton.setBorderPainted(false);
+
+                JButton tradeConfirmButton = new JButton("Confirm");
+                tradeConfirmButton.setFont(bold.deriveFont(20f));
+                tradeConfirmButton.setForeground(Color.WHITE);
+                tradeConfirmButton.setBackground(confirmButton);
+                tradeConfirmButton.setOpaque(true);
+                tradeConfirmButton.setBorderPainted(false);
+
+                JButton tradeRejectButton = new JButton("Reject");
+                tradeRejectButton.setFont(bold.deriveFont(20f));
+                tradeRejectButton.setForeground(Color.WHITE);
+                tradeRejectButton.setBackground(red);
+                tradeRejectButton.setOpaque(true);
+                tradeRejectButton.setBorderPainted(false);
+
+                tradeRequestPanel.add(otherTraderName);
+                tradeRequestPanel.add(tradeLocation);
+                tradeRequestPanel.add(otherTraderItemName);
+                tradeRequestPanel.add(tradeDetailsButton);
+                tradeRequestPanel.add(tradeConfirmButton);
+                tradeRequestPanel.add(tradeRejectButton);
+                tradeRequestsContainer.add(tradeRequestPanel);
+                // } catch(TradeNotFoundException | UserNotFoundException exception) {
+            } catch (Exception exception) {
+                System.out.println(exception.getMessage());
+            }
+        }
+
     }
     
     private void getOngoingTradesPanel() {
-        System.out.println(trader.getWishlist().size());
-        for(String tradeID : trader.getAcceptedTrades()) {
-        // for(int i = 0; i < 3; i++) {
+        ongoingTradesContainer = new JPanel(new GridLayout(5, 1));
+        // ongoingTradesContainer = new JPanel(new GridLayout(trader.getAcceptedTrades().size(), 1));
+        // for(String tradeID : trader.getAcceptedTrades()) {
+        for(int i = 0; i < 5; i++) {
             try {
-                Trade ongoingTrade = tradeManager.getTrade(tradeID);
-                JPanel ongoingTradePanel = new JPanel(new GridLayout(1,3)); //FIX
-                JLabel otherTraderName = new JLabel(tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername());
-                // JLabel otherTraderName = new JLabel("otherTraderName");
+                // Trade ongoingTrade = tradeManager.getTrade(tradeID);
+                JPanel ongoingTradePanel = new JPanel(new GridLayout(1,5)); 
+                ongoingTradePanel.setSize(900,10);
+                // JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
+                JLabel otherTraderName = new JLabel("otherTraderName");
                 otherTraderName.setFont(regular.deriveFont(20f));
                 otherTraderName.setForeground(Color.BLACK);
-                otherTraderName.setHorizontalAlignment(JLabel.LEFT);
-                JLabel tradeLocation = new JLabel(ongoingTrade.getMeetingLocation());
-                // JLabel tradeLocation = new JLabel("McDonalds");
+                otherTraderName.setHorizontalAlignment(JLabel.CENTER);
+                // JLabel tradeLocation = new JLabel(ongoingTrade.getMeetingLocation());
+                JLabel tradeLocation = new JLabel("McDonalds");
                 tradeLocation.setFont(regular.deriveFont(20f));
                 tradeLocation.setForeground(Color.BLACK);
-                tradeLocation.setHorizontalAlignment(JLabel.LEFT);
-                JLabel tradeMeetingTime = new JLabel(ongoingTrade.getMeetingTime().toString());
-                // JLabel tradeMeetingTime = new JLabel("4:20:69AM");
+                tradeLocation.setHorizontalAlignment(JLabel.CENTER);
+                // JLabel tradeMeetingTime = new JLabel(ongoingTrade.getMeetingTime().toString()); // fix to get current
+                JLabel tradeMeetingTime = new JLabel("2020/07/30@14:20");
                 tradeMeetingTime.setFont(regular.deriveFont(20f));
                 tradeMeetingTime.setForeground(Color.BLACK);
-                tradeMeetingTime.setHorizontalAlignment(JLabel.LEFT);
+                tradeMeetingTime.setHorizontalAlignment(JLabel.CENTER);
 
-                System.out.println(tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername());
-                System.out.println(ongoingTrade.getMeetingLocation());
-                System.out.println(ongoingTrade.getMeetingTime().toString());
-                System.out.println();
+                JButton tradeDetailsButton = new JButton("Details");
+                tradeDetailsButton.setFont(bold.deriveFont(20f));
+                tradeDetailsButton.setForeground(Color.WHITE);
+                tradeDetailsButton.setBackground(detailsButton);
+                tradeDetailsButton.setOpaque(true);
+                tradeDetailsButton.setBorderPainted(false);
+
+                JButton tradeConfirmButton = new JButton("Confirm");
+                tradeConfirmButton.setFont(bold.deriveFont(20f));
+                tradeConfirmButton.setForeground(Color.WHITE);
+                tradeConfirmButton.setBackground(confirmButton);
+                tradeConfirmButton.setOpaque(true);
+                tradeConfirmButton.setBorderPainted(false);
 
                 ongoingTradePanel.add(otherTraderName);
                 ongoingTradePanel.add(tradeLocation);
                 ongoingTradePanel.add(tradeMeetingTime);
-                this.ongoingTradesContainer.add(ongoingTradePanel);
-            } catch(TradeNotFoundException | UserNotFoundException exception) {
-            // } catch(Exception exception) {
+                ongoingTradePanel.add(tradeDetailsButton);
+                ongoingTradePanel.add(tradeConfirmButton);
+                ongoingTradesContainer.add(ongoingTradePanel);
+            // } catch(TradeNotFoundException | UserNotFoundException exception) {
+            } catch(Exception exception) {
                 System.out.println(exception.getMessage());
             }
         }
