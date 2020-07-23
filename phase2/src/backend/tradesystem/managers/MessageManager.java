@@ -138,4 +138,17 @@ public class MessageManager extends Manager {
         }
     }
 
+    /**
+     * Clears all reports
+     */
+    public void clearReports(){
+        for (User user : getUserDatabase().getItems()) {
+            if (user instanceof Admin) {
+                Admin admin = ((Admin) user);
+                admin.setReports(new ArrayList<>());
+                updateUserDatabase(admin);
+            }
+        }
+    }
+
 }
