@@ -54,7 +54,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         iconText.setForeground(Color.BLACK);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 0;
-        gbc.weighty = 0.18;
+        gbc.weighty = 0.16;
         menuContainer.add(iconText, gbc);
 
         usernameTitle = new JLabel((trader.getUsername().length() > 12 ? trader.getUsername().substring(0, 12) + "..."
@@ -84,7 +84,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         tradePanelButton.setBorderPainted(false);
         tradePanelButton.addActionListener(this);
         gbc.gridy = 3;
-        gbc.weighty = 0.13;
+        gbc.weighty = 0.14;
         gbc.insets = new Insets(0,0,0,0);
         menuContainer.add(tradePanelButton, gbc);
 

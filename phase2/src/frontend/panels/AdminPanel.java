@@ -16,11 +16,12 @@ import frontend.panels.admin_subpanels.OverviewPanel;
 
 public class AdminPanel extends JPanel implements ActionListener {
 
-    private JLabel usernameTitle, userIdTitle;
+    private JLabel iconText, usernameTitle, userIdTitle;
     private JPanel overviewPanel, searchPanel, controlPanel, menuContainer,
             menuPanelContainer;
     private JButton overviewPanelButton, searchPanelButton, controlPanelButton, logoutButton;
     private CardLayout cardLayout;
+    private GridBagConstraints gbc;
 
     private Color bg = new Color(51, 51, 51);
     private Color current = new Color(32, 32, 32);
@@ -38,7 +39,7 @@ public class AdminPanel extends JPanel implements ActionListener {
 
         menuContainer = new JPanel(new GridBagLayout());
         menuContainer.setOpaque(false);
-        GridBagConstraints gbc = new GridBagConstraints();
+        gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
 
@@ -47,7 +48,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
-        JLabel iconText = new JLabel(admin.getUsername().substring(0, 1));
+        iconText = new JLabel(admin.getUsername().substring(0, 1));
         iconText.setFont(regular.deriveFont(48f));
         iconText.setForeground(Color.WHITE);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -55,25 +56,22 @@ public class AdminPanel extends JPanel implements ActionListener {
         gbc.gridy = 0;
         menuContainer.add(iconText,gbc);
 
-        JPanel info = new JPanel();
-        info.setLayout(new GridLayout(2,1));
-        info.setOpaque(false);
-
         usernameTitle = new JLabel((admin.getUsername().length() > 12 ? admin.getUsername().substring(0, 12) + "..."
                 : admin.getUsername()));
-        usernameTitle.setFont(bold.deriveFont(24f));
+        usernameTitle.setFont(regular.deriveFont(35f));
         usernameTitle.setForeground(Color.WHITE);
         usernameTitle.setHorizontalAlignment(SwingConstants.CENTER);
-        info.add(usernameTitle);
+        gbc.weighty = 0.01;
+        gbc.gridy = 1;
+        menuContainer.add(usernameTitle, gbc);
 
         userIdTitle = new JLabel("ID: #" + admin.getId().substring(admin.getId().length() - 12));
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(gray);
-        info.add(userIdTitle);
-        gbc.weighty = 0.03;
-        gbc.gridy = 1;
-
-        menuContainer.add(info,gbc);
+        gbc.weighty = 0.01;
+        gbc.gridy = 2;
+        gbc.insets = new Insets(0,0,10,0);
+        menuContainer.add(userIdTitle, gbc);
 
         overviewPanelButton = new JButton("Overview");
         overviewPanelButton.setFont(bold.deriveFont(25f));
@@ -82,8 +80,9 @@ public class AdminPanel extends JPanel implements ActionListener {
         overviewPanelButton.setOpaque(true);
         overviewPanelButton.setBorderPainted(false);
         overviewPanelButton.addActionListener(this);
-        gbc.weighty = 0.12;
-        gbc.gridy = 2;
+        gbc.weighty = 0.14;
+        gbc.gridy = 3;
+        gbc.insets = new Insets(0,0,0,0);
         menuContainer.add(overviewPanelButton,gbc);
 
         controlPanelButton = new JButton("ControlPanel");
@@ -93,7 +92,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         controlPanelButton.setOpaque(false);
         controlPanelButton.setBorderPainted(false);
         controlPanelButton.addActionListener(this);
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         menuContainer.add(controlPanelButton,gbc);
 
         searchPanelButton = new JButton("Search");
@@ -103,13 +102,13 @@ public class AdminPanel extends JPanel implements ActionListener {
         searchPanelButton.setOpaque(false);
         searchPanelButton.setBorderPainted(false);
         searchPanelButton.addActionListener(this);
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         menuContainer.add(searchPanelButton,gbc);
 
-        gbc.weighty = 0.36;
+        gbc.weighty = 0.26;
         JPanel emptyPanel2 = new JPanel();
         emptyPanel2.setOpaque(false);
-        gbc.gridy = 5;
+        gbc.gridy = 6;
         menuContainer.add(emptyPanel2,gbc);
 
         logoutButton = new JButton("Logout");
@@ -119,7 +118,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         logoutButton.setOpaque(true);
         logoutButton.setBorderPainted(false);
         gbc.weighty = 0.1;
-        gbc.gridy = 6;
+        gbc.gridy = 7;
         menuContainer.add(logoutButton,gbc);
 
         menuPanelContainer.add(overviewPanel, "Overview");
