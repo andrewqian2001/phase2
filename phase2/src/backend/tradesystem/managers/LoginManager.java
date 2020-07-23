@@ -55,10 +55,14 @@ public class LoginManager extends Manager{
      * @throws BadPasswordException password isn't valid
      */
     public User registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException {
+        // Get current default limits
         int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
         int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
         int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
+
         validatePassword(password);
+
+
         if (!isUsernameUnique(username))
             throw new UserAlreadyExistsException();
         switch (type) {
@@ -173,11 +177,20 @@ public class LoginManager extends Manager{
      */
     private void tryToRefreshTradeCount(){
         Date date = new Date();
-        int curr_time = (int)(date.getTime()/(1000 * 60 * 60 * 24 * 7));
-        int last_time = getProperty(TraderProperties.LAST_TRADE_COUNT_UPDATE);
-        if(last_time - curr_time != 0) {
+
+        // Gets the current time in weeks since 1970.
+        int currTime = (int)(date.getTime()/(1000 * 60 * 60 * 24 * 7));
+
+        // Gets the last time (in weeks) the trade count of every user has been updated
+        int lastTime = getProperty(TraderProperties.LAST_TRADE_COUNT_UPDATE);
+
+        // If the time is different (i.e. one week has passed)...
+        if(lastTime - currTime != 0) {
+            // Refresh the trade count
             refreshTradeCount();
-            setProperty(TraderProperties.LAST_TRADE_COUNT_UPDATE, curr_time);
+
+            // Set the new date that the trade count was updated to currTime.
+            setProperty(TraderProperties.LAST_TRADE_COUNT_UPDATE, currTime);
         }
     }
 
@@ -235,7 +248,7 @@ public class LoginManager extends Manager{
     }
 
     /**
-     * Refreshes the trade count of all the traders
+     * Refreshes the trade count of all the traders (sets the trade count to 0)
      */
     private void refreshTradeCount(){
         ArrayList<User> users = getUserDatabase().getItems();
@@ -258,15 +271,17 @@ public class LoginManager extends Manager{
      * @param traderID the id of the trader
      */
     private void removeInvalidRequests(String traderID){
-
         try {
             Trader someTrader = getTrader(traderID);
             for (String tradeID : someTrader.getRequestedTrades()) {
+                // Populate required variables.
                 Trade t = getTrade(tradeID);
                 Trader firstTrader = getTrader(t.getFirstUserId());
                 Trader secondTrader = getTrader(t.getSecondUserId());
-                boolean isValid = firstTrader.getAvailableItems().contains(t.getFirstUserOffer()) &&
-                        secondTrader.getAvailableItems().contains(t.getSecondUserOffer());
+
+                // Figure out whether the trade is still valid.
+                boolean isValid = (t.getFirstUserOffer().equals("") || firstTrader.getAvailableItems().contains(t.getFirstUserOffer())) &&
+                        (t.getSecondUserOffer().equals("") || secondTrader.getAvailableItems().contains(t.getSecondUserOffer()));
 
                 if (!isValid){
                     firstTrader.getRequestedTrades().remove(tradeID);

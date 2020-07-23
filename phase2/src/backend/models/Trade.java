@@ -8,18 +8,18 @@ import java.util.Date;
  * Represents a trade between two users
  */
 public class Trade extends DatabaseItem implements Serializable {
-    private Date meetingTime = null;
-    private Date secondMeetingTime = null;
-    private String meetingLocation = "";
+    private Date meetingTime;
+    private Date secondMeetingTime;
+    private String meetingLocation;
     private int numEdits = 0;
-    private String firstUserOffer = "";
-    private String secondUserOffer = "";
-    private boolean hasFirstUserConfirmedRequest = true;
-    private boolean hasSecondUserConfirmedRequest = false;
-    private boolean isFirstUserConfirmed1 = false;
-    private boolean isSecondUserConfirmed1 = false;
-    private boolean isFirstUserConfirmed2 = false;
-    private boolean isSecondUserConfirmed2 = false;
+    private String firstUserOffer;
+    private String secondUserOffer;
+    private boolean hasFirstUserConfirmedRequest = true; // Whether trader1 has accepted the trade request
+    private boolean hasSecondUserConfirmedRequest = false; // Whether trader2 has accepted the trade request
+    private boolean isFirstUserConfirmed1 = false; // Whether trader1 has confirmed the first meeting
+    private boolean isSecondUserConfirmed1 = false; // Whether trader2 has confirmed the first meeting
+    private boolean isFirstUserConfirmed2 = false; // Whether trader1 has confirmed the second meeting
+    private boolean isSecondUserConfirmed2 = false; // Whether trader2 has confirmed the second meeting
     private final String FIRST_USER_ID, SECOND_USER_ID;
     private final int MAX_ALLOWED_NUM_EDITS;
     private String message;

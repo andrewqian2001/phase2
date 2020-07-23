@@ -97,6 +97,8 @@ public class MessageManager extends Manager {
         if (fromUserId.equals(toUserId)) throw new AuthorizationException("You cannot report yourself.");
         if (getUser(fromUserId).isFrozen()) throw new AuthorizationException("This user is frozen and can't report others.");
         Report report = new Report(fromUserId, toUserId, message);
+
+        // Add the report to all admins so that they can see the report.
         for (User user : getUserDatabase().getItems()) {
             if (user instanceof Admin) {
                 Admin admin = ((Admin) user);

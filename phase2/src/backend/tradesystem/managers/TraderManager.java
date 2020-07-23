@@ -49,8 +49,8 @@ public class TraderManager extends Manager {
         Trader trader = getTrader(id);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         TradableItem item = new TradableItem(name, desc);
-        updateTradableItemDatabase(item);
         trader.getRequestedItems().add(item.getId());
+        updateTradableItemDatabase(item);
         updateUserDatabase(trader);
         return trader;
     }
