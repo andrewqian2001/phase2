@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @param <T> the entry must have an id to identify different entries
  */
 public class Database<T extends DatabaseItem> implements Serializable {
-    private final String filePath;
+    private final String FILE_PATH;
 
     private static final Logger logger = Logger.getLogger(Database.class.getName());
     private static final Handler consoleHandler = new ConsoleHandler();
@@ -34,7 +34,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
         logger.setLevel(Level.ALL);
         consoleHandler.setLevel(Level.WARNING);
         logger.addHandler(consoleHandler);
-        this.filePath = filePath;
+        this.FILE_PATH = filePath;
         new File(filePath).createNewFile();
     }
 
@@ -127,12 +127,12 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @return all the items in the file
      */
     public ArrayList<T> getItems() {
-        if (!new File(this.filePath).exists()) {
-            logger.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
+        if (!new File(this.FILE_PATH).exists()) {
+            logger.log(Level.SEVERE, "The file " + FILE_PATH + " doesn't exist.");
             return new ArrayList<T>();
         }
         try {
-            InputStream buffer = new BufferedInputStream(new FileInputStream(this.filePath));
+            InputStream buffer = new BufferedInputStream(new FileInputStream(this.FILE_PATH));
             ObjectInput input = new ObjectInputStream(buffer);
             Object tmp = input.readObject();
             input.close();
@@ -153,12 +153,12 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @throws FileNotFoundException if the file doesn't exist
      */
     public void save(ArrayList<T> items) throws FileNotFoundException {
-        if (!new File(this.filePath).exists()) {
-            logger.log(Level.SEVERE, "The file " + filePath + " doesn't exist.");
+        if (!new File(this.FILE_PATH).exists()) {
+            logger.log(Level.SEVERE, "The file " + FILE_PATH + " doesn't exist.");
             throw new FileNotFoundException();
         }
         try {
-            OutputStream buffer = new BufferedOutputStream(new FileOutputStream(filePath));
+            OutputStream buffer = new BufferedOutputStream(new FileOutputStream(FILE_PATH));
             ObjectOutput output = new ObjectOutputStream(buffer);
             output.writeObject(items);
             output.close();
