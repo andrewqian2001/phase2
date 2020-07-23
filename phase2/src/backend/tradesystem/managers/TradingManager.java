@@ -31,7 +31,6 @@ public class TradingManager extends Manager {
         super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
-
     /**
      * Adds a new trade to the system and acknowledges that it is a requested trade between two users in the trade.
      * A trade is a borrow if the the item the first user is offering is "".
