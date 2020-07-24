@@ -20,6 +20,7 @@ public class TraderPanel extends JPanel implements ActionListener {
     private JButton tradePanelButton, inventoryPanelButton, wishlistPanelButton, notificationsPanelButton,
             searchPanelButton, logoutButton;
     private CardLayout cardLayout;
+    private ItemPanelFactory itemPanelFactory;
     private GridBagConstraints gbc;
 
     // TODO: Set different colors
@@ -33,9 +34,11 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
+        itemPanelFactory = new ItemPanelFactory(trader, regular, bold, italic, boldItalic);
+
         tradePanel = new TradePanel(trader, regular, bold, italic, boldItalic);
-        inventoryPanel = new InventoryPanel(trader, regular, bold, italic, boldItalic);
-        wishlistPanel = new WishlistPanel(trader, regular, bold, italic, boldItalic);
+        inventoryPanel = itemPanelFactory.create("Inventory");
+        wishlistPanel = itemPanelFactory.create("Wishlist");
         notificationsPanel = new NotificationsPanel(trader, regular, bold, italic, boldItalic);
         searchPanel = new SearchPanel(trader, regular, bold, italic, boldItalic);
 
