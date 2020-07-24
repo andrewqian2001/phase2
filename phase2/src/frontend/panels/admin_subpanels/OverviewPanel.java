@@ -96,6 +96,7 @@ public class OverviewPanel extends JPanel {
 
         itemRequestsScrollPane = new JScrollPane(itemRequestsContainer);
         itemRequestsScrollPane.setPreferredSize(new Dimension(1300, 300));
+        itemRequestsScrollPane.setBorder(null);
 
         unFreezeRequestsScrollPane = new JScrollPane(unFreezeRequestsContainer);
         unFreezeRequestsScrollPane.setPreferredSize(new Dimension(600, 300));
@@ -118,16 +119,67 @@ public class OverviewPanel extends JPanel {
 
     private void getAllItemRequests() {
         itemRequestsContainer = new JPanel(new GridLayout(10,1));
+        itemRequestsContainer.setBackground(bg);
+        itemRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        for (int i = 0; i < 10; i++) {
+            try {
+                JPanel itemRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
+                itemRequestPanel.setPreferredSize(new Dimension(1000, 75));
+                itemRequestPanel.setBackground(bg);
+                
+                JLabel traderName = new JLabel("TraderName #" + (i + 1));
+                traderName.setFont(regular.deriveFont(20f));
+                traderName.setForeground(Color.WHITE);
+                traderName.setHorizontalAlignment(JLabel.LEFT);
+
+                JLabel traderItemName = new JLabel("Item Name #" + (i + 1));
+                traderItemName.setFont(regular.deriveFont(20f));
+                traderItemName.setForeground(Color.WHITE);
+                traderItemName.setHorizontalAlignment(JLabel.CENTER);
+
+                JLabel traderItemDesc = new JLabel("Item Desc #" + (i + 1));
+                traderItemDesc.setFont(regular.deriveFont(20f));
+                traderItemDesc.setForeground(Color.WHITE);
+                traderItemDesc.setHorizontalAlignment(JLabel.CENTER);
+
+
+                JButton acceptItemRequestButton = new JButton("Accept");
+                acceptItemRequestButton.setFont(bold.deriveFont(20f));
+                acceptItemRequestButton.setForeground(Color.WHITE);
+                acceptItemRequestButton.setBackground(confirmButton);
+                acceptItemRequestButton.setOpaque(true);
+                acceptItemRequestButton.setBorderPainted(false);
+
+                JButton rejectItemRequestButton = new JButton("Reject");
+                rejectItemRequestButton.setFont(bold.deriveFont(20f));
+                rejectItemRequestButton.setForeground(Color.WHITE);
+                rejectItemRequestButton.setBackground(red);
+                rejectItemRequestButton.setOpaque(true);
+                rejectItemRequestButton.setBorderPainted(false);
+
+                itemRequestPanel.add(traderName);
+                itemRequestPanel.add(traderItemName);
+                itemRequestPanel.add(traderItemDesc);
+                itemRequestPanel.add(acceptItemRequestButton);
+                itemRequestPanel.add(rejectItemRequestButton);
+                itemRequestsContainer.add(itemRequestPanel);
+                // } catch(TradeNotFoundException | UserNotFoundException exception) {
+            } catch (Exception exception) {
+                System.out.println(exception.getMessage());
+            }
+        }
     }
     
     private void getAllUnFreezeRequests() {
         unFreezeRequestsContainer = new JPanel(new GridLayout(10,1));
+        unFreezeRequestsContainer.setBackground(bg);
         
         
     }
     
     private void getAllToBeFrozenUsers() {
         freezeTradersContainer = new JPanel(new GridLayout(10,1));
+        freezeTradersContainer.setBackground(bg);
 
     }
 }
