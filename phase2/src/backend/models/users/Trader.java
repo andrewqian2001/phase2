@@ -26,6 +26,7 @@ public class Trader extends User implements Serializable {
     private int tradeCount;
     private boolean isIdle = false;
     private String city;
+    private int money;
 
 
     /**
@@ -38,12 +39,13 @@ public class Trader extends User implements Serializable {
      * @param minimumAmountNeededToBorrow the minimum amount of items that must be lent before borrowing is allowed
      * @param city                        the city of the trader
      */
-    public Trader(String name, String password, String city, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow) {
+    public Trader(String name, String password, String city, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow, int money) {
         super(name, password);
         this.tradeLimit = tradeLimit;
         this.incompleteTradeLim = incompleteTradeLim;
         this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
         this.city = city;
+        this.money = money;
     }
 
     /**
@@ -79,6 +81,10 @@ public class Trader extends User implements Serializable {
     public void setCity(String city) {
         this.city = city;
     }
+
+    public void getMoney() { return money; }
+
+    public void setMoney(int money) { this.money = money; }
 
     /**
      * Makes the trader have an idle status
