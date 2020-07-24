@@ -52,8 +52,28 @@ public class TradeBuilder {
         this.message = message;
     }
 
-    public Trade createTrade(){
+    public Trade createPermanentTrade(){
+        return new Trade(firstUserId, secondUserId, meeting1, null, location, firstUserOffer, secondUserOffer, allowedEditsPerUser, message);
+    }
+
+    public Trade createPermanentBorrow() {
+        return new Trade(firstUserId, secondUserId, meeting1, null, location, "", secondUserOffer, allowedEditsPerUser, message);
+    }
+
+    public Trade createPermanentLend(){
+        return new Trade(firstUserId, secondUserId, meeting1, null, location, firstUserOffer, "", allowedEditsPerUser, message);
+    }
+
+    public Trade createTemporaryTrade(){
         return new Trade(firstUserId, secondUserId, meeting1, meeting2, location, firstUserOffer, secondUserOffer, allowedEditsPerUser, message);
+    }
+
+    public Trade createTemporaryBorrow(){
+        return new Trade(firstUserId, secondUserId, meeting1, meeting2, location, "", secondUserOffer, allowedEditsPerUser, message);
+    }
+
+    public Trade createTemporaryLend(){
+        return new Trade(firstUserId, secondUserId, meeting1, meeting2, location, firstUserOffer, "", allowedEditsPerUser, message);
     }
 
 }
