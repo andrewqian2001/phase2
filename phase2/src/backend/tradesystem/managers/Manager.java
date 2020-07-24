@@ -3,6 +3,7 @@ package backend.tradesystem.managers;
 import backend.Database;
 import backend.DatabaseFilePaths;
 import backend.exceptions.*;
+import backend.models.PurchaseableItem;
 import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
@@ -23,6 +24,7 @@ public class Manager {
     private final Database<User> userDatabase;
     private final Database<TradableItem> tradableItemDatabase;
     private final Database<Trade> tradeDatabase;
+    private final Database<PurchaseableItem> purchasableItemDatabase;
 
     /**
      * Making the database objects with set file paths
@@ -31,10 +33,11 @@ public class Manager {
      * @param tradeFilePath the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public Manager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+    public Manager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath) throws IOException {
         userDatabase = new Database<>(userFilePath);
         tradableItemDatabase = new Database<>(tradableItemFilePath);
         tradeDatabase = new Database<>(tradeFilePath);
+        purchasableItemDatabase = new Database<>(purchasableItemFilePath);
     }
 
     /**
@@ -43,7 +46,9 @@ public class Manager {
      * @throws IOException if something goes wrong with getting database
      */
     public Manager() throws IOException {
-        this(DatabaseFilePaths.USER.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(), DatabaseFilePaths.TRADE.getFilePath());
+
+
+        this(DatabaseFilePaths.USER.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(), DatabaseFilePaths.TRADE.getFilePath(), DatabaseFilePaths.PURCHASABLE_ITEM.getFilePath());
     }
 
 
@@ -91,6 +96,14 @@ public class Manager {
         }
     }
 
+    public PurchaseableItem getPurchasableItem(String id) throws PurchaseableItemNotFoundException {
+        try {
+            return purchasableItemDatabase.populate(id);
+        } catch (EntryNotFoundException e) {
+            throw new PurchaseableItemNotFoundException(id);
+        }
+    }
+
     /**
      * Getting the trade from trade id
      *
@@ -126,6 +139,11 @@ public class Manager {
         return tradableItemDatabase;
     }
 
+    /**
+     *
+     * @return purchasableitemdatabase
+     */
+    protected Database<PurchaseableItem> getPurchasableItemDatabase(){return purchasableItemDatabase;}
     /**
      * Gets the trade database
      *
@@ -164,6 +182,14 @@ public class Manager {
     protected TradableItem updateTradableItemDatabase(TradableItem item) {
         return tradableItemDatabase.update(item);
     }
+
+
+    /**
+     * updates the purchaseable item database
+     * @param item is the purchaseable item to be updated
+     * @return the old purchaseableItem object if it exists, otherwise the new purchaseable object
+     */
+    protected PurchaseableItem updatePurchasableItemDatabase(PurchaseableItem item){return purchasableItemDatabase.update(item);}
 
     /**
      * Gets a user by username
