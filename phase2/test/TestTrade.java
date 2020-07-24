@@ -33,7 +33,7 @@ public class TestTrade {
     private final String TRADABLE_ITEM_PATH = "./phase2/test/testTradableItems.ser";
     private final String TRADE_PATH = "./phase2/test/testTrades.ser";
     private final String TRADER_PROPERTY_FILE_PATH = "./phase2/test/trader.properties";
-    private final String PURCHASABLE_ITEM_PATH ="./phase2/src/backend/databasefiles/purchaseableitems.ser"
+    private final String PURCHASABLE_ITEM_PATH ="./phase2/src/backend/databasefiles/purchaseableitems.ser";
     private Date goodDate = new Date(System.currentTimeMillis() + 99999999);
     private Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
 

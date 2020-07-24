@@ -14,6 +14,9 @@ public class Trader extends User implements Serializable {
     private final ArrayList<String> wishList = new ArrayList<>();  // Items that this trader wants.
     private final ArrayList<String> availableItems = new ArrayList<>(); // Items that the trader is willing to trade,lend etc
     private final ArrayList<String> requestedItems = new ArrayList<>(); // Items that the this trader wishes to be added to availableItems list
+    private final ArrayList<String> requestedPurchasableItems = new ArrayList<>(); // Items that the this trader wishes to be added to availableBuyableItems list
+    private final ArrayList<String> acceptedPurchasableItems = new ArrayList<>(); //Items that can be bought by other traders
+    private final ArrayList<String> purchaseRequests = new ArrayList<>(); //List of requests that other traders have sent
     private final ArrayList<String> acceptedTrades = new ArrayList<>(); // Trades that are ongoing
     private final ArrayList<String> requestedTrades = new ArrayList<>(); // Trades yet to be accepted or denied
     private final ArrayList<String> completedTrades = new ArrayList<>(); // Trades where meetings are finished and confirmed by both sides and transaction has concluded
@@ -83,10 +86,23 @@ public class Trader extends User implements Serializable {
         this.city = city;
     }
 
+    /**
+     *
+     * @return the list of items that the user wishes to sell
+     */
+    public ArrayList<String> getRequestedPurchasableItems(){return requestedPurchasableItems;}
 
+    /**
+     *
+     * @return the list of items that are available to be sold by the trader
+     */
+    public ArrayList<String> getAcceptedPurchasableItems(){return acceptedPurchasableItems;}
 
-
-
+    /**
+     *
+     * @return the purchase requests of other users
+     */
+    public ArrayList<String> getPurchaseRequests(){return purchaseRequests;}
     /**
      * Sets the amount of money the trader has
      * @param money is the amount of money the trader has
