@@ -40,7 +40,7 @@ public class Trader extends User implements Serializable {
      * @param minimumAmountNeededToBorrow the minimum amount of items that must be lent before borrowing is allowed
      * @param city                        the city of the trader
      */
-    public Trader(String name, String password, String city, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow, int money) {
+    public Trader(String name, String password, String city, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow, double money) {
         super(name, password);
         this.tradeLimit = tradeLimit;
         this.incompleteTradeLim = incompleteTradeLim;

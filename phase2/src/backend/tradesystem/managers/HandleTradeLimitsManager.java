@@ -28,8 +28,8 @@ public class HandleTradeLimitsManager extends Manager{
      * @param tradeFilePath the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public HandleTradeLimitsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
+    public HandleTradeLimitsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath, purchasableItemFilePath);
     }
 
     /**

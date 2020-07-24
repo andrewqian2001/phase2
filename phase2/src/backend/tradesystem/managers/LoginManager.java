@@ -39,8 +39,8 @@ public class LoginManager extends Manager{
      * @param traderPropertyFilePath the path for the trader properties file
      * @throws IOException issues with getting the file path
      */
-    public LoginManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String traderPropertyFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
+    public LoginManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String traderPropertyFilePath, String purchasableItemFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath, purchasableItemFilePath);
         this.TRADER_PROPERTY_FILE_PATH = traderPropertyFilePath;
     }
 
@@ -72,7 +72,7 @@ public class LoginManager extends Manager{
                 tryToRefreshTradeCount();
             default:
                 return updateUserDatabase(new Trader(username, password, "", defaultTradeLimit, defaultIncompleteTradeLim,
-                        defaultMinimumAmountNeededToBorrow));
+                        defaultMinimumAmountNeededToBorrow, 0));
         }
     }
 
