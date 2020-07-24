@@ -14,7 +14,7 @@ import backend.tradesystem.managers.TradingManager;
 
 public class TradePanel extends JPanel {
 
-    private JPanel ongoingTradesContainer, tradeRequestsContainer;
+    private JPanel ongoingTradesContainer, tradeRequestsContainer, ongoingTradesTitleContainer;
     private JScrollPane tradeRequestsScrollPane, ongoingTradesScrollPane;
     private JButton addTradeButton;
     private JLabel ongoingTradesTitle, tradeRequestsTitle;
@@ -45,20 +45,33 @@ public class TradePanel extends JPanel {
         ongoingTradesScrollPane = new JScrollPane();
         ongoingTradesScrollPane.setPreferredSize(new Dimension(1200, 300));
         
+        ongoingTradesContainer = new JPanel(new GridLayout(1,2));
+        ongoingTradesContainer.setOpaque(false);
+        ongoingTradesContainer.setPreferredSize(new Dimension(1200,50));
+        
         ongoingTradesTitle = new JLabel("Ongoing Trades");
-        ongoingTradesTitle.setFont(regular.deriveFont(20f));
+        ongoingTradesTitle.setFont(this.regular.deriveFont(30f));
         ongoingTradesTitle.setForeground(Color.WHITE);
         ongoingTradesTitle.setHorizontalAlignment(JLabel.LEFT);
+        ongoingTradesContainer.add(ongoingTradesTitle);
+        
+        addTradeButton = new JButton("Add new trade");
+        addTradeButton.setFont(this.boldItalic.deriveFont(20f));
+        addTradeButton.setHorizontalAlignment(JButton.RIGHT);
+        addTradeButton.setForeground(Color.WHITE);
+        addTradeButton.setBackground(bg);
+        addTradeButton.setOpaque(true);
+        addTradeButton.setBorderPainted(false);
+        ongoingTradesContainer.add(addTradeButton);
+        
 
         tradeRequestsTitle = new JLabel("Trade Requests");
-        tradeRequestsTitle.setFont(regular.deriveFont(20f));
+        tradeRequestsTitle.setFont(this.regular.deriveFont(30f));
         tradeRequestsTitle.setForeground(Color.WHITE);
         tradeRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
+        tradeRequestsTitle.setPreferredSize(new Dimension(1200, 50));
         
-        
-        addTradeButton = new JButton("Add Trade");
-        
-        this.add(ongoingTradesTitle);
+        this.add(ongoingTradesContainer);
         getOngoingTradesPanel();
         ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
         this.add(ongoingTradesScrollPane);
