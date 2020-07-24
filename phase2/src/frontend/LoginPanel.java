@@ -2,9 +2,18 @@ package frontend;
 
 import javax.swing.*;
 
-import java.awt.*;
+import backend.exceptions.BadPasswordException;
+import backend.exceptions.UserAlreadyExistsException;
+import backend.exceptions.UserNotFoundException;
+import backend.models.users.User;
+import backend.tradesystem.UserTypes;
+import backend.tradesystem.managers.LoginManager;
 
-public class LoginPanel extends JPanel {
+import java.awt.*;
+import java.awt.event.*;
+import java.io.IOException;
+
+public class LoginPanel extends JPanel implements ActionListener {
 
     private JLabel title, usernameTitle, passwordTitle, loginNotification, copyright;
     protected JTextField usernameInput;
@@ -12,7 +21,7 @@ public class LoginPanel extends JPanel {
     private JPanel buttonContainer, info, inputs;
     private GridBagConstraints gbc;
     protected JButton loginButton, registerButton;
-
+    private LoginManager loginManager;
 
     // Color Palette
     private Color bg = new Color(15, 20, 23);
@@ -20,12 +29,14 @@ public class LoginPanel extends JPanel {
     private Color blue = new Color(8, 76, 97);
     private Color purple = new Color(121,35,89);
 
-    public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) {
+    public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.setSize(480, 720);
         this.setBorder(BorderFactory.createEmptyBorder(60, 50, 20, 50));
         // this.setBackground(bg);
         this.setLayout(new GridLayout(4, 1));
         this.setOpaque(false);
+
+        loginManager = new LoginManager();
 
         title = new JLabel("TradeSystem");
         title.setFont(boldItalic.deriveFont(60f));
@@ -70,10 +81,6 @@ public class LoginPanel extends JPanel {
         gbc.weightx = 1.0;
         inputs.add(passwordInput, gbc);
 
-        //TODO: Remove/Uncomment before submitting/pushing
-        usernameInput = new JTextField("user1");
-        passwordInput = new JPasswordField("passssssssS11");
-
         buttonContainer = new JPanel();
         buttonContainer.setLayout(new GridBagLayout());
         buttonContainer.setOpaque(false);
@@ -85,6 +92,7 @@ public class LoginPanel extends JPanel {
         loginButton.setOpaque(false);
         loginButton.setContentAreaFilled(false);
         loginButton.setBorderPainted(false);
+        loginButton.addActionListener(this);
         gbc.gridx = 0;
         gbc.gridy = 0;
         buttonContainer.add(loginButton, gbc);
@@ -95,6 +103,7 @@ public class LoginPanel extends JPanel {
         registerButton.setOpaque(false);
         registerButton.setContentAreaFilled(false);
         registerButton.setBorderPainted(false);
+        registerButton.addActionListener(this);
         gbc.gridy = 1;
         buttonContainer.add(registerButton, gbc);
 
@@ -125,6 +134,32 @@ public class LoginPanel extends JPanel {
     public void notifyLogin(String msg) {
         loginNotification.setText(msg);
         loginNotification.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getActionCommand().equals("Login")) {
+            try {
+                User loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                System.out.println(loggedInUser.getUsername());
+                ((WindowManager)SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+            } catch (UserNotFoundException exception) {
+                notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
+            } catch (IOException exception) {
+                System.out.println(exception.getMessage());
+            }
+        } else if(e.getActionCommand().equals("Register")) {
+            try {
+                User loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+            } catch(BadPasswordException exception) { 
+                notifyLogin("<html><b><i>Invalid Password: " + exception.getMessage() + "</i></b></html>");
+            } catch(UserAlreadyExistsException exception) {
+                notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
+            } catch(IOException exception) {
+                System.out.println(exception.getMessage());
+            }
+        }
     }
     
 }
