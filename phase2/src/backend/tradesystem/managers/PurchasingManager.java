@@ -7,7 +7,7 @@ import backend.models.users.Trader;
 import java.io.IOException;
 import java.util.*;
 
-public PurchasingManager extends Manager {
+public class PurchasingManager extends Manager {
     /**
      * Initialize the objects to get items from databases
      *
@@ -28,8 +28,11 @@ public PurchasingManager extends Manager {
         super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
-    public void buyItem (String buyerID, String sellerID) throws UserNotFoundException, PurchaseableItemNotFoundException {
+    public void buyItem (Purchase purchase) throws UserNotFoundException, PurchaseableItemNotFoundException {
+        String buyer = purchase.getBUYER_ID();
+        String seller = purchase.getSELLER_ID();
 
+        if (buyer.equals(seller)) throw new CannotPurchaseException("Cannot purchase with yourself");
 
     }
 }
