@@ -23,6 +23,7 @@ public class TradePanel extends JPanel {
     private Trader trader;
 
     private Color bg = new Color(51, 51, 51);
+    private Color blue = new Color(0, 240, 239);
     private Color detailsButton = new Color(142,142,142);
     private Color confirmButton = new Color(27,158,36);
     private Color red = new Color(219, 58, 52);
@@ -59,7 +60,7 @@ public class TradePanel extends JPanel {
         addTradeButton = new JButton("Add new trade");
         addTradeButton.setFont(this.boldItalic.deriveFont(20f));
         addTradeButton.setHorizontalAlignment(JButton.RIGHT);
-        addTradeButton.setForeground(Color.WHITE);
+        addTradeButton.setForeground(blue);
         addTradeButton.setBackground(bg);
         addTradeButton.setOpaque(true);
         addTradeButton.setBorderPainted(false);

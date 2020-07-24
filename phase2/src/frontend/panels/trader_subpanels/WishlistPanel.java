@@ -20,8 +20,7 @@ public class WishlistPanel extends JPanel {
     private JLabel wishlistTitle;
 
     private Color bg = new Color(51, 51, 51);
-    private Color detailsButton = new Color(142, 142, 142);
-    private Color confirmButton = new Color(27, 158, 36);
+    private Color blue = new Color(0,240,239);
     private Color red = new Color(219, 58, 52);
 
     public WishlistPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) {
@@ -51,7 +50,7 @@ public class WishlistPanel extends JPanel {
         addWishlistButton = new JButton("Add Item to Wishlist");
         addWishlistButton.setFont(this.boldItalic.deriveFont(20f));
         addWishlistButton.setHorizontalAlignment(JButton.RIGHT);
-        addWishlistButton.setForeground(Color.WHITE);
+        addWishlistButton.setForeground(blue);
         addWishlistButton.setBackground(bg);
         addWishlistButton.setOpaque(true);
         addWishlistButton.setBorderPainted(false);
@@ -68,7 +67,7 @@ public class WishlistPanel extends JPanel {
 
     private void getWishlistItems() {
         wishlistContainer = new JPanel(new GridLayout(10, 1));
-        wishlistContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        wishlistContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         // wishlistContainer = new JPanel(new GridLayout(trader.getwishlist().size(),
         // 1));
         // for(String tradeID : trader.getWishlist()) {
@@ -76,17 +75,17 @@ public class WishlistPanel extends JPanel {
             try {
                 // Trade wishlistItem = tradeManager.getTrade(tradeID);
                 JPanel wishlistItemPanel = new JPanel(new GridLayout(1, 5, 10, 0));
-                wishlistItemPanel.setSize(900, 10);
+                wishlistItemPanel.setPreferredSize(new Dimension(1000, 75));
 
-                JLabel wishlistItemName = new JLabel("wishlistItem #"+i);
+                JLabel wishlistItemName = new JLabel("wishlistItem #"+(1+i));
                 wishlistItemName.setFont(regular.deriveFont(20f));
                 wishlistItemName.setForeground(Color.BLACK);
-                wishlistItemName.setHorizontalAlignment(JLabel.CENTER);
+                wishlistItemName.setHorizontalAlignment(JLabel.LEFT);
                 // JLabel wishlistItemDesc = new JLabel(wishlistItem.getMeetingLocation());
-                JLabel wishlistItemDesc = new JLabel("wishlistItemDesc #"+i);
+                JLabel wishlistItemDesc = new JLabel("wishlistItemDesc #"+(i+1));
                 wishlistItemDesc.setFont(regular.deriveFont(20f));
                 wishlistItemDesc.setForeground(Color.BLACK);
-                wishlistItemDesc.setHorizontalAlignment(JLabel.CENTER);
+                wishlistItemDesc.setHorizontalAlignment(JLabel.LEFT);
 
                 JButton removeWishlistItemButton = new JButton("Remove");
                 removeWishlistItemButton.setFont(bold.deriveFont(20f));
