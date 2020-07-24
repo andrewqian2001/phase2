@@ -10,6 +10,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import frontend.WindowManager;
+
 import backend.models.users.Admin;
 import frontend.panels.admin_subpanels.ControlPanel;
 import frontend.panels.admin_subpanels.OverviewPanel;
@@ -117,6 +119,13 @@ public class AdminPanel extends JPanel implements ActionListener {
         logoutButton.setBackground(red);
         logoutButton.setOpaque(true);
         logoutButton.setBorderPainted(false);
+        logoutButton.addActionListener(e -> {
+            try {
+                ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout();
+            } catch (IOException ex) {
+                System.out.println(ex.getMessage());
+            }
+        });
         gbc.weighty = 0.1;
         gbc.gridy = 7;
         menuContainer.add(logoutButton,gbc);
