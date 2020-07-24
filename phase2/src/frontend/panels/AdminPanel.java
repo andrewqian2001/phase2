@@ -27,7 +27,7 @@ public class AdminPanel extends JPanel implements ActionListener {
 
     private Color bg = new Color(51, 51, 51);
     private Color current = new Color(32, 32, 32);
-    private Color gray = new Color(75, 75, 75);
+    private Color gray = new Color(184, 184, 184);
     private Color red = new Color(219, 58, 52);
 
     public AdminPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) {
@@ -50,8 +50,8 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
-        iconText = new JLabel(admin.getUsername().substring(0, 1));
-        iconText.setFont(regular.deriveFont(48f));
+        iconText = new JLabel(admin.getUsername().toUpperCase().substring(0, 1));
+        iconText.setFont(boldItalic.deriveFont(48f));
         iconText.setForeground(Color.WHITE);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.weighty = 0.16;
@@ -87,7 +87,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         gbc.insets = new Insets(0,0,0,0);
         menuContainer.add(overviewPanelButton,gbc);
 
-        controlPanelButton = new JButton("ControlPanel");
+        controlPanelButton = new JButton("Control Panel");
         controlPanelButton.setFont(bold.deriveFont(25f));
         controlPanelButton.setForeground(Color.WHITE);
         controlPanelButton.setBackground(current);
