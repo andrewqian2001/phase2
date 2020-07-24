@@ -38,6 +38,7 @@ public class Trader extends User implements Serializable {
      * @param incompleteTradeLim          the limit for how many incomplete trades can be done
      * @param minimumAmountNeededToBorrow the minimum amount of items that must be lent before borrowing is allowed
      * @param city                        the city of the trader
+     * @param money                       the amount of maoney in the traders account
      */
     public Trader(String name, String password, String city, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow, int money) {
         super(name, password);
@@ -82,8 +83,18 @@ public class Trader extends User implements Serializable {
         this.city = city;
     }
 
+    /**
+     * the amount of money for the trader
+     *
+     * @return the amount of money the trader has
+     */
     public void getMoney() { return money; }
 
+    /**
+     * Sets the amount of money for the trader
+     *
+     * @param money amount of money for the trader
+     */
     public void setMoney(int money) { this.money = money; }
 
     /**
