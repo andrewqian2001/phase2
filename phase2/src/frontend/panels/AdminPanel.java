@@ -132,7 +132,7 @@ public class AdminPanel extends JPanel implements ActionListener {
 
         menuPanelContainer.add(overviewPanel, "Overview");
         menuPanelContainer.add(searchPanel, "Search");
-        menuPanelContainer.add(controlPanel, "ControlPanel");
+        menuPanelContainer.add(controlPanel, "Control Panel");
 
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
