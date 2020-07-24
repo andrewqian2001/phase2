@@ -24,9 +24,10 @@ public class Trader extends User implements Serializable {
     private int totalItemsLent;
     private int minimumAmountNeededToBorrow; // The minimum value totalItemsLent - totalItemsBorrowed needs to be to borrow
     private int tradeCount;
+    private double money;
     private boolean isIdle = false;
     private String city;
-    private int money;
+
 
 
     /**
@@ -82,9 +83,21 @@ public class Trader extends User implements Serializable {
         this.city = city;
     }
 
-    public void getMoney() { return money; }
 
-    public void setMoney(int money) { this.money = money; }
+
+
+
+    /**
+     * Sets the amount of money the trader has
+     * @param money is the amount of money the trader has
+     */
+    public void setMoney(Double money){this.money = money;}
+
+    /**
+     *
+     * @return the amount of cash this trader has
+     */
+    public double getMoney(){return this.money;}
 
     /**
      * Makes the trader have an idle status
