@@ -88,7 +88,7 @@ public class Trader extends User implements Serializable {
      *
      * @return the amount of money the trader has
      */
-    public void getMoney() { return money; }
+    public int getMoney() { return money; }
 
     /**
      * Sets the amount of money for the trader

@@ -10,6 +10,7 @@ public class TradableItem extends DatabaseItem implements Serializable {
 
     private final String NAME;
     private final String DESCRIPTION;
+    private final int cost;
 
     /**
      * Constructs a tradable item.
@@ -17,9 +18,10 @@ public class TradableItem extends DatabaseItem implements Serializable {
      * @param name        The name of the TradableItem
      * @param description The description of the TradableItem
      */
-    public TradableItem(String name, String description) {
+    public TradableItem(String name, String description, int cost) {
         this.NAME = name;
         this.DESCRIPTION = description;
+        this.cost = cost;
     }
 
     /**
@@ -39,4 +41,6 @@ public class TradableItem extends DatabaseItem implements Serializable {
     public String getDesc() {
         return DESCRIPTION;
     }
+
+    public int getCost() { return cost; }
 }
