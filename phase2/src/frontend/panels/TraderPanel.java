@@ -1,5 +1,6 @@
 package frontend.panels;
 
+import frontend.WindowManager;
 import frontend.panels.trader_subpanels.*;
 
 import javax.swing.*;
@@ -134,10 +135,13 @@ public class TraderPanel extends JPanel implements ActionListener {
         logoutButton.setBackground(red);
         logoutButton.setOpaque(true);
         logoutButton.setBorderPainted(false);
-        /* logoutButton.addActionListener(e -> {
-            JFrame frame = (WindowManager) SwingUtilities.getWindowAncestor(this);
-            frame.logout();
-        }); */
+        logoutButton.addActionListener(e -> {
+            try {
+                ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout();
+            } catch(IOException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }); 
         gbc.gridy = 8;
         menuContainer.add(logoutButton, gbc);
 

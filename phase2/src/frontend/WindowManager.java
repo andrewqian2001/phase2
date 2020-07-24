@@ -51,6 +51,14 @@ public class WindowManager extends JFrame {
         this.setResizable(false);
     }
 
+    public void logout() throws IOException {
+        this.remove(userPanel);
+        this.setContentPane(new ImagePanel(LoginBg));
+        this.add(loginPanel, BorderLayout.CENTER);
+        this.setSize(loginPanel.getSize());
+        this.setResizable(false);
+    }
+
     public void run() throws IOException {
         this.setVisible(true);
     }
