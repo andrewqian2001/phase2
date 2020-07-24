@@ -56,11 +56,11 @@ public class TradePanel extends JPanel {
         ongoingTradesTitle.setForeground(Color.WHITE);
         ongoingTradesTitle.setHorizontalAlignment(JLabel.LEFT);
         ongoingTradesTitleContainer.add(ongoingTradesTitle);
-        
-        addTradeButton = new JButton("Add new trade");
-        addTradeButton.setFont(this.boldItalic.deriveFont(20f));
+
+        addTradeButton = new JButton("<html><b><i><u>Add new trade</u></i></b></html>");
+        addTradeButton.setFont(addTradeButton.getFont().deriveFont(20f));
         addTradeButton.setHorizontalAlignment(JButton.RIGHT);
-        addTradeButton.setForeground(blue);
+        addTradeButton.setForeground(Color.cyan);
         addTradeButton.setBackground(bg);
         addTradeButton.setOpaque(true);
         addTradeButton.setBorderPainted(false);
