@@ -43,9 +43,11 @@ public class TraderPanel extends JPanel implements ActionListener {
         searchPanel = new SearchPanel(trader, regular, bold, italic, boldItalic);
 
         menuContainer = new JPanel(new GridBagLayout());
+        menuContainer.setPreferredSize(new Dimension(250, this.getHeight()));
         gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
+        gbc.weightx = 1.0;
         menuContainer.setOpaque(false);
 
         menuPanelContainer = new JPanel();
@@ -54,8 +56,8 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuPanelContainer.setBackground(bg);
 
         iconText = new JLabel(trader.getUsername().toUpperCase().substring(0, 1));
-        iconText.setBorder(BorderFactory.createEmptyBorder(12, 0, 0, 0));
-        iconText.setFont(boldItalic.deriveFont(48f));
+        iconText.setBorder(BorderFactory.createEmptyBorder(14, 0, 0, 0));
+        iconText.setFont(boldItalic.deriveFont(55f));
         iconText.setForeground(Color.BLACK);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 0;
@@ -82,7 +84,8 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuContainer.add(userIdTitle, gbc);
 
         tradePanelButton = new JButton("Trades");
-        tradePanelButton.setFont(bold.deriveFont(25f));
+        tradePanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        tradePanelButton.setFont(regular.deriveFont(30f));
         tradePanelButton.setForeground(Color.BLACK);
         tradePanelButton.setBackground(current);
         tradePanelButton.setOpaque(true);
@@ -94,7 +97,8 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuContainer.add(tradePanelButton, gbc);
 
         inventoryPanelButton = new JButton("Inventory");
-        inventoryPanelButton.setFont(bold.deriveFont(25f));
+        inventoryPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        inventoryPanelButton.setFont(regular.deriveFont(30f));
         inventoryPanelButton.setForeground(Color.BLACK);
         inventoryPanelButton.setBackground(current);
         inventoryPanelButton.setOpaque(false);
@@ -104,7 +108,8 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuContainer.add(inventoryPanelButton, gbc);
 
         wishlistPanelButton = new JButton("Wishlist");
-        wishlistPanelButton.setFont(bold.deriveFont(25f));
+        wishlistPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        wishlistPanelButton.setFont(regular.deriveFont(30f));
         wishlistPanelButton.setForeground(Color.BLACK);
         wishlistPanelButton.setBackground(current);
         wishlistPanelButton.setOpaque(false);
@@ -114,7 +119,8 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuContainer.add(wishlistPanelButton, gbc);
 
         notificationsPanelButton = new JButton("Notifications");
-        notificationsPanelButton.setFont(bold.deriveFont(25f));
+        notificationsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        notificationsPanelButton.setFont(regular.deriveFont(30f));
         notificationsPanelButton.setForeground(Color.BLACK);
         notificationsPanelButton.setBackground(current);
         notificationsPanelButton.setOpaque(false);
@@ -124,7 +130,8 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuContainer.add(notificationsPanelButton, gbc);
 
         searchPanelButton = new JButton("Search");
-        searchPanelButton.setFont(bold.deriveFont(25f));
+        searchPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        searchPanelButton.setFont(regular.deriveFont(30f));
         searchPanelButton.setForeground(Color.BLACK);
         searchPanelButton.setBackground(current);
         searchPanelButton.setOpaque(false);
