@@ -37,7 +37,7 @@ public class WishlistPanel extends JPanel {
 
         wishlistTitleContainer = new JPanel(new GridLayout(1, 2));
         wishlistTitleContainer.setOpaque(false);
-        wishlistTitleContainer.setPreferredSize(new Dimension(1200, 75));
+        wishlistTitleContainer.setPreferredSize(new Dimension(1300, 75));
 
         wishlistTitle = new JLabel("Wishlist");
         wishlistTitle.setFont(this.regular.deriveFont(30f));
@@ -45,7 +45,7 @@ public class WishlistPanel extends JPanel {
         wishlistTitle.setHorizontalAlignment(JLabel.LEFT);
 
         wishlistScrollPane = new JScrollPane();
-        wishlistScrollPane.setPreferredSize(new Dimension(1200, 675));
+        wishlistScrollPane.setPreferredSize(new Dimension(1300, 675));
 
         addWishlistButton = new JButton("Add Item to Wishlist");
         addWishlistButton.setFont(this.boldItalic.deriveFont(20f));

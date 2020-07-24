@@ -82,8 +82,8 @@ public class LoginPanel extends JPanel implements ActionListener {
         inputs.add(passwordInput, gbc);
 
         //TODO: REMOVE before final deployment (only for testing)
-        usernameInput = new JTextField("user1");
-        passwordInput = new JPasswordField("passssssssS11");
+        // usernameInput = new JTextField("user1");
+        // passwordInput = new JPasswordField("passssssssS11");
 
         buttonContainer = new JPanel();
         buttonContainer.setLayout(new GridBagLayout());
@@ -145,7 +145,6 @@ public class LoginPanel extends JPanel implements ActionListener {
         if(e.getActionCommand().equals("Login")) {
             try {
                 User loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
-                System.out.println(loggedInUser.getUsername());
                 ((WindowManager)SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch (UserNotFoundException exception) {
                 notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");

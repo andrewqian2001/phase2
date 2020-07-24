@@ -1,6 +1,6 @@
 1. initial admin:
 username: admin
-password: Adminpassword1
+password: passssssssS11
 
 2. Run the Main class in src -> main to run the program
 

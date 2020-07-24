@@ -50,8 +50,8 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
-        iconText = new JLabel(trader.getUsername().substring(0, 1));
-        iconText.setFont(regular.deriveFont(48f));
+        iconText = new JLabel(trader.getUsername().toUpperCase().substring(0, 1));
+        iconText.setFont(boldItalic.deriveFont(48f));
         iconText.setForeground(Color.BLACK);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
         gbc.gridy = 0;
