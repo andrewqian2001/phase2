@@ -39,4 +39,5 @@ public class TradableItem extends DatabaseItem implements Serializable {
     public String getDesc() {
         return DESCRIPTION;
     }
+
 }
