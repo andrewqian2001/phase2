@@ -1,6 +1,8 @@
 package frontend.panels.trader_subpanels;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 import java.awt.*;
 import java.io.IOException;
@@ -14,13 +16,14 @@ import backend.tradesystem.managers.TradingManager;
 
 public class TradePanel extends JPanel {
 
-    private JPanel ongoingTradesContainer, tradeRequestsContainer, ongoingTradesTitleContainer;
+    private JPanel ongoingTradesContainer, tradeRequestsContainer, ongoingTradesTitleContainer,ongoingTradesHeader, tradeRequestsHeader;
     private JScrollPane tradeRequestsScrollPane, ongoingTradesScrollPane;
     private JButton addTradeButton;
     private JLabel ongoingTradesTitle, tradeRequestsTitle;
     private Font regular, bold, italic, boldItalic;
     private TradingManager tradeManager;
     private Trader trader;
+    private GridBagConstraints gbc;
 
     private Color bg = new Color(51, 51, 51);
     private Color blue = new Color(0, 240, 239);
@@ -38,23 +41,22 @@ public class TradePanel extends JPanel {
         tradeManager = new TradingManager();
 
         this.setPreferredSize(new Dimension(1000, 900)); // fix this later
-        this.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 25));
+        this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
         this.setBackground(bg);
 
-        tradeRequestsScrollPane = new JScrollPane();
-        tradeRequestsScrollPane.setPreferredSize(new Dimension(1300, 300));
-        
-        ongoingTradesScrollPane = new JScrollPane();
-        ongoingTradesScrollPane.setPreferredSize(new Dimension(1300, 300));
-        
+        JPanel ongoingTrades = new JPanel(new GridBagLayout());
+        gbc = new GridBagConstraints();
+
         ongoingTradesTitleContainer = new JPanel(new GridLayout(1,2));
         ongoingTradesTitleContainer.setOpaque(false);
-        ongoingTradesTitleContainer.setPreferredSize(new Dimension(1300,75));
-        
+        ongoingTradesTitleContainer.setPreferredSize(new Dimension(1300,50));
+
         ongoingTradesTitle = new JLabel("Ongoing Trades");
         ongoingTradesTitle.setFont(this.regular.deriveFont(30f));
         ongoingTradesTitle.setForeground(Color.WHITE);
+        ongoingTradesTitle.setBackground(bg);
         ongoingTradesTitle.setHorizontalAlignment(JLabel.LEFT);
+        ongoingTradesTitle.setOpaque(true);
         ongoingTradesTitleContainer.add(ongoingTradesTitle);
 
         addTradeButton = new JButton("<html><b><i><u>Add new trade</u></i></b></html>");
@@ -65,23 +67,120 @@ public class TradePanel extends JPanel {
         addTradeButton.setOpaque(true);
         addTradeButton.setBorderPainted(false);
         ongoingTradesTitleContainer.add(addTradeButton);
-        
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 0;
+        gbc.weighty = 0.1;
+        ongoingTrades.add(ongoingTradesTitleContainer, gbc);
+
+        ongoingTradesHeader = new JPanel(new GridLayout(1,5));
+        ongoingTradesHeader.setPreferredSize(new Dimension(1300,25));
+        ongoingTradesHeader.setBorder(BorderFactory.createEmptyBorder(0, 60, 0, 80));
+        addOngoingTradesHeader();
+        gbc.gridy = 1;
+        gbc.weighty = 0.1;
+        ongoingTrades.add(ongoingTradesHeader, gbc);
+
+        ongoingTradesScrollPane = new JScrollPane();
+        ongoingTradesScrollPane.setPreferredSize(new Dimension(1300, 360));
+        getOngoingTradesPanel();
+        ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
+        gbc.gridy = 2;
+        gbc.weighty = 0.8;
+        ongoingTrades.add(ongoingTradesScrollPane, gbc);
+
+        JPanel tradeRequests = new JPanel(new GridBagLayout());
+        gbc = new GridBagConstraints();
 
         tradeRequestsTitle = new JLabel("Trade Requests");
         tradeRequestsTitle.setFont(this.regular.deriveFont(30f));
         tradeRequestsTitle.setForeground(Color.WHITE);
+        tradeRequestsTitle.setBackground(bg);
+        tradeRequestsTitle.setOpaque(true);
         tradeRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
-        tradeRequestsTitle.setPreferredSize(new Dimension(1300, 75));
-        
-        this.add(ongoingTradesTitleContainer);
-        getOngoingTradesPanel();
-        ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
-        this.add(ongoingTradesScrollPane);
-        
-        this.add(tradeRequestsTitle);
+        tradeRequestsTitle.setPreferredSize(new Dimension(1300, 50));
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 0;
+        gbc.weighty = 0.1;
+        tradeRequests.add(tradeRequestsTitle, gbc);
+
+        tradeRequestsHeader = new JPanel(new GridLayout(1,7));
+        tradeRequestsHeader.setPreferredSize(new Dimension(1300,25));
+        tradeRequestsHeader.setBorder(BorderFactory.createEmptyBorder(0, 60, 0, 120));
+        addTradeRequestsHeader();
+        gbc.gridy = 1;
+        gbc.weighty = 0.1;
+        tradeRequests.add(tradeRequestsHeader, gbc);
+
+        tradeRequestsScrollPane = new JScrollPane();
+        tradeRequestsScrollPane.setPreferredSize(new Dimension(1300, 300));
         getTradeRequestPanels();
         tradeRequestsScrollPane.setViewportView(tradeRequestsContainer);
-        this.add(tradeRequestsScrollPane);
+        gbc.gridy = 2;
+        gbc.weighty = 0.8;
+        tradeRequests.add(tradeRequestsScrollPane, gbc);
+
+        this.add(ongoingTrades);
+        this.add(tradeRequests);
+    }
+
+    private void addOngoingTradesHeader() {
+        JLabel name = new JLabel("Name");
+        name.setFont(this.regular.deriveFont(20f));
+        name.setForeground(Color.BLACK);
+        name.setHorizontalAlignment(JLabel.LEFT);
+
+        JLabel location = new JLabel("location");
+        location.setFont(this.regular.deriveFont(20f));
+        location.setForeground(Color.BLACK);
+        location.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel meetingTime = new JLabel("Current Meeting Time");
+        meetingTime.setFont(this.regular.deriveFont(20f));
+        meetingTime.setForeground(Color.BLACK);
+        meetingTime.setHorizontalAlignment(JLabel.RIGHT);
+
+        JLabel empty1 = new JLabel("");
+        JLabel empty2 = new JLabel("");
+
+        ongoingTradesHeader.add(name);
+        ongoingTradesHeader.add(location);
+        ongoingTradesHeader.add(meetingTime);
+        ongoingTradesHeader.add(empty1);
+        ongoingTradesHeader.add(empty2);
+    }
+
+    private void addTradeRequestsHeader() {
+        JLabel name = new JLabel("Name");
+        name.setFont(this.regular.deriveFont(20f));
+        name.setForeground(Color.BLACK);
+        name.setHorizontalAlignment(JLabel.LEFT);
+
+        JLabel location = new JLabel("location   ");
+        location.setFont(this.regular.deriveFont(20f));
+        location.setForeground(Color.BLACK);
+        location.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel theirItem = new JLabel("    Their Item");
+        theirItem.setFont(this.regular.deriveFont(20f));
+        theirItem.setForeground(Color.BLACK);
+        theirItem.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel yourItem = new JLabel("Your Item");
+        yourItem.setFont(this.regular.deriveFont(20f));
+        yourItem.setForeground(Color.BLACK);
+        yourItem.setHorizontalAlignment(JLabel.RIGHT);
+
+        JLabel empty1 = new JLabel("");
+        JLabel empty2 = new JLabel("");
+        JLabel empty3 = new JLabel("");
+
+        tradeRequestsHeader.add(name);
+        tradeRequestsHeader.add(location);
+        tradeRequestsHeader.add(theirItem);
+        tradeRequestsHeader.add(yourItem);
+        tradeRequestsHeader.add(empty1);
+        tradeRequestsHeader.add(empty2);
+        tradeRequestsHeader.add(empty3);
     }
 
     private void getTradeRequestPanels() {
