@@ -1,25 +1,23 @@
 package backend.models;
-
-
 import java.io.Serializable;
 
 /**
- * Represents an item that is supposed to be traded
+ * Represents an item that is supposed to be sold
  */
-public class TradableItem extends DatabaseItem implements Serializable {
-
+public class PurchaseableItem extends DatabaseItem implements Serializable {
     private final String NAME;
     private final String DESCRIPTION;
-
+    private double price;
     /**
      * Constructs a tradable item.
      *
      * @param name        The name of the TradableItem
      * @param description The description of the TradableItem
      */
-    public TradableItem(String name, String description) {
+    public PurchaseableItem(String name, String description, double price) {
         this.NAME = name;
         this.DESCRIPTION = description;
+        this.price = price;
     }
 
     /**
@@ -40,4 +38,9 @@ public class TradableItem extends DatabaseItem implements Serializable {
         return DESCRIPTION;
     }
 
+    /**
+     *
+     * @return the price of the item
+     */
+    public double getPrice(){return price;}
 }
