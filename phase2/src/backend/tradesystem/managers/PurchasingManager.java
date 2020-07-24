@@ -13,9 +13,6 @@ public class PurchasingManager extends Manager {
      *
      * @throws IOException if something goes wrong with getting database
      */
-    public TradingManager() throws IOException {
-        super();
-    }
 
     /**
      * Making the database objects with set file paths
@@ -24,19 +21,44 @@ public class PurchasingManager extends Manager {
      * @param tradeFilePath the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public PurchasingManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath, purchasableItemFilePath);
+    public PurchasingManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath, String purchaseFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath, purchasableItemFilePath, purchaseFilePath);
     }
 
-    public void sendPurchaseRequest (Purchase purchase) throws UserNotFoundException, PurchaseableItemNotFoundException, CannotPurchaseException {
-        String buyer = purchase.getBUYER_ID();
-        String seller = purchase.getSELLER_ID();
-
+    /**
+     *
+     * @param purchase
+     * @throws UserNotFoundException
+     * @throws PurchaseableItemNotFoundException
+     * @throws CannotPurchaseException
+     */
+    public void sendPurchaseRequest (Purchase purchase) throws UserNotFoundException, PurchaseableItemNotFoundException, CannotPurchaseException, AuthorizationException {
+        String buyerId = purchase.getBUYER_ID();
+        String sellerId = purchase.getSELLER_ID();
+        Trader buyer = getTrader(buyerId);
+        Trader seller = getTrader(sellerId);
         if (buyer.equals(seller)) throw new CannotPurchaseException("Cannot purchase with yourself");
 
+        buyer.getPurchaseRequests().add(purchase.getId());
+        seller.getRequestedTrades().add(purchase.getId());
+        updatePurchaseDatabase(purchase);
+        updateUserDatabase(buyer);
+        updateUserDatabase(seller);
     }
 
+    /**
+     * accepts the purchase request from other trader
+     * @param purchase is the actual purchase object
+     */
     public void acceptPurchaseRequest(Purchase purchase){
+
+    }
+
+    /**
+     * accepts the purchase request from other trader
+     * @param purchase is the actual purchase object
+     */
+    public void denyPurchaseRequest(Purchase purchase){
 
     }
 }

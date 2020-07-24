@@ -22,6 +22,11 @@ public enum DatabaseFilePaths {
      * file path for all items that are to be purchased
      */
     PURCHASABLE_ITEM("./phase2/src/backend/databasefiles/purchasableItems.ser"),
+
+    /**
+     * file path for all purchases
+     */
+    PURCHASE("./phase2/src/backend/databasefiles/purchases.ser"),
     /**
      * file path for trader config file
      */

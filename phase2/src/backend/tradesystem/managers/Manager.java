@@ -8,6 +8,7 @@ import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
 import backend.models.users.User;
+import backend.models.Purchase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class Manager {
     private final Database<TradableItem> tradableItemDatabase;
     private final Database<Trade> tradeDatabase;
     private final Database<PurchaseableItem> purchasableItemDatabase;
+    private final Database<Purchase> purchaseDatabase;
 
     /**
      * Making the database objects with set file paths
@@ -33,11 +35,12 @@ public class Manager {
      * @param tradeFilePath the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public Manager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath) throws IOException {
+    public Manager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath, String purchaseFilePath) throws IOException {
         userDatabase = new Database<>(userFilePath);
         tradableItemDatabase = new Database<>(tradableItemFilePath);
         tradeDatabase = new Database<>(tradeFilePath);
         purchasableItemDatabase = new Database<>(purchasableItemFilePath);
+        purchaseDatabase = new Database<>(purchaseFilePath);
     }
 
     /**
@@ -48,7 +51,7 @@ public class Manager {
     public Manager() throws IOException {
 
 
-        this(DatabaseFilePaths.USER.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(), DatabaseFilePaths.TRADE.getFilePath(), DatabaseFilePaths.PURCHASABLE_ITEM.getFilePath());
+        this(DatabaseFilePaths.USER.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(), DatabaseFilePaths.TRADE.getFilePath(), DatabaseFilePaths.PURCHASABLE_ITEM.getFilePath(), DatabaseFilePaths.PURCHASE.getFilePath());
     }
 
 
@@ -190,6 +193,13 @@ public class Manager {
      * @return the old purchaseableItem object if it exists, otherwise the new purchaseable object
      */
     protected PurchaseableItem updatePurchasableItemDatabase(PurchaseableItem item){return purchasableItemDatabase.update(item);}
+
+    /**
+     * updates the purchase database
+     * @param purchase is the purchase to be updated
+     * @return the old purchase object if it exists, otherwise the new purchase object
+     */
+    protected Purchase updatePurchaseDatabase(Purchase purchase){return purchaseDatabase.update(purchase);}
 
     /**
      * Gets a user by username

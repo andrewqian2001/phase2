@@ -34,16 +34,17 @@ public class TestTrade {
     private final String TRADE_PATH = "./phase2/test/testTrades.ser";
     private final String TRADER_PROPERTY_FILE_PATH = "./phase2/test/trader.properties";
     private final String PURCHASABLE_ITEM_PATH ="./phase2/src/backend/databasefiles/purchaseableitems.ser";
+    private final String PURCHASE_PATH = "./phase2/src/backend/databasefiles/purchases.ser";
     private Date goodDate = new Date(System.currentTimeMillis() + 99999999);
     private Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
 
     @Before
     public void beforeEach() {
         try {
-            traderManager = new TraderManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH, PURCHASABLE_ITEM_PATH);
-            loginManager = new LoginManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH, TRADER_PROPERTY_FILE_PATH, PURCHASABLE_ITEM_PATH);
-            tradingManager = new TradingManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH, PURCHASABLE_ITEM_PATH);
-            handleRequestsManager = new HandleItemRequestsManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH, PURCHASABLE_ITEM_PATH);
+            traderManager = new TraderManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH, PURCHASABLE_ITEM_PATH, PURCHASE_PATH);
+            loginManager = new LoginManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH, TRADER_PROPERTY_FILE_PATH, PURCHASABLE_ITEM_PATH, PURCHASE_PATH);
+            tradingManager = new TradingManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH, PURCHASABLE_ITEM_PATH, PURCHASE_PATH);
+            handleRequestsManager = new HandleItemRequestsManager(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH, PURCHASABLE_ITEM_PATH,PURCHASE_PATH);
             userDatabase = new Database<>(USER_PATH);
             tradeDatabase = new Database<>(TRADE_PATH);
             tradableItemDatabase = new Database<>(TRADABLE_ITEM_PATH);
