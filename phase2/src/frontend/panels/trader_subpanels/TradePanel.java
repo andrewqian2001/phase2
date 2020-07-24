@@ -41,14 +41,14 @@ public class TradePanel extends JPanel {
         this.setBackground(bg);
 
         tradeRequestsScrollPane = new JScrollPane();
-        tradeRequestsScrollPane.setPreferredSize(new Dimension(1200, 300));
+        tradeRequestsScrollPane.setPreferredSize(new Dimension(1300, 300));
         
         ongoingTradesScrollPane = new JScrollPane();
-        ongoingTradesScrollPane.setPreferredSize(new Dimension(1200, 300));
+        ongoingTradesScrollPane.setPreferredSize(new Dimension(1300, 300));
         
         ongoingTradesTitleContainer = new JPanel(new GridLayout(1,2));
         ongoingTradesTitleContainer.setOpaque(false);
-        ongoingTradesTitleContainer.setPreferredSize(new Dimension(1200,75));
+        ongoingTradesTitleContainer.setPreferredSize(new Dimension(1300,75));
         
         ongoingTradesTitle = new JLabel("Ongoing Trades");
         ongoingTradesTitle.setFont(this.regular.deriveFont(30f));
@@ -70,7 +70,7 @@ public class TradePanel extends JPanel {
         tradeRequestsTitle.setFont(this.regular.deriveFont(30f));
         tradeRequestsTitle.setForeground(Color.WHITE);
         tradeRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
-        tradeRequestsTitle.setPreferredSize(new Dimension(1200, 75));
+        tradeRequestsTitle.setPreferredSize(new Dimension(1300, 75));
         
         this.add(ongoingTradesTitleContainer);
         getOngoingTradesPanel();
@@ -84,32 +84,32 @@ public class TradePanel extends JPanel {
     }
 
     private void getTradeRequestPanels() {
-        tradeRequestsContainer = new JPanel(new GridLayout(5, 1));
-        tradeRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        tradeRequestsContainer = new JPanel(new GridLayout(10, 1));
+        tradeRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         // tradeRequestsContainer = new JPanel(new GridLayout(trader.getRequestedTrades().size(), 1));
         // for(String tradeID : trader.getRequestedTrades()) {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 10; i++) {
             try {
                 // Trade ongoingTrade = tradeManager.getTrade(tradeID);
-                JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 5, 10, 0));
-                tradeRequestPanel.setSize(900, 10);
+                JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
+                tradeRequestPanel.setPreferredSize(new Dimension(1000, 75));
                 // JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
-                JLabel otherTraderName = new JLabel("otherTraderName");
+                JLabel otherTraderName = new JLabel("otherTrader #" + (i + 1));
                 otherTraderName.setFont(regular.deriveFont(20f));
                 otherTraderName.setForeground(Color.BLACK);
-                otherTraderName.setHorizontalAlignment(JLabel.CENTER);
+                otherTraderName.setHorizontalAlignment(JLabel.LEFT);
 
-                JLabel tradeLocation = new JLabel("Mom's Basement");
+                JLabel tradeLocation = new JLabel("Location #" + (i + 1));
                 tradeLocation.setFont(regular.deriveFont(20f));
                 tradeLocation.setForeground(Color.BLACK);
                 tradeLocation.setHorizontalAlignment(JLabel.CENTER);
                 
-                JLabel otherTraderItemName = new JLabel("Guitar");
+                JLabel otherTraderItemName = new JLabel("Their item #" + (i + 1));
                 otherTraderItemName.setFont(regular.deriveFont(20f));
                 otherTraderItemName.setForeground(Color.BLACK);
                 otherTraderItemName.setHorizontalAlignment(JLabel.CENTER);
 
-                JLabel traderItemName = new JLabel("Fried Chicken");
+                JLabel traderItemName = new JLabel("Your item #" + (i + 1));
                 traderItemName.setFont(regular.deriveFont(20f));
                 traderItemName.setForeground(Color.BLACK);
                 traderItemName.setHorizontalAlignment(JLabel.CENTER);
@@ -138,6 +138,7 @@ public class TradePanel extends JPanel {
                 tradeRequestPanel.add(otherTraderName);
                 tradeRequestPanel.add(tradeLocation);
                 tradeRequestPanel.add(otherTraderItemName);
+                tradeRequestPanel.add(traderItemName);
                 tradeRequestPanel.add(tradeDetailsButton);
                 tradeRequestPanel.add(tradeConfirmButton);
                 tradeRequestPanel.add(tradeRejectButton);
@@ -151,27 +152,27 @@ public class TradePanel extends JPanel {
     }
     
     private void getOngoingTradesPanel() {
-        ongoingTradesContainer = new JPanel(new GridLayout(5, 1));
-        ongoingTradesContainer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+        ongoingTradesContainer = new JPanel(new GridLayout(10, 1));
+        ongoingTradesContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         // ongoingTradesContainer = new JPanel(new GridLayout(trader.getAcceptedTrades().size(), 1));
         // for(String tradeID : trader.getAcceptedTrades()) {
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 10; i++) {
             try {
                 // Trade ongoingTrade = tradeManager.getTrade(tradeID);
                 JPanel ongoingTradePanel = new JPanel(new GridLayout(1,5, 10, 0)); 
-                ongoingTradePanel.setSize(900,10);
+                ongoingTradePanel.setPreferredSize(new Dimension(1000,75));
                 // JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
-                JLabel otherTraderName = new JLabel("otherTraderName");
+                JLabel otherTraderName = new JLabel("otherTrader #"+ (i + 1));
                 otherTraderName.setFont(regular.deriveFont(20f));
                 otherTraderName.setForeground(Color.BLACK);
-                otherTraderName.setHorizontalAlignment(JLabel.CENTER);
+                otherTraderName.setHorizontalAlignment(JLabel.LEFT);
                 // JLabel tradeLocation = new JLabel(ongoingTrade.getMeetingLocation());
-                JLabel tradeLocation = new JLabel("McDonalds");
+                JLabel tradeLocation = new JLabel("Meeting Location #" + (i+1));
                 tradeLocation.setFont(regular.deriveFont(20f));
                 tradeLocation.setForeground(Color.BLACK);
                 tradeLocation.setHorizontalAlignment(JLabel.CENTER);
                 // JLabel tradeMeetingTime = new JLabel(ongoingTrade.getMeetingTime().toString()); // fix to get current
-                JLabel tradeMeetingTime = new JLabel("2020/07/30@14:20");
+                JLabel tradeMeetingTime = new JLabel("2020/07/30@14:2"+i);
                 tradeMeetingTime.setFont(regular.deriveFont(20f));
                 tradeMeetingTime.setForeground(Color.BLACK);
                 tradeMeetingTime.setHorizontalAlignment(JLabel.CENTER);
