@@ -28,6 +28,7 @@ public class LoginPanel extends JPanel implements ActionListener {
     private Color red = new Color(219, 58, 52);
     private Color blue = new Color(8, 76, 97);
     private Color purple = new Color(121,35,89);
+    private Color input = new Color(156,156,156);
 
     public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.setSize(480, 720);
@@ -60,6 +61,9 @@ public class LoginPanel extends JPanel implements ActionListener {
 
         usernameInput = new JTextField();
         usernameInput.setFont(regular.deriveFont(20f));
+        usernameInput.setBackground(input);
+        usernameInput.setForeground(Color.BLACK);
+        usernameInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gbc.gridx = 1;
         gbc.weightx = 1.0;
         inputs.add(usernameInput, gbc);
@@ -77,6 +81,9 @@ public class LoginPanel extends JPanel implements ActionListener {
 
         passwordInput = new JPasswordField();
         passwordInput.setFont(regular.deriveFont(20f));
+        passwordInput.setBackground(input);
+        passwordInput.setForeground(Color.BLACK);
+        passwordInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         gbc.gridx = 1;
         gbc.weightx = 1.0;
         inputs.add(passwordInput, gbc);
