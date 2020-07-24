@@ -86,7 +86,6 @@ public class TestTrade {
         setProperty(TraderProperties.INCOMPLETE_TRADE_LIM, 3);
         setProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW, 1);
         setProperty(TraderProperties.TRADE_LIMIT, 10);
-
     }
 
 //    @Test
@@ -99,8 +98,8 @@ public class TestTrade {
         try {
             String item1 = trader1.getAvailableItems().get(0);
             String item2 = trader2.getAvailableItems().get(0);
-            Trade trade = tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
-                    item1, item2, 3, "This is a trade");
+            Trade trade = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    item1, item2, 3, "This is a trade"));
             // make sure that the trades are requested
             update();
             assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
@@ -133,8 +132,8 @@ public class TestTrade {
             assertFalse(trader2.getAvailableItems().contains(item2));
 
             //confirm trade
-            tradingManager.confirmFirstMeeting(trader1.getId(), trade.getId(), true);
-            tradingManager.confirmFirstMeeting(trader2.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
 
             //check the trade is now in the completed trades
             update();
@@ -168,8 +167,8 @@ public class TestTrade {
             String item3 = trader1.getAvailableItems().get(1);
             String item4 = trader2.getAvailableItems().get(1);
 
-            Trade trade1 = tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
-                    item1, item2, 1, "This is a trade");
+            Trade trade1 = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    item1, item2, 1, "This is a trade"));
 
             ///Trade is requested
             update();
@@ -266,17 +265,17 @@ public class TestTrade {
             userDatabase.update(trader1);
 
             try {
-                tradingManager.requestLend(trader1.getId(), trader2.getId(), goodDate, null, "Home",
-                        item1, 1, "This is a lend");
+                tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        item1, "", 1, "This is a lend"));
                 fail("Trade limit is exceeded");
             }
             catch (CannotTradeException e){
-                assertEquals("You cannot trade at the moment.", e.getMessage());
+                assertEquals("This user cannot trade due to trading restrictions", e.getMessage());
             }
             trader1.setTradeCount(0);
             userDatabase.update(trader1);
-            Trade t = tradingManager.requestLend(trader1.getId(), trader2.getId(), goodDate, null, "Home",
-                        item1, 1, "This is a lend");
+            Trade t = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        item1, "", 1, "This is a lend"));
 
             update();
             assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
@@ -289,13 +288,13 @@ public class TestTrade {
             assertEquals(trader1.getRequestedTrades().size(), 0);
             assertEquals(0, trader2.getRequestedTrades().size());
 
-            tradingManager.confirmFirstMeeting(trader1.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
 
             update();
             assertEquals(trader1.getAvailableItems().size(), 2);
             assertEquals(trader2.getAvailableItems().size(), 3);
 
-            tradingManager.confirmFirstMeeting(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
 
             update();
             assertEquals(1, trader1.getCompletedTrades().size());
@@ -317,23 +316,23 @@ public class TestTrade {
             String item3 = trader1.getAvailableItems().get(0);
             String item4 = trader2.getAvailableItems().get(0);
             try {
-                tradingManager.requestLend(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
-                        item3, 1, "This is a lend2");
+                tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                        item3, "", 1, "This is a lend2"));
                 fail("Offering an item i dont' have");
             }
             catch (AuthorizationException e){
                 assertEquals("The trade offer contains an item that the user does not have", e.getMessage());
             }
-            t= tradingManager.requestLend(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
-                    item4, 1, "This is a lend2");
+            t= tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                    item4, "", 1, "This is a lend2"));
 
             tradingManager.acceptRequest(trader1.getId(), t.getId());
             update();
             assertEquals(3, trader2.getAvailableItems().size());
             assertEquals(2, trader1.getAvailableItems().size());
 
-            tradingManager.confirmFirstMeeting(trader1.getId(), t.getId(), true);
-            tradingManager.confirmFirstMeeting(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
 
 
             update();
@@ -343,8 +342,8 @@ public class TestTrade {
             assertEquals(0, trader2.getTotalItemsLent());
             assertEquals(3, trader2.getAvailableItems().size());
             assertEquals(3, trader1.getAvailableItems().size());
-            tradingManager.confirmSecondMeeting(trader1.getId(), t.getId(), true);
-            tradingManager.confirmSecondMeeting(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
             update();
             assertEquals(2, trader1.getTradeCount());
             assertEquals(2, trader2.getTradeCount());
@@ -352,6 +351,148 @@ public class TestTrade {
             assertEquals(1, trader2.getTotalItemsLent());
             assertEquals(4, trader2.getAvailableItems().size());
             assertEquals(2, trader1.getAvailableItems().size());
+
+        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException | CannotTradeException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void testBorrowTrade(){
+        try{
+
+            String item1 = trader1.getAvailableItems().get(0);
+            String item2 = trader2.getAvailableItems().get(0);
+
+            try {
+                tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        "", item1, 1, "This is a lend"));
+                fail("Did not lend first");
+            }
+            catch (CannotTradeException e){
+                assertEquals("You have too many borrows. Try lending", e.getMessage());
+            }
+
+            trader1.setTotalItemsLent(1);
+            userDatabase.update(trader1);
+
+            try {
+                tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        "", item1, 1, "This is a lend"));
+                fail("The item does not exist in the other person's inventory");
+            }
+            catch (AuthorizationException e){
+                assertEquals("The trade offer contains an item that the user does not have", e.getMessage());
+            }
+
+            trader1.setTradeCount(10);
+            userDatabase.update(trader1);
+
+            try {
+                tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        "", item2, 1, "This is a lend"));
+                fail("Trade limit is exceeded");
+            }
+            catch (CannotTradeException e){
+                assertEquals("This user cannot trade due to trading restrictions", e.getMessage());
+            }
+            trader1.setTradeCount(0);
+            userDatabase.update(trader1);
+            Trade t = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                    "", item2, 1, "This is a lend"));
+
+            update();
+            assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
+            assertEquals(trader1.getAvailableItems().size(), 3);
+            assertEquals(trader2.getAvailableItems().size(), 3);
+            tradingManager.acceptRequest(trader1.getId(), t.getId());
+            tradingManager.acceptRequest(trader2.getId(), t.getId());
+            update();
+            assertEquals(trader1.getAcceptedTrades().get(0), trader2.getAcceptedTrades().get(0));
+            assertEquals(trader1.getRequestedTrades().size(), 0);
+            assertEquals(0, trader2.getRequestedTrades().size());
+
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
+
+            update();
+            assertEquals(trader1.getAvailableItems().size(), 3);
+            assertEquals(trader2.getAvailableItems().size(), 2);
+
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+
+            update();
+            assertEquals(1, trader1.getCompletedTrades().size());
+            assertEquals(0, trader1.getAcceptedTrades().size());
+            assertEquals(2, trader2.getAvailableItems().size());
+
+            assertEquals(1, trader2.getCompletedTrades().size());
+            assertEquals(0, trader2.getAcceptedTrades().size());
+            assertEquals(4, trader1.getAvailableItems().size());
+            assertEquals(item2, trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1));
+
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(1, trader1.getTradeCount());
+            assertEquals(1, trader2.getTradeCount());
+
+            String item3 = trader1.getAvailableItems().get(0);
+            String item4 = trader2.getAvailableItems().get(0);
+
+            try {
+                tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                        "",item3, 1, "This is a lend2"));
+                fail("Have not borrowed");
+            }
+            catch (CannotTradeException e){
+                assertEquals("You have too many borrows. Try lending", e.getMessage());
+            }
+
+            trader2.setTotalItemsLent(1);
+            userDatabase.update(trader2);
+
+            try {
+                tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                        "",item4, 1, "This is a lend2"));
+                fail("Offering an item i dont' have");
+            }
+            catch (AuthorizationException e){
+                assertEquals("The trade offer contains an item that the user does not have", e.getMessage());
+            }
+            t= tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                    "", item3, 1, "This is a lend2"));
+
+            tradingManager.acceptRequest(trader1.getId(), t.getId());
+            update();
+            assertEquals(2, trader2.getAvailableItems().size());
+            assertEquals(3, trader1.getAvailableItems().size());
+
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+
+
+            update();
+            assertEquals(1, trader1.getTradeCount());
+            assertEquals(1, trader2.getTradeCount());
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(1, trader2.getTotalItemsLent());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(3, trader2.getAvailableItems().size());
+            assertEquals(3, trader1.getAvailableItems().size());
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+            update();
+            assertEquals(2, trader1.getTradeCount());
+            assertEquals(2, trader2.getTradeCount());
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(1, trader2.getTotalItemsLent());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(1, trader2.getTotalItemsBorrowed());
+            assertEquals(2, trader2.getAvailableItems().size());
+            assertEquals(4, trader1.getAvailableItems().size());
 
         } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException | CannotTradeException e) {
             e.printStackTrace();
@@ -422,6 +563,12 @@ public class TestTrade {
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private Trade trade(String id1, String id2, Date date1, Date date2, String location, String item1, String item2, int edits, String message){
+        Trade t = new Trade(id1, id2, date1, date2, location,
+                item1, item2, edits, message);
+        return t;
     }
 
 }

@@ -45,11 +45,16 @@ public class HandleItemRequestsManager extends  Manager{
 
         for (User user : getUserDatabase().getItems()) {
             if (user instanceof Trader) {
+                // Get requested item IDs
                 ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
                 ArrayList<TradableItem> populatedItems = new ArrayList<>();
+
+                // Populate the item
                 for (String item: requestedItems){
                     populatedItems.add(getTradableItem(item));
                 }
+
+                // Add the populated list to the result
                 if (populatedItems.size() > 0)
                     allItems.put((Trader) user, populatedItems);
             }

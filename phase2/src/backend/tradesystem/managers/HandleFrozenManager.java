@@ -43,21 +43,6 @@ public class HandleFrozenManager extends Manager {
     }
 
     /**
-     * Return traders that should be considered to be frozen due to too many incomplete trades
-     *
-     * @return true if the user should be frozen, false otherwise
-     */
-    public ArrayList<Trader> getIncompleteTraders() {
-        ArrayList<Trader> freezable = new ArrayList<>();
-        for (User user : getUserDatabase().getItems()) {
-            if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()) {
-                freezable.add((Trader) user);
-            }
-        }
-        return freezable;
-    }
-
-    /**
      * Freeze or unfreeze a user
      *
      * @param userID       the user id
@@ -86,4 +71,20 @@ public class HandleFrozenManager extends Manager {
                 result.add(user);
         return result;
     }
+
+    /**
+     * Return traders that should be considered to be frozen due to too many incomplete trades
+     *
+     * @return true if the user should be frozen, false otherwise
+     */
+    public ArrayList<Trader> getShouldBeFrozen() {
+        ArrayList<Trader> freezable = new ArrayList<>();
+        for (User user : getUserDatabase().getItems()) {
+            if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()) {
+                freezable.add((Trader) user);
+            }
+        }
+        return freezable;
+    }
+
 }

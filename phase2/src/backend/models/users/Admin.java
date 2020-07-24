@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Admin extends User implements Serializable{
 
 
-    ArrayList<Report> reports;
+    private ArrayList<Report> reports;
 
     /**
      * Constructs an admin with a given username and password.

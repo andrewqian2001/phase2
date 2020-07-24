@@ -11,18 +11,18 @@ import java.util.ArrayList;
  */
 
 public class Trader extends User implements Serializable {
-    private final ArrayList<String> wishList = new ArrayList<>();  // items that this trader wants.
-    private final ArrayList<String> availableItems = new ArrayList<>(); // items that the trader is willing to trade,lend etc
-    private final ArrayList<String> requestedItems = new ArrayList<>(); // items that the this trader wishes to be added to availableItems list
-    private final ArrayList<String> acceptedTrades = new ArrayList<>(); // trades that are ongoing
-    private final ArrayList<String> requestedTrades = new ArrayList<>(); // trades yet to be accepted or denied
-    private final ArrayList<String> completedTrades = new ArrayList<>(); // trades where meetings are finished and confirmed by both sides and transaction has concluded
-    private final ArrayList<Review> reviews = new ArrayList<>(); // list of reviews
-    private int tradeLimit;
-    private int incompleteTradeLim;
+    private final ArrayList<String> wishList = new ArrayList<>();  // Items that this trader wants.
+    private final ArrayList<String> availableItems = new ArrayList<>(); // Items that the trader is willing to trade,lend etc
+    private final ArrayList<String> requestedItems = new ArrayList<>(); // Items that the this trader wishes to be added to availableItems list
+    private final ArrayList<String> acceptedTrades = new ArrayList<>(); // Trades that are ongoing
+    private final ArrayList<String> requestedTrades = new ArrayList<>(); // Trades yet to be accepted or denied
+    private final ArrayList<String> completedTrades = new ArrayList<>(); // Trades where meetings are finished and confirmed by both sides and transaction has concluded
+    private final ArrayList<Review> reviews = new ArrayList<>(); // List of reviews
+    private int tradeLimit; // This trader's trade limit (total amount of trades that can be conducted per week)
+    private int incompleteTradeLim; // This trader's incomplete trade limit
     private int totalItemsBorrowed;
     private int totalItemsLent;
-    private int minimumAmountNeededToBorrow;
+    private int minimumAmountNeededToBorrow; // The minimum value totalItemsLent - totalItemsBorrowed needs to be to borrow
     private int tradeCount;
     private boolean isIdle = false;
     private String city;
@@ -115,7 +115,7 @@ public class Trader extends User implements Serializable {
      * @return if the trader can borrow
      */
     public boolean canBorrow() {
-        return canTrade() && totalItemsLent - totalItemsBorrowed > minimumAmountNeededToBorrow;
+        return canTrade() && totalItemsLent - totalItemsBorrowed >= minimumAmountNeededToBorrow;
     }
 
     /**
