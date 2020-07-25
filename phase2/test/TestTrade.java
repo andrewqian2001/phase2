@@ -164,11 +164,41 @@ public class TestTrade {
             assertEquals(0, trader2.getTotalItemsBorrowed());
             assertEquals(0, trader1.getTotalItemsBorrowed());
 
+
+
+            /*
+            * THIS POINT MARKS WHERE THE SECOND MEETING IS BEING TESTED
+            * */
+
+            trader1.getAvailableItems().remove(item2);
+            userDatabase.update(trader1);
+            try {
+                tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+                fail();
+            }catch (CannotTradeException e){
+
+            }
+            try {
+                tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+                fail();
+            }catch (CannotTradeException e){
+
+            }
+            trader1.getAvailableItems().add(item2);
+            userDatabase.update(trader1);
+
+            // This part makes sure that the incomplete trade count does not affect trade confirmation
+            trader1.getAcceptedTrades().add("a");
+            trader1.getAcceptedTrades().add("b");
+            trader1.getAcceptedTrades().add("c");
+            userDatabase.update(trader1);
+
+
             tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
             // Make sure nothing has changed after first confirmation.
             update();
             // check that the trade is still accepted
-            assertTrue(trader1.getAcceptedTrades().size() == 1);
+            assertTrue(trader1.getAcceptedTrades().size() == 4);
             assertTrue(trader2.getAcceptedTrades().size() == 1);
             // check that the items are in the correct pos
             assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
@@ -184,7 +214,7 @@ public class TestTrade {
             tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
             update();
             // check that the trade is still accepted
-            assertTrue(trader1.getAcceptedTrades().size() == 1);
+            assertTrue(trader1.getAcceptedTrades().size() == 4);
             assertTrue(trader2.getAcceptedTrades().size() == 1);
             // check that the items are in the correct pos
             assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
@@ -197,13 +227,12 @@ public class TestTrade {
             assertEquals(0, trader1.getTotalItemsBorrowed());
 
             tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
-            update();
             //check the trade is now in the completed trades
             update();
             assertEquals(trader1.getCompletedTrades().get(0), trade.getId());
             assertEquals(trader2.getCompletedTrades().get(0), trade.getId());
             // check that the trade is no longer in the accepted trades
-            assertTrue(trader1.getAcceptedTrades().size() == 0);
+            assertTrue(trader1.getAcceptedTrades().size() == 3);
             assertTrue(trader2.getAcceptedTrades().size() == 0);
             // check that the items are in the correct pos
             assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item1);
@@ -214,6 +243,8 @@ public class TestTrade {
             assertEquals(0, trader2.getTotalItemsLent());
             assertEquals(0, trader2.getTotalItemsBorrowed());
             assertEquals(0, trader1.getTotalItemsBorrowed());
+            assertFalse(trader1.getAvailableItems().contains(item2));
+            assertFalse(trader2.getAvailableItems().contains(item1));
 
 
     } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
@@ -260,6 +291,12 @@ public class TestTrade {
             assertFalse(trader1.getAvailableItems().contains(item1));
             assertFalse(trader2.getAvailableItems().contains(item2));
 
+            // This part makes sure that the incomplete trade count does not affect trade confirmation
+            trader1.getAcceptedTrades().add("a");
+            trader1.getAcceptedTrades().add("b");
+            trader1.getAcceptedTrades().add("c");
+            userDatabase.update(trader1);
+
             //confirm trade
             tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
             tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
@@ -269,7 +306,7 @@ public class TestTrade {
             assertEquals(trader1.getCompletedTrades().get(0), trade.getId());
             assertEquals(trader2.getCompletedTrades().get(0), trade.getId());
             // check that the trade is no longer in the accepted trades
-            assertTrue(trader1.getAcceptedTrades().size() == 0);
+            assertTrue(trader1.getAcceptedTrades().size() == 3);
             assertTrue(trader2.getAcceptedTrades().size() == 0);
             // check that the items are in the correct pos
             assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
