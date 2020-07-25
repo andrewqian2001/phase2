@@ -60,7 +60,7 @@ public class TradingManager extends Manager {
         if (!secondTrader.canTrade())
             throw new CannotTradeException("The user requested cannot trade due to trading restrictions");
         if (firstUserOfferId.equals("") && !trader.canBorrow())
-            throw new CannotTradeException("You have too many borrows. Try lending");
+            throw new CannotTradeException("You have not lent enough to borrow");
 
         // This is used to check if the items are in each user's inventory
         if ((!firstUserOfferId.equals("") && !trader.getAvailableItems().contains(firstUserOfferId)) ||
@@ -231,7 +231,6 @@ public class TradingManager extends Manager {
             trade.setSecondUserConfirmed2(status);
         }
 
-
         // If the second meeting has been confirmed...
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1() &&
                 trade.isFirstUserConfirmed2() && trade.isSecondUserConfirmed2()) {
@@ -239,7 +238,7 @@ public class TradingManager extends Manager {
             trader1.getCompletedTrades().add(tradeId);
             trader2.getCompletedTrades().add(tradeId);
             trader1.getAcceptedTrades().remove(tradeId);
-            trader1.getAcceptedTrades().remove(tradeId);
+            trader2.getAcceptedTrades().remove(tradeId);
 
             // Update available items of first user / borrowed count
             if (!trade.getFirstUserOffer().equals(""))

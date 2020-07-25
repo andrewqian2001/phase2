@@ -88,10 +88,139 @@ public class TestTrade {
         setProperty(TraderProperties.TRADE_LIMIT, 10);
     }
 
-//    @Test
-//    public void testTemporaryTrade() {
-//        assertEquals("Should return the previous seed value\n", 1, 2);
-//    }
+    @Test
+    public void testTemporaryTrade() {
+        try{
+            String item1 = trader1.getAvailableItems().get(0);
+            String item2 = trader2.getAvailableItems().get(0);
+            Trade trade = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    item1, item2, 3, "This is a trade"));
+            // make sure that the trades are requested
+            update();
+            assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
+            //makes sure that the items are still in each person's inventory
+            assertEquals(trader1.getAvailableItems().get(0), item1);
+            assertEquals(trader2.getAvailableItems().get(0), item2);
+            trader1.getAvailableItems().remove(item1);
+            userDatabase.update(trader1);
+            // make sure trader1 can no longer accept the trade
+            try {
+                tradingManager.acceptRequest(trader1.getId(), trade.getId());
+                fail("Accept request should not work");
+            } catch (CannotTradeException e){
+                //GOOD!
+            }
+            trader1.getAvailableItems().add(item1);
+            userDatabase.update(trader1);
+            // Once trader2 accepts ...
+            assertTrue(tradingManager.acceptRequest(trader2.getId(), trade.getId()));
+            update();
+            // make sure the trades are correctly in their respective lists
+            assertEquals(trader1.getAcceptedTrades().get(0), trader2.getAcceptedTrades().get(0));
+            // and that they're no longer requested
+            assertTrue(trader1.getRequestedTrades().size() == 0);
+            assertTrue(trader2.getRequestedTrades().size() == 0);
+            // and that the items are no longer in the trader's inventories
+            assertFalse(trader1.getAvailableItems().contains(item1));
+            assertFalse(trader2.getAvailableItems().contains(item2));
+
+            //confirm trade
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+            // Make sure nothing changed after first confirmation
+            assertNotEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
+            assertNotEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(0, trader1.getTradeCount());
+            assertEquals(0, trader2.getTradeCount());
+            assertEquals(0, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
+
+            // Make sure confirming first meeting again does nothing
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+            assertNotEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
+            assertNotEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(0, trader1.getTradeCount());
+            assertEquals(0, trader2.getTradeCount());
+            assertEquals(0, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
+
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+
+            //check the trade is now in the completed trades
+            update();
+            // check that the trade is still accepted
+            assertTrue(trader1.getAcceptedTrades().size() == 1);
+            assertTrue(trader2.getAcceptedTrades().size() == 1);
+            // check that the items are in the correct pos
+            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
+            assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(0, trader1.getTradeCount());
+            assertEquals(0, trader2.getTradeCount());
+            assertEquals(0, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
+
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+            // Make sure nothing has changed after first confirmation.
+            update();
+            // check that the trade is still accepted
+            assertTrue(trader1.getAcceptedTrades().size() == 1);
+            assertTrue(trader2.getAcceptedTrades().size() == 1);
+            // check that the items are in the correct pos
+            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
+            assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(0, trader1.getTradeCount());
+            assertEquals(0, trader2.getTradeCount());
+            assertEquals(0, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
+
+            // Make sure confirming again will not do anything
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+            update();
+            // check that the trade is still accepted
+            assertTrue(trader1.getAcceptedTrades().size() == 1);
+            assertTrue(trader2.getAcceptedTrades().size() == 1);
+            // check that the items are in the correct pos
+            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
+            assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(0, trader1.getTradeCount());
+            assertEquals(0, trader2.getTradeCount());
+            assertEquals(0, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
+
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+            update();
+            //check the trade is now in the completed trades
+            update();
+            assertEquals(trader1.getCompletedTrades().get(0), trade.getId());
+            assertEquals(trader2.getCompletedTrades().get(0), trade.getId());
+            // check that the trade is no longer in the accepted trades
+            assertTrue(trader1.getAcceptedTrades().size() == 0);
+            assertTrue(trader2.getAcceptedTrades().size() == 0);
+            // check that the items are in the correct pos
+            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item1);
+            assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item2);
+            assertEquals(1, trader1.getTradeCount());
+            assertEquals(1, trader2.getTradeCount());
+            assertEquals(0, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
+
+
+    } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
+        fail(e.getMessage());
+        e.printStackTrace();
+    }
+    }
 
     @Test
     public void testPermanentTrade(){
@@ -371,7 +500,7 @@ public class TestTrade {
                 fail("Did not lend first");
             }
             catch (CannotTradeException e){
-                assertEquals("You have too many borrows. Try lending", e.getMessage());
+                assertEquals("You have not lent enough to borrow", e.getMessage());
             }
 
             trader1.setTotalItemsLent(1);
@@ -447,7 +576,7 @@ public class TestTrade {
                 fail("Have not borrowed");
             }
             catch (CannotTradeException e){
-                assertEquals("You have too many borrows. Try lending", e.getMessage());
+                assertEquals("You have not lent enough to borrow", e.getMessage());
             }
 
             trader2.setTotalItemsLent(1);
