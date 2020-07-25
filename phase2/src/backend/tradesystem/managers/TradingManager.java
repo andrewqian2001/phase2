@@ -75,7 +75,7 @@ public class TradingManager extends Manager {
         // Check whether the trader has too many incomplete trades pending
         if (trader.getIncompleteTradeCount() >= trader.getIncompleteTradeLim() ||
                 secondTrader.getIncompleteTradeCount() >= secondTrader.getIncompleteTradeLim())
-            throw new CannotTradeException("Too many active trades.");
+            throw new CannotTradeException("One of the two users has too many active trades.");
 
         // This trade has now been requested, so add it to the requested trades of each trader
         trader.getRequestedTrades().add(trade.getId());

@@ -666,6 +666,64 @@ public class TestTrade {
         }
     }
 
+    @Test
+    public void testRescindTradeOffer(){
+        try {
+            String item1 = trader1.getAvailableItems().get(0);
+            String item2 = trader1.getAvailableItems().get(1);
+            String item4 = trader2.getAvailableItems().get(0);
+            String item5 = trader2.getAvailableItems().get(1);
+            trader1.setTotalItemsLent(trader1.getTotalItemsLent() + 1);
+            userDatabase.update(trader1);
+            Trade t1 = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    item1, "", 1, "This is a lend2"));
+            Trade t2 =tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    item2, item4, 1, "This is a lend2"));
+            Trade t3 =tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    "", item5, 1, "This is a lend2"));
+
+            update();
+            assertTrue(trader1.getRequestedTrades().contains(t1.getId()));
+            assertTrue(trader1.getRequestedTrades().contains(t2.getId()));
+            assertTrue(trader1.getRequestedTrades().contains(t3.getId()));
+            assertTrue(trader2.getRequestedTrades().contains(t1.getId()));
+            assertTrue(trader2.getRequestedTrades().contains(t2.getId()));
+            assertTrue(trader2.getRequestedTrades().contains(t3.getId()));
+            // Only the sender, trader1, has accepted this trade
+
+            tradingManager.rescindTradeRequest(t1.getId());
+            update();
+            assertFalse(trader1.getRequestedTrades().contains(t1.getId()));
+            assertFalse(trader2.getRequestedTrades().contains(t1.getId()));
+
+            // This trade will be accepted.
+            tradingManager.acceptRequest(trader2.getId(), t2.getId());
+            // Now it is accepted.
+            try{
+                tradingManager.rescindTradeRequest(t2.getId());
+                fail();
+            } catch (Exception e){
+
+            }
+
+            // This other trade will be confirmed
+            tradingManager.acceptRequest(trader2.getId(), t3.getId());
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId(), true);
+            try{
+                tradingManager.rescindTradeRequest(t2.getId());
+                fail();
+            } catch (Exception e){
+
+            }
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            fail();
+        }
+    }
+
     private void update(){
         try {
             trader1 = traderManager.getTrader(trader1.getId());
