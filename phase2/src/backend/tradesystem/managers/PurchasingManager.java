@@ -37,13 +37,13 @@ public class PurchasingManager extends Manager {
      * @throws CannotPurchaseException
      * @throws AuthorizationException
      */
-    public void sendPurchaseRequest (boolean isSeller, String buyerId, String sellerId, Date meetingTime, String meetingLocation) throws UserNotFoundException, PurchaseableItemNotFoundException, CannotPurchaseException, AuthorizationException {
+    public void sendPurchaseRequest (boolean isSeller, String buyerId, String sellerId, Date meetingTime, String meetingLocation, String sellerItemId) throws UserNotFoundException, PurchaseableItemNotFoundException, CannotPurchaseException, AuthorizationException {
         //The reason we have the isSeller variable is b/c I don't want to add the purchase into both of the traders lists
         // reason being is I think that the lists should only be for requests you get but not for the ones you send out
 
         Trader buyer = getTrader(buyerId);
         Trader seller = getTrader(sellerId);
-        Purchase purchase = new Purchase(buyerId, sellerId, meetingTime, meetingLocation);
+        Purchase purchase = new Purchase(buyerId, sellerId, meetingTime, meetingLocation, sellerItemId);
         if (buyer.equals(seller)) throw new CannotPurchaseException("Cannot purchase with yourself");
 
         if(isSeller){
@@ -93,6 +93,35 @@ public class PurchasingManager extends Manager {
 
     }
 
+
+    /**
+     *Trader confirms the meeting took place
+     * @param traderId the id of the trader confirming the meeting took place
+     * @param purchaseId is the id of the purchase
+     */
+    public void confirmMeeting(String traderId, String purchaseId, boolean confirmed) throws PurchaseNotFoundException, AuthorizationException, UserNotFoundException, PurchaseableItemNotFoundException {
+        Purchase purchase = getPurchase(purchaseId);
+        if(traderId == purchase.getSELLER_ID()){
+            purchase.setSellerConfirmed(confirmed);
+        }else if(traderId == purchase.getBUYER_ID()){
+            purchase.setBuyerConfirmed(confirmed);
+        }else{
+            throw new AuthorizationException();
+        }
+
+        if(purchase.isMeetingSuccess()){
+            Trader seller = getTrader(purchase.getSELLER_ID());
+            Trader buyer = getTrader(purchase.getBUYER_ID());
+            String item = purchase.getSellerItem();
+            seller.getAcceptedPurchasableItems().remove(item);
+            buyer.getAcceptedPurchases().add(item);
+            double price = getPurchasableItem(item).getPrice();
+            buyer.setMoney(buyer.getMoney() - price);
+            seller.setMoney(seller.getMoney() + price);
+        }
+
+    }
+
     /**
      *
      * @param traderId is the id of the trader
@@ -107,12 +136,5 @@ public class PurchasingManager extends Manager {
         }
     }
 
-    /**
-     *
-     * @param traderId the id of the trader confirming the meeting took place
-     * @param purchaseId is the id of the purchase
-     */
-    public void confirmMeeting(String traderId, String purchaseId){
 
-    }
 }

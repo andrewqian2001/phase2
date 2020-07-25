@@ -7,6 +7,7 @@ import java.util.Date;
 public class Purchase extends DatabaseItem implements Serializable {
     private String BUYER_ID;
     private String SELLER_ID;
+    private String sellerItem;
     private Date meetingTime;
     private String meetingLocation;
     private boolean isBuyerConfirmed; //this is if the buyer confirmed the meeting
@@ -18,12 +19,13 @@ public class Purchase extends DatabaseItem implements Serializable {
      * @param sellerID is the id of the trader who is selling an item
      * @param meetingTime is the date of when they will exchange cash and item
      */
-    public Purchase (String buyerID, String sellerID, Date meetingTime, String meetingLocation) {
+    public Purchase (String buyerID, String sellerID, Date meetingTime, String meetingLocation, String sellerItem) {
         super();
         BUYER_ID = buyerID;
         SELLER_ID = sellerID;
         this.meetingTime = meetingTime;
         this.meetingLocation = meetingLocation;
+        this.sellerItem = sellerItem;
     }
 
     /**
@@ -44,6 +46,12 @@ public class Purchase extends DatabaseItem implements Serializable {
 
     /**
      *
+     * @return the id of the sellers item
+     */
+    public String getSellerItem(){return sellerItem;}
+
+    /**
+     *
      * @return the meeting time
      */
     public Date getMeetingTime(){return meetingTime;}
@@ -56,12 +64,28 @@ public class Purchase extends DatabaseItem implements Serializable {
 
     /**
      *
+     * @param confirmed is true if the buyer is confirmed
+     */
+    public void setBuyerConfirmed(boolean confirmed){isBuyerConfirmed = confirmed;}
+
+    /**
+     *
+     * @param confirmed is true if the seller is confirmed
+     * @return
+     */
+    public void setSellerConfirmed(boolean confirmed){isSellerConfirmed = confirmed;}
+    /**
+     *
      * @return true if the seller has confirmed the meeting
      */
     public boolean isSellerConfirmed(){return isSellerConfirmed;}
 
     public boolean isTraderInPurchase(String traderId){
         return this.getBUYER_ID().equals(traderId) || this.getSELLER_ID().equals(traderId);
+    }
+
+    public boolean isMeetingSuccess(){
+        return isBuyerConfirmed && isSellerConfirmed;
     }
 
 }
