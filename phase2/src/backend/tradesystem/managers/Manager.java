@@ -125,6 +125,23 @@ public class Manager {
     }
 
     /**
+     * Getting the purchase from purchase id
+     *
+     * @param id purchase
+     * @return the purhcase object
+     * @throws PurchaseNotFoundException if the trade wasn't found
+     */
+    public Purchase getPurchase(String id) throws PurchaseNotFoundException {
+        Purchase purchase;
+        try {
+            purchase = purchaseDatabase.populate(id);
+        } catch (EntryNotFoundException e) {
+            throw new PurchaseNotFoundException(id);
+        }
+        return purchase;
+    }
+
+    /**
      * Gets the user database
      *
      * @return the user database

@@ -17,6 +17,7 @@ public class Trader extends User implements Serializable {
     private final ArrayList<String> requestedPurchasableItems = new ArrayList<>(); // Items that the this trader wishes to be added to acceptedPurchasableItems list
     private final ArrayList<String> acceptedPurchasableItems = new ArrayList<>(); //Items that can be bought by other traders
     private final ArrayList<String> purchaseRequests = new ArrayList<>(); //List of requests that you have sent or other traders have sent to you
+    private final ArrayList<String> acceptedPurchases = new ArrayList<>(); //list of purchases that are ongoing
     private final ArrayList<String> acceptedTrades = new ArrayList<>(); // Trades that are ongoing
     private final ArrayList<String> requestedTrades = new ArrayList<>(); // Trades yet to be accepted or denied
     private final ArrayList<String> completedTrades = new ArrayList<>(); // Trades where meetings are finished and confirmed by both sides and transaction has concluded
@@ -98,6 +99,12 @@ public class Trader extends User implements Serializable {
      */
     public ArrayList<String> getAcceptedPurchasableItems(){return acceptedPurchasableItems;}
 
+
+    /**
+     *
+     * @return a list of purchases that have been accepted by both users (meeting has not occurred yet)
+     */
+    public ArrayList<String> getAcceptedPurchases(){return acceptedPurchases;}
     /**
      *
      * @return the purchase requests of other users

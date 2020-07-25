@@ -60,4 +60,8 @@ public class Purchase extends DatabaseItem implements Serializable {
      */
     public boolean isSellerConfirmed(){return isSellerConfirmed;}
 
+    public boolean isTraderInPurchase(String traderId){
+        return this.getBUYER_ID().equals(traderId) || this.getSELLER_ID().equals(traderId);
+    }
+
 }
