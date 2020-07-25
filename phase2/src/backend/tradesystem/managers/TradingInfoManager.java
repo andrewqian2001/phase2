@@ -31,8 +31,8 @@ public class TradingInfoManager extends Manager {
      * @param tradeFilePath the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public TradingInfoManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath, String purchaseFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath, purchasableItemFilePath, purchaseFilePath);
+    public TradingInfoManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
 

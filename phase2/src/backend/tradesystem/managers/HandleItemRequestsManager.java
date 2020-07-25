@@ -1,7 +1,6 @@
 package backend.tradesystem.managers;
 
 import backend.exceptions.AuthorizationException;
-import backend.exceptions.PurchaseableItemNotFoundException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
@@ -33,8 +32,8 @@ public class HandleItemRequestsManager extends  Manager{
      * @param tradeFilePath the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public HandleItemRequestsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath, String purchaseFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath, purchasableItemFilePath, purchaseFilePath);
+    public HandleItemRequestsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
     /**
@@ -89,25 +88,5 @@ public class HandleItemRequestsManager extends  Manager{
         return trader;
     }
 
-    /**
-     *  the admin accepts or denies a users request to add a purchasable item to be able to be sold
-     * @param traderID is the id of the trader
-     * @param itemId is the id of the item
-     * @param isAccepted is true if they admin accepted
-     * @return the trader that has been updated
-     * @throws TradableItemNotFoundException
-     * @throws AuthorizationException
-     * @throws UserNotFoundException
-     */
-    public Trader processPurchasableItemRequest(String traderID, String itemId, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException, PurchaseableItemNotFoundException {
-        Trader trader = getTrader(traderID);
-        ArrayList<String> itemIDs = trader.getRequestedPurchasableItems();
-        if (!itemIDs.contains(itemId)) throw new PurchaseableItemNotFoundException(itemId);
-        if (isAccepted) {
-            trader.getAvailableItems().add(itemId);
-        }
-        trader.getRequestedItems().remove(itemId);
-        updateUserDatabase(trader);
-        return trader;
-    }
+
 }

@@ -4,7 +4,6 @@ package backend.tradesystem.managers;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.PurchaseableItem;
 import backend.models.Review;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
@@ -31,8 +30,8 @@ public class TraderManager extends Manager {
      * @param tradeFilePath the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public TraderManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String purchasableItemFilePath, String purchaseFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath, purchasableItemFilePath, purchaseFilePath);
+    public TraderManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+        super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
 
@@ -56,25 +55,7 @@ public class TraderManager extends Manager {
         return trader;
     }
 
-    /**
-     * Makes this user request an purchasable item
-     *
-     * @param id trader id
-     * @param name name of the item
-     * @param desc description of the item
-     * @throws UserNotFoundException  if the user was not found
-     * @throws AuthorizationException not allowed to request an item
-     * @return the item that was requested
-     */
-    public Trader addRequestPurchasableItem(String id, String name, String desc, double price) throws UserNotFoundException, AuthorizationException {
-        Trader trader = getTrader(id);
-        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
-        PurchaseableItem item = new PurchaseableItem(name, desc, price);
-        trader.getRequestedPurchasableItems().add(item.getId());
-        updatePurchasableItemDatabase(item);
-        updateUserDatabase(trader);
-        return trader;
-    }
+
 
 
     /**

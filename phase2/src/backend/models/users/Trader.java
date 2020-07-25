@@ -14,10 +14,7 @@ public class Trader extends User implements Serializable {
     private final ArrayList<String> wishList = new ArrayList<>();  // Items that this trader wants.
     private final ArrayList<String> availableItems = new ArrayList<>(); // Items that the trader is willing to trade,lend etc
     private final ArrayList<String> requestedItems = new ArrayList<>(); // Items that the this trader wishes to be added to availableItems list
-    private final ArrayList<String> requestedPurchasableItems = new ArrayList<>(); // Items that the this trader wishes to be added to acceptedPurchasableItems list
-    private final ArrayList<String> acceptedPurchasableItems = new ArrayList<>(); //Items that can be bought by other traders
-    private final ArrayList<String> purchaseRequests = new ArrayList<>(); //List of requests that you have sent or other traders have sent to you
-    private final ArrayList<String> acceptedPurchases = new ArrayList<>(); //list of purchases that are ongoing
+
     private final ArrayList<String> acceptedTrades = new ArrayList<>(); // Trades that are ongoing
     private final ArrayList<String> requestedTrades = new ArrayList<>(); // Trades yet to be accepted or denied
     private final ArrayList<String> completedTrades = new ArrayList<>(); // Trades where meetings are finished and confirmed by both sides and transaction has concluded
@@ -28,7 +25,6 @@ public class Trader extends User implements Serializable {
     private int totalItemsLent;
     private int minimumAmountNeededToBorrow; // The minimum value totalItemsLent - totalItemsBorrowed needs to be to borrow
     private int tradeCount;
-    private double money;
     private boolean isIdle = false;
     private String city;
 
@@ -44,13 +40,13 @@ public class Trader extends User implements Serializable {
      * @param minimumAmountNeededToBorrow the minimum amount of items that must be lent before borrowing is allowed
      * @param city                        the city of the trader
      */
-    public Trader(String name, String password, String city, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow, double money) {
+    public Trader(String name, String password, String city, int tradeLimit, int incompleteTradeLim, int minimumAmountNeededToBorrow) {
         super(name, password);
         this.tradeLimit = tradeLimit;
         this.incompleteTradeLim = incompleteTradeLim;
         this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
         this.city = city;
-        this.money = money;
+
     }
 
     /**
@@ -87,40 +83,6 @@ public class Trader extends User implements Serializable {
         this.city = city;
     }
 
-    /**
-     *
-     * @return the list of items that the user wishes to sell
-     */
-    public ArrayList<String> getRequestedPurchasableItems(){return requestedPurchasableItems;}
-
-    /**
-     *
-     * @return the list of items that are available to be sold by the trader
-     */
-    public ArrayList<String> getAcceptedPurchasableItems(){return acceptedPurchasableItems;}
-
-
-    /**
-     *
-     * @return a list of purchases that have been accepted by both users (meeting has not occurred yet)
-     */
-    public ArrayList<String> getAcceptedPurchases(){return acceptedPurchases;}
-    /**
-     *
-     * @return the purchase requests of other users
-     */
-    public ArrayList<String> getPurchaseRequests(){return purchaseRequests;}
-    /**
-     * Sets the amount of money the trader has
-     * @param money is the amount of money the trader has
-     */
-    public void setMoney(Double money){this.money = money;}
-
-    /**
-     *
-     * @return the amount of cash this trader has
-     */
-    public double getMoney(){return this.money;}
 
     /**
      * Makes the trader have an idle status
