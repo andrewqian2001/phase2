@@ -711,12 +711,111 @@ public class TestTrade {
             tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId(), true);
             tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId(), true);
             try{
-                tradingManager.rescindTradeRequest(t2.getId());
+                tradingManager.rescindTradeRequest(t3.getId());
                 fail();
             } catch (Exception e){
 
             }
 
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    public void testRescindAcceptedTrade(){
+        try {
+            String item1 = trader1.getAvailableItems().get(0);
+            String item2 = trader1.getAvailableItems().get(1);
+            String item4 = trader2.getAvailableItems().get(0);
+            String item5 = trader2.getAvailableItems().get(1);
+            trader1.setTotalItemsLent(1);
+            userDatabase.update(trader1);
+            Trade t1 = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    item1, "", 1, "This is a lend2"));
+            Trade t2 =tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    item2, item4, 1, "This is a lend2"));
+            Trade t3 =tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    "", item5, 1, "This is a lend2"));
+
+            update();
+            assertTrue(trader1.getRequestedTrades().contains(t1.getId()));
+            assertTrue(trader1.getRequestedTrades().contains(t2.getId()));
+            assertTrue(trader1.getRequestedTrades().contains(t3.getId()));
+            assertTrue(trader2.getRequestedTrades().contains(t1.getId()));
+            assertTrue(trader2.getRequestedTrades().contains(t2.getId()));
+            assertTrue(trader2.getRequestedTrades().contains(t3.getId()));
+            // Only the sender, trader1, has accepted this trade
+            update();
+            try{
+                tradingManager.rescindOngoingTrade(t1.getId());
+                fail();
+            } catch (Exception e){
+
+            }
+
+
+            // This trade will be accepted.
+            tradingManager.acceptRequest(trader2.getId(), t2.getId());
+            // Now it is accepted.
+            update();
+            assertFalse(trader1.getRequestedTrades().contains(t2.getId()));
+            assertFalse(trader2.getRequestedTrades().contains(t2.getId()));
+            assertTrue(trader1.getAcceptedTrades().contains(t2.getId()));
+            assertTrue(trader2.getAcceptedTrades().contains(t2.getId()));
+            assertFalse(trader1.getAvailableItems().contains(item2));
+            assertFalse(trader2.getAvailableItems().contains(item4));
+            tradingManager.rescindOngoingTrade(t2.getId());
+            update();
+            assertFalse(trader1.getAcceptedTrades().contains(t2.getId()));
+            assertFalse(trader1.getAcceptedTrades().contains(t2.getId()));
+            assertTrue(trader1.getAvailableItems().contains(item2));
+            assertTrue(trader2.getAvailableItems().contains(item4));
+            // This other trade will be confirmed
+            tradingManager.acceptRequest(trader2.getId(), t3.getId());
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId(), true);
+            try{
+                tradingManager.rescindTradeRequest(t3.getId());
+                fail();
+            } catch (Exception e){
+
+            }
+            Trade lend = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    item1, "", 1, "This is a lend2"));
+            tradingManager.acceptRequest(trader2.getId(), lend.getId());
+            tradingManager.rescindOngoingTrade(lend.getId());
+            update();
+            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size() - 1), item1);
+            assertFalse(trader1.getAvailableItems().contains(""));
+            assertFalse(trader2.getAvailableItems().contains(""));
+            assertEquals(1, trader1.getTradeCount());
+            assertEquals(1, trader2.getTradeCount());
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsLent());
+
+            trader1.setTotalItemsLent(2);
+            userDatabase.update(trader1);
+            Trade borrow = tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    "", item4, 1, "This is a lend2"));
+            tradingManager.acceptRequest(trader2.getId(), borrow.getId());
+            tradingManager.rescindOngoingTrade(borrow.getId());
+            update();
+            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size() - 1), item1);
+            assertFalse(trader1.getAvailableItems().contains(""));
+            assertFalse(trader2.getAvailableItems().contains(""));
+            assertEquals(1, trader1.getTradeCount());
+            assertEquals(1, trader2.getTradeCount());
+            assertEquals(2, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsLent());
         }
         catch (Exception e){
             e.printStackTrace();

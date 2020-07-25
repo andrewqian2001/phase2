@@ -392,8 +392,10 @@ public class TradingManager extends Manager {
         secondTrader.getAcceptedTrades().remove(tradeID);
 
         // Take back items
-        firstTrader.getAvailableItems().add(trade.getFirstUserOffer());
-        secondTrader.getAvailableItems().add(trade.getSecondUserOffer());
+        if (!trade.getFirstUserOffer().equals(""))
+            firstTrader.getAvailableItems().add(trade.getFirstUserOffer());
+        if (!trade.getSecondUserOffer().equals(""))
+            secondTrader.getAvailableItems().add(trade.getSecondUserOffer());
 
         // Update database
         getTradeDatabase().delete(trade.getId());
