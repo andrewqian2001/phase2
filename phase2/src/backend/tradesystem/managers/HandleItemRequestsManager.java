@@ -1,6 +1,7 @@
 package backend.tradesystem.managers;
 
 import backend.exceptions.AuthorizationException;
+import backend.exceptions.PurchaseableItemNotFoundException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
@@ -12,8 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * For handling new TradableItem requests
+ * For handling new TradableItem + purchasable items requests
  */
+
 public class HandleItemRequestsManager extends  Manager{
     /**
      * Initialize the objects to get items from databases
@@ -83,6 +85,28 @@ public class HandleItemRequestsManager extends  Manager{
             trader.getAvailableItems().add(reqItemID);
         }
         trader.getRequestedItems().remove(reqItemID);
+        updateUserDatabase(trader);
+        return trader;
+    }
+
+    /**
+     *  the admin accepts or denies a users request to add a purchasable item to be able to be sold
+     * @param traderID is the id of the trader
+     * @param itemId is the id of the item
+     * @param isAccepted is true if they admin accepted
+     * @return the trader that has been updated
+     * @throws TradableItemNotFoundException
+     * @throws AuthorizationException
+     * @throws UserNotFoundException
+     */
+    public Trader processPurchasableItemRequest(String traderID, String itemId, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException, PurchaseableItemNotFoundException {
+        Trader trader = getTrader(traderID);
+        ArrayList<String> itemIDs = trader.getRequestedPurchasableItems();
+        if (!itemIDs.contains(itemId)) throw new PurchaseableItemNotFoundException(itemId);
+        if (isAccepted) {
+            trader.getAvailableItems().add(itemId);
+        }
+        trader.getRequestedItems().remove(itemId);
         updateUserDatabase(trader);
         return trader;
     }

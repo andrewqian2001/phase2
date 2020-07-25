@@ -40,6 +40,7 @@ public class PurchasingManager extends Manager {
     public void sendPurchaseRequest (boolean isSeller, String buyerId, String sellerId, Date meetingTime, String meetingLocation, String sellerItemId) throws UserNotFoundException, PurchaseableItemNotFoundException, CannotPurchaseException, AuthorizationException {
         //The reason we have the isSeller variable is b/c I don't want to add the purchase into both of the traders lists
         // reason being is I think that the lists should only be for requests you get but not for the ones you send out
+        //otherwise you might have a bug where you can accept your own purchase requests
 
         Trader buyer = getTrader(buyerId);
         Trader seller = getTrader(sellerId);
