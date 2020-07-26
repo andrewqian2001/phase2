@@ -34,6 +34,7 @@ public class WindowManager extends JFrame {
         this.setContentPane(new ImagePanel(LoginBg));
         this.add(loginPanel, BorderLayout.CENTER);
         this.setSize(loginPanel.getSize());
+        this.setLocationRelativeTo(null);
         this.setResizable(false);
     }
 
