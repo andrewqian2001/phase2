@@ -2,6 +2,7 @@ package frontend.panels.trader_subpanels;
 
 import backend.models.users.Trader;
 import java.awt.Font;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ItemPanelFactory {
@@ -17,7 +18,7 @@ public class ItemPanelFactory {
         this.boldItalic = boldItalic;
     }
 
-    public ItemPanel create(String type) {
+    public ItemPanel create(String type) throws IOException {
         ArrayList<String> itemList;
         if(type.equals("Inventory")) {
             itemList = trader.getAvailableItems();
@@ -27,6 +28,10 @@ public class ItemPanelFactory {
             // if the type isn't found by now, the Item Panel won't make sense
             itemList = trader.getCompletedTrades();
         }
+        // System.out.println(trader.getAcceptedTrades().size());
+        // System.out.println(trader.getRequestedTrades().size());
+        // System.out.println(trader.getRequestedItems().size());
+        // System.out.println(trader.getWishlist().size());
         return new ItemPanel(trader, itemList, type, regular, bold, italic, boldItalic);
     }
 }
