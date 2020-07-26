@@ -1,8 +1,6 @@
 package frontend.panels.trader_subpanels;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 
 import java.awt.*;
 import java.io.IOException;
@@ -188,6 +186,14 @@ public class TradePanel extends JPanel {
 
     private void getTradeRequestPanels() {
         // tradeRequestsContainer = new JPanel(new GridLayout(10, 1));
+        if(trader.getRequestedTrades().size() == 0) {
+            tradeRequestsContainer = new JPanel();
+            tradeRequestsContainer.setBackground(gray);
+            JLabel noTradesFound = new JLabel("No Trade Requests Found");
+            noTradesFound.setFont(boldItalic.deriveFont(30f));
+            tradeRequestsContainer.add(noTradesFound, BorderLayout.CENTER);
+            return;
+        }
         tradeRequestsContainer = new JPanel(new GridLayout(trader.getRequestedTrades().size(), 1));
         tradeRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         tradeRequestsContainer.setBackground(gray);
@@ -195,21 +201,21 @@ public class TradePanel extends JPanel {
         // for (int i = 0; i < 10; i++) {
             try {
 
-                Trade ongoingTrade = tradeManager.getTrade(tradeID);
+                Trade tradeRequest = tradeManager.getTrade(tradeID);
                 JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
                 tradeRequestPanel.setPreferredSize(new Dimension(1000, 75));
                 tradeRequestPanel.setBackground(gray);
 
-                boolean isTraderFirstUser = tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername());
+                boolean isTraderFirstUser = tradeManager.getUser(tradeRequest.getFirstUserId()).getUsername().equals(trader.getUsername());
                 JLabel otherTraderName, otherTraderItemName, traderItemName;
                 if(isTraderFirstUser) {
-                    otherTraderName = new JLabel(tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername());
-                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(ongoingTrade.getSecondUserOffer()).toString());
-                    traderItemName = new JLabel(tradeManager.getTradableItem(ongoingTrade.getFirstUserOffer()).toString());
+                    otherTraderName = new JLabel(tradeManager.getUser(tradeRequest.getSecondUserId()).getUsername());
+                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).toString());
+                    traderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).toString());
                 } else {
-                    otherTraderName = new JLabel(tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername());
-                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(ongoingTrade.getFirstUserOffer()).toString());
-                    traderItemName = new JLabel(tradeManager.getTradableItem(ongoingTrade.getSecondUserOffer()).toString());
+                    otherTraderName = new JLabel(tradeManager.getUser(tradeRequest.getFirstUserId()).getUsername());
+                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).toString());
+                    traderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).toString());
                 }
 
                 // JLabel otherTraderName = new JLabel("otherTrader #" + (i + 1));
@@ -217,7 +223,7 @@ public class TradePanel extends JPanel {
                 otherTraderName.setForeground(Color.BLACK);
                 otherTraderName.setHorizontalAlignment(JLabel.LEFT);
 
-                JLabel tradeLocation = new JLabel(ongoingTrade.getMeetingLocation());
+                JLabel tradeLocation = new JLabel(tradeRequest.getMeetingLocation());
                 // JLabel tradeLocation = new JLabel("Location #" + (i + 1));
                 tradeLocation.setFont(regular.deriveFont(20f));
                 tradeLocation.setForeground(Color.BLACK);
@@ -272,6 +278,14 @@ public class TradePanel extends JPanel {
     
     private void getOngoingTradesPanel() {
         // ongoingTradesContainer = new JPanel(new GridLayout(10, 1));
+        if (trader.getAcceptedTrades().size() == 0) {
+            ongoingTradesContainer = new JPanel();
+            ongoingTradesContainer.setBackground(gray);
+            JLabel noTradesFound = new JLabel("No Ongoing Trades Found");
+            noTradesFound.setFont(boldItalic.deriveFont(30f));
+            ongoingTradesContainer.add(noTradesFound, BorderLayout.CENTER);
+            return;
+        }
         ongoingTradesContainer = new JPanel(new GridLayout(trader.getAcceptedTrades().size(), 1));
         ongoingTradesContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         ongoingTradesContainer.setBackground(gray);
