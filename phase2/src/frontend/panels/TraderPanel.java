@@ -23,7 +23,6 @@ public class TraderPanel extends JPanel implements ActionListener {
     private ItemPanelFactory itemPanelFactory;
     private GridBagConstraints gbc;
 
-    // TODO: Set different colors
     private Color bg = new Color(214, 214, 214);
     private Color current = new Color(159, 159, 159);
     private Color gray = new Color(75, 75, 75);
