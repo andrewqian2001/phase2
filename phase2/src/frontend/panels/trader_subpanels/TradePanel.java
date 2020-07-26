@@ -187,34 +187,48 @@ public class TradePanel extends JPanel {
     }
 
     private void getTradeRequestPanels() {
-        tradeRequestsContainer = new JPanel(new GridLayout(10, 1));
+        // tradeRequestsContainer = new JPanel(new GridLayout(10, 1));
+        tradeRequestsContainer = new JPanel(new GridLayout(trader.getRequestedTrades().size(), 1));
         tradeRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         tradeRequestsContainer.setBackground(gray);
-        // tradeRequestsContainer = new JPanel(new GridLayout(trader.getRequestedTrades().size(), 1));
-        // for(String tradeID : trader.getRequestedTrades()) {
-        for (int i = 0; i < 10; i++) {
+        for(String tradeID : trader.getRequestedTrades()) {
+        // for (int i = 0; i < 10; i++) {
             try {
-                // Trade ongoingTrade = tradeManager.getTrade(tradeID);
+
+                Trade ongoingTrade = tradeManager.getTrade(tradeID);
                 JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
                 tradeRequestPanel.setPreferredSize(new Dimension(1000, 75));
                 tradeRequestPanel.setBackground(gray);
-                // JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
-                JLabel otherTraderName = new JLabel("otherTrader #" + (i + 1));
+
+                boolean isTraderFirstUser = tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername());
+                JLabel otherTraderName, otherTraderItemName, traderItemName;
+                if(isTraderFirstUser) {
+                    otherTraderName = new JLabel(tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername());
+                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(ongoingTrade.getSecondUserOffer()).toString());
+                    traderItemName = new JLabel(tradeManager.getTradableItem(ongoingTrade.getFirstUserOffer()).toString());
+                } else {
+                    otherTraderName = new JLabel(tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername());
+                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(ongoingTrade.getFirstUserOffer()).toString());
+                    traderItemName = new JLabel(tradeManager.getTradableItem(ongoingTrade.getSecondUserOffer()).toString());
+                }
+
+                // JLabel otherTraderName = new JLabel("otherTrader #" + (i + 1));
                 otherTraderName.setFont(regular.deriveFont(20f));
                 otherTraderName.setForeground(Color.BLACK);
                 otherTraderName.setHorizontalAlignment(JLabel.LEFT);
 
-                JLabel tradeLocation = new JLabel("Location #" + (i + 1));
+                JLabel tradeLocation = new JLabel(ongoingTrade.getMeetingLocation());
+                // JLabel tradeLocation = new JLabel("Location #" + (i + 1));
                 tradeLocation.setFont(regular.deriveFont(20f));
                 tradeLocation.setForeground(Color.BLACK);
                 tradeLocation.setHorizontalAlignment(JLabel.CENTER);
                 
-                JLabel otherTraderItemName = new JLabel("Their item #" + (i + 1));
+                // JLabel otherTraderItemName = new JLabel("Their item #" + (i + 1));
                 otherTraderItemName.setFont(regular.deriveFont(20f));
                 otherTraderItemName.setForeground(Color.BLACK);
                 otherTraderItemName.setHorizontalAlignment(JLabel.CENTER);
 
-                JLabel traderItemName = new JLabel("Your item #" + (i + 1));
+                // JLabel traderItemName = new JLabel("Your item #" + (i + 1));
                 traderItemName.setFont(regular.deriveFont(20f));
                 traderItemName.setForeground(Color.BLACK);
                 traderItemName.setHorizontalAlignment(JLabel.CENTER);
@@ -248,8 +262,8 @@ public class TradePanel extends JPanel {
                 tradeRequestPanel.add(tradeConfirmButton);
                 tradeRequestPanel.add(tradeRejectButton);
                 tradeRequestsContainer.add(tradeRequestPanel);
-                // } catch(TradeNotFoundException | UserNotFoundException exception) {
-            } catch (Exception exception) {
+                } catch(TradeNotFoundException | UserNotFoundException | TradableItemNotFoundException exception) {
+            // } catch (Exception exception) {
                 System.out.println(exception.getMessage());
             }
         }
