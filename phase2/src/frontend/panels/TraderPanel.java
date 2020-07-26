@@ -74,7 +74,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         gbc.weighty = 0.01;
         menuContainer.add(usernameTitle, gbc);
 
-        userIdTitle = new JLabel("ID: #" + trader.getId().substring(trader.getId().length() - 12));
+        userIdTitle = new JLabel("<html><pre>ID: #" + trader.getId().substring(trader.getId().length() - 12) + "</pre></html>");
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(gray);
         userIdTitle.setHorizontalAlignment(JLabel.CENTER);

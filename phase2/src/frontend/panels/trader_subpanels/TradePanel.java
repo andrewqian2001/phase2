@@ -24,7 +24,6 @@ public class TradePanel extends JPanel {
     private GridBagConstraints gbc;
 
     private Color bg = new Color(51, 51, 51);
-    private Color blue = new Color(0, 240, 239);
     private Color gray = new Color(196,196,196);
     private Color detailsButton = new Color(142,142,142);
     private Color confirmButton = new Color(27,158,36);
@@ -202,7 +201,7 @@ public class TradePanel extends JPanel {
             try {
 
                 Trade tradeRequest = tradeManager.getTrade(tradeID);
-                JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
+                JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 7, 10, 0));
                 tradeRequestPanel.setPreferredSize(new Dimension(1000, 75));
                 tradeRequestPanel.setBackground(gray);
 
@@ -246,6 +245,13 @@ public class TradePanel extends JPanel {
                 tradeDetailsButton.setOpaque(true);
                 tradeDetailsButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
+                JButton editTradeButton = new JButton("Edit");
+                editTradeButton.setFont(bold.deriveFont(20f));
+                editTradeButton.setForeground(Color.WHITE);
+                editTradeButton.setBackground(Color.CYAN);
+                editTradeButton.setOpaque(true);
+                editTradeButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+
                 JButton tradeConfirmButton = new JButton("Confirm");
                 tradeConfirmButton.setFont(bold.deriveFont(20f));
                 tradeConfirmButton.setForeground(Color.WHITE);
@@ -265,6 +271,7 @@ public class TradePanel extends JPanel {
                 tradeRequestPanel.add(otherTraderItemName);
                 tradeRequestPanel.add(traderItemName);
                 tradeRequestPanel.add(tradeDetailsButton);
+                tradeRequestPanel.add(editTradeButton);
                 tradeRequestPanel.add(tradeConfirmButton);
                 tradeRequestPanel.add(tradeRejectButton);
                 tradeRequestsContainer.add(tradeRequestPanel);
