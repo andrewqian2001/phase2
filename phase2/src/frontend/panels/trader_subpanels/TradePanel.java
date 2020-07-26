@@ -3,6 +3,7 @@ package frontend.panels.trader_subpanels;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.*;
 import java.io.IOException;
 
 import backend.exceptions.TradableItemNotFoundException;
@@ -12,7 +13,7 @@ import backend.models.Trade;
 import backend.models.users.Trader;
 import backend.tradesystem.managers.TradingManager;
 
-public class TradePanel extends JPanel {
+public class TradePanel extends JPanel implements ActionListener {
 
     private JPanel ongoingTradesContainer, tradeRequestsContainer, ongoingTradesTitleContainer,ongoingTradesHeader, tradeRequestsHeader;
     private JScrollPane tradeRequestsScrollPane, ongoingTradesScrollPane;
@@ -25,8 +26,8 @@ public class TradePanel extends JPanel {
 
     private Color bg = new Color(51, 51, 51);
     private Color gray = new Color(196,196,196);
-    private Color detailsButton = new Color(142,142,142);
-    private Color confirmButton = new Color(27,158,36);
+    private Color gray2 = new Color(142,142,142);
+    private Color green = new Color(27,158,36);
     private Color red = new Color(219, 58, 52);
 
     public TradePanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
@@ -63,6 +64,7 @@ public class TradePanel extends JPanel {
         addTradeButton.setBackground(bg);
         addTradeButton.setOpaque(true);
         addTradeButton.setBorderPainted(false);
+        addTradeButton.addActionListener(this);
         ongoingTradesTitleContainer.add(addTradeButton);
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridy = 0;
@@ -243,7 +245,7 @@ public class TradePanel extends JPanel {
                 JButton tradeDetailsButton = new JButton("Details");
                 tradeDetailsButton.setFont(bold.deriveFont(20f));
                 tradeDetailsButton.setForeground(Color.WHITE);
-                tradeDetailsButton.setBackground(detailsButton);
+                tradeDetailsButton.setBackground(gray2);
                 tradeDetailsButton.setOpaque(true);
                 tradeDetailsButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
@@ -257,7 +259,7 @@ public class TradePanel extends JPanel {
                 JButton tradeConfirmButton = new JButton("Confirm");
                 tradeConfirmButton.setFont(bold.deriveFont(20f));
                 tradeConfirmButton.setForeground(Color.WHITE);
-                tradeConfirmButton.setBackground(confirmButton);
+                tradeConfirmButton.setBackground(green);
                 tradeConfirmButton.setOpaque(true);
                 tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
@@ -334,14 +336,14 @@ public class TradePanel extends JPanel {
                 JButton tradeDetailsButton = new JButton("Details");
                 tradeDetailsButton.setFont(bold.deriveFont(20f));
                 tradeDetailsButton.setForeground(Color.WHITE);
-                tradeDetailsButton.setBackground(detailsButton);
+                tradeDetailsButton.setBackground(gray2);
                 tradeDetailsButton.setOpaque(true);
                 tradeDetailsButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
                 JButton tradeConfirmButton = new JButton("Confirm");
                 tradeConfirmButton.setFont(bold.deriveFont(20f));
                 tradeConfirmButton.setForeground(Color.WHITE);
-                tradeConfirmButton.setBackground(confirmButton);
+                tradeConfirmButton.setBackground(green);
                 tradeConfirmButton.setOpaque(true);
                 tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
@@ -356,7 +358,87 @@ public class TradePanel extends JPanel {
                 System.out.println(exception.getMessage());
             }
         }
+    }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        JDialog addNewTradeModal = new JDialog();
+        addNewTradeModal.setTitle("Add New Trade");
+        addNewTradeModal.setSize(500, 900);
+        addNewTradeModal.setResizable(false);
+        addNewTradeModal.setLocationRelativeTo(null);
 
+        JPanel addNewTradePanel = new JPanel();
+        addNewTradePanel.setPreferredSize(new Dimension(500,500));
+        addNewTradePanel.setBackground(bg);
+
+        JLabel otherTraderNameTitle = new JLabel("Trader Username:");
+        otherTraderNameTitle.setFont(italic.deriveFont(20f));
+        otherTraderNameTitle.setPreferredSize(new Dimension(450,50));
+        otherTraderNameTitle.setOpaque(false);
+        otherTraderNameTitle.setForeground(Color.WHITE);
+
+        JTextField otherTraderNameInput = new JTextField();
+        otherTraderNameInput.setFont(regular.deriveFont(20f));
+        otherTraderNameInput.setBackground(gray2);
+        otherTraderNameInput.setForeground(Color.BLACK);
+        otherTraderNameInput.setPreferredSize(new Dimension(450,50));
+        otherTraderNameInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        JButton tradeSubmitButton = new JButton("Submit");
+        tradeSubmitButton.setFont(bold.deriveFont(25f));
+        tradeSubmitButton.setBackground(green);
+        tradeSubmitButton.setOpaque(true);
+        tradeSubmitButton.setForeground(Color.WHITE);
+        tradeSubmitButton.setPreferredSize(new Dimension(225,75));
+        tradeSubmitButton.setBorder(BorderFactory.createLineBorder(bg, 15));
+
+        JLabel traderItemTitle = new JLabel("Item from your Inventory");
+        traderItemTitle.setFont(italic.deriveFont(20f));
+        traderItemTitle.setPreferredSize(new Dimension(450, 50));
+        traderItemTitle.setOpaque(false);
+        traderItemTitle.setForeground(Color.WHITE);
+
+        JComboBox<String> traderItems = new JComboBox<>();
+        traderItems.setPreferredSize(new Dimension(450,50));
+        for(String itemId : trader.getAvailableItems()) {
+            try {
+                traderItems.addItem(tradeManager.getTradableItem(itemId).getName());
+            } catch (TradableItemNotFoundException e1) {
+                System.out.println(e1.getMessage());
+            }
+        }
+
+        JLabel otherTraderItemTitle = new JLabel("Item from their Inventory");
+        otherTraderItemTitle.setFont(italic.deriveFont(20f));
+        otherTraderItemTitle.setPreferredSize(new Dimension(450, 50));
+        otherTraderItemTitle.setOpaque(false);
+        otherTraderItemTitle.setForeground(Color.WHITE);
+
+        JComboBox<String> otherTraderItems = new JComboBox<>();
+        otherTraderItems.setPreferredSize(new Dimension(450,50));
+        otherTraderItems.addItem("TEST");
+        
+        // for(String itemId : otherTrader.getAvailableItems()) {
+            // try {
+                // otherTraderItems.addItem(tradeManager.getTradableItem(itemId).getName());
+            // } catch (TradableItemNotFoundException e1) {
+                // System.out.println(e1.getMessage());
+            // }
+        // }
+
+        addNewTradePanel.add(otherTraderNameTitle);
+        addNewTradePanel.add(otherTraderNameInput);
+        addNewTradePanel.add(traderItemTitle);
+        addNewTradePanel.add(traderItems);
+        addNewTradePanel.add(otherTraderItemTitle);
+        addNewTradePanel.add(otherTraderItems);
+        // addNewTradePanel.add();
+        // addNewTradePanel.add();
+        addNewTradePanel.add(tradeSubmitButton);
+        
+        addNewTradeModal.add(addNewTradePanel);
+        addNewTradeModal.setModal(true);
+        addNewTradeModal.setVisible(true);
     }
 }
