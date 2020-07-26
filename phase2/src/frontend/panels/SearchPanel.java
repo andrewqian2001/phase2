@@ -43,7 +43,7 @@ public class SearchPanel extends JPanel {
         userSearchTitle.setPreferredSize(new Dimension(1200, 75));
         userSearchTitle.setBackground(bg);
         userSearchTitle.setForeground(Color.WHITE);
-        userSearchTitle.setFont(regular.deriveFont(35f));
+        userSearchTitle.setFont(regular.deriveFont(30f));
 
         userSearchBarContainer = new JPanel();
         userSearchBarContainer.setLayout(new BoxLayout(this.userSearchBarContainer, BoxLayout.X_AXIS));
@@ -85,7 +85,7 @@ public class SearchPanel extends JPanel {
         tradableItemSearchTitle.setPreferredSize(new Dimension(1200, 75));
         tradableItemSearchTitle.setBackground(bg);
         tradableItemSearchTitle.setForeground(Color.WHITE);
-        tradableItemSearchTitle.setFont(regular.deriveFont(35f));
+        tradableItemSearchTitle.setFont(regular.deriveFont(30f));
 
         tradableItemSearchBarContainer = new JPanel();
         tradableItemSearchBarContainer.setLayout(new BoxLayout(this.tradableItemSearchBarContainer, BoxLayout.X_AXIS));
