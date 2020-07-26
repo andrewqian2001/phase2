@@ -173,9 +173,9 @@ public class TradingInfoManager extends Manager {
     }
 
     /**
-     * Used for suggesting what items that otherTrader will want from thisTrader
+     * Used for suggesting what items that otherTrader will want from thisTrader based on the wishlist
      *
-     * @param thisTraderId  the trader that wants to know what otherTrader will wnat
+     * @param thisTraderId  the trader that wants to know what otherTrader will want
      * @param otherTraderId the other trader
      * @return list of items that otherTrader will want
      * @throws UserNotFoundException         if user isn't found
