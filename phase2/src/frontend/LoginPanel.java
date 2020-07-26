@@ -89,8 +89,8 @@ public class LoginPanel extends JPanel implements ActionListener {
         inputs.add(passwordInput, gbc);
 
         //TODO: REMOVE before final deployment (only for testing)
-        // usernameInput = new JTextField("user1");
-        // passwordInput = new JPasswordField("passssssssS11");
+        usernameInput = new JTextField("user1");
+        passwordInput = new JPasswordField("passssssssS11");
 
         buttonContainer = new JPanel();
         buttonContainer.setLayout(new GridBagLayout());

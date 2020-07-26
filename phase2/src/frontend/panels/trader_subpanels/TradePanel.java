@@ -27,6 +27,7 @@ public class TradePanel extends JPanel {
 
     private Color bg = new Color(51, 51, 51);
     private Color blue = new Color(0, 240, 239);
+    private Color gray = new Color(196,196,196);
     private Color detailsButton = new Color(142,142,142);
     private Color confirmButton = new Color(27,158,36);
     private Color red = new Color(219, 58, 52);
@@ -40,7 +41,6 @@ public class TradePanel extends JPanel {
 
         tradeManager = new TradingManager();
 
-        this.setPreferredSize(new Dimension(1000, 900)); // fix this later
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
         this.setBackground(bg);
 
@@ -74,6 +74,7 @@ public class TradePanel extends JPanel {
 
         ongoingTradesHeader = new JPanel(new GridLayout(1,5));
         ongoingTradesHeader.setPreferredSize(new Dimension(1300,25));
+        ongoingTradesHeader.setBackground(gray);
         ongoingTradesHeader.setBorder(BorderFactory.createEmptyBorder(0, 60, 0, 80));
         addOngoingTradesHeader();
         gbc.gridy = 1;
@@ -84,6 +85,7 @@ public class TradePanel extends JPanel {
         ongoingTradesScrollPane.setPreferredSize(new Dimension(1300, 360));
         getOngoingTradesPanel();
         ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
+        ongoingTradesScrollPane.setBackground(gray);
         gbc.gridy = 2;
         gbc.weighty = 0.8;
         ongoingTrades.add(ongoingTradesScrollPane, gbc);
@@ -106,6 +108,7 @@ public class TradePanel extends JPanel {
         tradeRequestsHeader = new JPanel(new GridLayout(1,7));
         tradeRequestsHeader.setPreferredSize(new Dimension(1300,25));
         tradeRequestsHeader.setBorder(BorderFactory.createEmptyBorder(0, 60, 0, 120));
+        tradeRequestsHeader.setBackground(gray);
         addTradeRequestsHeader();
         gbc.gridy = 1;
         gbc.weighty = 0.1;
@@ -129,7 +132,7 @@ public class TradePanel extends JPanel {
         name.setForeground(Color.BLACK);
         name.setHorizontalAlignment(JLabel.LEFT);
 
-        JLabel location = new JLabel("location");
+        JLabel location = new JLabel("Location");
         location.setFont(this.regular.deriveFont(20f));
         location.setForeground(Color.BLACK);
         location.setHorizontalAlignment(JLabel.CENTER);
@@ -155,7 +158,7 @@ public class TradePanel extends JPanel {
         name.setForeground(Color.BLACK);
         name.setHorizontalAlignment(JLabel.LEFT);
 
-        JLabel location = new JLabel("location   ");
+        JLabel location = new JLabel("Location   ");
         location.setFont(this.regular.deriveFont(20f));
         location.setForeground(Color.BLACK);
         location.setHorizontalAlignment(JLabel.CENTER);
@@ -186,6 +189,7 @@ public class TradePanel extends JPanel {
     private void getTradeRequestPanels() {
         tradeRequestsContainer = new JPanel(new GridLayout(10, 1));
         tradeRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        tradeRequestsContainer.setBackground(gray);
         // tradeRequestsContainer = new JPanel(new GridLayout(trader.getRequestedTrades().size(), 1));
         // for(String tradeID : trader.getRequestedTrades()) {
         for (int i = 0; i < 10; i++) {
@@ -193,6 +197,7 @@ public class TradePanel extends JPanel {
                 // Trade ongoingTrade = tradeManager.getTrade(tradeID);
                 JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
                 tradeRequestPanel.setPreferredSize(new Dimension(1000, 75));
+                tradeRequestPanel.setBackground(gray);
                 // JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
                 JLabel otherTraderName = new JLabel("otherTrader #" + (i + 1));
                 otherTraderName.setFont(regular.deriveFont(20f));
@@ -219,21 +224,21 @@ public class TradePanel extends JPanel {
                 tradeDetailsButton.setForeground(Color.WHITE);
                 tradeDetailsButton.setBackground(detailsButton);
                 tradeDetailsButton.setOpaque(true);
-                tradeDetailsButton.setBorderPainted(false);
+                tradeDetailsButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
                 JButton tradeConfirmButton = new JButton("Confirm");
                 tradeConfirmButton.setFont(bold.deriveFont(20f));
                 tradeConfirmButton.setForeground(Color.WHITE);
                 tradeConfirmButton.setBackground(confirmButton);
                 tradeConfirmButton.setOpaque(true);
-                tradeConfirmButton.setBorderPainted(false);
+                tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
                 JButton tradeRejectButton = new JButton("Reject");
                 tradeRejectButton.setFont(bold.deriveFont(20f));
                 tradeRejectButton.setForeground(Color.WHITE);
                 tradeRejectButton.setBackground(red);
                 tradeRejectButton.setOpaque(true);
-                tradeRejectButton.setBorderPainted(false);
+                tradeRejectButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
                 tradeRequestPanel.add(otherTraderName);
                 tradeRequestPanel.add(tradeLocation);
@@ -254,6 +259,7 @@ public class TradePanel extends JPanel {
     private void getOngoingTradesPanel() {
         ongoingTradesContainer = new JPanel(new GridLayout(10, 1));
         ongoingTradesContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        ongoingTradesContainer.setBackground(gray);
         // ongoingTradesContainer = new JPanel(new GridLayout(trader.getAcceptedTrades().size(), 1));
         // for(String tradeID : trader.getAcceptedTrades()) {
         for(int i = 0; i < 10; i++) {
@@ -261,6 +267,7 @@ public class TradePanel extends JPanel {
                 // Trade ongoingTrade = tradeManager.getTrade(tradeID);
                 JPanel ongoingTradePanel = new JPanel(new GridLayout(1,5, 10, 0)); 
                 ongoingTradePanel.setPreferredSize(new Dimension(1000,75));
+                ongoingTradePanel.setBackground(gray);
                 // JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
                 JLabel otherTraderName = new JLabel("otherTrader #"+ (i + 1));
                 otherTraderName.setFont(regular.deriveFont(20f));
@@ -282,14 +289,14 @@ public class TradePanel extends JPanel {
                 tradeDetailsButton.setForeground(Color.WHITE);
                 tradeDetailsButton.setBackground(detailsButton);
                 tradeDetailsButton.setOpaque(true);
-                tradeDetailsButton.setBorderPainted(false);
+                tradeDetailsButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
                 JButton tradeConfirmButton = new JButton("Confirm");
                 tradeConfirmButton.setFont(bold.deriveFont(20f));
                 tradeConfirmButton.setForeground(Color.WHITE);
                 tradeConfirmButton.setBackground(confirmButton);
                 tradeConfirmButton.setOpaque(true);
-                tradeConfirmButton.setBorderPainted(false);
+                tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
                 ongoingTradePanel.add(otherTraderName);
                 ongoingTradePanel.add(tradeLocation);
