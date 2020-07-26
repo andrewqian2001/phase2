@@ -195,6 +195,7 @@ public class TradePanel extends JPanel {
         }
         tradeRequestsContainer = new JPanel(new GridLayout(trader.getRequestedTrades().size(), 1));
         tradeRequestsContainer.setBackground(gray);
+        tradeRequestsContainer.setBorder(null);
         for(String tradeID : trader.getRequestedTrades()) {
         // for (int i = 0; i < 10; i++) {
             try {
@@ -296,6 +297,7 @@ public class TradePanel extends JPanel {
         }
         ongoingTradesContainer = new JPanel(new GridLayout(trader.getAcceptedTrades().size(), 1));
         ongoingTradesContainer.setBackground(gray);
+        ongoingTradesContainer.setBorder(null);
         for(String tradeID : trader.getAcceptedTrades()) {
         // for(int i = 0; i < 10; i++) {
             try {

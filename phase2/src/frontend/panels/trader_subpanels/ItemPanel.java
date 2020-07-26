@@ -75,8 +75,8 @@ public class ItemPanel extends JPanel {
     private void getItems() {
         // itemContainer = new JPanel(new GridLayout(10, 1));
         itemContainer = new JPanel(new GridLayout(this.items.size(), 1));
-        itemContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         itemContainer.setBackground(gray);
+        itemContainer.setBorder(null);
         for(String tradeID : this.items) {
         // for (int i = 0; i < 10; i++) {
             try {
@@ -84,11 +84,13 @@ public class ItemPanel extends JPanel {
                 JPanel itemPanel = new JPanel(new GridLayout(1, 5, 10, 0));
                 itemPanel.setPreferredSize(new Dimension(1000, 75));
                 itemPanel.setBackground(gray);
+                itemPanel.setBorder(BorderFactory.createLineBorder(bg));
 
                 JLabel itemName = new JLabel(item.getName());
                 itemName.setFont(regular.deriveFont(20f));
                 itemName.setForeground(Color.BLACK);
                 itemName.setHorizontalAlignment(JLabel.LEFT);
+                itemName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
                 
                 JLabel itemDesc = new JLabel(item.getDesc());
                 itemDesc.setFont(regular.deriveFont(20f));
