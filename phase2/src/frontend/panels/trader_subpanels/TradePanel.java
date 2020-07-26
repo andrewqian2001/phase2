@@ -393,13 +393,18 @@ public class TradePanel extends JPanel implements ActionListener {
         tradeSubmitButton.setPreferredSize(new Dimension(225,75));
         tradeSubmitButton.setBorder(BorderFactory.createLineBorder(bg, 15));
 
-        JLabel traderItemTitle = new JLabel("Item from your Inventory");
+        JLabel traderItemTitle = new JLabel("Item from your Inventory:");
         traderItemTitle.setFont(italic.deriveFont(20f));
         traderItemTitle.setPreferredSize(new Dimension(450, 50));
         traderItemTitle.setOpaque(false);
+        traderItemTitle.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         traderItemTitle.setForeground(Color.WHITE);
 
         JComboBox<String> traderItems = new JComboBox<>();
+        traderItems.setFont(regular.deriveFont(20f));
+        traderItems.setBackground(gray2);
+        traderItems.setForeground(Color.BLACK);
+        traderItems.setOpaque(true);
         traderItems.setPreferredSize(new Dimension(450,50));
         for(String itemId : trader.getAvailableItems()) {
             try {
@@ -409,7 +414,7 @@ public class TradePanel extends JPanel implements ActionListener {
             }
         }
 
-        JLabel otherTraderItemTitle = new JLabel("Item from their Inventory");
+        JLabel otherTraderItemTitle = new JLabel("Item from their Inventory:");
         otherTraderItemTitle.setFont(italic.deriveFont(20f));
         otherTraderItemTitle.setPreferredSize(new Dimension(450, 50));
         otherTraderItemTitle.setOpaque(false);
@@ -417,6 +422,10 @@ public class TradePanel extends JPanel implements ActionListener {
 
         JComboBox<String> otherTraderItems = new JComboBox<>();
         otherTraderItems.setPreferredSize(new Dimension(450,50));
+        otherTraderItems.setFont(regular.deriveFont(20f));
+        otherTraderItems.setBackground(gray2);
+        otherTraderItems.setForeground(Color.BLACK);
+        otherTraderItems.setOpaque(true);
         otherTraderItems.addItem("TEST");
         
         // for(String itemId : otherTrader.getAvailableItems()) {
@@ -427,14 +436,38 @@ public class TradePanel extends JPanel implements ActionListener {
             // }
         // }
 
+
+        JLabel meetingLocationTitle = new JLabel("Meeting Location");
+        meetingLocationTitle.setFont(italic.deriveFont(20f));
+        meetingLocationTitle.setPreferredSize(new Dimension(450, 50));
+        meetingLocationTitle.setOpaque(false);
+        meetingLocationTitle.setForeground(Color.WHITE);
+
+        JTextField meetingLocationInput = new JTextField();
+        meetingLocationInput.setFont(regular.deriveFont(20f));
+        meetingLocationInput.setBackground(gray2);
+        meetingLocationInput.setForeground(Color.BLACK);
+        meetingLocationInput.setPreferredSize(new Dimension(450, 50));
+        meetingLocationInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        JLabel firstMeetingDateTitle = new JLabel("First Meeting Date:");
+        firstMeetingDateTitle.setPreferredSize(new Dimension(450, 50));
+        firstMeetingDateTitle.setFont(italic.deriveFont(20f));
+        firstMeetingDateTitle.setOpaque(false);
+        firstMeetingDateTitle.setForeground(Color.WHITE);
+
         addNewTradePanel.add(otherTraderNameTitle);
         addNewTradePanel.add(otherTraderNameInput);
         addNewTradePanel.add(traderItemTitle);
         addNewTradePanel.add(traderItems);
         addNewTradePanel.add(otherTraderItemTitle);
         addNewTradePanel.add(otherTraderItems);
-        // addNewTradePanel.add();
-        // addNewTradePanel.add();
+        addNewTradePanel.add(meetingLocationTitle);
+        addNewTradePanel.add(meetingLocationInput);
+        addNewTradePanel.add(firstMeetingDateTitle);
+        // addNewTradePanel.add(meetingLocationInput);
+        // addNewTradePanel.add(meetingLocationInput);
+        // addNewTradePanel.add(meetingLocationInput);
         addNewTradePanel.add(tradeSubmitButton);
         
         addNewTradeModal.add(addNewTradePanel);
