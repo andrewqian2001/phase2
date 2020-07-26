@@ -89,6 +89,7 @@ public class SearchPanel extends JPanel {
             JPanel trader = new JPanel(new GridLayout(1,3)); 
             trader.setPreferredSize(new Dimension(1000, 75));
             trader.setBackground(gray2);
+            trader.setBorder(BorderFactory.createLineBorder(bg));
 
             JLabel traderName = new JLabel(username.toLowerCase().substring(0, i + 1));
             traderName.setFont(regular.deriveFont(20f));
