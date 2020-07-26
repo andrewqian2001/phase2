@@ -369,7 +369,7 @@ public class TradePanel extends JPanel implements ActionListener {
         addNewTradeModal.setLocationRelativeTo(null);
 
         JPanel addNewTradePanel = new JPanel();
-        addNewTradePanel.setPreferredSize(new Dimension(500,500));
+        addNewTradePanel.setPreferredSize(new Dimension(500,900));
         addNewTradePanel.setBackground(bg);
 
         JLabel otherTraderNameTitle = new JLabel("Trader Username:");
@@ -450,11 +450,37 @@ public class TradePanel extends JPanel implements ActionListener {
         meetingLocationInput.setPreferredSize(new Dimension(450, 50));
         meetingLocationInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
+        JLabel isTemporaryTitle = new JLabel("Is this trade temporary?");
+        isTemporaryTitle.setFont(italic.deriveFont(20f));
+        isTemporaryTitle.setPreferredSize(new Dimension(425, 50));
+        isTemporaryTitle.setOpaque(false);
+        isTemporaryTitle.setForeground(Color.WHITE);
+
+        JCheckBox isTemporaryButton = new JCheckBox();
+        isTemporaryButton.setPreferredSize(new Dimension(25,25));
+        isTemporaryButton.setSelected(true);
+        isTemporaryButton.setForeground(Color.WHITE);
+        isTemporaryButton.setBackground(bg);
+
         JLabel firstMeetingDateTitle = new JLabel("First Meeting Date:");
         firstMeetingDateTitle.setPreferredSize(new Dimension(450, 50));
         firstMeetingDateTitle.setFont(italic.deriveFont(20f));
         firstMeetingDateTitle.setOpaque(false);
         firstMeetingDateTitle.setForeground(Color.WHITE);
+
+        JLabel secondMeetingDateTitle = new JLabel("Second Meeting Date:");
+        secondMeetingDateTitle.setPreferredSize(new Dimension(450, 50));
+        secondMeetingDateTitle.setFont(italic.deriveFont(20f));
+        secondMeetingDateTitle.setOpaque(false);
+        secondMeetingDateTitle.setForeground(Color.WHITE);
+
+        isTemporaryButton.addItemListener(ex -> {
+            if (isTemporaryButton.isSelected()) {
+                secondMeetingDateTitle.setVisible(true);
+            } else {
+                secondMeetingDateTitle.setVisible(false);
+            }
+        });
 
         addNewTradePanel.add(otherTraderNameTitle);
         addNewTradePanel.add(otherTraderNameInput);
@@ -464,13 +490,13 @@ public class TradePanel extends JPanel implements ActionListener {
         addNewTradePanel.add(otherTraderItems);
         addNewTradePanel.add(meetingLocationTitle);
         addNewTradePanel.add(meetingLocationInput);
+        addNewTradePanel.add(isTemporaryTitle);
+        addNewTradePanel.add(isTemporaryButton);
         addNewTradePanel.add(firstMeetingDateTitle);
-        // addNewTradePanel.add(meetingLocationInput);
-        // addNewTradePanel.add(meetingLocationInput);
-        // addNewTradePanel.add(meetingLocationInput);
-        addNewTradePanel.add(tradeSubmitButton);
+        addNewTradePanel.add(secondMeetingDateTitle);
         
         addNewTradeModal.add(addNewTradePanel);
+        addNewTradeModal.add(tradeSubmitButton, BorderLayout.SOUTH);
         addNewTradeModal.setModal(true);
         addNewTradeModal.setVisible(true);
     }
