@@ -271,29 +271,37 @@ public class TradePanel extends JPanel {
     }
     
     private void getOngoingTradesPanel() {
-        ongoingTradesContainer = new JPanel(new GridLayout(10, 1));
+        // ongoingTradesContainer = new JPanel(new GridLayout(10, 1));
+        ongoingTradesContainer = new JPanel(new GridLayout(trader.getAcceptedTrades().size(), 1));
         ongoingTradesContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         ongoingTradesContainer.setBackground(gray);
-        // ongoingTradesContainer = new JPanel(new GridLayout(trader.getAcceptedTrades().size(), 1));
-        // for(String tradeID : trader.getAcceptedTrades()) {
-        for(int i = 0; i < 10; i++) {
+        for(String tradeID : trader.getAcceptedTrades()) {
+        // for(int i = 0; i < 10; i++) {
             try {
-                // Trade ongoingTrade = tradeManager.getTrade(tradeID);
+                Trade ongoingTrade = tradeManager.getTrade(tradeID);
                 JPanel ongoingTradePanel = new JPanel(new GridLayout(1,5, 10, 0)); 
                 ongoingTradePanel.setPreferredSize(new Dimension(1000,75));
                 ongoingTradePanel.setBackground(gray);
-                // JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
-                JLabel otherTraderName = new JLabel("otherTrader #"+ (i + 1));
+
+                JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
+                // JLabel otherTraderName = new JLabel("otherTrader #"+ (i + 1));
                 otherTraderName.setFont(regular.deriveFont(20f));
                 otherTraderName.setForeground(Color.BLACK);
                 otherTraderName.setHorizontalAlignment(JLabel.LEFT);
-                // JLabel tradeLocation = new JLabel(ongoingTrade.getMeetingLocation());
-                JLabel tradeLocation = new JLabel("Meeting Location #" + (i+1));
+
+                JLabel tradeLocation = new JLabel(ongoingTrade.getMeetingLocation());
+                // JLabel tradeLocation = new JLabel("Meeting Location #" + (i+1));
                 tradeLocation.setFont(regular.deriveFont(20f));
                 tradeLocation.setForeground(Color.BLACK);
                 tradeLocation.setHorizontalAlignment(JLabel.CENTER);
-                // JLabel tradeMeetingTime = new JLabel(ongoingTrade.getMeetingTime().toString()); // fix to get current
-                JLabel tradeMeetingTime = new JLabel("2020/07/30@14:2"+i);
+
+                JLabel tradeMeetingTime;
+                if(ongoingTrade.isFirstUserConfirmed1() && ongoingTrade.isSecondUserConfirmed1()) {
+                    tradeMeetingTime = new JLabel(ongoingTrade.getSecondMeetingTime().toString());
+                } else {
+                    tradeMeetingTime = new JLabel(ongoingTrade.getMeetingTime().toString());
+                }
+                // JLabel tradeMeetingTime = new JLabel("2020/07/30@14:2"+i);
                 tradeMeetingTime.setFont(regular.deriveFont(20f));
                 tradeMeetingTime.setForeground(Color.BLACK);
                 tradeMeetingTime.setHorizontalAlignment(JLabel.CENTER);
@@ -318,8 +326,8 @@ public class TradePanel extends JPanel {
                 ongoingTradePanel.add(tradeDetailsButton);
                 ongoingTradePanel.add(tradeConfirmButton);
                 ongoingTradesContainer.add(ongoingTradePanel);
-            // } catch(TradeNotFoundException | UserNotFoundException exception) {
-            } catch(Exception exception) {
+            } catch(TradeNotFoundException | UserNotFoundException exception) {
+            // } catch(Exception exception) {
                 System.out.println(exception.getMessage());
             }
         }
