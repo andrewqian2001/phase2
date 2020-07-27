@@ -386,6 +386,9 @@ public class TradingManager extends Manager {
         Trader secondTrader = getTrader(trade.getSecondUserId());
         if (!firstTrader.getAcceptedTrades().contains(trade.getId()))
             throw new CannotTradeException("The trade is not accepted");
+        if (trade.getSecondMeetingTime() != null && trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1())
+            throw new CannotTradeException("This trade's first meeting has been accepted. The trade must be complete.");
+
 
         // Remove trades
         firstTrader.getAcceptedTrades().remove(tradeID);
