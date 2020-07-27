@@ -4,6 +4,8 @@ import backend.exceptions.TradableItemNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
+import backend.models.users.User;
+import backend.tradesystem.managers.HandleFrozenManager;
 import backend.tradesystem.managers.HandleItemRequestsManager;
 
 import javax.swing.*;
@@ -21,12 +23,13 @@ public class OverviewPanel extends JPanel {
     private Font regular, bold, italic, boldItalic;
 
     private HandleItemRequestsManager itemRequestManager;
+    private HandleFrozenManager frozenManager;
 
     private Admin admin;
 
     private Color bg = new Color(51, 51, 51);
     private Color blue = new Color(0, 240, 239);
-    private Color detailsButton = new Color(142, 142, 142);
+    private Color gray = new Color(142, 142, 142);
     private Color confirmButton = new Color(27, 158, 36);
     private Color red = new Color(219, 58, 52);
 
@@ -43,6 +46,7 @@ public class OverviewPanel extends JPanel {
         this.setBackground(Color.BLACK);
 
         itemRequestManager = new HandleItemRequestsManager();
+        frozenManager = new HandleFrozenManager();
 
         itemRequestsTitleContainer = new JPanel(new GridLayout(1,2));
         itemRequestsTitleContainer.setOpaque(false);
@@ -136,19 +140,21 @@ public class OverviewPanel extends JPanel {
             HashMap<Trader, ArrayList<TradableItem>> itemRequests = itemRequestManager.getAllItemRequests();
             int numRows = 0;
             for(Trader t : itemRequests.keySet()) numRows += itemRequests.get(t).size();
+            if (numRows < 4) numRows = 4;
             itemRequestsContainer = new JPanel(new GridLayout(numRows, 1));
             itemRequestsContainer.setBackground(bg);
-            itemRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
             itemRequests.forEach((t, items) -> {
                 items.forEach(item -> {
                     JPanel itemRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
                     itemRequestPanel.setPreferredSize(new Dimension(1000, 75));
                     itemRequestPanel.setBackground(bg);
+                    itemRequestPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, gray));
 
                     JLabel traderName = new JLabel(t.getUsername());
                     traderName.setFont(regular.deriveFont(20f));
                     traderName.setForeground(Color.WHITE);
                     traderName.setHorizontalAlignment(JLabel.LEFT);
+                    traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
                     JLabel traderItemName = new JLabel(item.getName());
                     traderItemName.setFont(regular.deriveFont(20f));
@@ -156,23 +162,23 @@ public class OverviewPanel extends JPanel {
                     traderItemName.setHorizontalAlignment(JLabel.LEFT);
 
                     JLabel traderItemDesc = new JLabel(item.getDesc());
-                    traderItemDesc.setFont(regular.deriveFont(20f));
+                    traderItemDesc.setFont(regular.deriveFont(15f));
                     traderItemDesc.setForeground(Color.WHITE);
-                    traderItemDesc.setHorizontalAlignment(JLabel.LEFT);
+                    traderItemDesc.setHorizontalAlignment(JLabel.CENTER);
 
                     JButton acceptItemRequestButton = new JButton("Accept");
                     acceptItemRequestButton.setFont(bold.deriveFont(20f));
                     acceptItemRequestButton.setForeground(Color.WHITE);
                     acceptItemRequestButton.setBackground(confirmButton);
                     acceptItemRequestButton.setOpaque(true);
-                    acceptItemRequestButton.setBorderPainted(false);
+                    acceptItemRequestButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 50, bg));
 
                     JButton rejectItemRequestButton = new JButton("Reject");
                     rejectItemRequestButton.setFont(bold.deriveFont(20f));
                     rejectItemRequestButton.setForeground(Color.WHITE);
                     rejectItemRequestButton.setBackground(red);
                     rejectItemRequestButton.setOpaque(true);
-                    rejectItemRequestButton.setBorderPainted(false);
+                    rejectItemRequestButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 50, bg));
 
                     itemRequestPanel.add(traderName);
                     itemRequestPanel.add(traderItemName);
@@ -188,77 +194,72 @@ public class OverviewPanel extends JPanel {
     }
     
     private void getAllUnFreezeRequests() {
-        unFreezeRequestsContainer = new JPanel(new GridLayout(10,1));
+        ArrayList<User> unFreezeRequests = frozenManager.getAllUnfreezeRequests();
+        int numRows = unFreezeRequests.size();
+        if(numRows < 4) numRows = 4;
+        unFreezeRequestsContainer = new JPanel(new GridLayout(numRows,1));
         unFreezeRequestsContainer.setBackground(bg);
-        unFreezeRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
-        for (int i = 0; i < 10; i++) {
-            try {
-                JPanel unFreezeRequestsPanel = new JPanel(new GridLayout(1, 3, 10, 0));
-                unFreezeRequestsPanel.setPreferredSize(new Dimension(400, 75));
-                unFreezeRequestsPanel.setBackground(bg);
+        unFreezeRequests.forEach( user -> {
+            JPanel unFreezeRequestsPanel = new JPanel(new GridLayout(1, 3, 10, 0));
+            unFreezeRequestsPanel.setPreferredSize(new Dimension(400, 75));
+            unFreezeRequestsPanel.setBackground(bg);
+            unFreezeRequestsPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, gray));
 
-                JLabel traderName = new JLabel("Frozen Trader #" + (i + 1));
-                traderName.setFont(regular.deriveFont(20f));
-                traderName.setForeground(Color.WHITE);
-                traderName.setHorizontalAlignment(JLabel.LEFT);
+            JLabel traderName = new JLabel(user.getUsername());
+            traderName.setFont(regular.deriveFont(20f));
+            traderName.setForeground(Color.WHITE);
+            traderName.setHorizontalAlignment(JLabel.LEFT);
+            traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                JButton acceptUnFreezeRequestButton = new JButton("Accept");
-                acceptUnFreezeRequestButton.setFont(bold.deriveFont(20f));
-                acceptUnFreezeRequestButton.setForeground(Color.WHITE);
-                acceptUnFreezeRequestButton.setBackground(confirmButton);
-                acceptUnFreezeRequestButton.setOpaque(true);
-                acceptUnFreezeRequestButton.setBorderPainted(false);
+            JButton acceptUnFreezeRequestButton = new JButton("Un-Freeze");
+            acceptUnFreezeRequestButton.setFont(bold.deriveFont(20f));
+            acceptUnFreezeRequestButton.setForeground(Color.WHITE);
+            acceptUnFreezeRequestButton.setBackground(confirmButton);
+            acceptUnFreezeRequestButton.setOpaque(true);
+            acceptUnFreezeRequestButton.setBorder(BorderFactory.createMatteBorder(15, 30, 15, 30, bg));
 
-                JButton rejectUnFreezeRequestButton = new JButton("Reject");
-                rejectUnFreezeRequestButton.setFont(bold.deriveFont(20f));
-                rejectUnFreezeRequestButton.setForeground(Color.WHITE);
-                rejectUnFreezeRequestButton.setBackground(red);
-                rejectUnFreezeRequestButton.setOpaque(true);
-                rejectUnFreezeRequestButton.setBorderPainted(false);
+            JButton rejectUnFreezeRequestButton = new JButton("Reject");
+            rejectUnFreezeRequestButton.setFont(bold.deriveFont(20f));
+            rejectUnFreezeRequestButton.setForeground(Color.WHITE);
+            rejectUnFreezeRequestButton.setBackground(red);
+            rejectUnFreezeRequestButton.setOpaque(true);
+            rejectUnFreezeRequestButton.setBorder(BorderFactory.createMatteBorder(15, 30, 15, 30, bg));
 
-                unFreezeRequestsPanel.add(traderName);
-                unFreezeRequestsPanel.add(acceptUnFreezeRequestButton);
-                unFreezeRequestsPanel.add(rejectUnFreezeRequestButton);
-                unFreezeRequestsContainer.add(unFreezeRequestsPanel);
-                // } catch(TradeNotFoundException | UserNotFoundException exception) {
-            } catch (Exception exception) {
-                System.out.println(exception.getMessage());
-            }
-        }
-        
-        
+            unFreezeRequestsPanel.add(traderName);
+            unFreezeRequestsPanel.add(acceptUnFreezeRequestButton);
+            unFreezeRequestsPanel.add(rejectUnFreezeRequestButton);
+            unFreezeRequestsContainer.add(unFreezeRequestsPanel);
+        });
     }
     
     private void getAllToBeFrozenUsers() {
-        freezeTradersContainer = new JPanel(new GridLayout(10, 1));
+        ArrayList<Trader> tobeFrozenList = frozenManager.getShouldBeFrozen();
+        int numRows = tobeFrozenList.size();
+        if(numRows < 4) numRows = 4;
+        freezeTradersContainer = new JPanel(new GridLayout(numRows, 1));
         freezeTradersContainer.setBackground(bg);
-        freezeTradersContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
-        for (int i = 0; i < 10; i++) {
-            try {
-                JPanel freezeTraderPanel = new JPanel(new GridLayout(1, 2));
-                freezeTraderPanel.setPreferredSize(new Dimension(400, 75));
-                freezeTraderPanel.setBackground(bg);
+        tobeFrozenList.forEach(trader -> {
+            JPanel freezeTraderPanel = new JPanel(new GridLayout(1, 2));
+            freezeTraderPanel.setPreferredSize(new Dimension(400, 75));
+            freezeTraderPanel.setBackground(bg);
+            freezeTraderPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, gray));
 
-                JLabel traderName = new JLabel("Trader Name #" + (i + 1));
-                traderName.setFont(regular.deriveFont(20f));
-                traderName.setForeground(Color.WHITE);
-                traderName.setHorizontalAlignment(JLabel.LEFT);
+            JLabel traderName = new JLabel(trader.getUsername());
+            traderName.setFont(regular.deriveFont(20f));
+            traderName.setForeground(Color.WHITE);
+            traderName.setHorizontalAlignment(JLabel.LEFT);
+            traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                JButton freezeTraderButton = new JButton("FREEZE");
-                freezeTraderButton.setFont(boldItalic.deriveFont(20f));
-                freezeTraderButton.setForeground(Color.WHITE);
-                freezeTraderButton.setBackground(blue);
-                freezeTraderButton.setOpaque(true);
-                freezeTraderButton.setBorderPainted(false);
+            JButton freezeTraderButton = new JButton("FREEZE");
+            freezeTraderButton.setFont(boldItalic.deriveFont(20f));
+            freezeTraderButton.setForeground(Color.WHITE);
+            freezeTraderButton.setBackground(blue);
+            freezeTraderButton.setOpaque(true);
+            freezeTraderButton.setBorder(BorderFactory.createMatteBorder(15, 30, 15, 30, bg));
 
-                freezeTraderPanel.add(traderName);
-                freezeTraderPanel.add(freezeTraderButton);
-                freezeTradersContainer.add(freezeTraderPanel);
-                // } catch(TradeNotFoundException | UserNotFoundException exception) {
-            } catch (Exception exception) {
-                System.out.println(exception.getMessage());
-            }
-        }
-
+            freezeTraderPanel.add(traderName);
+            freezeTraderPanel.add(freezeTraderButton);
+            freezeTradersContainer.add(freezeTraderPanel);
+        });
     }
 }

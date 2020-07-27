@@ -180,7 +180,7 @@ public class SearchPanel extends JPanel {
         // int numRows = matches.size();
         int numRows = itemNameSearchString.length();
         if (numRows < 3) numRows = 3;
-        tradableItemListContainer = new JPanel(new GridLayout(itemNameSearchString.length(), 1));
+        tradableItemListContainer = new JPanel(new GridLayout(numRows, 1));
         // tradableItemListContainer = new JPanel(new GridLayout(matches.size(), 1));
         tradableItemListContainer.setBackground(gray2);
         tradableItemListContainer.setBorder(null);
