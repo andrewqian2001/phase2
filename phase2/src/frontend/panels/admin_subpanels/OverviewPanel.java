@@ -190,6 +190,9 @@ public class OverviewPanel extends JPanel {
                     acceptItemRequestButton.addActionListener(e -> {
                         try {
                             itemRequestManager.processItemRequest(t.getId(), item.getId(), true);
+                            itemRequestsContainer.remove(itemRequestPanel);
+                            itemRequestsContainer.revalidate();
+                            itemRequestsContainer.repaint();
                         } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
                             System.out.println(e1.getMessage());
                         }
@@ -198,6 +201,9 @@ public class OverviewPanel extends JPanel {
                     rejectItemRequestButton.addActionListener(e -> {
                         try {
                             itemRequestManager.processItemRequest(t.getId(), item.getId(), false);
+                            itemRequestsContainer.remove(itemRequestPanel);
+                            itemRequestsContainer.revalidate();
+                            itemRequestsContainer.repaint();
                         } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
                             System.out.println(e1.getMessage());
                         }
