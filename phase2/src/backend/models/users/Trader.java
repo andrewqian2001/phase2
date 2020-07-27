@@ -13,7 +13,8 @@ import java.util.ArrayList;
 public class Trader extends User implements Serializable {
     private final ArrayList<String> wishList = new ArrayList<>();  // Items that this trader wants.
     private final ArrayList<String> availableItems = new ArrayList<>(); // Items that the trader is willing to trade,lend etc
-    private final ArrayList<String> requestedItems = new ArrayList<>(); // Items that the this trader wishes to be added to availableItems list
+    private final ArrayList<String> requestedItems = new ArrayList<>(); // Items that this trader wishes to be added to availableItems list
+    private final ArrayList<String> ongoingItems = new ArrayList<>(); // Items that this trader is currently using for trades
 
     private final ArrayList<String> acceptedTrades = new ArrayList<>(); // Trades that are ongoing
     private final ArrayList<String> requestedTrades = new ArrayList<>(); // Trades yet to be accepted or denied
@@ -47,6 +48,14 @@ public class Trader extends User implements Serializable {
         this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
         this.city = city;
 
+    }
+
+    /**
+     * Gets all ongoing items
+     * @return all ongoing items
+     */
+    public ArrayList<String> getOngoingItems(){
+        return ongoingItems;
     }
 
     /**

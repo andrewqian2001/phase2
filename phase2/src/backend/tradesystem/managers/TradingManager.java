@@ -74,8 +74,9 @@ public class TradingManager extends Manager {
 
         // Check whether the trader has too many incomplete trades pending
         if (trader.getIncompleteTradeCount() >= trader.getIncompleteTradeLim() ||
-                secondTrader.getIncompleteTradeCount() >= secondTrader.getIncompleteTradeLim())
+                secondTrader.getIncompleteTradeCount() >= secondTrader.getIncompleteTradeLim()) {
             throw new CannotTradeException("One of the two users has too many active trades.");
+        }
 
         // This trade has now been requested, so add it to the requested trades of each trader
         trader.getRequestedTrades().add(trade.getId());
@@ -142,6 +143,10 @@ public class TradingManager extends Manager {
         if (trade.isHasFirstUserConfirmedRequest() && trade.isHasSecondUserConfirmedRequest()) {
             trader.getAvailableItems().remove(trade.getFirstUserOffer());
             trader2.getAvailableItems().remove(trade.getSecondUserOffer());
+            if (!trade.getFirstUserOffer().equals(""))
+                trader.getOngoingItems().add(trade.getFirstUserOffer());
+            if (!trade.getSecondUserOffer().equals(""))
+                trader2.getOngoingItems().add(trade.getSecondUserOffer());
             trader.getAcceptedTrades().add(tradeId);
             trader2.getAcceptedTrades().add(tradeId);
             trader.getRequestedTrades().remove(tradeId);
@@ -174,11 +179,8 @@ public class TradingManager extends Manager {
             Trader trader1 = getTrader(trade.getFirstUserId());
             Trader trader2 = getTrader(trade.getSecondUserId());
 
-            // Add the necessary items to each traders inventory
-            if (!trade.getSecondUserOffer().equals(""))
-                trader1.getAvailableItems().add(trade.getSecondUserOffer());
-            if (!trade.getFirstUserOffer().equals(""))
-                trader2.getAvailableItems().add(trade.getFirstUserOffer());
+            trader1.getOngoingItems().remove(trade.getFirstUserOffer());
+            trader2.getOngoingItems().remove(trade.getSecondUserOffer());
 
             trader1.getWishlist().remove(trade.getSecondUserOffer());
             trader2.getWishlist().remove(trade.getFirstUserOffer());
@@ -189,12 +191,25 @@ public class TradingManager extends Manager {
                 trader2.getAcceptedTrades().remove(tradeId);
                 trader1.getCompletedTrades().add(tradeId);
                 trader2.getCompletedTrades().add(tradeId);
+
+                // Add the necessary items to each traders inventory
+                if (!trade.getSecondUserOffer().equals(""))
+                    trader1.getAvailableItems().add(trade.getSecondUserOffer());
+                if (!trade.getFirstUserOffer().equals(""))
+                    trader2.getAvailableItems().add(trade.getFirstUserOffer());
+
                 trader1.setTradeCount(trader1.getTradeCount() + 1);
                 trader2.setTradeCount(trader2.getTradeCount() + 1);
                 if (trade.getFirstUserOffer().equals(""))
                     trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed()+1);
                 if (trade.getSecondUserOffer().equals(""))
                     trader1.setTotalItemsLent(trader1.getTotalItemsLent() + 1);
+            }
+            else{
+                if (!trade.getSecondUserOffer().equals(""))
+                    trader1.getOngoingItems().add(trade.getSecondUserOffer());
+                if (!trade.getFirstUserOffer().equals(""))
+                    trader2.getOngoingItems().add(trade.getFirstUserOffer());
             }
 
             updateUserDatabase(trader1);
@@ -204,8 +219,9 @@ public class TradingManager extends Manager {
     }
 
     /**
-     * Confirms the second meeting
-     *
+     * Confirms the second meeting.
+     * This method assumes that the items required for the trade to be conducted are still in the ongoing items of each
+     * trader (this should generally be true unless ongoing items was tampered with).
      * @param traderId the trader confirming the meeting
      * @param tradeId  id of the trade
      * @param status   if the meeting is confirmed and the trade happened
@@ -223,8 +239,6 @@ public class TradingManager extends Manager {
         if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1()) {
             throw new AuthorizationException("First meeting hasn't been confirmed");
         }
-        if (!hasItem(trader1, trade.getSecondUserOffer()) || !hasItem(trader2, trade.getFirstUserOffer()))
-            throw new CannotTradeException("One of the two users does not have the required items to trade.");
         if (trade.getFirstUserId().equals(traderId)) {
             trade.setFirstUserConfirmed2(status);
         } else if ((trade.getSecondUserId().equals(traderId))) {
@@ -241,19 +255,23 @@ public class TradingManager extends Manager {
             trader2.getAcceptedTrades().remove(tradeId);
 
             // Update available items of first user / borrowed count
-            if (!trade.getFirstUserOffer().equals(""))
+            if (!trade.getFirstUserOffer().equals("")) {
                 trader1.getAvailableItems().add(trade.getFirstUserOffer());
+                trader2.getOngoingItems().remove(trade.getFirstUserOffer());
+            }
             else
                 trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed()+1);
 
             // Update available items of the second trader / lent item count
-            if(!trade.getSecondUserOffer().equals(""))
+            if(!trade.getSecondUserOffer().equals("")){
                 trader2.getAvailableItems().add(trade.getSecondUserOffer());
+                trader1.getOngoingItems().remove(trade.getSecondUserOffer());
+            }
             else
                 trader1.setTotalItemsLent(trader1.getTotalItemsLent()+1);
 
-            trader1.getAvailableItems().remove(trade.getSecondUserOffer());
-            trader2.getAvailableItems().remove(trade.getFirstUserOffer());
+
+
             trader1.getWishlist().remove(trade.getFirstUserOffer());
             trader2.getWishlist().remove(trade.getSecondUserOffer());
             trader1.setTradeCount(trader1.getTradeCount() + 1);
@@ -400,6 +418,8 @@ public class TradingManager extends Manager {
         if (!trade.getSecondUserOffer().equals(""))
             secondTrader.getAvailableItems().add(trade.getSecondUserOffer());
 
+        firstTrader.getOngoingItems().remove(trade.getFirstUserOffer());
+        secondTrader.getOngoingItems().remove(trade.getSecondUserOffer());
         // Update database
         getTradeDatabase().delete(trade.getId());
         updateUserDatabase(firstTrader);
@@ -420,12 +440,13 @@ public class TradingManager extends Manager {
 
     /**
      * Return whether this trader has this item, or if the item is just "" (meaning no item).
-     * @param trader the
-     * @param item
-     * @return
+     * @param trader the trader who's inventory we're checking
+     * @param item the item we are looking for
+     * @return true if the item was found in the trader's inventory
      */
     private boolean hasItem(Trader trader, String item){
         return (item.equals("") || trader.getAvailableItems().contains(item));
     }
+
 
 }

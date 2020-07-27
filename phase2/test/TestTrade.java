@@ -155,8 +155,8 @@ public class TestTrade {
             assertTrue(trader1.getAcceptedTrades().size() == 1);
             assertTrue(trader2.getAcceptedTrades().size() == 1);
             // check that the items are in the correct pos
-            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
-            assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(trader1.getOngoingItems().get(trader1.getOngoingItems().size()-1), item2);
+            assertEquals(trader2.getOngoingItems().get(trader2.getOngoingItems().size()-1), item1);
             assertEquals(0, trader1.getTradeCount());
             assertEquals(0, trader2.getTradeCount());
             assertEquals(0, trader1.getTotalItemsLent());
@@ -170,22 +170,22 @@ public class TestTrade {
             * THIS POINT MARKS WHERE THE SECOND MEETING IS BEING TESTED
             * */
 
-            trader1.getAvailableItems().remove(item2);
-            userDatabase.update(trader1);
-            try {
-                tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
-                fail();
-            }catch (CannotTradeException e){
-
-            }
-            try {
-                tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
-                fail();
-            }catch (CannotTradeException e){
-
-            }
-            trader1.getAvailableItems().add(item2);
-            userDatabase.update(trader1);
+//            trader1.getAvailableItems().remove(item2);
+//            userDatabase.update(trader1);
+//            try {
+//                tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+//                fail();
+//            }catch (CannotTradeException e){
+//
+//            }
+//            try {
+//                tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+//                fail();
+//            }catch (CannotTradeException e){
+//
+//            }
+//            trader1.getAvailableItems().add(item2);
+//            userDatabase.update(trader1);
 
             // This part makes sure that the incomplete trade count does not affect trade confirmation
             trader1.getAcceptedTrades().add("a");
@@ -201,8 +201,8 @@ public class TestTrade {
             assertTrue(trader1.getAcceptedTrades().size() == 4);
             assertTrue(trader2.getAcceptedTrades().size() == 1);
             // check that the items are in the correct pos
-            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
-            assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(trader1.getOngoingItems().get(trader1.getOngoingItems().size()-1), item2);
+            assertEquals(trader2.getOngoingItems().get(trader2.getOngoingItems().size()-1), item1);
             assertEquals(0, trader1.getTradeCount());
             assertEquals(0, trader2.getTradeCount());
             assertEquals(0, trader1.getTotalItemsLent());
@@ -217,8 +217,8 @@ public class TestTrade {
             assertTrue(trader1.getAcceptedTrades().size() == 4);
             assertTrue(trader2.getAcceptedTrades().size() == 1);
             // check that the items are in the correct pos
-            assertEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
-            assertEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
+            assertEquals(trader1.getOngoingItems().get(trader1.getOngoingItems().size()-1), item2);
+            assertEquals(trader2.getOngoingItems().get(trader2.getOngoingItems().size()-1), item1);
             assertEquals(0, trader1.getTradeCount());
             assertEquals(0, trader2.getTradeCount());
             assertEquals(0, trader1.getTotalItemsLent());
@@ -243,6 +243,8 @@ public class TestTrade {
             assertEquals(0, trader2.getTotalItemsLent());
             assertEquals(0, trader2.getTotalItemsBorrowed());
             assertEquals(0, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getOngoingItems().size());
+            assertEquals(0, trader2.getOngoingItems().size());
             assertFalse(trader1.getAvailableItems().contains(item2));
             assertFalse(trader2.getAvailableItems().contains(item1));
 
@@ -496,7 +498,8 @@ public class TestTrade {
             update();
             assertEquals(3, trader2.getAvailableItems().size());
             assertEquals(2, trader1.getAvailableItems().size());
-
+            assertEquals(1, trader2.getOngoingItems().size());
+            assertEquals(0, trader1.getOngoingItems().size());
             tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
             tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
 
@@ -507,7 +510,9 @@ public class TestTrade {
             assertEquals(1, trader1.getTotalItemsLent());
             assertEquals(0, trader2.getTotalItemsLent());
             assertEquals(3, trader2.getAvailableItems().size());
-            assertEquals(3, trader1.getAvailableItems().size());
+            assertEquals(2, trader1.getAvailableItems().size());
+            assertEquals(0, trader2.getOngoingItems().size());
+            assertEquals(1, trader1.getOngoingItems().size());
             tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
             tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
             update();
@@ -517,6 +522,8 @@ public class TestTrade {
             assertEquals(1, trader2.getTotalItemsLent());
             assertEquals(4, trader2.getAvailableItems().size());
             assertEquals(2, trader1.getAvailableItems().size());
+            assertEquals(0, trader2.getOngoingItems().size());
+            assertEquals(0, trader1.getOngoingItems().size());
 
         } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException | CannotTradeException e) {
             e.printStackTrace();
@@ -634,6 +641,8 @@ public class TestTrade {
             update();
             assertEquals(2, trader2.getAvailableItems().size());
             assertEquals(3, trader1.getAvailableItems().size());
+            assertEquals(0, trader2.getOngoingItems().size());
+            assertEquals(1, trader1.getOngoingItems().size());
 
             tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
             tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
@@ -646,8 +655,10 @@ public class TestTrade {
             assertEquals(1, trader2.getTotalItemsLent());
             assertEquals(1, trader1.getTotalItemsBorrowed());
             assertEquals(0, trader2.getTotalItemsBorrowed());
-            assertEquals(3, trader2.getAvailableItems().size());
+            assertEquals(2, trader2.getAvailableItems().size());
             assertEquals(3, trader1.getAvailableItems().size());
+            assertEquals(1, trader2.getOngoingItems().size());
+            assertEquals(0, trader1.getOngoingItems().size());
             tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
             tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
             update();
@@ -659,6 +670,8 @@ public class TestTrade {
             assertEquals(1, trader2.getTotalItemsBorrowed());
             assertEquals(2, trader2.getAvailableItems().size());
             assertEquals(4, trader1.getAvailableItems().size());
+            assertEquals(0, trader2.getOngoingItems().size());
+            assertEquals(0, trader1.getOngoingItems().size());
 
         } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException | CannotTradeException e) {
             e.printStackTrace();
