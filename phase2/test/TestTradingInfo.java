@@ -56,6 +56,9 @@ public class TestTradingInfo {
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "fruit" + i, "desc second" + i);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "another" + i, "desc third" + i);
                 traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
+                traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
+                traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
+
             }
             admin = (Admin) loginManager.registerUser("admin", "PASDASDFDSAFpadsf1", UserTypes.ADMIN);
         } catch (IOException ignored) {
@@ -88,20 +91,77 @@ public class TestTradingInfo {
     @Test
     public void testFrequentTraders() {
         try {
-
-            for (int i = 0; i < traders.length / 2; i++) {
-                String item1 = traders[i].getAvailableItems().get(0);
-                String item2 = traders[traders.length - i - 1].getAvailableItems().get(0);
-                Trade trade = tradingManager.requestTrade(trade(traders[i].getId(), traders[traders.length - i - 1].getId(), goodDate, goodDate2, "home",
-                        item1, item2, 3, "This is a trade"));
-                tradingManager.acceptRequest(traders[traders.length - i - 1].getId(), trade.getId());
-                tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
-                tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
-                tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
-                tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
+            int n = traders.length;
+            for (int j = 0; j < 3; j++) {
+                for (int i = 0; i < traders.length / 2; i++) {
+                    String item1 = traders[i].getAvailableItems().get(0);
+                    String item2 = traders[traders.length - i - 1].getAvailableItems().get(0);
+                    Trade trade = tradingManager.requestTrade(trade(traders[i].getId(), traders[traders.length - i - 1].getId(), goodDate, goodDate2, "home",
+                            item1, item2, 3, "This is a trade"));
+                    tradingManager.acceptRequest(traders[traders.length - i - 1].getId(), trade.getId());
+                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
+                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
+                }
             }
-            System.out.println(tradingInfoManager.getFrequentTraders(traders[0].getId()));
+            for (int i = 0; i < n; i++){
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[0].getId(),traders[n-1-i].getId());
+            }
 
+            for (int j = 0; j < 2; j++) {
+                for (int i = 0; i < traders.length - 1; i += 2) {
+                    String item1 = traders[i].getAvailableItems().get(2);
+                    String item2 = traders[i + 1].getAvailableItems().get(2);
+                    Trade trade = tradingManager.requestTrade(trade(traders[i].getId(), traders[i + 1].getId(), goodDate, goodDate2, "home",
+                            item1, item2, 3, "This is a trade"));
+                    tradingManager.acceptRequest(traders[i + 1].getId(), trade.getId());
+                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
+                    tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId(), true);
+                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
+                    tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId(), true);
+                }
+            }
+            for (int i = 0; i < n; i++){
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[0].getId(),traders[n-1-i].getId());
+            }
+            for (int i = 0; i < n -1; i+=2){
+                if (i == 4){
+                    // This is becasue 4->5, and so 4 traded with 5 3 times
+                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId())[0].getId(),traders[5].getId());
+                    continue;
+                }
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[1].getId(), traders[i + 1].getId());
+            }
+
+
+            update();
+            for (int i = 0; i < traders.length - 2; i += 3) {
+                String item1 = traders[i].getAvailableItems().get(0);
+                String item2 = traders[i + 2].getAvailableItems().get(0);
+                Trade trade = tradingManager.requestTrade(trade(traders[i].getId(), traders[i + 2].getId(), goodDate, goodDate2, "home",
+                        item1, item2, 3, "This is a trade"));
+                tradingManager.acceptRequest(traders[i + 2].getId(), trade.getId());
+                tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
+                tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId(), true);
+                tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
+                tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId(), true);
+            }
+
+            for (int i = 0; i < n; i++){
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[0].getId(),traders[n-1-i].getId());
+            }
+            for (int i = 0; i < n -1; i+=2){
+                if (i == 4){
+                    // This is becasue 4->5, and so 4 traded with 5 3 times
+                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId())[0].getId(),traders[5].getId());
+                    continue;
+                }
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[1].getId(), traders[i + 1].getId());
+            }
+            for (int i = 0; i < traders.length - 2; i += 3) {
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[2].getId(), traders[i + 2].getId());
+            }
 
         } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
             fail(e.getMessage());

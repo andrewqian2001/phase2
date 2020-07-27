@@ -343,6 +343,7 @@ public class TradingManager extends Manager {
                 throw new CannotTradeException("One of the traders does not have the required item!");
             }
         }
+
         if (trade.getUserTurnToEdit().equals(traderId)) trade.changeUserTurn();
         else throw new CannotTradeException("A previous trade offer has already been sent");
         trade.setMeetingTime(meetingTime);

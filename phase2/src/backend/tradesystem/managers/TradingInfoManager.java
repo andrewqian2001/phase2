@@ -136,8 +136,11 @@ public class TradingInfoManager extends Manager {
         }
 
         Set<String> distinct = new HashSet<>(traders);
-        int highest = 0;
         for (int i = 0; i < 3; i++) {
+            int highest = 0;
+            if (distinct.size() == 0){
+                break;
+            }
             for (String traderID : distinct) {
                 int possibleHigh = Collections.frequency(traders, traderID);
                 if (possibleHigh > highest) {
