@@ -74,8 +74,9 @@ public class HandleTradeLimitsManager extends Manager{
      * @param newLimit the new limit
      * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
+     * @return the updated trader
      */
-    public void setLimitSpecific(TraderProperties property, String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
+    public Trader setLimitSpecific(TraderProperties property, String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userId);
         switch (property){
             case MINIMUM_AMOUNT_NEEDED_TO_BORROW:
@@ -88,5 +89,6 @@ public class HandleTradeLimitsManager extends Manager{
                 trader.setTradeLimit(newLimit);
         }
         updateUserDatabase(trader);
+        return trader;
     }
 }
