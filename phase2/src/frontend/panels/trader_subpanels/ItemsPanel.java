@@ -8,6 +8,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.tradesystem.managers.TraderManager;
+import backend.tradesystem.managers.TradingInfoManager;
 import backend.tradesystem.managers.TradingManager;
 
 import java.awt.*;
@@ -32,6 +33,7 @@ public class ItemsPanel extends JPanel {
 
     private TradingManager tradeManager;
     private TraderManager traderManager;
+    private TradingInfoManager infoManager;
 
     public ItemsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
@@ -46,6 +48,7 @@ public class ItemsPanel extends JPanel {
 
         tradeManager = new TradingManager();
         traderManager = new TraderManager();
+        infoManager = new TradingInfoManager();
 
         inventoryTitleContainer = new JPanel(new GridLayout(1, 2));
         inventoryTitleContainer.setPreferredSize(new Dimension(1200, 75));
@@ -205,16 +208,24 @@ public class ItemsPanel extends JPanel {
                 removeItemButton.setBackground(red);
                 removeItemButton.setOpaque(true);
                 removeItemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
-                removeItemButton.addActionListener(event -> {
-                    // TODO: Call removeItem() method
-                    System.out.println("Removing #" + itemId);
-                });
-
+                
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
                 itemPanel.add(itemIdTitle);
                 itemPanel.add(removeItemButton);
                 inventoryItemsContainer.add(itemPanel);
+
+                removeItemButton.addActionListener(event -> {
+                    try {
+                        traderManager.removeFromInventory(trader.getId(), itemId);
+                        inventoryItemsContainer.remove(itemPanel);
+                        inventoryItemsContainer.revalidate();
+                        inventoryItemsContainer.repaint();
+                    } catch (UserNotFoundException | AuthorizationException e) {
+                        System.out.println(e.getMessage());
+                    }
+                });
+
             } catch (TradableItemNotFoundException exception) {
                 System.out.println(exception.getMessage());
             }
@@ -252,8 +263,7 @@ public class ItemsPanel extends JPanel {
                 itemIdTitle.setForeground(Color.BLACK);
                 itemIdTitle.setHorizontalAlignment(JLabel.LEFT);
 
-                //TODO: use getowner method
-                JLabel itemOwnerName = new JLabel(trader.getUsername());
+                JLabel itemOwnerName = new JLabel(infoManager.getTraderThatHasTradableItemId(itemId).getUsername());
                 itemOwnerName.setFont(regular.deriveFont(20f));
                 itemOwnerName.setForeground(Color.BLACK);
                 itemOwnerName.setHorizontalAlignment(JLabel.CENTER);
@@ -264,17 +274,24 @@ public class ItemsPanel extends JPanel {
                 removeItemButton.setBackground(red);
                 removeItemButton.setOpaque(true);
                 removeItemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
-                removeItemButton.addActionListener(event -> {
-                    //TODO: Call removeItem() method
-                    System.out.println("Removing #"+itemId);
-                });
-
+                
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
                 itemPanel.add(itemIdTitle);
                 itemPanel.add(itemOwnerName);
                 itemPanel.add(removeItemButton);
                 wishlistItemsContainer.add(itemPanel);
+
+                removeItemButton.addActionListener(event -> {
+                    try {
+                        traderManager.removeFromWishList(trader.getId(), itemId);
+                        wishlistItemsContainer.remove(itemPanel);
+                        wishlistItemsContainer.revalidate();
+                        wishlistItemsContainer.repaint();
+                    } catch (UserNotFoundException | AuthorizationException e) {
+                        System.out.println(e.getMessage());
+                    }
+                });
 
             } catch (TradableItemNotFoundException exception) {
                 System.out.println(exception.getMessage());

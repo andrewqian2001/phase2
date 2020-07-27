@@ -7,6 +7,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.Review;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -23,11 +24,13 @@ public class TraderManager extends Manager {
     public TraderManager() throws IOException {
         super();
     }
+
     /**
      * Making the database objects with set file paths
-     * @param userFilePath the user database file path
+     *
+     * @param userFilePath         the user database file path
      * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath the trade database file path
+     * @param tradeFilePath        the trade database file path
      * @throws IOException issues with getting the file path
      */
     public TraderManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
@@ -38,12 +41,12 @@ public class TraderManager extends Manager {
     /**
      * Makes this user request an item
      *
-     * @param id trader id
+     * @param id   trader id
      * @param name name of the item
      * @param desc description of the item
+     * @return the item that was requested
      * @throws UserNotFoundException  if the user was not found
      * @throws AuthorizationException not allowed to request an item
-     * @return the item that was requested
      */
     public Trader addRequestItem(String id, String name, String desc) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(id);
@@ -54,8 +57,6 @@ public class TraderManager extends Manager {
         updateUserDatabase(trader);
         return trader;
     }
-
-
 
 
     /**
@@ -77,10 +78,40 @@ public class TraderManager extends Manager {
     }
 
     /**
-     * Set idle status, an idle trader has some limitations such as being unable to trade
+     * Remove item from trader's wishlist
+     *
      * @param traderId the trader
-     * @param status whether the trader is idle
-     * @throws UserNotFoundException if the trader isn't found
+     * @param itemId   the item being removed
+     * @throws UserNotFoundException  if the trader isn't found
+     * @throws AuthorizationException frozen account or if the user can't do this action
+     */
+    public void removeFromWishList(String traderId, String itemId) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(traderId);
+        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
+        trader.getWishlist().remove(itemId);
+        updateUserDatabase(trader);
+    }
+
+    /**
+     * Remove an item from the trader's inventory
+     * @param traderId the trader
+     * @param itemId the item being removed
+     * @throws UserNotFoundException  if the trader isn't found
+     * @throws AuthorizationException frozen account or if the user can't do this action
+     */
+    public void removeFromInventory(String traderId, String itemId) throws UserNotFoundException, AuthorizationException {
+        Trader trader = getTrader(traderId);
+        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
+        trader.getAvailableItems().remove(itemId);
+        updateUserDatabase(trader);
+    }
+
+    /**
+     * Set idle status, an idle trader has some limitations such as being unable to trade
+     *
+     * @param traderId the trader
+     * @param status   whether the trader is idle
+     * @throws UserNotFoundException  if the trader isn't found
      * @throws AuthorizationException if unable to go idle
      */
     public void setIdle(String traderId, boolean status) throws UserNotFoundException, AuthorizationException {
@@ -93,9 +124,10 @@ public class TraderManager extends Manager {
 
     /**
      * Sets the city of the trader
+     *
      * @param traderId the trader
-     * @param city the city
-     * @throws UserNotFoundException if the trader doesn't exist
+     * @param city     the city
+     * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
     public void setCity(String traderId, String city) throws UserNotFoundException, AuthorizationException {
@@ -106,12 +138,13 @@ public class TraderManager extends Manager {
 
     /**
      * Adds a new review
+     *
      * @param fromUser the user who sent the review
-     * @param toUser the user who received the review
-     * @param rating rating must be between 0 to 10, if greater or less than those bounds then it will assume those bounds
-     * @param message the message of the review
+     * @param toUser   the user who received the review
+     * @param rating   rating must be between 0 to 10, if greater or less than those bounds then it will assume those bounds
+     * @param message  the message of the review
      * @return the new review
-     * @throws UserNotFoundException if the user ids don't exist
+     * @throws UserNotFoundException  if the user ids don't exist
      * @throws AuthorizationException if the users aren't traders
      */
     public Review addReview(String fromUser, String toUser, double rating, String message) throws UserNotFoundException, AuthorizationException {
@@ -126,15 +159,16 @@ public class TraderManager extends Manager {
 
     /**
      * Remove a review
+     *
      * @param userThatHasReview the user that needs to have a review removed
-     * @param reviewId the review being removed
-     * @throws UserNotFoundException if the user isn't found
+     * @param reviewId          the review being removed
+     * @throws UserNotFoundException  if the user isn't found
      * @throws AuthorizationException if the user isn't a trader
      */
     public void removeReview(String userThatHasReview, String reviewId) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userThatHasReview);
         ArrayList<Review> reviews = trader.getReviews();
-        for (Review review: reviews){
+        for (Review review : reviews) {
             if (review.getId().equals(reviewId)) {
                 reviews.remove(review);
                 updateUserDatabase(trader);
