@@ -208,16 +208,24 @@ public class ItemsPanel extends JPanel {
                 removeItemButton.setBackground(red);
                 removeItemButton.setOpaque(true);
                 removeItemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
-                removeItemButton.addActionListener(event -> {
-                    // TODO: Call removeItem() method
-                    System.out.println("Removing #" + itemId);
-                });
-
+                
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
                 itemPanel.add(itemIdTitle);
                 itemPanel.add(removeItemButton);
                 inventoryItemsContainer.add(itemPanel);
+
+                removeItemButton.addActionListener(event -> {
+                    try {
+                        traderManager.removeFromInventory(trader.getId(), itemId);
+                        inventoryItemsContainer.remove(itemPanel);
+                        inventoryItemsContainer.revalidate();
+                        inventoryItemsContainer.repaint();
+                    } catch (UserNotFoundException | AuthorizationException e) {
+                        System.out.println(e.getMessage());
+                    }
+                });
+
             } catch (TradableItemNotFoundException exception) {
                 System.out.println(exception.getMessage());
             }
@@ -266,17 +274,24 @@ public class ItemsPanel extends JPanel {
                 removeItemButton.setBackground(red);
                 removeItemButton.setOpaque(true);
                 removeItemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
-                removeItemButton.addActionListener(event -> {
-                    //TODO: Call removeItem() method
-                    System.out.println("Removing #"+itemId);
-                });
-
+                
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
                 itemPanel.add(itemIdTitle);
                 itemPanel.add(itemOwnerName);
                 itemPanel.add(removeItemButton);
                 wishlistItemsContainer.add(itemPanel);
+
+                removeItemButton.addActionListener(event -> {
+                    try {
+                        traderManager.removeFromWishList(trader.getId(), itemId);
+                        wishlistItemsContainer.remove(itemPanel);
+                        wishlistItemsContainer.revalidate();
+                        wishlistItemsContainer.repaint();
+                    } catch (UserNotFoundException | AuthorizationException e) {
+                        System.out.println(e.getMessage());
+                    }
+                });
 
             } catch (TradableItemNotFoundException exception) {
                 System.out.println(exception.getMessage());
