@@ -139,10 +139,10 @@ public class TradingInfoManager extends Manager {
         int highest = 0;
         for (int i = 0; i < 3; i++) {
             for (String traderID : distinct) {
-                int possible_high = Collections.frequency(traders, traderID);
-                if (possible_high > highest) {
+                int possibleHigh = Collections.frequency(traders, traderID);
+                if (possibleHigh > highest) {
                     frequentTraders[i] = getTrader(traderID);
-                    highest = possible_high;
+                    highest = possibleHigh;
                 }
             }
             distinct.remove(frequentTraders[i].getId());
