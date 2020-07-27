@@ -78,7 +78,7 @@ public class NotificationsPanel extends JPanel {
         freqTradersTitle.setForeground(Color.WHITE);
         freqTradersTitle.setOpaque(false);
 
-        freqTradableItemsTitle = new JLabel("Frequent Tradable Items");
+        freqTradableItemsTitle = new JLabel("Recently Traded Items");
         freqTradableItemsTitle.setFont(regular.deriveFont(30f));
         freqTradableItemsTitle.setForeground(Color.WHITE);
         freqTradableItemsTitle.setOpaque(false);
@@ -112,7 +112,7 @@ public class NotificationsPanel extends JPanel {
 
     private void getFreqTraders() {
         try {
-            //Trader[] freqTraders = infoManager.getFrequentTraders(trader.getId());
+            // Trader[] freqTraders = infoManager.getFrequentTraders(trader.getId());
             // freqTradersPanel = new JPanel(new GridLayout(freqTraders.length, 1));
             freqTradersPanel = new JPanel(new GridLayout(3, 1));
             freqTradersPanel.setBackground(gray2);
