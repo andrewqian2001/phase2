@@ -216,12 +216,12 @@ public class TradePanel extends JPanel implements ActionListener {
                 JLabel otherTraderName, otherTraderItemName, traderItemName;
                 if(isTraderFirstUser) {
                     otherTraderName = new JLabel(tradeManager.getUser(tradeRequest.getSecondUserId()).getUsername());
-                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).toString());
-                    traderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).toString());
+                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).getName());
+                    traderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).getName());
                 } else {
                     otherTraderName = new JLabel(tradeManager.getUser(tradeRequest.getFirstUserId()).getUsername());
-                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).toString());
-                    traderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).toString());
+                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).getName());
+                    traderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).getName());
                 }
 
                 // JLabel otherTraderName = new JLabel("otherTrader #" + (i + 1));
@@ -331,9 +331,9 @@ public class TradePanel extends JPanel implements ActionListener {
 
                 JLabel tradeMeetingTime;
                 if(ongoingTrade.isFirstUserConfirmed1() && ongoingTrade.isSecondUserConfirmed1()) {
-                    tradeMeetingTime = new JLabel(ongoingTrade.getSecondMeetingTime().toString());
+                    tradeMeetingTime = new JLabel(ongoingTrade.getSecondMeetingTime().toString().substring(0, ongoingTrade.getSecondMeetingTime().toString().length() - 12));
                 } else {
-                    tradeMeetingTime = new JLabel(ongoingTrade.getMeetingTime().toString());
+                    tradeMeetingTime = new JLabel(ongoingTrade.getMeetingTime().toString().substring(0, ongoingTrade.getMeetingTime().toString().length() - 12));
                 }
                 // JLabel tradeMeetingTime = new JLabel("2020/07/30@14:2"+i);
                 tradeMeetingTime.setFont(regular.deriveFont(20f));
