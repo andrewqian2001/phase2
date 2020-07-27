@@ -316,7 +316,7 @@ public class TradePanel extends JPanel implements ActionListener {
                 ongoingTradePanel.setBorder(BorderFactory.createLineBorder(bg));
                 ongoingTradePanel.setBackground(gray);
 
-                JLabel otherTraderName = new JLabel((tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
+                JLabel otherTraderName = new JLabel((!tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername().equals(trader.getUsername()) ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername() : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
                 // JLabel otherTraderName = new JLabel("otherTrader #"+ (i + 1));
                 otherTraderName.setFont(regular.deriveFont(20f));
                 otherTraderName.setForeground(Color.BLACK);
