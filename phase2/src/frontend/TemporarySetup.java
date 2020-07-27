@@ -51,7 +51,7 @@ public class TemporarySetup {
             Date goodDate = new Date(System.currentTimeMillis() + 99999999);
             Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
             // Trades
-            for (int i = 1; i < traders.length / 2 - 1; i++){
+            for (int i = 1; i < traders.length / 2; i++){
                 try {
                     Trade acceptThis = tradingManager.requestTrade(new Trade(traders[i].getId(), traders[traders.length - 1 - i].getId(), goodDate, goodDate2,
                             "123 bay street", traders[i].getAvailableItems().get(0), traders[traders.length - 1 - i].getAvailableItems().get(0),
@@ -60,7 +60,7 @@ public class TemporarySetup {
                             "123 bay street", traders[i].getAvailableItems().get(1), traders[traders.length - 1 - i].getAvailableItems().get(1),
                             3, "give me your banana " + i)); // This is a perma trade
                     Trade requestedOnly = tradingManager.requestTrade(new Trade(traders[i].getId(), traders[traders.length - 1 - i].getId(), goodDate, goodDate2,
-                            "123 bay street", traders[i].getAvailableItems().get(2), "",
+                            "123 bay street", traders[i].getAvailableItems().get(2), traders[traders.length - 1 - i].getAvailableItems().get(2),
                             3, "I give you my kiwi " + i)); // This is temporary lending
                     // Only accepts request and doesn't confirm meetings so trade is ongoing
                     tradingManager.acceptRequest(traders[traders.length - 1 - i].getId(), ongoing.getId());
