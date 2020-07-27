@@ -35,11 +35,13 @@ public class HandleFrozenManager extends Manager {
      * @param userId the user id
      * @param status if the user requested to be unfrozen
      * @throws UserNotFoundException if the user wasn't found
+     * @return the updated user
      */
-    public void requestUnfreeze(String userId, boolean status) throws UserNotFoundException {
+    public User requestUnfreeze(String userId, boolean status) throws UserNotFoundException {
         User user = getUser(userId);
         user.setUnfrozenRequested(status);
         updateUserDatabase(user);
+        return user;
     }
 
     /**
