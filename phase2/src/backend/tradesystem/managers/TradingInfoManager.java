@@ -97,12 +97,12 @@ public class TradingInfoManager extends Manager {
      * return the 3 most recent traders that this trader has traded with.
      *
      * @param traderId the trader being checked for
-     * @return a Trader array of the 3 most recently traded with Traders
+     * @return a Trader array list of the 3 most recently traded with Traders
      * @throws AuthorizationException trader is not allowed to know the frequent traders
      * @throws UserNotFoundException  user not found
      * @throws TradeNotFoundException trade not found
      */
-    public Trader[] getRecentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
+    public ArrayList<Trader> getRecentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
         ArrayList<Trader> traders = new ArrayList<>();
         Trader trader = getTrader(traderId);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
@@ -112,20 +112,20 @@ public class TradingInfoManager extends Manager {
             if (trade.getFirstUserId().equals(traderId)) traders.add((getTrader(trade.getSecondUserId())));
             else traders.add(getTrader(trade.getFirstUserId()));
         }
-        return (Trader[]) traders.toArray();
+        return traders;
     }
 
     /**
      * Return the 3 most frequent traders that this trader has traded with.
      *
      * @param traderId the trader being checked for
-     * @return a Trader array of the 3 most frequently traded with Traders
+     * @return a Trader array list of the 3 most frequently traded with Traders
      * @throws AuthorizationException trader is not allowed to know the frequent traders
      * @throws UserNotFoundException  user not found
      * @throws TradeNotFoundException trade not found
      */
-    public Trader[] getFrequentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
-        Trader[] frequentTraders = new Trader[3];
+    public ArrayList<Trader> getFrequentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
+        ArrayList<Trader> frequentTraders = new ArrayList<>();
         ArrayList<String> traders = new ArrayList<>();
 
 
@@ -144,13 +144,14 @@ public class TradingInfoManager extends Manager {
             for (String traderID : distinct) {
                 int possibleHigh = Collections.frequency(traders, traderID);
                 if (possibleHigh > highest) {
-                    frequentTraders[i] = getTrader(traderID);
+                    if (frequentTraders.size() >= i)
+                        frequentTraders.add(null);
+                    frequentTraders.set(i, getTrader(traderID));
                     highest = possibleHigh;
                 }
             }
-            distinct.remove(frequentTraders[i].getId());
+            distinct.remove(frequentTraders.get(i).getId());
         }
-
         return frequentTraders;
     }
 
