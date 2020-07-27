@@ -198,17 +198,21 @@ public class ItemsPanel extends JPanel {
                 itemIdTitle.setForeground(Color.BLACK);
                 itemIdTitle.setHorizontalAlignment(JLabel.LEFT);
 
-                JButton removeitemButton = new JButton("Remove");
-                removeitemButton.setFont(bold.deriveFont(20f));
-                removeitemButton.setForeground(Color.WHITE);
-                removeitemButton.setBackground(red);
-                removeitemButton.setOpaque(true);
-                removeitemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+                JButton removeItemButton = new JButton("Remove");
+                removeItemButton.setFont(bold.deriveFont(20f));
+                removeItemButton.setForeground(Color.WHITE);
+                removeItemButton.setBackground(red);
+                removeItemButton.setOpaque(true);
+                removeItemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+                removeItemButton.addActionListener(event -> {
+                    // TODO: Call removeItem() method
+                    System.out.println("Removing #" + itemId);
+                });
 
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
                 itemPanel.add(itemIdTitle);
-                itemPanel.add(removeitemButton);
+                itemPanel.add(removeItemButton);
                 inventoryItemsContainer.add(itemPanel);
             } catch (TradableItemNotFoundException exception) {
                 System.out.println(exception.getMessage());
@@ -252,18 +256,22 @@ public class ItemsPanel extends JPanel {
                 itemOwnerName.setForeground(Color.BLACK);
                 itemOwnerName.setHorizontalAlignment(JLabel.CENTER);
 
-                JButton removeitemButton = new JButton("Remove");
-                removeitemButton.setFont(bold.deriveFont(20f));
-                removeitemButton.setForeground(Color.WHITE);
-                removeitemButton.setBackground(red);
-                removeitemButton.setOpaque(true);
-                removeitemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+                JButton removeItemButton = new JButton("Remove");
+                removeItemButton.setFont(bold.deriveFont(20f));
+                removeItemButton.setForeground(Color.WHITE);
+                removeItemButton.setBackground(red);
+                removeItemButton.setOpaque(true);
+                removeItemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+                removeItemButton.addActionListener(event -> {
+                    //TODO: Call removeItem() method
+                    System.out.println("Removing #"+itemId);
+                });
 
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
                 itemPanel.add(itemIdTitle);
                 itemPanel.add(itemOwnerName);
-                itemPanel.add(removeitemButton);
+                itemPanel.add(removeItemButton);
                 wishlistItemsContainer.add(itemPanel);
 
             } catch (TradableItemNotFoundException exception) {
