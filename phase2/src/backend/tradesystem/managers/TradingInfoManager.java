@@ -7,10 +7,7 @@ import backend.models.users.Trader;
 import backend.models.users.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Handles anything about getting info on trading and on traders, but this does not handle trading itself
@@ -66,19 +63,34 @@ public class TradingInfoManager extends Manager {
 
 
     /**
-     * Gets tradable items that has a name that starts with the input name
+     * Gets tradable items that has the name substring within the input name string
      * For example, if the item name is "Apple Pie", and the name to check for is "apple",
      * then that TradableItem is included as a list of items to return
      *
-     * @param name the name to check the starts with
+     * @param name the name to check for
      * @return list of tradable items that match the name
      */
-    public TradableItem[] getTradableItemsStartsWithName(String name) {
+    public TradableItem[] getTradableItemsWithName(String name) {
         ArrayList<TradableItem> items = new ArrayList<>();
         for (TradableItem item : getTradableItemDatabase().getItems())
-            if (item.getName().toLowerCase().startsWith(name.toLowerCase()))
+            if (item.getName().toLowerCase().contains(name.toLowerCase()))
                 items.add(item);
         return (TradableItem[]) items.toArray();
+    }
+
+    /**
+     * Gets the trader that has the tradable item id
+     * @param id the tradable item id
+     * @return the trader
+     * @throws TradableItemNotFoundException if the item id is invalid
+     */
+    public Trader getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException{
+        for (Trader trader: getAllTraders()){
+            if (trader.getAvailableItems().contains(id)){
+                return trader;
+            }
+        }
+        throw new TradableItemNotFoundException("No trader contains this item");
     }
 
     /**
