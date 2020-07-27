@@ -33,9 +33,9 @@ public class TemporarySetup {
 
             // Each trader has some items that are confirmed and not confirmed
             // Username is trader{index here from 0 to 9 inclusive}
-            // Password is Password@Password1
+            // Password is 'userPassword1'
             for (int i = 0; i < traders.length; i++) {
-                traders[i] = (Trader) loginManager.registerUser("trader" + i, "Password@Password1", UserTypes.TRADER);
+                traders[i] = (Trader) loginManager.registerUser("trader" + i, "userPassword1", UserTypes.TRADER);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "apple" + i, "sweet" + i);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "banananana" + i, "disgusting" + i);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "kiwi" + i, "from oceania" + i);
@@ -71,7 +71,7 @@ public class TemporarySetup {
             messageManager.sendMessage(traders[0].getId(), traders[1].getId(), "Can I buy your Ryerson hat for my pokemon cards");
             // List of admins
             for (int i = 0; i < admins.length; i++) {
-                admins[i] = (Admin) loginManager.registerUser("admin" + i, "Password@Password1", UserTypes.ADMIN);
+                admins[i] = (Admin) loginManager.registerUser("admin" + i, "userPassword1", UserTypes.ADMIN);
             }
         } catch (IOException | UserAlreadyExistsException | BadPasswordException | UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
 
