@@ -22,9 +22,10 @@ public class ItemsPanel extends JPanel {
     private JLabel inventoryTitle, wishlistTitle;
 
     private Color bg = new Color(51, 51, 51);
-    private Color blue = new Color(0, 240, 239);
-    private Color red = new Color(219, 58, 52);
     private Color gray = new Color(196, 196, 196);
+    private Color gray2 = new Color(142, 142, 142);
+    private Color green = new Color(27, 158, 36);
+    private Color red = new Color(219, 58, 52);
 
     private TradingManager tradeManager;
 
@@ -56,6 +57,66 @@ public class ItemsPanel extends JPanel {
         addInventoryItemButton.setHorizontalAlignment(JButton.RIGHT);
         addInventoryItemButton.setOpaque(true);
         addInventoryItemButton.setBorderPainted(false);
+        addInventoryItemButton.addActionListener(e -> {
+            JDialog addNewItemModal = new JDialog();
+            addNewItemModal.setTitle("Add New Item");
+            addNewItemModal.setSize(500,500);
+            addNewItemModal.setResizable(false);
+            addNewItemModal.setLocationRelativeTo(null);
+
+            JPanel addNewItemPanel = new JPanel();
+            addNewItemPanel.setPreferredSize(new Dimension(500, 500));
+            addNewItemPanel.setBackground(bg);
+
+            JLabel itemNameTitle = new JLabel("Item Name");
+            itemNameTitle.setFont(italic.deriveFont(20f));
+            itemNameTitle.setPreferredSize(new Dimension(450, 50));
+            itemNameTitle.setOpaque(false);
+            itemNameTitle.setForeground(Color.WHITE);
+
+            JTextField itemNameInput = new JTextField();
+            itemNameInput.setFont(regular.deriveFont(20f));
+            itemNameInput.setBackground(gray2);
+            itemNameInput.setForeground(Color.BLACK);
+            itemNameInput.setPreferredSize(new Dimension(450, 50));
+            itemNameInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+            JLabel itemDescTitle = new JLabel("Short Description of Item:");
+            itemDescTitle.setFont(italic.deriveFont(20f));
+            itemDescTitle.setPreferredSize(new Dimension(450, 50));
+            itemDescTitle.setOpaque(false);
+            itemDescTitle.setForeground(Color.WHITE);
+
+            JTextField itemDescInput = new JTextField();
+            itemDescInput.setFont(regular.deriveFont(20f));
+            itemDescInput.setBackground(gray2);
+            itemDescInput.setForeground(Color.BLACK);
+            itemDescInput.setPreferredSize(new Dimension(450, 50));
+            itemDescInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+            JButton itemSubmitButton = new JButton("Submit Request");
+            itemSubmitButton.setFont(bold.deriveFont(25f));
+            itemSubmitButton.setBackground(green);
+            itemSubmitButton.setOpaque(true);
+            itemSubmitButton.setForeground(Color.WHITE);
+            itemSubmitButton.setPreferredSize(new Dimension(225, 75));
+            itemSubmitButton.setBorder(BorderFactory.createLineBorder(bg, 15));
+            itemSubmitButton.addActionListener(event -> {
+                if(itemNameInput.getText().trim().length() > 0 && itemDescInput.getText().trim().length() > 0) {
+                    System.out.println("Processing...");
+                }
+            });
+
+            addNewItemPanel.add(itemNameTitle);
+            addNewItemPanel.add(itemNameInput);
+            addNewItemPanel.add(itemDescTitle);
+            addNewItemPanel.add(itemDescInput);
+
+            addNewItemModal.add(addNewItemPanel);
+            addNewItemModal.add(itemSubmitButton, BorderLayout.SOUTH);
+            addNewItemModal.setModal(true);
+            addNewItemModal.setVisible(true);
+        });
 
         inventoryItemsScrollPane = new JScrollPane();
         inventoryItemsScrollPane.setBorder(null);
@@ -106,7 +167,7 @@ public class ItemsPanel extends JPanel {
         for (String itemId : trader.getAvailableItems()) {
             try {
                 TradableItem item = tradeManager.getTradableItem(itemId);
-                JPanel itemPanel = new JPanel(new GridLayout(1, 5, 10, 0));
+                JPanel itemPanel = new JPanel(new GridLayout(1, 4, 10, 0));
                 itemPanel.setPreferredSize(new Dimension(1000, 75));
                 itemPanel.setBackground(gray);
                 itemPanel.setBorder(BorderFactory.createLineBorder(bg));
@@ -122,6 +183,11 @@ public class ItemsPanel extends JPanel {
                 itemDesc.setForeground(Color.BLACK);
                 itemDesc.setHorizontalAlignment(JLabel.LEFT);
 
+                JLabel itemIdTitle = new JLabel("<html><pre>#" + item.getId().substring(item.getId().length() - 12) + "</pre></html>");
+                itemIdTitle.setFont(regular.deriveFont(20f));
+                itemIdTitle.setForeground(Color.BLACK);
+                itemIdTitle.setHorizontalAlignment(JLabel.LEFT);
+
                 JButton removeitemButton = new JButton("Remove");
                 removeitemButton.setFont(bold.deriveFont(20f));
                 removeitemButton.setForeground(Color.WHITE);
@@ -131,6 +197,7 @@ public class ItemsPanel extends JPanel {
 
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
+                itemPanel.add(itemIdTitle);
                 itemPanel.add(removeitemButton);
                 inventoryItemsContainer.add(itemPanel);
             } catch (TradableItemNotFoundException exception) {
@@ -164,6 +231,17 @@ public class ItemsPanel extends JPanel {
                 itemDesc.setForeground(Color.BLACK);
                 itemDesc.setHorizontalAlignment(JLabel.LEFT);
 
+                JLabel itemIdTitle = new JLabel("<html><pre>#" + item.getId().substring(item.getId().length() - 12) + "</pre></html>");
+                itemIdTitle.setFont(regular.deriveFont(20f));
+                itemIdTitle.setForeground(Color.BLACK);
+                itemIdTitle.setHorizontalAlignment(JLabel.LEFT);
+
+                //TODO: use getowner method
+                JLabel itemOwnerName = new JLabel(trader.getUsername());
+                itemOwnerName.setFont(regular.deriveFont(20f));
+                itemOwnerName.setForeground(Color.BLACK);
+                itemOwnerName.setHorizontalAlignment(JLabel.CENTER);
+
                 JButton removeitemButton = new JButton("Remove");
                 removeitemButton.setFont(bold.deriveFont(20f));
                 removeitemButton.setForeground(Color.WHITE);
@@ -173,6 +251,8 @@ public class ItemsPanel extends JPanel {
 
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
+                itemPanel.add(itemIdTitle);
+                itemPanel.add(itemOwnerName);
                 itemPanel.add(removeitemButton);
                 wishlistItemsContainer.add(itemPanel);
 
