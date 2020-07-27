@@ -30,7 +30,7 @@ public class AdminPanel extends JPanel implements ActionListener {
     private Color gray = new Color(184, 184, 184);
     private Color red = new Color(219, 58, 52);
 
-    public AdminPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) {
+    public AdminPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.setSize(1600, 900);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());

@@ -1,9 +1,16 @@
 package frontend.panels.admin_subpanels;
 
+import backend.exceptions.TradableItemNotFoundException;
+import backend.models.TradableItem;
 import backend.models.users.Admin;
+import backend.models.users.Trader;
+import backend.tradesystem.managers.HandleItemRequestsManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class OverviewPanel extends JPanel {
 
@@ -13,6 +20,8 @@ public class OverviewPanel extends JPanel {
     private JLabel itemRequestsTitle, unFreezeRequestsTitle, freezeTraderTitle;
     private Font regular, bold, italic, boldItalic;
 
+    private HandleItemRequestsManager itemRequestManager;
+
     private Admin admin;
 
     private Color bg = new Color(51, 51, 51);
@@ -21,7 +30,7 @@ public class OverviewPanel extends JPanel {
     private Color confirmButton = new Color(27, 158, 36);
     private Color red = new Color(219, 58, 52);
 
-    public OverviewPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) {
+    public OverviewPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
         this.admin = admin;
         this.regular = regular;
@@ -32,6 +41,8 @@ public class OverviewPanel extends JPanel {
         this.setPreferredSize(new Dimension(1000, 900)); // fix this later
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 25));
         this.setBackground(Color.BLACK);
+
+        itemRequestManager = new HandleItemRequestsManager();
 
         itemRequestsTitleContainer = new JPanel(new GridLayout(1,2));
         itemRequestsTitleContainer.setOpaque(false);
@@ -121,55 +132,58 @@ public class OverviewPanel extends JPanel {
     }
 
     private void getAllItemRequests() {
-        itemRequestsContainer = new JPanel(new GridLayout(10,1));
-        itemRequestsContainer.setBackground(bg);
-        itemRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
-        for (int i = 0; i < 10; i++) {
-            try {
-                JPanel itemRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
-                itemRequestPanel.setPreferredSize(new Dimension(1000, 75));
-                itemRequestPanel.setBackground(bg);
-                
-                JLabel traderName = new JLabel("TraderName #" + (i + 1));
-                traderName.setFont(regular.deriveFont(20f));
-                traderName.setForeground(Color.WHITE);
-                traderName.setHorizontalAlignment(JLabel.LEFT);
+        try {
+            HashMap<Trader, ArrayList<TradableItem>> itemRequests = itemRequestManager.getAllItemRequests();
+            int numRows = 0;
+            for(Trader t : itemRequests.keySet()) numRows += itemRequests.get(t).size();
+            itemRequestsContainer = new JPanel(new GridLayout(numRows, 1));
+            itemRequestsContainer.setBackground(bg);
+            itemRequestsContainer.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+            itemRequests.forEach((t, items) -> {
+                items.forEach(item -> {
+                    JPanel itemRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
+                    itemRequestPanel.setPreferredSize(new Dimension(1000, 75));
+                    itemRequestPanel.setBackground(bg);
 
-                JLabel traderItemName = new JLabel("Item Name #" + (i + 1));
-                traderItemName.setFont(regular.deriveFont(20f));
-                traderItemName.setForeground(Color.WHITE);
-                traderItemName.setHorizontalAlignment(JLabel.LEFT);
+                    JLabel traderName = new JLabel(t.getUsername());
+                    traderName.setFont(regular.deriveFont(20f));
+                    traderName.setForeground(Color.WHITE);
+                    traderName.setHorizontalAlignment(JLabel.LEFT);
 
-                JLabel traderItemDesc = new JLabel("Item Desc #" + (i + 1));
-                traderItemDesc.setFont(regular.deriveFont(20f));
-                traderItemDesc.setForeground(Color.WHITE);
-                traderItemDesc.setHorizontalAlignment(JLabel.LEFT);
+                    JLabel traderItemName = new JLabel(item.getName());
+                    traderItemName.setFont(regular.deriveFont(20f));
+                    traderItemName.setForeground(Color.WHITE);
+                    traderItemName.setHorizontalAlignment(JLabel.LEFT);
 
+                    JLabel traderItemDesc = new JLabel(item.getDesc());
+                    traderItemDesc.setFont(regular.deriveFont(20f));
+                    traderItemDesc.setForeground(Color.WHITE);
+                    traderItemDesc.setHorizontalAlignment(JLabel.LEFT);
 
-                JButton acceptItemRequestButton = new JButton("Accept");
-                acceptItemRequestButton.setFont(bold.deriveFont(20f));
-                acceptItemRequestButton.setForeground(Color.WHITE);
-                acceptItemRequestButton.setBackground(confirmButton);
-                acceptItemRequestButton.setOpaque(true);
-                acceptItemRequestButton.setBorderPainted(false);
+                    JButton acceptItemRequestButton = new JButton("Accept");
+                    acceptItemRequestButton.setFont(bold.deriveFont(20f));
+                    acceptItemRequestButton.setForeground(Color.WHITE);
+                    acceptItemRequestButton.setBackground(confirmButton);
+                    acceptItemRequestButton.setOpaque(true);
+                    acceptItemRequestButton.setBorderPainted(false);
 
-                JButton rejectItemRequestButton = new JButton("Reject");
-                rejectItemRequestButton.setFont(bold.deriveFont(20f));
-                rejectItemRequestButton.setForeground(Color.WHITE);
-                rejectItemRequestButton.setBackground(red);
-                rejectItemRequestButton.setOpaque(true);
-                rejectItemRequestButton.setBorderPainted(false);
+                    JButton rejectItemRequestButton = new JButton("Reject");
+                    rejectItemRequestButton.setFont(bold.deriveFont(20f));
+                    rejectItemRequestButton.setForeground(Color.WHITE);
+                    rejectItemRequestButton.setBackground(red);
+                    rejectItemRequestButton.setOpaque(true);
+                    rejectItemRequestButton.setBorderPainted(false);
 
-                itemRequestPanel.add(traderName);
-                itemRequestPanel.add(traderItemName);
-                itemRequestPanel.add(traderItemDesc);
-                itemRequestPanel.add(acceptItemRequestButton);
-                itemRequestPanel.add(rejectItemRequestButton);
-                itemRequestsContainer.add(itemRequestPanel);
-                // } catch(TradeNotFoundException | UserNotFoundException exception) {
-            } catch (Exception exception) {
-                System.out.println(exception.getMessage());
-            }
+                    itemRequestPanel.add(traderName);
+                    itemRequestPanel.add(traderItemName);
+                    itemRequestPanel.add(traderItemDesc);
+                    itemRequestPanel.add(acceptItemRequestButton);
+                    itemRequestPanel.add(rejectItemRequestButton);
+                    itemRequestsContainer.add(itemRequestPanel);
+                });
+            });
+        } catch (TradableItemNotFoundException e) {
+            System.out.println(e.getMessage());
         }
     }
     
