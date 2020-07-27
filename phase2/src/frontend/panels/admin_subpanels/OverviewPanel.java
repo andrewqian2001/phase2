@@ -132,9 +132,29 @@ public class OverviewPanel extends JPanel {
         this.add(bottomSplitContainer);
 
         acceptAllItemRequestsButton.addActionListener(e -> {
-            for(Component itemRequest : itemRequestsContainer.getComponents()) {
-                for(Component c : ((JPanel) itemRequest).getComponents()) {
-                    if(c instanceof JButton && c.getBackground() == confirmButton) {
+            for (Component itemRequest : itemRequestsContainer.getComponents()) {
+                for (Component c : ((JPanel) itemRequest).getComponents()) {
+                    if (c instanceof JButton && c.getBackground() == confirmButton) {
+                        ((JButton) c).doClick();
+                    }
+                }
+            }
+        });
+
+        unFreezeAllTradersButton.addActionListener(e -> {
+            for (Component unFreezeRequest : unFreezeRequestsContainer.getComponents()) {
+                for (Component c : ((JPanel) unFreezeRequest).getComponents()) {
+                    if (c instanceof JButton && c.getBackground() == confirmButton) {
+                        ((JButton) c).doClick();
+                    }
+                }
+            }
+        });
+
+        freezeAllTradersButton.addActionListener(e -> {
+            for (Component freezeComponent : freezeTradersContainer.getComponents()) {
+                for (Component c : ((JPanel) freezeComponent).getComponents()) {
+                    if (c instanceof JButton && c.getBackground() == blue) {
                         ((JButton) c).doClick();
                     }
                 }
@@ -224,14 +244,15 @@ public class OverviewPanel extends JPanel {
             System.out.println(e.getMessage());
         }
     }
-    
+
     private void getAllUnFreezeRequests() {
         ArrayList<User> unFreezeRequests = frozenManager.getAllUnfreezeRequests();
         int numRows = unFreezeRequests.size();
-        if(numRows < 4) numRows = 4;
-        unFreezeRequestsContainer = new JPanel(new GridLayout(numRows,1));
+        if (numRows < 4)
+            numRows = 4;
+        unFreezeRequestsContainer = new JPanel(new GridLayout(numRows, 1));
         unFreezeRequestsContainer.setBackground(bg);
-        unFreezeRequests.forEach( user -> {
+        unFreezeRequests.forEach(user -> {
             JPanel unFreezeRequestsPanel = new JPanel(new GridLayout(1, 3, 10, 0));
             unFreezeRequestsPanel.setPreferredSize(new Dimension(400, 75));
             unFreezeRequestsPanel.setBackground(bg);
@@ -261,13 +282,32 @@ public class OverviewPanel extends JPanel {
             unFreezeRequestsPanel.add(acceptUnFreezeRequestButton);
             unFreezeRequestsPanel.add(rejectUnFreezeRequestButton);
             unFreezeRequestsContainer.add(unFreezeRequestsPanel);
+
+            acceptUnFreezeRequestButton.addActionListener(e -> {
+                try {
+                    frozenManager.setFrozen(user.getId(), false);
+                    unFreezeRequestsContainer.remove(unFreezeRequestsPanel);
+                    unFreezeRequestsContainer.revalidate();
+                    unFreezeRequestsContainer.repaint();
+                } catch (UserNotFoundException e1) {
+                    System.out.println(e1.getMessage());
+                }
+            });
+
+            rejectUnFreezeRequestButton.addActionListener(e -> {
+                unFreezeRequestsContainer.remove(unFreezeRequestsPanel);
+                unFreezeRequestsContainer.revalidate();
+                unFreezeRequestsContainer.repaint();
+
+            });
         });
     }
-    
+
     private void getAllToBeFrozenUsers() {
         ArrayList<Trader> tobeFrozenList = frozenManager.getShouldBeFrozen();
         int numRows = tobeFrozenList.size();
-        if(numRows < 4) numRows = 4;
+        if (numRows < 4)
+            numRows = 4;
         freezeTradersContainer = new JPanel(new GridLayout(numRows, 1));
         freezeTradersContainer.setBackground(bg);
         tobeFrozenList.forEach(trader -> {
@@ -292,6 +332,17 @@ public class OverviewPanel extends JPanel {
             freezeTraderPanel.add(traderName);
             freezeTraderPanel.add(freezeTraderButton);
             freezeTradersContainer.add(freezeTraderPanel);
+
+            freezeTraderButton.addActionListener(e -> {
+                try {
+                    frozenManager.setFrozen(trader.getId(), true);
+                    freezeTradersContainer.remove(freezeTraderPanel);
+                    freezeTradersContainer.revalidate();
+                    freezeTradersContainer.repaint();
+                } catch (UserNotFoundException e1) {
+                    System.out.println(e1.getMessage());
+                }
+            });
         });
     }
 }
