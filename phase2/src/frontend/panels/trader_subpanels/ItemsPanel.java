@@ -8,6 +8,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.tradesystem.managers.TraderManager;
+import backend.tradesystem.managers.TradingInfoManager;
 import backend.tradesystem.managers.TradingManager;
 
 import java.awt.*;
@@ -32,6 +33,7 @@ public class ItemsPanel extends JPanel {
 
     private TradingManager tradeManager;
     private TraderManager traderManager;
+    private TradingInfoManager infoManager;
 
     public ItemsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
@@ -46,6 +48,7 @@ public class ItemsPanel extends JPanel {
 
         tradeManager = new TradingManager();
         traderManager = new TraderManager();
+        infoManager = new TradingInfoManager();
 
         inventoryTitleContainer = new JPanel(new GridLayout(1, 2));
         inventoryTitleContainer.setPreferredSize(new Dimension(1200, 75));
@@ -252,8 +255,7 @@ public class ItemsPanel extends JPanel {
                 itemIdTitle.setForeground(Color.BLACK);
                 itemIdTitle.setHorizontalAlignment(JLabel.LEFT);
 
-                //TODO: use getowner method
-                JLabel itemOwnerName = new JLabel(trader.getUsername());
+                JLabel itemOwnerName = new JLabel(infoManager.getTraderThatHasTradableItemId(itemId).getUsername());
                 itemOwnerName.setFont(regular.deriveFont(20f));
                 itemOwnerName.setForeground(Color.BLACK);
                 itemOwnerName.setHorizontalAlignment(JLabel.CENTER);
