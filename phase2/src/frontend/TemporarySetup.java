@@ -61,7 +61,7 @@ public class TemporarySetup {
                             3, "give me your banana " + i)); // This is a perma trade
                     Trade requestedOnly = tradingManager.requestTrade(new Trade(traders[i].getId(), traders[traders.length - 1 - i].getId(), goodDate, goodDate2,
                             "123 bay street", traders[i].getAvailableItems().get(2), traders[traders.length - 1 - i].getAvailableItems().get(2),
-                            3, "I give you my kiwi " + i)); // This is temporary lending
+                            3, "I give you my kiwi " + i)); // this is for requesting temp trade
                     // Only accepts request and doesn't confirm meetings so trade is ongoing
                     tradingManager.acceptRequest(traders[traders.length - 1 - i].getId(), ongoing.getId());
                     // Confirms four meetings for a temporary trade and accepts request, meaning the trade is complete
