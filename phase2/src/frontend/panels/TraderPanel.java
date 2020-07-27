@@ -33,7 +33,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.setLayout(new BorderLayout());
 
         tradePanel = new TradePanel(trader, regular, bold, italic, boldItalic);
-        itemsPanel = new ItemsPanel(); //TODO: FIX
+        itemsPanel = new ItemsPanel(trader, regular, bold, italic, boldItalic);
         notificationsPanel = new NotificationsPanel(trader, regular, bold, italic, boldItalic);
         searchPanel = new SearchPanel(trader, regular, bold, italic, boldItalic);
 
