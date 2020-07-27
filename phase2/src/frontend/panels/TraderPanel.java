@@ -14,13 +14,12 @@ import backend.models.users.Trader;
 
 public class TraderPanel extends JPanel implements ActionListener {
 
-    private JLabel usernameTitle, userIdTitle, iconText;
-    private JPanel tradePanel, inventoryPanel, wishlistPanel, notificationsPanel, searchPanel, menuContainer,
+    private JLabel usernameTitle, userIdTitle, iconText, gap;
+    private JPanel tradePanel, itemsPanel, notificationsPanel, searchPanel, menuContainer,
             menuPanelContainer;
-    private JButton tradePanelButton, inventoryPanelButton, wishlistPanelButton, notificationsPanelButton,
+    private JButton tradePanelButton, itemsPanelButton, notificationsPanelButton,
             searchPanelButton, logoutButton;
     private CardLayout cardLayout;
-    private ItemPanelFactory itemPanelFactory;
     private GridBagConstraints gbc;
 
     private Color bg = new Color(214, 214, 214);
@@ -33,11 +32,8 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
-        itemPanelFactory = new ItemPanelFactory(trader, regular, bold, italic, boldItalic);
-
         tradePanel = new TradePanel(trader, regular, bold, italic, boldItalic);
-        inventoryPanel = itemPanelFactory.create("Inventory");
-        wishlistPanel = itemPanelFactory.create("Wishlist");
+        itemsPanel = new ItemsPanel(); //TODO: FIX
         notificationsPanel = new NotificationsPanel(trader, regular, bold, italic, boldItalic);
         searchPanel = new SearchPanel(trader, regular, bold, italic, boldItalic);
 
@@ -95,27 +91,16 @@ public class TraderPanel extends JPanel implements ActionListener {
         gbc.insets = new Insets(0,0,0,0);
         menuContainer.add(tradePanelButton, gbc);
 
-        inventoryPanelButton = new JButton("Inventory");
-        inventoryPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-        inventoryPanelButton.setFont(regular.deriveFont(30f));
-        inventoryPanelButton.setForeground(Color.BLACK);
-        inventoryPanelButton.setBackground(current);
-        inventoryPanelButton.setOpaque(false);
-        inventoryPanelButton.setBorderPainted(false);
-        inventoryPanelButton.addActionListener(this);
+        itemsPanelButton = new JButton("Items");
+        itemsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        itemsPanelButton.setFont(regular.deriveFont(30f));
+        itemsPanelButton.setForeground(Color.BLACK);
+        itemsPanelButton.setBackground(current);
+        itemsPanelButton.setOpaque(false);
+        itemsPanelButton.setBorderPainted(false);
+        itemsPanelButton.addActionListener(this);
         gbc.gridy = 4;
-        menuContainer.add(inventoryPanelButton, gbc);
-
-        wishlistPanelButton = new JButton("Wishlist");
-        wishlistPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-        wishlistPanelButton.setFont(regular.deriveFont(30f));
-        wishlistPanelButton.setForeground(Color.BLACK);
-        wishlistPanelButton.setBackground(current);
-        wishlistPanelButton.setOpaque(false);
-        wishlistPanelButton.setBorderPainted(false);
-        wishlistPanelButton.addActionListener(this);
-        gbc.gridy = 5;
-        menuContainer.add(wishlistPanelButton, gbc);
+        menuContainer.add(itemsPanelButton, gbc);
 
         notificationsPanelButton = new JButton("Notifications");
         notificationsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
@@ -125,7 +110,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         notificationsPanelButton.setOpaque(false);
         notificationsPanelButton.setBorderPainted(false);
         notificationsPanelButton.addActionListener(this);
-        gbc.gridy = 6;
+        gbc.gridy = 5;
         menuContainer.add(notificationsPanelButton, gbc);
 
         searchPanelButton = new JButton("Search");
@@ -136,8 +121,13 @@ public class TraderPanel extends JPanel implements ActionListener {
         searchPanelButton.setOpaque(false);
         searchPanelButton.setBorderPainted(false);
         searchPanelButton.addActionListener(this);
-        gbc.gridy = 7;
+        gbc.gridy = 6;
         menuContainer.add(searchPanelButton, gbc);
+
+        gap = new JLabel("    ");
+        gap.setFont(regular.deriveFont(30f));
+        gbc.gridy = 7;
+        menuContainer.add(gap, gbc);
 
         logoutButton = new JButton("Logout");
         logoutButton.setFont(boldItalic.deriveFont(25f));
@@ -156,8 +146,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuContainer.add(logoutButton, gbc);
 
         menuPanelContainer.add(tradePanel, "Trades");
-        menuPanelContainer.add(inventoryPanel, "Inventory");
-        menuPanelContainer.add(wishlistPanel, "Wishlist");
+        menuPanelContainer.add(itemsPanel, "Items");
         menuPanelContainer.add(notificationsPanel, "Notifications");
         menuPanelContainer.add(searchPanel, "Search");
 
