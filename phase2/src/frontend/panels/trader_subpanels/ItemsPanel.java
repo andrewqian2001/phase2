@@ -2,9 +2,12 @@ package frontend.panels.trader_subpanels;
 
 import javax.swing.*;
 
+import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
+import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
+import backend.tradesystem.managers.TraderManager;
 import backend.tradesystem.managers.TradingManager;
 
 import java.awt.*;
@@ -28,6 +31,7 @@ public class ItemsPanel extends JPanel {
     private Color red = new Color(219, 58, 52);
 
     private TradingManager tradeManager;
+    private TraderManager traderManager;
 
     public ItemsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
@@ -41,6 +45,7 @@ public class ItemsPanel extends JPanel {
         this.setBackground(bg);
 
         tradeManager = new TradingManager();
+        traderManager = new TraderManager();
 
         inventoryTitleContainer = new JPanel(new GridLayout(1, 2));
         inventoryTitleContainer.setPreferredSize(new Dimension(1200, 75));
@@ -60,7 +65,7 @@ public class ItemsPanel extends JPanel {
         addInventoryItemButton.addActionListener(e -> {
             JDialog addNewItemModal = new JDialog();
             addNewItemModal.setTitle("Add New Item");
-            addNewItemModal.setSize(500,500);
+            addNewItemModal.setSize(500, 500);
             addNewItemModal.setResizable(false);
             addNewItemModal.setLocationRelativeTo(null);
 
@@ -102,8 +107,13 @@ public class ItemsPanel extends JPanel {
             itemSubmitButton.setPreferredSize(new Dimension(225, 75));
             itemSubmitButton.setBorder(BorderFactory.createLineBorder(bg, 15));
             itemSubmitButton.addActionListener(event -> {
-                if(itemNameInput.getText().trim().length() > 0 && itemDescInput.getText().trim().length() > 0) {
-                    System.out.println("Processing...");
+                if (itemNameInput.getText().trim().length() > 0 && itemDescInput.getText().trim().length() > 0) {
+                    try {
+                        traderManager.addRequestItem(trader.getId(), itemNameInput.getText().trim(), itemDescInput.getText().trim());
+                        addNewItemModal.dispose();
+                    } catch (UserNotFoundException | AuthorizationException e1) {
+                        System.out.println(e1.getMessage());
+                    }
                 }
             });
 
