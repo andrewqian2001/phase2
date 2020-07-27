@@ -78,7 +78,7 @@ public class SearchPanel extends JPanel {
         userListContainer.setBorder(null);
 
         userListScrollPane = new JScrollPane();
-        userListScrollPane.setPreferredSize(new Dimension(1200, 250));
+        userListScrollPane.setPreferredSize(new Dimension(1200, 230));
         userListScrollPane.setViewportView(userListContainer);
 
         tradableItemSearchTitle = new JLabel("Tradable Item Search");
@@ -120,7 +120,7 @@ public class SearchPanel extends JPanel {
         tradableItemListContainer.setBorder(null);
 
         tradableItemListScrollPane = new JScrollPane();
-        tradableItemListScrollPane.setPreferredSize(new Dimension(1200, 250));
+        tradableItemListScrollPane.setPreferredSize(new Dimension(1200, 230));
         tradableItemListScrollPane.setViewportView(userListContainer);
         
         this.add(userSearchTitle);
@@ -133,8 +133,10 @@ public class SearchPanel extends JPanel {
 
     private void findUsers(String username) {
         // ArrayList<String> matches = manager.findAllUsers(username, user);
-        userListContainer = new JPanel(new GridLayout(username.length(), 1));
-        // userListContainer = new JPanel(new GridLayout(matches.size(), 1));
+        // int numRows = matches.size();
+        int numRows = username.length();
+        if(numRows < 3) numRows = 3;
+        userListContainer = new JPanel(new GridLayout(numRows, 1));
         userListContainer.setBackground(gray2);
         userListContainer.setBorder(null);
         for(int i = 0; i < username.length(); i++) {
@@ -175,6 +177,9 @@ public class SearchPanel extends JPanel {
 
     private void findItems(String itemNameSearchString) {
         // ArrayList<String> matches = manager.findAllTradableItems(itemName);
+        // int numRows = matches.size();
+        int numRows = itemNameSearchString.length();
+        if (numRows < 3) numRows = 3;
         tradableItemListContainer = new JPanel(new GridLayout(itemNameSearchString.length(), 1));
         // tradableItemListContainer = new JPanel(new GridLayout(matches.size(), 1));
         tradableItemListContainer.setBackground(gray2);

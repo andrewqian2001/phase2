@@ -47,7 +47,7 @@ public class TradePanel extends JPanel implements ActionListener {
 
         ongoingTradesTitleContainer = new JPanel(new GridLayout(1,2));
         ongoingTradesTitleContainer.setOpaque(false);
-        ongoingTradesTitleContainer.setPreferredSize(new Dimension(1300,50));
+        ongoingTradesTitleContainer.setPreferredSize(new Dimension(1200,50));
 
         ongoingTradesTitle = new JLabel("Ongoing Trades");
         ongoingTradesTitle.setFont(this.regular.deriveFont(30f));
@@ -72,7 +72,7 @@ public class TradePanel extends JPanel implements ActionListener {
         ongoingTrades.add(ongoingTradesTitleContainer, gbc);
 
         ongoingTradesHeader = new JPanel(new GridLayout(1,5));
-        ongoingTradesHeader.setPreferredSize(new Dimension(1300,25));
+        ongoingTradesHeader.setPreferredSize(new Dimension(1200,25));
         ongoingTradesHeader.setBackground(gray);
         ongoingTradesHeader.setBorder(BorderFactory.createEmptyBorder(0, 60, 0, 80));
         addOngoingTradesHeader();
@@ -81,10 +81,11 @@ public class TradePanel extends JPanel implements ActionListener {
         ongoingTrades.add(ongoingTradesHeader, gbc);
 
         ongoingTradesScrollPane = new JScrollPane();
-        ongoingTradesScrollPane.setPreferredSize(new Dimension(1300, 360));
+        ongoingTradesScrollPane.setPreferredSize(new Dimension(1200, 325));
         getOngoingTradesPanel();
         ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
         ongoingTradesScrollPane.setBackground(gray);
+        ongoingTradesScrollPane.setBorder(null);
         gbc.gridy = 2;
         gbc.weighty = 0.8;
         ongoingTrades.add(ongoingTradesScrollPane, gbc);
@@ -98,14 +99,14 @@ public class TradePanel extends JPanel implements ActionListener {
         tradeRequestsTitle.setBackground(bg);
         tradeRequestsTitle.setOpaque(true);
         tradeRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
-        tradeRequestsTitle.setPreferredSize(new Dimension(1300, 50));
+        tradeRequestsTitle.setPreferredSize(new Dimension(1200, 50));
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridy = 0;
         gbc.weighty = 0.1;
         tradeRequests.add(tradeRequestsTitle, gbc);
 
         tradeRequestsHeader = new JPanel(new GridLayout(1,7));
-        tradeRequestsHeader.setPreferredSize(new Dimension(1300,25));
+        tradeRequestsHeader.setPreferredSize(new Dimension(1200,25));
         tradeRequestsHeader.setBorder(BorderFactory.createEmptyBorder(0, 60, 0, 120));
         tradeRequestsHeader.setBackground(gray);
         addTradeRequestsHeader();
@@ -114,9 +115,10 @@ public class TradePanel extends JPanel implements ActionListener {
         tradeRequests.add(tradeRequestsHeader, gbc);
 
         tradeRequestsScrollPane = new JScrollPane();
-        tradeRequestsScrollPane.setPreferredSize(new Dimension(1300, 300));
+        tradeRequestsScrollPane.setPreferredSize(new Dimension(1200, 325));
         getTradeRequestPanels();
         tradeRequestsScrollPane.setViewportView(tradeRequestsContainer);
+        tradeRequestsScrollPane.setBorder(null);
         gbc.gridy = 2;
         gbc.weighty = 0.8;
         tradeRequests.add(tradeRequestsScrollPane, gbc);
@@ -189,17 +191,19 @@ public class TradePanel extends JPanel implements ActionListener {
         // tradeRequestsContainer = new JPanel(new GridLayout(10, 1));
         if(trader.getRequestedTrades().size() == 0) {
             tradeRequestsContainer = new JPanel();
-            tradeRequestsContainer.setBackground(gray);
-            JLabel noTradesFound = new JLabel("No Trade Requests Found");
-            noTradesFound.setFont(boldItalic.deriveFont(30f));
+            tradeRequestsContainer.setBackground(gray2);
+            JLabel noTradesFound = new JLabel("<html><pre>No Trade Requests Found</pre></html>");
+            noTradesFound.setFont(bold.deriveFont(30f));
+            noTradesFound.setForeground(Color.WHITE);
             tradeRequestsContainer.add(noTradesFound, BorderLayout.CENTER);
             return;
         }
-        tradeRequestsContainer = new JPanel(new GridLayout(trader.getRequestedTrades().size(), 1));
-        tradeRequestsContainer.setBackground(gray);
+        int numRows = trader.getRequestedTrades().size();
+        if(numRows < 4) numRows = 4;
+        tradeRequestsContainer = new JPanel(new GridLayout(numRows, 1));
+        tradeRequestsContainer.setBackground(gray2);
         tradeRequestsContainer.setBorder(null);
         for(String tradeID : trader.getRequestedTrades()) {
-        // for (int i = 0; i < 10; i++) {
             try {
 
                 Trade tradeRequest = tradeManager.getTrade(tradeID);
@@ -291,14 +295,17 @@ public class TradePanel extends JPanel implements ActionListener {
         // ongoingTradesContainer = new JPanel(new GridLayout(10, 1));
         if (trader.getAcceptedTrades().size() == 0) {
             ongoingTradesContainer = new JPanel();
-            ongoingTradesContainer.setBackground(gray);
-            JLabel noTradesFound = new JLabel("No Ongoing Trades Found");
-            noTradesFound.setFont(boldItalic.deriveFont(30f));
+            ongoingTradesContainer.setBackground(gray2);
+            JLabel noTradesFound = new JLabel("<html><pre>No Ongoing Trades Found</pre></html>");
+            noTradesFound.setFont(bold.deriveFont(30f));
+            noTradesFound.setForeground(Color.WHITE);
             ongoingTradesContainer.add(noTradesFound, BorderLayout.CENTER);
             return;
         }
-        ongoingTradesContainer = new JPanel(new GridLayout(trader.getAcceptedTrades().size(), 1));
-        ongoingTradesContainer.setBackground(gray);
+        int numRows = trader.getAcceptedTrades().size();
+        if (numRows < 4) numRows = 4;
+        ongoingTradesContainer = new JPanel(new GridLayout(numRows, 1));
+        ongoingTradesContainer.setBackground(gray2);
         ongoingTradesContainer.setBorder(null);
         for(String tradeID : trader.getAcceptedTrades()) {
         // for(int i = 0; i < 10; i++) {

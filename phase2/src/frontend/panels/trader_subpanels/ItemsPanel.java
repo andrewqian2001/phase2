@@ -169,9 +169,10 @@ public class ItemsPanel extends JPanel {
     }
 
     private void getInventory() {
-        // trader.getAvailableItems();
-        inventoryItemsContainer = new JPanel(new GridLayout(trader.getAvailableItems().size(), 1));
-        inventoryItemsContainer.setBackground(gray);
+        int numRows = trader.getAvailableItems().size();
+        if(numRows < 4) numRows = 4;
+        inventoryItemsContainer = new JPanel(new GridLayout(numRows, 1));
+        inventoryItemsContainer.setBackground(gray2);
         inventoryItemsContainer.setBorder(null);
 
         for (String itemId : trader.getAvailableItems()) {
@@ -221,9 +222,10 @@ public class ItemsPanel extends JPanel {
     }
     
     private void getWishlist() {
-        // trader.getWishlist();
-        wishlistItemsContainer = new JPanel(new GridLayout(trader.getWishlist().size(), 1));
-        wishlistItemsContainer.setBackground(gray);
+        int numRows = trader.getWishlist().size();
+        if(numRows < 4) numRows = 4;
+        wishlistItemsContainer = new JPanel(new GridLayout(numRows, 1));
+        wishlistItemsContainer.setBackground(gray2);
         wishlistItemsContainer.setBorder(null);
         
         for (String itemId : trader.getWishlist()) {
