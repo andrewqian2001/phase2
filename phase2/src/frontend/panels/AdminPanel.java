@@ -39,6 +39,8 @@ public class AdminPanel extends JPanel implements ActionListener {
         searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
         controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
 
+        searchPanel.setBackground(Color.BLACK);
+
         menuContainer = new JPanel(new GridBagLayout());
         menuContainer.setOpaque(false);
         gbc = new GridBagConstraints();
