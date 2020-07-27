@@ -43,11 +43,11 @@ public class TemporarySetup {
 
             update();
             handleRequestsManager.processItemRequest(trader1.getId(), trader1.getRequestedItems().get(0), true);
-            handleRequestsManager.processItemRequest(trader1.getId(), trader1.getRequestedItems().get(0), true);
-            handleRequestsManager.processItemRequest(trader1.getId(), trader1.getRequestedItems().get(0), true);
+            handleRequestsManager.processItemRequest(trader1.getId(), trader1.getRequestedItems().get(1), true);
+            handleRequestsManager.processItemRequest(trader1.getId(), trader1.getRequestedItems().get(2), true);
             handleRequestsManager.processItemRequest(trader2.getId(), trader2.getRequestedItems().get(0), true);
-            handleRequestsManager.processItemRequest(trader2.getId(), trader2.getRequestedItems().get(0), true);
-            handleRequestsManager.processItemRequest(trader2.getId(), trader2.getRequestedItems().get(0), true);
+            handleRequestsManager.processItemRequest(trader2.getId(), trader2.getRequestedItems().get(1), true);
+            handleRequestsManager.processItemRequest(trader2.getId(), trader2.getRequestedItems().get(2), true);
 
             update();
             traderManager.addToWishList(trader1.getId(), trader2.getAvailableItems().get(0));
