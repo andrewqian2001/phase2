@@ -1,0 +1,2 @@
+Login Manager:
+ - The trade system now automatically removes any invlaid trade requests for a trader on login.
