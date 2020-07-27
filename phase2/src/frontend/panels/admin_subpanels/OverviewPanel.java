@@ -1,6 +1,8 @@
 package frontend.panels.admin_subpanels;
 
+import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
+import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
@@ -16,7 +18,8 @@ import java.util.HashMap;
 
 public class OverviewPanel extends JPanel {
 
-    private JPanel itemRequestsTitleContainer, itemRequestsContainer, frozenTraderTitleContainer, unFreezeRequestsContainer, freezeTradersContainer, bottomSplitContainer;
+    private JPanel itemRequestsTitleContainer, itemRequestsContainer, frozenTraderTitleContainer,
+            unFreezeRequestsContainer, freezeTradersContainer, bottomSplitContainer;
     private JScrollPane itemRequestsScrollPane, unFreezeRequestsScrollPane, freezeTradersScrollPane;
     private JButton acceptAllItemRequestsButton, unFreezeAllTradersButton, freezeAllTradersButton;
     private JLabel itemRequestsTitle, unFreezeRequestsTitle, freezeTraderTitle;
@@ -48,7 +51,7 @@ public class OverviewPanel extends JPanel {
         itemRequestManager = new HandleItemRequestsManager();
         frozenManager = new HandleFrozenManager();
 
-        itemRequestsTitleContainer = new JPanel(new GridLayout(1,2));
+        itemRequestsTitleContainer = new JPanel(new GridLayout(1, 2));
         itemRequestsTitleContainer.setOpaque(false);
         itemRequestsTitleContainer.setPreferredSize(new Dimension(1300, 75));
 
@@ -57,7 +60,6 @@ public class OverviewPanel extends JPanel {
         itemRequestsTitle.setForeground(Color.WHITE);
         itemRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
         itemRequestsTitleContainer.add(itemRequestsTitle);
-
 
         acceptAllItemRequestsButton = new JButton("Accept All");
         acceptAllItemRequestsButton.setFont(this.boldItalic.deriveFont(20f));
@@ -72,7 +74,7 @@ public class OverviewPanel extends JPanel {
         getAllUnFreezeRequests();
         getAllToBeFrozenUsers();
 
-        frozenTraderTitleContainer = new JPanel(new GridLayout(1,4, 50, 0));
+        frozenTraderTitleContainer = new JPanel(new GridLayout(1, 4, 50, 0));
         frozenTraderTitleContainer.setOpaque(false);
         frozenTraderTitleContainer.setPreferredSize(new Dimension(1300, 75));
 
@@ -81,7 +83,6 @@ public class OverviewPanel extends JPanel {
         unFreezeRequestsTitle.setForeground(Color.WHITE);
         unFreezeRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
         frozenTraderTitleContainer.add(unFreezeRequestsTitle);
-
 
         unFreezeAllTradersButton = new JButton("Un-freeze All");
         unFreezeAllTradersButton.setFont(this.boldItalic.deriveFont(20f));
@@ -98,7 +99,6 @@ public class OverviewPanel extends JPanel {
         freezeTraderTitle.setHorizontalAlignment(JLabel.LEFT);
         frozenTraderTitleContainer.add(freezeTraderTitle);
 
-
         freezeAllTradersButton = new JButton("Freeze All");
         freezeAllTradersButton.setFont(this.boldItalic.deriveFont(20f));
         freezeAllTradersButton.setHorizontalAlignment(JButton.RIGHT);
@@ -108,20 +108,18 @@ public class OverviewPanel extends JPanel {
         freezeAllTradersButton.setBorderPainted(false);
         frozenTraderTitleContainer.add(freezeAllTradersButton);
 
-
         itemRequestsScrollPane = new JScrollPane(itemRequestsContainer);
         itemRequestsScrollPane.setPreferredSize(new Dimension(1300, 300));
         itemRequestsScrollPane.setBorder(null);
-        
+
         unFreezeRequestsScrollPane = new JScrollPane(unFreezeRequestsContainer);
         unFreezeRequestsScrollPane.setPreferredSize(new Dimension(600, 300));
         unFreezeRequestsScrollPane.setBorder(null);
-        
-        
+
         freezeTradersScrollPane = new JScrollPane(freezeTradersContainer);
         freezeTradersScrollPane.setPreferredSize(new Dimension(600, 300));
         freezeTradersScrollPane.setBorder(null);
-        
+
         bottomSplitContainer = new JPanel(new GridLayout(1, 2, 50, 0));
         bottomSplitContainer.setPreferredSize(new Dimension(1300, 300));
         bottomSplitContainer.setBackground(Color.BLACK);
@@ -132,15 +130,17 @@ public class OverviewPanel extends JPanel {
         this.add(itemRequestsScrollPane);
         this.add(frozenTraderTitleContainer);
         this.add(bottomSplitContainer);
-        
+
     }
 
     private void getAllItemRequests() {
         try {
             HashMap<Trader, ArrayList<TradableItem>> itemRequests = itemRequestManager.getAllItemRequests();
             int numRows = 0;
-            for(Trader t : itemRequests.keySet()) numRows += itemRequests.get(t).size();
-            if (numRows < 4) numRows = 4;
+            for (Trader t : itemRequests.keySet())
+                numRows += itemRequests.get(t).size();
+            if (numRows < 4)
+                numRows = 4;
             itemRequestsContainer = new JPanel(new GridLayout(numRows, 1));
             itemRequestsContainer.setBackground(bg);
             itemRequests.forEach((t, items) -> {
@@ -186,6 +186,22 @@ public class OverviewPanel extends JPanel {
                     itemRequestPanel.add(acceptItemRequestButton);
                     itemRequestPanel.add(rejectItemRequestButton);
                     itemRequestsContainer.add(itemRequestPanel);
+
+                    acceptItemRequestButton.addActionListener(e -> {
+                        try {
+                            itemRequestManager.processItemRequest(t.getId(), item.getId(), true);
+                        } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
+                            System.out.println(e1.getMessage());
+                        }
+                    });
+
+                    rejectItemRequestButton.addActionListener(e -> {
+                        try {
+                            itemRequestManager.processItemRequest(t.getId(), item.getId(), false);
+                        } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
+                            System.out.println(e1.getMessage());
+                        }
+                    });
                 });
             });
         } catch (TradableItemNotFoundException e) {
