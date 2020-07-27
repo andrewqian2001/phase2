@@ -67,14 +67,16 @@ public class TraderManager extends Manager {
      * @throws UserNotFoundException         if the trader with the given userId is not found
      * @throws AuthorizationException        not allowed to add to the wishlist
      * @throws TradableItemNotFoundException the item wasn't found
+     * @return the updated trader
      */
-    public void addToWishList(String traderId, String itemId) throws UserNotFoundException, AuthorizationException,
+    public Trader addToWishList(String traderId, String itemId) throws UserNotFoundException, AuthorizationException,
             TradableItemNotFoundException {
         Trader trader = getTrader(traderId);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         if (!getTradableItemDatabase().contains(itemId)) throw new TradableItemNotFoundException(itemId);
         trader.getWishlist().add(itemId);
         updateUserDatabase(trader);
+        return trader;
     }
 
     /**
@@ -113,13 +115,15 @@ public class TraderManager extends Manager {
      * @param status   whether the trader is idle
      * @throws UserNotFoundException  if the trader isn't found
      * @throws AuthorizationException if unable to go idle
+     * @return the updated trader
      */
-    public void setIdle(String traderId, boolean status) throws UserNotFoundException, AuthorizationException {
+    public Trader setIdle(String traderId, boolean status) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(traderId);
         if (status && trader.getAcceptedTrades().size() > 0)
             throw new AuthorizationException("Cannot go idle until ongoing trades have been resolved");
         trader.setIdle(status);
         updateUserDatabase(trader);
+        return trader;
     }
 
     /**
@@ -129,11 +133,13 @@ public class TraderManager extends Manager {
      * @param city     the city
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
+     * @return the updated trader
      */
-    public void setCity(String traderId, String city) throws UserNotFoundException, AuthorizationException {
+    public Trader setCity(String traderId, String city) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(traderId);
         trader.setCity(city);
         updateUserDatabase(trader);
+        return trader;
     }
 
     /**

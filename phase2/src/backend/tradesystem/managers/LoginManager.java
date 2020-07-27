@@ -267,10 +267,11 @@ public class LoginManager extends Manager{
     }
 
     /**
-     * Removes all invalid trade requests that this user has
+     * Removes all invalid trade requests and anything that needs to be cleaned up
      * @param traderID the id of the trader
      */
     private void removeInvalidRequests(String traderID){
+        // Removes invalid trades
         try {
             Trader someTrader = getTrader(traderID);
             for (String tradeID : someTrader.getRequestedTrades()) {
@@ -295,6 +296,11 @@ public class LoginManager extends Manager{
         catch (EntryNotFoundException | AuthorizationException e) {
             e.printStackTrace();
         }
+        // Removes invalid items
+        try {
+            Trader someTrader = getTrader(traderID);
+        }catch(Exception e){}
+
     }
 
 }

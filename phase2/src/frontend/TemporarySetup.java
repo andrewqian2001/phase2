@@ -2,38 +2,40 @@ package frontend;
 
 import backend.DatabaseFilePaths;
 import backend.exceptions.*;
-import backend.models.TradableItem;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
-import backend.models.users.User;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.managers.HandleItemRequestsManager;
-import backend.tradesystem.managers.LoginManager;
-import backend.tradesystem.managers.TraderManager;
+import backend.tradesystem.managers.*;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;
 
+/**
+ * This class is not used in production and is only used to have an example interface full of users
+ */
 public class TemporarySetup {
 
-    private Trader[] traders;
-    private Admin[] admins;
-    private LoginManager loginManager;
-    private TraderManager traderManager;
-    private HandleItemRequestsManager handleRequestsManager;
-
+    /**
+     * Used to set up users
+     */
     public TemporarySetup() {
-        traders = new Trader[10];
-        admins = new Admin[5];
-        refreshFiles();
+        refreshFiles(); // Deletes existing data in the ser files
         try {
-            loginManager = new LoginManager();
-            traderManager = new TraderManager();
-            handleRequestsManager = new HandleItemRequestsManager();
-            for (int i = 0; i < traders.length; i++){
-                traders[i] = (Trader) loginManager.registerUser("trader" + i, "passssssssS11", UserTypes.TRADER);
+            Trader[] traders = new Trader[10];
+            Admin[] admins = new Admin[5];
+            LoginManager loginManager = new LoginManager();
+            TraderManager traderManager = new TraderManager();
+            HandleItemRequestsManager handleRequestsManager = new HandleItemRequestsManager();
+            HandleFrozenManager handleFrozenManager = new HandleFrozenManager();
+            MessageManager messageManager = new MessageManager();
+
+            // Each trader has some items that are confirmed and not confirmed
+            // Username is trader{index here from 0 to 9 inclusive}
+            // Password is Password@Password1
+            for (int i = 0; i < traders.length; i++) {
+                traders[i] = (Trader) loginManager.registerUser("trader" + i, "Password@Password1", UserTypes.TRADER);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "apple" + i, "sweet" + i);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "banananana" + i, "disgusting" + i);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "kiwi" + i, "from oceania" + i);
@@ -42,12 +44,35 @@ public class TemporarySetup {
                 traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "requested" + i, "requested desc" + i);
                 traders[i] = traderManager.addRequestItem(traders[i].getId(), "another requested" + i, "bad desc requested" + i);
+                traders[i] = traderManager.setCity(traders[i].getId(), "Toronto");
             }
-            for (int i = 0; i < admins.length; i++){
-                admins[i] = (Admin) loginManager.registerUser("admin" + i, "PasswordPassword1!", UserTypes.ADMIN);
-            }
+            // Each trader has a wishlist of one item
             for (int i = 0; i < traders.length; i++)
-                traderManager.addToWishList(traders[i].getId(), traders[i - 1 == -1 ? traders.length - 1 : i].getAvailableItems().get(0));
+                traders[i] = traderManager.addToWishList(traders[i].getId(), traders[i - 1 == -1 ? traders.length - 1 : i].getAvailableItems().get(0));
+            // For changing cities
+            traders[3] = traderManager.setCity(traders[3].getId(), "new york");
+            traders[4] = traderManager.setCity(traders[4].getId(), "new york");
+            traders[5] = traderManager.setCity(traders[5].getId(), "new york");
+            traders[6] = traderManager.setCity(traders[6].getId(), "dallas");
+            traders[7] = traderManager.setCity(traders[7].getId(), "dallas");
+            // For changing idle status
+            traders[0] = traderManager.setIdle(traders[0].getId(), true);
+            // For adding reviews
+            traderManager.addReview(traders[0].getId(), traders[3].getId(), 5.3, "This guy was rude");
+            traderManager.addReview(traders[2].getId(), traders[3].getId(), 2.3, "This guy attacked me");
+            traderManager.addReview(traders[1].getId(), traders[4].getId(), 9.3, "This guy gave me free money");
+            // For setting frozen status
+            handleFrozenManager.setFrozen(traders[8].getId(), true);
+            // For reporting users
+            messageManager.reportUser(traders[3].getId(), traders[6].getId(), "This user drove off with my lambo and never gave me what I wanted");
+            messageManager.reportUser(traders[1].getId(), traders[6].getId(), "This user flew away with my helicopter and never gave me what I wanted");
+            // For messaging users
+            messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "Dallas is pretty far can you come to New York instead");
+            messageManager.sendMessage(traders[0].getId(), traders[1].getId(), "Can I buy your Ryerson hat for my pokemon cards");
+            // List of admins
+            for (int i = 0; i < admins.length; i++) {
+                admins[i] = (Admin) loginManager.registerUser("admin" + i, "Password@Password1", UserTypes.ADMIN);
+            }
         } catch (IOException | UserAlreadyExistsException | BadPasswordException | UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
 
         }
@@ -71,18 +96,6 @@ public class TemporarySetup {
         setProperty(TraderProperties.TRADE_LIMIT, 10);
     }
 
-    private void update() {
-        try {
-            for (int i = 0; i < traders.length; i++)
-                traders[i] = traderManager.getTrader(traders[i].getId());
-            for (int i = 0; i < admins.length; i++)
-                admins[i] = (Admin) traderManager.getUser(admins[i].getId());
-
-        } catch (UserNotFoundException | AuthorizationException e) {
-            e.printStackTrace();
-        }
-
-    }
 
     /**
      * Sets the value of a property.

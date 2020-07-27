@@ -48,12 +48,14 @@ public class HandleFrozenManager extends Manager {
      * @param userID       the user id
      * @param freezeStatus to freeze the user
      * @throws UserNotFoundException can't find user id
+     * @return the updated user
      */
-    public void setFrozen(String userID, boolean freezeStatus) throws UserNotFoundException {
+    public User setFrozen(String userID, boolean freezeStatus) throws UserNotFoundException {
         try {
             User user = getUser(userID);
             user.setFrozen(freezeStatus);
             updateUserDatabase(user);
+            return user;
         } catch (EntryNotFoundException e) {
             throw new UserNotFoundException(userID);
         }
