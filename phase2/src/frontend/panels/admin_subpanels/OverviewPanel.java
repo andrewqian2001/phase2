@@ -131,6 +131,16 @@ public class OverviewPanel extends JPanel {
         this.add(frozenTraderTitleContainer);
         this.add(bottomSplitContainer);
 
+        acceptAllItemRequestsButton.addActionListener(e -> {
+            for(Component itemRequest : itemRequestsContainer.getComponents()) {
+                for(Component c : ((JPanel) itemRequest).getComponents()) {
+                    if(c instanceof JButton && c.getBackground() == confirmButton) {
+                        ((JButton) c).doClick();
+                    }
+                }
+            }
+        });
+
     }
 
     private void getAllItemRequests() {
