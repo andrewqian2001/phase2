@@ -24,6 +24,7 @@ ItemsPanel:
 
 NotificationsPanel:
     - ~~Make ScrollPane for messages and get messages for the trader~~
+    - make 'Compose new message' button
     - ScrollPane header for messages && change the layout to gridbag to make more space for the entire message
     - 'Clear all notifications' button
 

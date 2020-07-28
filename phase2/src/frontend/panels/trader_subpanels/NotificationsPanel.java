@@ -154,17 +154,61 @@ public class NotificationsPanel extends JPanel {
                     userName.setHorizontalAlignment(JLabel.LEFT);
                     userName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                    JLabel messageBody = new JLabel("<html><pre>" + (message.length() > 15 ? message.substring(0, 15) + "..." : message) + "</pre></html>");
-                    messageBody.setFont(regular.deriveFont(20f));
+                    JLabel messageBody = new JLabel("<html><pre>" + (message.length() > 27 ? message.substring(0, 27) + "..." : message) + "</pre></html>");
+                    messageBody.setFont(regular.deriveFont(17f));
                     messageBody.setForeground(Color.BLACK);
                     messageBody.setHorizontalAlignment(JLabel.LEFT);
 
-                    JButton detailsButton = new JButton("Full Message");
+                    JButton detailsButton = new JButton("View Full Message");
                     detailsButton.setFont(bold.deriveFont(20f));
                     detailsButton.setForeground(Color.WHITE);
                     detailsButton.setBackground(gray3);
                     detailsButton.setOpaque(true);
                     detailsButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+                    detailsButton.addActionListener(e -> {
+                        JDialog messageDetailsModal = new JDialog();
+                        messageDetailsModal.setTitle("Message Details");
+                        messageDetailsModal.setSize(600, 400);
+                        messageDetailsModal.setResizable(false);
+                        messageDetailsModal.setLocationRelativeTo(null);
+
+                        JPanel messageDetailsPanel = new JPanel();
+                        messageDetailsPanel.setPreferredSize(new Dimension(600, 400));
+                        messageDetailsPanel.setBackground(bg);
+
+                        JLabel userNameTitle = new JLabel("Sender Username:");
+                        userNameTitle.setFont(italic.deriveFont(20f));
+                        userNameTitle.setPreferredSize(new Dimension(500, 50));
+                        userNameTitle.setOpaque(false);
+                        userNameTitle.setForeground(Color.WHITE);
+
+                        userName.setForeground(Color.WHITE);
+
+                        JLabel messageBodyTitle= new JLabel("Full Message:");
+                        messageBodyTitle.setFont(italic.deriveFont(20f));
+                        messageBodyTitle.setPreferredSize(new Dimension(500, 50));
+                        messageBodyTitle.setOpaque(false);
+                        messageBodyTitle.setForeground(Color.WHITE);
+
+                        JTextArea fullMessageBody = new JTextArea(message);
+                        fullMessageBody.setFont(regular.deriveFont(20f));
+                        fullMessageBody.setBackground(gray);
+                        fullMessageBody.setForeground(Color.WHITE);
+                        fullMessageBody.setPreferredSize(new Dimension(500, 200));
+                        fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                        fullMessageBody.setLineWrap(true);
+                        fullMessageBody.setEditable(false);
+
+                        messageDetailsPanel.add(userNameTitle);
+                        messageDetailsPanel.add(userName);
+                        messageDetailsPanel.add(messageBodyTitle);
+                        messageDetailsPanel.add(fullMessageBody);
+
+                        messageDetailsModal.add(messageDetailsPanel);
+                        messageDetailsModal.setModal(true);
+                        messageDetailsModal.setVisible(true);
+
+                    }); 
 
                     JButton replyButton = new JButton("Reply");
                     replyButton.setFont(bold.deriveFont(20f));
@@ -172,19 +216,12 @@ public class NotificationsPanel extends JPanel {
                     replyButton.setBackground(green);
                     replyButton.setOpaque(true);
                     replyButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
-                    
-                    JButton clearButton = new JButton("Clear");
-                    clearButton.setFont(bold.deriveFont(20f));
-                    clearButton.setForeground(Color.WHITE);
-                    clearButton.setBackground(red);
-                    clearButton.setOpaque(true);
-                    clearButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+
 
                     messagePanel.add(userName);
                     messagePanel.add(messageBody);
                     messagePanel.add(detailsButton);
                     messagePanel.add(replyButton);
-                    messagePanel.add(clearButton);
                     messagesListContainer.add(messagePanel);
                 });
             });
