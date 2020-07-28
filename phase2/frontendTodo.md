@@ -24,9 +24,11 @@ ItemsPanel:
 
 NotificationsPanel:
     - ~~Make ScrollPane for messages and get messages for the trader~~
-    - make 'Compose new message' button
-    - ScrollPane header for messages && change the layout to gridbag to make more space for the entire message
-    - 'Clear all notifications' button
+    - !Important: Change each 'messagepanel' to just one for each user (instead of one for each message)
+    - ~~make 'Compose new message' button~~
+    - When composing a new message, need to check if the username is legal
+    - ScrollPane header for messages 
+    - ~~'Clear all notifications' button~~
 
 SearchPanel:
     - Finalize trader search scroll pane items + trader details button
