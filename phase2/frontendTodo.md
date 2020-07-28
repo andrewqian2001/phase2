@@ -32,9 +32,10 @@ NotificationsPanel:
   - ~~'Clear all notifications' button~~  
   
 SearchPanel:  
-  - Finalize trader search scroll pane items + trader details   button (can only be done after backend is done)  
-  - Finalize tradable item search scroll pane items (can only   be done after backend is done)  
+  - ~~Finalize trader search scroll pane items + trader details   button (can only be done after backend is done)  ~~
+  - ~~Finalize tradable item search scroll pane items (can only   be done after backend is done)  ~~
   - ~~Change details button to 'Add to wishlist' in tradable   item search~~  
+  - Finish AddToWishlist Button
   
   
 **TODO: adminPanel**  

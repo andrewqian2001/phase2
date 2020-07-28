@@ -6,6 +6,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import backend.exceptions.TradableItemNotFoundException;
+import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.managers.TraderManager;
@@ -42,9 +44,9 @@ public class SearchPanel extends JPanel {
         this.user = user;
         traderManager = new TraderManager();
         infoManager = new TradingInfoManager();
-        
+
         this.setSize(1000, 900);
-        this.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
+        this.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         this.setBackground(bg);
 
         userSearchTitle = new JLabel("Trader Search");
@@ -64,23 +66,23 @@ public class SearchPanel extends JPanel {
         userSearchTextField.setFont(regular.deriveFont(25f));
         userSearchTextField.setCaretColor(Color.WHITE);
         userSearchTextField.setForeground(Color.WHITE);
-        
+
         userSearchButton = new JButton("Search");
         userSearchButton.setBackground(current);
         userSearchButton.setForeground(Color.WHITE);
         userSearchButton.setFont(boldItalic.deriveFont(30f));
         userSearchButton.setOpaque(true);
         userSearchButton.setBorder(BorderFactory.createLineBorder(current, 20));
-        userSearchButton.setPreferredSize(new Dimension(200,75));
+        userSearchButton.setPreferredSize(new Dimension(200, 75));
         userSearchButton.addActionListener(e -> {
-            if(userSearchTextField.getText().trim().length() > 0) {
+            if (userSearchTextField.getText().trim().length() > 0) {
                 findUsers(userSearchTextField.getText().trim());
             }
         });
-        
+
         userSearchBarContainer.add(userSearchTextField);
         userSearchBarContainer.add(userSearchButton);
-        
+
         userListContainer = new JPanel();
         userListContainer.setBackground(gray2);
         userListContainer.setBorder(null);
@@ -106,23 +108,23 @@ public class SearchPanel extends JPanel {
         tradableItemSearchTextField.setFont(regular.deriveFont(25f));
         tradableItemSearchTextField.setCaretColor(Color.WHITE);
         tradableItemSearchTextField.setForeground(Color.WHITE);
-        
+
         tradableItemSearchButton = new JButton("Search");
         tradableItemSearchButton.setBackground(current);
         tradableItemSearchButton.setForeground(Color.WHITE);
         tradableItemSearchButton.setFont(boldItalic.deriveFont(30f));
         tradableItemSearchButton.setOpaque(true);
         tradableItemSearchButton.setBorder(BorderFactory.createLineBorder(current, 20));
-        tradableItemSearchButton.setPreferredSize(new Dimension(200,75));
+        tradableItemSearchButton.setPreferredSize(new Dimension(200, 75));
         tradableItemSearchButton.addActionListener(e -> {
-            if(tradableItemSearchTextField.getText().trim().length() > 0) {
+            if (tradableItemSearchTextField.getText().trim().length() > 0) {
                 findItems(tradableItemSearchTextField.getText().trim());
             }
         });
-        
+
         tradableItemSearchBarContainer.add(tradableItemSearchTextField);
         tradableItemSearchBarContainer.add(tradableItemSearchButton);
-        
+
         tradableItemListContainer = new JPanel();
         tradableItemListContainer.setBackground(gray2);
         tradableItemListContainer.setBorder(null);
@@ -130,7 +132,7 @@ public class SearchPanel extends JPanel {
         tradableItemListScrollPane = new JScrollPane();
         tradableItemListScrollPane.setPreferredSize(new Dimension(1200, 230));
         tradableItemListScrollPane.setViewportView(userListContainer);
-        
+
         this.add(userSearchTitle);
         this.add(userSearchBarContainer);
         this.add(userListScrollPane);
@@ -142,13 +144,14 @@ public class SearchPanel extends JPanel {
     private void findUsers(String username) {
         ArrayList<Trader> matches = infoManager.searchTrader(username);
         int numRows = matches.size();
-        if(numRows < 3) numRows = 3;
+        if (numRows < 3)
+            numRows = 3;
         userListContainer = new JPanel(new GridLayout(numRows, 1));
         userListContainer.setBackground(gray2);
         userListContainer.setBorder(null);
-        for(Trader t : matches) {
-        // for(String userId : matches) {
-            JPanel trader = new JPanel(new GridLayout(1,3)); 
+        for (Trader t : matches) {
+            // for(String userId : matches) {
+            JPanel trader = new JPanel(new GridLayout(1, 3));
             trader.setPreferredSize(new Dimension(1000, 75));
             trader.setBackground(gray2);
             trader.setBorder(BorderFactory.createLineBorder(bg));
@@ -157,9 +160,10 @@ public class SearchPanel extends JPanel {
             traderName.setFont(regular.deriveFont(20f));
             traderName.setForeground(Color.BLACK);
             traderName.setHorizontalAlignment(JLabel.LEFT);
-            traderName.setBorder(BorderFactory.createEmptyBorder(0,25,0,0));
+            traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-            JLabel traderId = new JLabel("<html><pre>#"+ t.getId().substring(t.getId().length() - 12) +"</pre></html>");
+            JLabel traderId = new JLabel(
+                    "<html><pre>#" + t.getId().substring(t.getId().length() - 12) + "</pre></html>");
             traderId.setFont(regular.deriveFont(20f));
             traderId.setForeground(Color.BLACK);
             traderId.setHorizontalAlignment(JLabel.CENTER);
@@ -179,59 +183,61 @@ public class SearchPanel extends JPanel {
         userListScrollPane.setViewportView(userListContainer);
     }
 
-
     private void findItems(String itemNameSearchString) {
-        // ArrayList<String> matches = manager.findAllTradableItems(itemName);
-        // int numRows = matches.size();
-        int numRows = itemNameSearchString.length();
-        if (numRows < 3) numRows = 3;
+        ArrayList<TradableItem> matches = infoManager.getTradableItemsWithName(itemNameSearchString);
+        int numRows = matches.size();
+        // int numRows = itemNameSearchString.length();
+        if (numRows < 3)
+            numRows = 3;
         tradableItemListContainer = new JPanel(new GridLayout(numRows, 1));
         // tradableItemListContainer = new JPanel(new GridLayout(matches.size(), 1));
         tradableItemListContainer.setBackground(gray2);
         tradableItemListContainer.setBorder(null);
-        for (int i = 0; i < itemNameSearchString.length(); i++) {
-            // for(String itemId : matches) {
-            JPanel item = new JPanel(new GridLayout(1, 4));
-            item.setPreferredSize(new Dimension(1000, 75));
-            item.setBackground(gray2);
-            item.setBorder(BorderFactory.createLineBorder(bg));
+        for (TradableItem t : matches) {
+            try {
+                Trader owner = infoManager.getTraderThatHasTradableItemId(t.getId());
 
-            JLabel itemName = new JLabel(itemNameSearchString.toLowerCase().substring(0, i + 1));
-            // JLabel itemName = new JLabel(manager.getItem(itemId).getName());
-            itemName.setFont(regular.deriveFont(20f));
-            itemName.setForeground(Color.BLACK);
-            itemName.setHorizontalAlignment(JLabel.LEFT);
-            itemName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+                JPanel item = new JPanel(new GridLayout(1, 4));
+                item.setPreferredSize(new Dimension(1000, 75));
+                item.setBackground(gray2);
+                item.setBorder(BorderFactory.createLineBorder(bg));
 
-            JLabel itemDesc = new JLabel("Desc for " + itemName.getText());
-            // JLabel itemDesc = new JLabel(manager.getItem(itemId).getDesc());
-            itemDesc.setFont(regular.deriveFont(20f));
-            itemDesc.setForeground(Color.BLACK);
-            itemDesc.setHorizontalAlignment(JLabel.CENTER);
+                JLabel itemName = new JLabel(t.getName());
+                itemName.setFont(regular.deriveFont(20f));
+                itemName.setForeground(Color.BLACK);
+                itemName.setHorizontalAlignment(JLabel.LEFT);
+                itemName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-            JLabel itemIdLabel = new JLabel("<html><pre>OWNER</pre></html>");
-            // JLabel traderId = new JLabel("<html><pre>"+ itemId.substring(userId.length() - 12) +"</pre></html>");
-            itemIdLabel.setFont(regular.deriveFont(20f));
-            itemIdLabel.setForeground(Color.BLACK);
-            itemIdLabel.setHorizontalAlignment(JLabel.CENTER);
+                JLabel itemDesc = new JLabel(t.getDesc());
+                itemDesc.setFont(regular.deriveFont(20f));
+                itemDesc.setForeground(Color.BLACK);
+                itemDesc.setHorizontalAlignment(JLabel.CENTER);
 
-            JButton itemDetailsButton = new JButton("Add To Wishlist");
-            itemDetailsButton.setFont(bold.deriveFont(20f));
-            itemDetailsButton.setForeground(Color.WHITE);
-            itemDetailsButton.setBackground(detailsButton);
-            itemDetailsButton.setOpaque(true);
-            itemDetailsButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
-            itemDetailsButton.addActionListener(e -> {
-                if(user instanceof Trader) {
-                    // traderManager.addToWishList(user.getId(), itemId);
-                }
-            });
+                JLabel itemOwnerName = new JLabel(owner.getUsername());
+                itemOwnerName.setFont(regular.deriveFont(20f));
+                itemOwnerName.setForeground(Color.BLACK);
+                itemOwnerName.setHorizontalAlignment(JLabel.CENTER);
 
-            item.add(itemName);
-            item.add(itemDesc);
-            item.add(itemIdLabel);
-            item.add(itemDetailsButton);
-            tradableItemListContainer.add(item);
+                JButton itemDetailsButton = new JButton("Add To Wishlist");
+                itemDetailsButton.setFont(bold.deriveFont(20f));
+                itemDetailsButton.setForeground(Color.WHITE);
+                itemDetailsButton.setBackground(detailsButton);
+                itemDetailsButton.setOpaque(true);
+                itemDetailsButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
+                itemDetailsButton.addActionListener(e -> {
+                    if (user instanceof Trader) {
+                        // traderManager.addToWishList(user.getId(), itemId);
+                    }
+                });
+
+                item.add(itemName);
+                item.add(itemDesc);
+                item.add(itemOwnerName);
+                item.add(itemDetailsButton);
+                tradableItemListContainer.add(item);
+            } catch (TradableItemNotFoundException e1) {
+                System.out.println(e1.getMessage());
+            }
         }
         tradableItemListScrollPane.setViewportView(tradableItemListContainer);
     }
