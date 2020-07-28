@@ -54,10 +54,10 @@ public class OverviewPanel extends JPanel {
 
         itemRequestsTitleContainer = new JPanel(new GridLayout(1, 2));
         itemRequestsTitleContainer.setOpaque(false);
-        itemRequestsTitleContainer.setPreferredSize(new Dimension(1300, 75));
+        itemRequestsTitleContainer.setPreferredSize(new Dimension(1200, 75));
 
         itemRequestsTitle = new JLabel("Item Requests");
-        itemRequestsTitle.setFont(this.regular.deriveFont(30f));
+        itemRequestsTitle.setFont(this.regular.deriveFont(28f));
         itemRequestsTitle.setForeground(Color.WHITE);
         itemRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
         itemRequestsTitleContainer.add(itemRequestsTitle);
@@ -77,10 +77,10 @@ public class OverviewPanel extends JPanel {
 
         frozenTraderTitleContainer = new JPanel(new GridLayout(1, 4, 50, 0));
         frozenTraderTitleContainer.setOpaque(false);
-        frozenTraderTitleContainer.setPreferredSize(new Dimension(1300, 75));
+        frozenTraderTitleContainer.setPreferredSize(new Dimension(1200, 75));
 
         unFreezeRequestsTitle = new JLabel("Un-freeze Requests");
-        unFreezeRequestsTitle.setFont(this.regular.deriveFont(30f));
+        unFreezeRequestsTitle.setFont(this.regular.deriveFont(28f));
         unFreezeRequestsTitle.setForeground(Color.WHITE);
         unFreezeRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
         frozenTraderTitleContainer.add(unFreezeRequestsTitle);
@@ -95,7 +95,7 @@ public class OverviewPanel extends JPanel {
         frozenTraderTitleContainer.add(unFreezeAllTradersButton);
 
         freezeTraderTitle = new JLabel("To-be-frozen Users");
-        freezeTraderTitle.setFont(this.regular.deriveFont(30f));
+        freezeTraderTitle.setFont(this.regular.deriveFont(28f));
         freezeTraderTitle.setForeground(Color.WHITE);
         freezeTraderTitle.setHorizontalAlignment(JLabel.LEFT);
         frozenTraderTitleContainer.add(freezeTraderTitle);
@@ -110,7 +110,7 @@ public class OverviewPanel extends JPanel {
         frozenTraderTitleContainer.add(freezeAllTradersButton);
 
         itemRequestsScrollPane = new JScrollPane(itemRequestsContainer);
-        itemRequestsScrollPane.setPreferredSize(new Dimension(1300, 300));
+        itemRequestsScrollPane.setPreferredSize(new Dimension(1200, 300));
         itemRequestsScrollPane.setBorder(null);
 
         unFreezeRequestsScrollPane = new JScrollPane(unFreezeRequestsContainer);
@@ -122,7 +122,7 @@ public class OverviewPanel extends JPanel {
         freezeTradersScrollPane.setBorder(null);
 
         bottomSplitContainer = new JPanel(new GridLayout(1, 2, 50, 0));
-        bottomSplitContainer.setPreferredSize(new Dimension(1300, 300));
+        bottomSplitContainer.setPreferredSize(new Dimension(1200, 300));
         bottomSplitContainer.setBackground(Color.BLACK);
         bottomSplitContainer.add(unFreezeRequestsScrollPane);
         bottomSplitContainer.add(freezeTradersScrollPane);
