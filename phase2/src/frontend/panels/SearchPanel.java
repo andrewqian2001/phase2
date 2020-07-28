@@ -6,7 +6,9 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
+import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.models.users.User;
@@ -218,22 +220,27 @@ public class SearchPanel extends JPanel {
                 itemOwnerName.setForeground(Color.BLACK);
                 itemOwnerName.setHorizontalAlignment(JLabel.CENTER);
 
-                JButton itemDetailsButton = new JButton("Add To Wishlist");
-                itemDetailsButton.setFont(bold.deriveFont(20f));
-                itemDetailsButton.setForeground(Color.WHITE);
-                itemDetailsButton.setBackground(detailsButton);
-                itemDetailsButton.setOpaque(true);
-                itemDetailsButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
-                itemDetailsButton.addActionListener(e -> {
+                JButton addToWishlistButton = new JButton("Add To Wishlist");
+                addToWishlistButton.setFont(bold.deriveFont(20f));
+                addToWishlistButton.setForeground(Color.WHITE);
+                addToWishlistButton.setBackground(detailsButton);
+                addToWishlistButton.setOpaque(true);
+                addToWishlistButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
+                addToWishlistButton.addActionListener(e -> {
                     if (user instanceof Trader) {
-                        // traderManager.addToWishList(user.getId(), itemId);
+                        try {
+                            traderManager.addToWishList(user.getId(), t.getId());
+                        } catch (UserNotFoundException | TradableItemNotFoundException | AuthorizationException e1) {
+                            System.out.println(e1.getMessage());
+                        }
                     }
                 });
 
                 item.add(itemName);
                 item.add(itemDesc);
                 item.add(itemOwnerName);
-                item.add(itemDetailsButton);
+                if(user instanceof Trader)
+                    item.add(addToWishlistButton);
                 tradableItemListContainer.add(item);
             } catch (TradableItemNotFoundException e1) {
                 System.out.println(e1.getMessage());
