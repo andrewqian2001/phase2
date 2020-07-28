@@ -3,9 +3,11 @@ package frontend.panels;
 import javax.swing.*;
 
 import java.awt.*;
+import java.io.IOException;
 
 import backend.models.users.Trader;
 import backend.models.users.User;
+import backend.tradesystem.managers.TraderManager;
 
 public class SearchPanel extends JPanel {
 
@@ -15,6 +17,7 @@ public class SearchPanel extends JPanel {
     private JButton userSearchButton, tradableItemSearchButton;
     private JScrollPane userListScrollPane, tradableItemListScrollPane;
 
+    private TraderManager traderManager;
     private User user;
 
     private Font regular, bold, italic, boldItalic;
@@ -26,7 +29,7 @@ public class SearchPanel extends JPanel {
     private Color red = new Color(219, 58, 52);
     private Color detailsButton = new Color(142, 142, 142);
 
-    public SearchPanel(User user, Font regular, Font bold, Font italic, Font boldItalic) {
+    public SearchPanel(User user, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
         this.regular = regular;
         this.bold = bold;
@@ -34,6 +37,7 @@ public class SearchPanel extends JPanel {
         this.boldItalic = boldItalic;
 
         this.user = user;
+        traderManager = new TraderManager();
         
         this.setSize(1000, 900);
         this.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
@@ -204,18 +208,23 @@ public class SearchPanel extends JPanel {
             itemDesc.setForeground(Color.BLACK);
             itemDesc.setHorizontalAlignment(JLabel.CENTER);
 
-            JLabel itemIdLabel = new JLabel("<html><pre>#aib-94nmd-823</pre></html>");
+            JLabel itemIdLabel = new JLabel("<html><pre>OWNER</pre></html>");
             // JLabel traderId = new JLabel("<html><pre>"+ itemId.substring(userId.length() - 12) +"</pre></html>");
             itemIdLabel.setFont(regular.deriveFont(20f));
             itemIdLabel.setForeground(Color.BLACK);
             itemIdLabel.setHorizontalAlignment(JLabel.CENTER);
 
-            JButton itemDetailsButton = new JButton("Details");
+            JButton itemDetailsButton = new JButton("Add To Wishlist");
             itemDetailsButton.setFont(bold.deriveFont(20f));
             itemDetailsButton.setForeground(Color.WHITE);
             itemDetailsButton.setBackground(detailsButton);
             itemDetailsButton.setOpaque(true);
             itemDetailsButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
+            itemDetailsButton.addActionListener(e -> {
+                if(user instanceof Trader) {
+                    // traderManager.addToWishList(user.getId(), itemId);
+                }
+            });
 
             item.add(itemName);
             item.add(itemDesc);

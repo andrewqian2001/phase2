@@ -33,7 +33,7 @@ NotificationsPanel:
 SearchPanel:
     - Finalize trader search scroll pane items + trader details button
     - Finalize tradable item search scroll pane items 
-    - Change details button to 'Add to wishlist' and 'Trade Item' butns in tradable item search
+    - Change details button to 'Add to wishlist' in tradable item search
 
 
 TODO: adminPanel
