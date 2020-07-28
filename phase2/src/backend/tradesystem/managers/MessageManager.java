@@ -72,7 +72,7 @@ public class MessageManager extends Manager {
      */
     public void clearMessagesFromUser(String userId, String clearUserId) throws UserNotFoundException {
         User user = getUser(userId);
-        user.getMessages().remove(user.getId());
+        user.getMessages().remove(clearUserId);
         updateUserDatabase(user);
     }
 
