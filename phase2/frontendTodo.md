@@ -19,7 +19,7 @@ I'll delete this later, its just to keep track
 TradePanel:  
   - Edit button in TradeRequests   
   - Finish Add New Trade Window + Submit Button  
-  - Fix scrollpane top header alignment  
+  - ~~Fix scrollpane top header alignment~~
   
 ItemsPanel:  
   - 'Add Item to wishlist' button with modal JDialog and   buttons finished  
