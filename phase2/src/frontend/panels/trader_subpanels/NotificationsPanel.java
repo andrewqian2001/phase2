@@ -72,10 +72,21 @@ public class NotificationsPanel extends JPanel {
         clearAllmessagesButton.setOpaque(true);
         clearAllmessagesButton.setBorderPainted(false);
         clearAllmessagesButton.setHorizontalAlignment(JButton.RIGHT);
+        clearAllmessagesButton.addActionListener(e -> {
+            try {
+                messageManager.clearMessages(trader.getId());
+                messagesScrollPane.removeAll();
+                messagesScrollPane.revalidate();
+                messagesScrollPane.repaint();
+            } catch (UserNotFoundException e1) {
+                System.out.println(e1.getMessage());
+            }
+        });
 
         messagesScrollPane = new JScrollPane();
         messagesScrollPane.setPreferredSize(new Dimension(1200, 400));
         messagesScrollPane.setBorder(null);
+        messagesScrollPane.setBackground(gray3);
         getMessages();
         messagesScrollPane.setViewportView(messagesListContainer);
 
