@@ -2,6 +2,7 @@ I'll delete this later, its just to keep track
 
 **TODO: GENERAL** 
 
+- !IMPORTANT: refresh button/method to refresh the user data
 - Panel for frozen users  
 - Panel for Idle Users  
 - Panel for Demo  
@@ -11,6 +12,7 @@ I'll delete this later, its just to keep track
 - User should be able to trade based on city  
 - Add ability for user to enter city on registration (and change city in settings)  
 - Admin undo abilities  
+- javadoc? maybe?
 
 **TODO: traderPanel**
 
@@ -35,7 +37,7 @@ SearchPanel:
   - ~~Finalize trader search scroll pane items + trader details   button (can only be done after backend is done)  ~~
   - ~~Finalize tradable item search scroll pane items (can only   be done after backend is done)  ~~
   - ~~Change details button to 'Add to wishlist' in tradable   item search~~  
-  - Finish AddToWishlist Button
+  - ~~Finish AddToWishlist Button~~
   
   
 **TODO: adminPanel**  
