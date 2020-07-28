@@ -4,10 +4,12 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.managers.TraderManager;
+import backend.tradesystem.managers.TradingInfoManager;
 
 public class SearchPanel extends JPanel {
 
@@ -18,6 +20,7 @@ public class SearchPanel extends JPanel {
     private JScrollPane userListScrollPane, tradableItemListScrollPane;
 
     private TraderManager traderManager;
+    private TradingInfoManager infoManager;
     private User user;
 
     private Font regular, bold, italic, boldItalic;
@@ -38,6 +41,7 @@ public class SearchPanel extends JPanel {
 
         this.user = user;
         traderManager = new TraderManager();
+        infoManager = new TradingInfoManager();
         
         this.setSize(1000, 900);
         this.setBorder(BorderFactory.createEmptyBorder(10,0,0,0));
@@ -136,29 +140,26 @@ public class SearchPanel extends JPanel {
     }
 
     private void findUsers(String username) {
-        // ArrayList<String> matches = manager.findAllUsers(username, user);
-        // int numRows = matches.size();
-        int numRows = username.length();
+        ArrayList<Trader> matches = infoManager.searchTrader(username);
+        int numRows = matches.size();
         if(numRows < 3) numRows = 3;
         userListContainer = new JPanel(new GridLayout(numRows, 1));
         userListContainer.setBackground(gray2);
         userListContainer.setBorder(null);
-        for(int i = 0; i < username.length(); i++) {
+        for(Trader t : matches) {
         // for(String userId : matches) {
             JPanel trader = new JPanel(new GridLayout(1,3)); 
             trader.setPreferredSize(new Dimension(1000, 75));
             trader.setBackground(gray2);
             trader.setBorder(BorderFactory.createLineBorder(bg));
 
-            JLabel traderName = new JLabel(username.toLowerCase().substring(0, i + 1));
-            // JLabel traderName = new JLabel(tradeManager.getTrader(userId).getUsername());
+            JLabel traderName = new JLabel(t.getUsername());
             traderName.setFont(regular.deriveFont(20f));
             traderName.setForeground(Color.BLACK);
             traderName.setHorizontalAlignment(JLabel.LEFT);
             traderName.setBorder(BorderFactory.createEmptyBorder(0,25,0,0));
 
-            JLabel traderId = new JLabel("<html><pre>#aib-94nmd-823</pre></html>");
-            // JLabel traderId = new JLabel("<html><pre>"+ userId.substring(userId.length() - 12) +"</pre></html>");
+            JLabel traderId = new JLabel("<html><pre>#"+ t.getId().substring(t.getId().length() - 12) +"</pre></html>");
             traderId.setFont(regular.deriveFont(20f));
             traderId.setForeground(Color.BLACK);
             traderId.setHorizontalAlignment(JLabel.CENTER);
