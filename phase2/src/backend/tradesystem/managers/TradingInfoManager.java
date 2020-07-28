@@ -22,11 +22,13 @@ public class TradingInfoManager extends Manager {
     public TradingInfoManager() throws IOException {
         super();
     }
+
     /**
      * Making the database objects with set file paths
-     * @param userFilePath the user database file path
+     *
+     * @param userFilePath         the user database file path
      * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath the trade database file path
+     * @param tradeFilePath        the trade database file path
      * @throws IOException issues with getting the file path
      */
     public TradingInfoManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
@@ -47,25 +49,23 @@ public class TradingInfoManager extends Manager {
         return allTraders;
     }
 
-    /** return traders that contain name
+    /**
+     * Return traders that contain name
      *
-     * @param name is the name of the trader
-     * @return an arraylist of traders with similar names
+     * @param name the string to search for
+     * @return traders with similar names
      */
-    public ArrayList<Trader> searchTrader(String name){
-
+    public ArrayList<Trader> searchTrader(String name) {
         ArrayList<Trader> similarTraders = new ArrayList<>();
-        ArrayList<Trader> allTraders = getAllTraders();
-        for(Trader trader: allTraders){
-            if(trader.getUsername().toLowerCase().contains(name.toLowerCase())){
+        for (Trader trader : getAllTraders())
+            if (trader.getUsername().toLowerCase().contains(name.toLowerCase()))
                 similarTraders.add(trader);
-            }
-        }
         return similarTraders;
-
     }
+
     /**
      * Gets all the traders within the same city
+     *
      * @param city the city name
      * @return list of all traders within the same city
      */
@@ -98,13 +98,14 @@ public class TradingInfoManager extends Manager {
 
     /**
      * Gets the trader that has the tradable item id
+     *
      * @param id the tradable item id
      * @return the trader
      * @throws TradableItemNotFoundException if the item id is invalid
      */
-    public Trader getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException{
-        for (Trader trader: getAllTraders()){
-            if (trader.getAvailableItems().contains(id)){
+    public Trader getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException {
+        for (Trader trader : getAllTraders()) {
+            if (trader.getAvailableItems().contains(id)) {
                 return trader;
             }
         }
@@ -156,7 +157,7 @@ public class TradingInfoManager extends Manager {
         Set<String> distinct = new HashSet<>(traders);
         for (int i = 0; i < 3; i++) {
             int highest = 0;
-            if (distinct.size() == 0){
+            if (distinct.size() == 0) {
                 break;
             }
             for (String traderID : distinct) {
@@ -184,7 +185,7 @@ public class TradingInfoManager extends Manager {
      * @throws UserNotFoundException         trader id is bad
      * @throws TradableItemNotFoundException tradable item is not found
      */
-        public ArrayList<TradableItem> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
+    public ArrayList<TradableItem> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
             UserNotFoundException, TradableItemNotFoundException {
         Trader trader = getTrader(traderId);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
@@ -236,6 +237,7 @@ public class TradingInfoManager extends Manager {
 
     /**
      * Suggests all item trades that can be done between two users
+     *
      * @param trader1 is the id of this trader
      * @param trader2 is the trader this trader wants to trade with
      * @return a hashmap of the items that can be traded between two users (key is your item to lend, value the item to borrow)
@@ -243,16 +245,16 @@ public class TradingInfoManager extends Manager {
      * @throws AuthorizationException
      * @throws TradableItemNotFoundException
      */
-    public HashMap<TradableItem, TradableItem> suggestTrade(String trader1, String trader2)throws
-            UserNotFoundException, AuthorizationException, TradableItemNotFoundException{
+    public HashMap<TradableItem, TradableItem> suggestTrade(String trader1, String trader2) throws
+            UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
         Trader thisTrader = getTrader(trader1);
-        HashMap<TradableItem, TradableItem> suggestedTrades = new  HashMap<>();
+        HashMap<TradableItem, TradableItem> suggestedTrades = new HashMap<>();
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
 
-        ArrayList<TradableItem> lend  = suggestLend(trader1, trader2);
-        ArrayList<TradableItem> borrow  = suggestLend(trader2, trader1);
+        ArrayList<TradableItem> lend = suggestLend(trader1, trader2);
+        ArrayList<TradableItem> borrow = suggestLend(trader2, trader1);
         int i = 0;
-        while(i < lend.size() && i < borrow.size()){
+        while (i < lend.size() && i < borrow.size()) {
             suggestedTrades.put(lend.get(i), borrow.get(i));
             i++;
         }
