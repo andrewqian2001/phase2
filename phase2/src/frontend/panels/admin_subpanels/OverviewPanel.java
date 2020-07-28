@@ -167,6 +167,18 @@ public class OverviewPanel extends JPanel {
     private void getAllItemRequests() {
         try {
             HashMap<Trader, ArrayList<TradableItem>> itemRequests = itemRequestManager.getAllItemRequests();
+            if (itemRequests.size() == 0) { 
+                itemRequestsContainer = new JPanel();
+                itemRequestsContainer.setBackground(bg);
+                JLabel noItemsFound = new JLabel("<html><pre>No Item Requests Found</pre></html>");
+                noItemsFound.setFont(regular.deriveFont(30f));
+                noItemsFound.setPreferredSize(new Dimension(1000, 275));
+                noItemsFound.setHorizontalAlignment(JLabel.CENTER);
+                noItemsFound.setVerticalAlignment(JLabel.CENTER);
+                noItemsFound.setForeground(gray);
+                itemRequestsContainer.add(noItemsFound);
+                return;
+            }
             int numRows = 0;
             for (Trader t : itemRequests.keySet())
                 numRows += itemRequests.get(t).size();
