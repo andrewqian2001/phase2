@@ -349,7 +349,7 @@ public class TradePanel extends JPanel implements ActionListener {
                     availableEditsTitle.setOpaque(false);
                     availableEditsTitle.setForeground(Color.WHITE);
 
-                    JLabel availableEdits = new JLabel("<html><pre>" + tradeRequest.getNumEdits() + "</pre></html>");
+                    JLabel availableEdits = new JLabel("<html><pre>" + (tradeRequest.getMaxAllowedEdits()/2 - tradeRequest.getNumEdits())+ "</pre></html>");
                     availableEdits.setFont(italic.deriveFont(20f));
                     availableEdits.setPreferredSize(new Dimension(290, 50));
                     availableEdits.setOpaque(false);
