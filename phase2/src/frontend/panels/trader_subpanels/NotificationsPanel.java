@@ -4,10 +4,13 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import backend.exceptions.AuthorizationException;
+import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.tradesystem.managers.TradingInfoManager;
 
@@ -78,7 +81,7 @@ public class NotificationsPanel extends JPanel {
         freqTradersTitle.setForeground(Color.WHITE);
         freqTradersTitle.setOpaque(false);
 
-        freqTradableItemsTitle = new JLabel("Frequent Tradable Items");
+        freqTradableItemsTitle = new JLabel("Recently Traded Items");
         freqTradableItemsTitle.setFont(regular.deriveFont(30f));
         freqTradableItemsTitle.setForeground(Color.WHITE);
         freqTradableItemsTitle.setOpaque(false);
@@ -112,45 +115,45 @@ public class NotificationsPanel extends JPanel {
 
     private void getFreqTraders() {
         try {
-            //Trader[] freqTraders = infoManager.getFrequentTraders(trader.getId());
-            // freqTradersPanel = new JPanel(new GridLayout(freqTraders.length, 1));
-            freqTradersPanel = new JPanel(new GridLayout(3, 1));
+            ArrayList<Trader> freqTraders = infoManager.getFrequentTraders(trader.getId());
+            int numRows = freqTraders.size();
+            if (numRows < 3)
+                numRows = 3;
+            freqTradersPanel = new JPanel(new GridLayout(numRows, 1));
             freqTradersPanel.setBackground(gray2);
-            // for(int i = 0; i < freqTraders.length; i++) {
-            for(int i = 0; i < 3; i++) {
-                // JLabel traderName = new JLabel("<html><pre>#" + freqTraders[i].getId().substring(freqTraders[i].getId().length() - 12) + "</pre></html>\t" + freqTraders[i].getUsername());
-                JLabel traderName = new JLabel("#" + (i+1) + "      " + trader.getUsername());
+            for (Trader t : freqTraders) {
+                JLabel traderName = new JLabel(t.getUsername());
                 traderName.setFont(regular.deriveFont(20f));
                 traderName.setForeground(Color.BLACK);
                 traderName.setBackground(gray2);
-                traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
-                
+                traderName.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg),
+                        BorderFactory.createEmptyBorder(0, 25, 0, 0)));
                 freqTradersPanel.add(traderName);
             }
-        // } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException e) {
-        } catch (Exception e) {
+        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException e) {
             System.out.println(e.getMessage());
         }
     }
-    
+
     private void getFreqTradableItems() {
         try {
-            freqTradableItemsPanel = new JPanel(new GridLayout(3, 1));
+            ArrayList<TradableItem> items = infoManager.getRecentTradeItems(trader.getId());
+            int numRows = items.size();
+            if (numRows < 3)
+                numRows = 3;
+            freqTradableItemsPanel = new JPanel(new GridLayout(numRows, 1));
             freqTradableItemsPanel.setBackground(gray2);
-
-            // for(int i = 0; i < freqTraders.length; i++) {
-            for (int i = 0; i < 3; i++) {
-                JLabel itemName = new JLabel("#" + (i + 1) + "      " + "Most Traded with Item");
+            for (TradableItem item : items) {
+                JLabel itemName = new JLabel(item.getName());
                 itemName.setFont(regular.deriveFont(20f));
                 itemName.setForeground(Color.BLACK);
                 itemName.setBackground(gray2);
-                itemName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
-
+                itemName.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg),
+                        BorderFactory.createEmptyBorder(0, 25, 0, 0)));
                 freqTradableItemsPanel.add(itemName);
             }
-            // } catch (UserNotFoundException | TradeNotFoundException |
-            // AuthorizationException e) {
-        } catch (Exception e) {
+        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException
+                | TradableItemNotFoundException e) {
             System.out.println(e.getMessage());
         }
 

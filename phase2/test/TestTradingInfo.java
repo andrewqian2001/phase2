@@ -106,7 +106,7 @@ public class TestTradingInfo {
                 }
             }
             for (int i = 0; i < n; i++){
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[0].getId(),traders[n-1-i].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(),traders[n-1-i].getId());
             }
 
             for (int j = 0; j < 2; j++) {
@@ -123,15 +123,15 @@ public class TestTradingInfo {
                 }
             }
             for (int i = 0; i < n; i++){
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[0].getId(),traders[n-1-i].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(),traders[n-1-i].getId());
             }
             for (int i = 0; i < n -1; i+=2){
                 if (i == 4){
                     // This is becasue 4->5, and so 4 traded with 5 3 times
-                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId())[0].getId(),traders[5].getId());
+                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0).getId(),traders[5].getId());
                     continue;
                 }
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[1].getId(), traders[i + 1].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(1).getId(), traders[i + 1].getId());
             }
 
 
@@ -149,18 +149,18 @@ public class TestTradingInfo {
             }
 
             for (int i = 0; i < n; i++){
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[0].getId(),traders[n-1-i].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(),traders[n-1-i].getId());
             }
             for (int i = 0; i < n -1; i+=2){
                 if (i == 4){
                     // This is becasue 4->5, and so 4 traded with 5 3 times
-                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId())[0].getId(),traders[5].getId());
+                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0).getId(),traders[5].getId());
                     continue;
                 }
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[1].getId(), traders[i + 1].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(1).getId(), traders[i + 1].getId());
             }
             for (int i = 0; i < traders.length - 2; i += 3) {
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId())[2].getId(), traders[i + 2].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(2).getId(), traders[i + 2].getId());
             }
 
         } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
