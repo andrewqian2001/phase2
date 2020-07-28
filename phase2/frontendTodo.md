@@ -23,7 +23,8 @@ ItemsPanel:
     - scrollpane top headers for both invent. + wishlist
 
 NotificationsPanel:
-    - Make ScrollPane for messages and get messages for the trader
+    - ~~Make ScrollPane for messages and get messages for the trader~~
+    - ScrollPane header for messages && change the layout to gridbag to make more space for the entire message
     - 'Clear all notifications' button
 
 SearchPanel:
