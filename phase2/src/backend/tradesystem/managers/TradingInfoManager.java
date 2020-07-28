@@ -46,63 +46,27 @@ public class TradingInfoManager extends Manager {
         return allTraders;
     }
 
-    /** return traders that contain name or is similar to name
+    /** return traders that contain name
      *
      * @param name is the name of the trader
      * @return an arraylist of traders with similar names
      */
     public ArrayList<Trader> searchTrader(String name){
 
-        ArrayList<Trader> similarTraders = new ArrayList();
+        ArrayList<Trader> similarTraders = new ArrayList<>();
         ArrayList<Trader> allTraders = getAllTraders();
-        LinkedList<Trader> one = new LinkedList<>(); //Traders with names that have one char differences from input name
-        LinkedList<Trader> two = new LinkedList<>();
-        LinkedList<Trader> three = new LinkedList<>();
-
         for(Trader trader: allTraders){
-            String traderName = trader.getUsername();
-            if(traderName.contains(name)){
+            if(trader.getUsername().toLowerCase().contains(name.toLowerCase())){
                 similarTraders.add(trader);
-            }else{ //checks for up to three differences
-                for(int i = 0; i <= traderName.length() - name.length(); i++){
-                    int differences = 0;
-                    int i2 = i;
-                    int j = 0;
-                    while(j < name.length() && i2 < traderName.length()){
-                        if(traderName.charAt(i2) != name.charAt(j)){
-                            differences ++;
-                            i2++;
-                        }
-                    }
-                    switch(differences){
-                        case 1:
-                            one.add(trader);
-                            break;
-                        case 2:
-                            two.add(trader);
-                            break;
-                        case 3:
-                            three.add(trader);
-                            break;
-                    }
-                }
             }
-
-        }
-        for(Trader trader: one){
-            similarTraders.add(trader);
-            if(similarTraders.size() > 9)return similarTraders;
-        }
-        for(Trader trader: two) {
-            similarTraders.add(trader);
-            if(similarTraders.size() > 9)return similarTraders;
-        }
-        for(Trader trader: three) {
-            similarTraders.add(trader);
-            if(similarTraders.size() > 9)return similarTraders;
         }
         return similarTraders;
+
     }
+
+
+
+
 
     /**
      * Gets all the traders within the same city
