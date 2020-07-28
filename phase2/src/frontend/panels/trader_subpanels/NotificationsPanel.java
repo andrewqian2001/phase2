@@ -75,7 +75,16 @@ public class NotificationsPanel extends JPanel {
         clearAllmessagesButton.addActionListener(e -> {
             try {
                 messageManager.clearMessages(trader.getId());
-                messagesScrollPane.removeAll();
+                messagesListContainer.removeAll();
+                messagesListContainer.setLayout(new BorderLayout());
+                messagesListContainer.setBackground(gray3);
+                JLabel noMessagesFound = new JLabel("<html><pre>No Messages Found</pre></html>");
+                noMessagesFound.setFont(regular.deriveFont(30f));
+                noMessagesFound.setPreferredSize(new Dimension(1000, 375));
+                noMessagesFound.setHorizontalAlignment(JLabel.CENTER);
+                noMessagesFound.setVerticalAlignment(JLabel.CENTER);
+                noMessagesFound.setForeground(Color.WHITE);
+                messagesListContainer.add(noMessagesFound);
                 messagesScrollPane.revalidate();
                 messagesScrollPane.repaint();
             } catch (UserNotFoundException e1) {
