@@ -318,6 +318,18 @@ public class OverviewPanel extends JPanel {
 
     private void getAllToBeFrozenUsers() {
         ArrayList<Trader> tobeFrozenList = frozenManager.getShouldBeFrozen();
+        if (tobeFrozenList.size() == 0) {
+            freezeTradersContainer = new JPanel();
+            freezeTradersContainer.setBackground(bg);
+            JLabel noTradersFound = new JLabel("<html><pre>No Traders to freeze</pre></html>");
+            noTradersFound.setFont(regular.deriveFont(30f));
+            noTradersFound.setPreferredSize(new Dimension(400, 275));
+            noTradersFound.setHorizontalAlignment(JLabel.CENTER);
+            noTradersFound.setVerticalAlignment(JLabel.CENTER);
+            noTradersFound.setForeground(gray);
+            freezeTradersContainer.add(noTradersFound);
+            return;
+        }
         int numRows = tobeFrozenList.size();
         if (numRows < 4)
             numRows = 4;
