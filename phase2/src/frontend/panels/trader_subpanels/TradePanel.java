@@ -7,6 +7,7 @@ import java.awt.event.*;
 import java.io.IOException;
 
 import backend.exceptions.AuthorizationException;
+import backend.exceptions.CannotTradeException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
@@ -383,12 +384,23 @@ public class TradePanel extends JPanel implements ActionListener {
                 editTradeButton.setOpaque(true);
                 editTradeButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
-                JButton tradeConfirmButton = new JButton("Confirm");
+                JButton tradeConfirmButton = new JButton("Accept");
                 tradeConfirmButton.setFont(bold.deriveFont(20f));
                 tradeConfirmButton.setForeground(Color.WHITE);
                 tradeConfirmButton.setBackground(green);
                 tradeConfirmButton.setOpaque(true);
                 tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+                tradeConfirmButton.addActionListener(e -> {
+                    try {
+						tradeManager.acceptRequest(trader.getId(), tradeRequest.getId());
+                        tradeRequestsContainer.remove(tradeRequestPanel);
+                        tradeRequestsContainer.revalidate();
+                        tradeRequestsContainer.repaint();
+					} catch (TradeNotFoundException | UserNotFoundException | AuthorizationException | CannotTradeException e1) {
+                        System.out.println(e1.getMessage());
+					}
+                    
+                });
 
                 JButton tradeRejectButton = new JButton("Reject");
                 tradeRejectButton.setFont(bold.deriveFont(20f));
