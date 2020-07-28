@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
@@ -12,22 +13,27 @@ import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
+import backend.models.users.User;
+import backend.tradesystem.managers.MessageManager;
 import backend.tradesystem.managers.TradingInfoManager;
 
 public class NotificationsPanel extends JPanel {
 
-    private JPanel notificationsListContainer, freqTradersPanel, freqTradableItemsPanel, bottomTitleHeaderContainer,
+    private JPanel messagesListContainer, freqTradersPanel, freqTradableItemsPanel, bottomTitleHeaderContainer,
             bottomSplitContainer, topTitleHeaderContainer;
-    private JLabel notificationsTitle, freqTradersTitle, freqTradableItemsTitle;
-    private JScrollPane notificationsScrollPane;
-    private JButton clearAllNotificationsButton;
+    private JLabel messagesTitle, freqTradersTitle, freqTradableItemsTitle;
+    private JScrollPane messagesScrollPane;
+    private JButton clearAllmessagesButton;
+
+    private MessageManager messageManager;
 
     private Color bg = new Color(51, 51, 51);
     private Color current = new Color(159, 159, 159);
     private Color gray = new Color(75, 75, 75);
     private Color gray2 = new Color(196, 196, 196);
     private Color red = new Color(219, 58, 52);
-    private Color detailsButton = new Color(142, 142, 142);
+    private Color gray3 = new Color(142, 142, 142);
+    private Color green = new Color(27, 158, 36);
 
     private Font regular, bold, italic, boldItalic;
 
@@ -48,29 +54,50 @@ public class NotificationsPanel extends JPanel {
         this.setBackground(bg);
 
         infoManager = new TradingInfoManager();
+        messageManager = new MessageManager();
 
         topTitleHeaderContainer = new JPanel(new GridLayout(1, 2));
         topTitleHeaderContainer.setPreferredSize(new Dimension(1200, 75));
 
-        notificationsTitle = new JLabel("Notifications");
-        notificationsTitle.setBackground(bg);
-        notificationsTitle.setForeground(Color.WHITE);
-        notificationsTitle.setOpaque(true);
-        notificationsTitle.setFont(regular.deriveFont(30f));
+        messagesTitle = new JLabel("Messages");
+        messagesTitle.setBackground(bg);
+        messagesTitle.setForeground(Color.WHITE);
+        messagesTitle.setOpaque(true);
+        messagesTitle.setFont(regular.deriveFont(30f));
 
-        clearAllNotificationsButton = new JButton("Clear All Notifications");
-        clearAllNotificationsButton.setBackground(bg);
-        clearAllNotificationsButton.setForeground(Color.CYAN);
-        clearAllNotificationsButton.setFont(boldItalic.deriveFont(25f));
-        clearAllNotificationsButton.setOpaque(true);
-        clearAllNotificationsButton.setBorderPainted(false);
-        clearAllNotificationsButton.setHorizontalAlignment(JButton.RIGHT);
+        clearAllmessagesButton = new JButton("Clear All Messages");
+        clearAllmessagesButton.setBackground(bg);
+        clearAllmessagesButton.setForeground(Color.CYAN);
+        clearAllmessagesButton.setFont(boldItalic.deriveFont(25f));
+        clearAllmessagesButton.setOpaque(true);
+        clearAllmessagesButton.setBorderPainted(false);
+        clearAllmessagesButton.setHorizontalAlignment(JButton.RIGHT);
+        clearAllmessagesButton.addActionListener(e -> {
+            try {
+                messageManager.clearMessages(trader.getId());
+                messagesListContainer.removeAll();
+                messagesListContainer.setLayout(new BorderLayout());
+                messagesListContainer.setBackground(gray3);
+                JLabel noMessagesFound = new JLabel("<html><pre>No Messages Found</pre></html>");
+                noMessagesFound.setFont(regular.deriveFont(30f));
+                noMessagesFound.setPreferredSize(new Dimension(1000, 375));
+                noMessagesFound.setHorizontalAlignment(JLabel.CENTER);
+                noMessagesFound.setVerticalAlignment(JLabel.CENTER);
+                noMessagesFound.setForeground(Color.WHITE);
+                messagesListContainer.add(noMessagesFound);
+                messagesScrollPane.revalidate();
+                messagesScrollPane.repaint();
+            } catch (UserNotFoundException e1) {
+                System.out.println(e1.getMessage());
+            }
+        });
 
-        notificationsScrollPane = new JScrollPane();
-        notificationsScrollPane.setPreferredSize(new Dimension(1200, 400));
-        notificationsScrollPane.setBorder(null);
-        getNotifications();
-        notificationsScrollPane.setViewportView(notificationsListContainer);
+        messagesScrollPane = new JScrollPane();
+        messagesScrollPane.setPreferredSize(new Dimension(1200, 400));
+        messagesScrollPane.setBorder(null);
+        messagesScrollPane.setBackground(gray3);
+        getMessages();
+        messagesScrollPane.setViewportView(messagesListContainer);
 
         bottomTitleHeaderContainer = new JPanel(new GridLayout(1, 2, 25, 0));
         bottomTitleHeaderContainer.setPreferredSize(new Dimension(1200, 75));
@@ -86,8 +113,8 @@ public class NotificationsPanel extends JPanel {
         freqTradableItemsTitle.setForeground(Color.WHITE);
         freqTradableItemsTitle.setOpaque(false);
 
-        topTitleHeaderContainer.add(notificationsTitle);
-        topTitleHeaderContainer.add(clearAllNotificationsButton);
+        topTitleHeaderContainer.add(messagesTitle);
+        topTitleHeaderContainer.add(clearAllmessagesButton);
 
         bottomTitleHeaderContainer.add(freqTradersTitle);
         bottomTitleHeaderContainer.add(freqTradableItemsTitle);
@@ -103,15 +130,125 @@ public class NotificationsPanel extends JPanel {
         bottomSplitContainer.add(freqTradableItemsPanel);
 
         this.add(topTitleHeaderContainer);
-        this.add(notificationsScrollPane);
+        this.add(messagesScrollPane);
         this.add(bottomTitleHeaderContainer);
         this.add(bottomSplitContainer);
     }
 
-    private void getNotifications() {
-        notificationsListContainer = new JPanel(new GridLayout(10, 1));
-        notificationsListContainer.setBackground(gray);
-    }
+    private void getMessages() {
+        try {
+            HashMap<User, ArrayList<String>> messages = messageManager.getMessages(trader.getId());
+            if(messages.size() == 0) {
+                messagesListContainer = new JPanel();
+                messagesListContainer.setBackground(gray3);
+                JLabel noMessagesFound = new JLabel("<html><pre>No Messages Found</pre></html>");
+                noMessagesFound.setFont(regular.deriveFont(30f));
+                noMessagesFound.setPreferredSize(new Dimension(1000, 375));
+                noMessagesFound.setHorizontalAlignment(JLabel.CENTER);
+                noMessagesFound.setVerticalAlignment(JLabel.CENTER);
+                noMessagesFound.setForeground(Color.WHITE);
+                messagesListContainer.add(noMessagesFound);
+                return;
+            } int numRows = 0;
+            for(User user : messages.keySet()) {
+                numRows += messages.get(user).size();
+            }
+            if (numRows < 4)
+                numRows = 4;
+            messagesListContainer = new JPanel(new GridLayout(numRows, 1));
+            messagesListContainer.setPreferredSize(new Dimension(1200, 400));
+            messagesListContainer.setBackground(gray3);
+            messages.forEach((u, msgs) -> {
+                msgs.forEach(message -> {
+                    JPanel messagePanel = new JPanel(new GridLayout(1, 5));
+                    messagePanel.setPreferredSize(new Dimension(1000, 75));
+                    messagePanel.setBackground(gray2);
+                    messagePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg));
+
+                    JLabel userName = new JLabel(u.getUsername());
+                    if(u instanceof Trader)
+                        userName.setFont(regular.deriveFont(20f));
+                    else
+                        userName.setFont(bold.deriveFont(20f));
+                    userName.setForeground(Color.BLACK);
+                    userName.setHorizontalAlignment(JLabel.LEFT);
+                    userName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+
+                    JLabel messageBody = new JLabel("<html><pre>" + (message.length() > 27 ? message.substring(0, 27) + "..." : message) + "</pre></html>");
+                    messageBody.setFont(regular.deriveFont(17f));
+                    messageBody.setForeground(Color.BLACK);
+                    messageBody.setHorizontalAlignment(JLabel.LEFT);
+
+                    JButton detailsButton = new JButton("View Full Message");
+                    detailsButton.setFont(bold.deriveFont(20f));
+                    detailsButton.setForeground(Color.WHITE);
+                    detailsButton.setBackground(gray3);
+                    detailsButton.setOpaque(true);
+                    detailsButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+                    detailsButton.addActionListener(e -> {
+                        JDialog messageDetailsModal = new JDialog();
+                        messageDetailsModal.setTitle("Message Details");
+                        messageDetailsModal.setSize(600, 400);
+                        messageDetailsModal.setResizable(false);
+                        messageDetailsModal.setLocationRelativeTo(null);
+
+                        JPanel messageDetailsPanel = new JPanel();
+                        messageDetailsPanel.setPreferredSize(new Dimension(600, 400));
+                        messageDetailsPanel.setBackground(bg);
+
+                        JLabel userNameTitle = new JLabel("Sender Username:");
+                        userNameTitle.setFont(italic.deriveFont(20f));
+                        userNameTitle.setPreferredSize(new Dimension(500, 50));
+                        userNameTitle.setOpaque(false);
+                        userNameTitle.setForeground(Color.WHITE);
+
+                        userName.setForeground(Color.WHITE);
+
+                        JLabel messageBodyTitle= new JLabel("Full Message:");
+                        messageBodyTitle.setFont(italic.deriveFont(20f));
+                        messageBodyTitle.setPreferredSize(new Dimension(500, 50));
+                        messageBodyTitle.setOpaque(false);
+                        messageBodyTitle.setForeground(Color.WHITE);
+
+                        JTextArea fullMessageBody = new JTextArea(message);
+                        fullMessageBody.setFont(regular.deriveFont(20f));
+                        fullMessageBody.setBackground(gray);
+                        fullMessageBody.setForeground(Color.WHITE);
+                        fullMessageBody.setPreferredSize(new Dimension(500, 200));
+                        fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                        fullMessageBody.setLineWrap(true);
+                        fullMessageBody.setEditable(false);
+
+                        messageDetailsPanel.add(userNameTitle);
+                        messageDetailsPanel.add(userName);
+                        messageDetailsPanel.add(messageBodyTitle);
+                        messageDetailsPanel.add(fullMessageBody);
+
+                        messageDetailsModal.add(messageDetailsPanel);
+                        messageDetailsModal.setModal(true);
+                        messageDetailsModal.setVisible(true);
+
+                    }); 
+
+                    JButton replyButton = new JButton("Reply");
+                    replyButton.setFont(bold.deriveFont(20f));
+                    replyButton.setForeground(Color.WHITE);
+                    replyButton.setBackground(green);
+                    replyButton.setOpaque(true);
+                    replyButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+
+
+                    messagePanel.add(userName);
+                    messagePanel.add(messageBody);
+                    messagePanel.add(detailsButton);
+                    messagePanel.add(replyButton);
+                    messagesListContainer.add(messagePanel);
+                });
+            });
+        } catch (UserNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }  
 
     private void getFreqTraders() {
         try {

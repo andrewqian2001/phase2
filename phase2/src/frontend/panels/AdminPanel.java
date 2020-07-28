@@ -42,10 +42,12 @@ public class AdminPanel extends JPanel implements ActionListener {
         searchPanel.setBackground(Color.BLACK);
 
         menuContainer = new JPanel(new GridBagLayout());
-        menuContainer.setOpaque(false);
+        menuContainer.setPreferredSize(new Dimension(250, this.getHeight()));
         gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridx = 0;
+        gbc.weightx = 1.0;
+        menuContainer.setOpaque(false);
 
         menuPanelContainer = new JPanel();
         cardLayout = new CardLayout();
@@ -53,12 +55,13 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuPanelContainer.setBackground(bg);
 
         iconText = new JLabel(admin.getUsername().toUpperCase().substring(0, 1));
-        iconText.setFont(boldItalic.deriveFont(48f));
+        iconText.setBorder(BorderFactory.createEmptyBorder(14, 0, 0, 0));
+        iconText.setFont(boldItalic.deriveFont(55f));
         iconText.setForeground(Color.WHITE);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.weighty = 0.16;
         gbc.gridy = 0;
-        menuContainer.add(iconText,gbc);
+        gbc.weighty = 0.16;
+        menuContainer.add(iconText, gbc);
 
         usernameTitle = new JLabel((admin.getUsername().length() > 12 ? admin.getUsername().substring(0, 12) + "..."
                 : admin.getUsername()));
@@ -69,12 +72,14 @@ public class AdminPanel extends JPanel implements ActionListener {
         gbc.gridy = 1;
         menuContainer.add(usernameTitle, gbc);
 
-        userIdTitle = new JLabel("ID: #" + admin.getId().substring(admin.getId().length() - 12));
+        userIdTitle = new JLabel(
+                "<html><pre>ID: #" + admin.getId().substring(admin.getId().length() - 12) + "</pre></html>");
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(gray);
-        gbc.weighty = 0.01;
+        userIdTitle.setHorizontalAlignment(JLabel.CENTER);
         gbc.gridy = 2;
-        gbc.insets = new Insets(0,0,10,0);
+        gbc.weighty = 0.01;
+        gbc.insets = new Insets(0, 0, 10, 0);
         menuContainer.add(userIdTitle, gbc);
 
         overviewPanelButton = new JButton("Overview");

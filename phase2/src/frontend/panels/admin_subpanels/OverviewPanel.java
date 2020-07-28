@@ -34,6 +34,7 @@ public class OverviewPanel extends JPanel {
     private Color blue = new Color(0, 240, 239);
     private Color gray = new Color(142, 142, 142);
     private Color confirmButton = new Color(27, 158, 36);
+    private Color current = new Color(32, 32, 32);
     private Color red = new Color(219, 58, 52);
 
     public OverviewPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
@@ -53,10 +54,10 @@ public class OverviewPanel extends JPanel {
 
         itemRequestsTitleContainer = new JPanel(new GridLayout(1, 2));
         itemRequestsTitleContainer.setOpaque(false);
-        itemRequestsTitleContainer.setPreferredSize(new Dimension(1300, 75));
+        itemRequestsTitleContainer.setPreferredSize(new Dimension(1200, 75));
 
         itemRequestsTitle = new JLabel("Item Requests");
-        itemRequestsTitle.setFont(this.regular.deriveFont(30f));
+        itemRequestsTitle.setFont(this.regular.deriveFont(28f));
         itemRequestsTitle.setForeground(Color.WHITE);
         itemRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
         itemRequestsTitleContainer.add(itemRequestsTitle);
@@ -76,10 +77,10 @@ public class OverviewPanel extends JPanel {
 
         frozenTraderTitleContainer = new JPanel(new GridLayout(1, 4, 50, 0));
         frozenTraderTitleContainer.setOpaque(false);
-        frozenTraderTitleContainer.setPreferredSize(new Dimension(1300, 75));
+        frozenTraderTitleContainer.setPreferredSize(new Dimension(1200, 75));
 
         unFreezeRequestsTitle = new JLabel("Un-freeze Requests");
-        unFreezeRequestsTitle.setFont(this.regular.deriveFont(30f));
+        unFreezeRequestsTitle.setFont(this.regular.deriveFont(28f));
         unFreezeRequestsTitle.setForeground(Color.WHITE);
         unFreezeRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
         frozenTraderTitleContainer.add(unFreezeRequestsTitle);
@@ -94,7 +95,7 @@ public class OverviewPanel extends JPanel {
         frozenTraderTitleContainer.add(unFreezeAllTradersButton);
 
         freezeTraderTitle = new JLabel("To-be-frozen Users");
-        freezeTraderTitle.setFont(this.regular.deriveFont(30f));
+        freezeTraderTitle.setFont(this.regular.deriveFont(28f));
         freezeTraderTitle.setForeground(Color.WHITE);
         freezeTraderTitle.setHorizontalAlignment(JLabel.LEFT);
         frozenTraderTitleContainer.add(freezeTraderTitle);
@@ -109,7 +110,7 @@ public class OverviewPanel extends JPanel {
         frozenTraderTitleContainer.add(freezeAllTradersButton);
 
         itemRequestsScrollPane = new JScrollPane(itemRequestsContainer);
-        itemRequestsScrollPane.setPreferredSize(new Dimension(1300, 300));
+        itemRequestsScrollPane.setPreferredSize(new Dimension(1200, 300));
         itemRequestsScrollPane.setBorder(null);
 
         unFreezeRequestsScrollPane = new JScrollPane(unFreezeRequestsContainer);
@@ -121,7 +122,7 @@ public class OverviewPanel extends JPanel {
         freezeTradersScrollPane.setBorder(null);
 
         bottomSplitContainer = new JPanel(new GridLayout(1, 2, 50, 0));
-        bottomSplitContainer.setPreferredSize(new Dimension(1300, 300));
+        bottomSplitContainer.setPreferredSize(new Dimension(1200, 300));
         bottomSplitContainer.setBackground(Color.BLACK);
         bottomSplitContainer.add(unFreezeRequestsScrollPane);
         bottomSplitContainer.add(freezeTradersScrollPane);
@@ -166,6 +167,18 @@ public class OverviewPanel extends JPanel {
     private void getAllItemRequests() {
         try {
             HashMap<Trader, ArrayList<TradableItem>> itemRequests = itemRequestManager.getAllItemRequests();
+            if (itemRequests.size() == 0) { 
+                itemRequestsContainer = new JPanel();
+                itemRequestsContainer.setBackground(bg);
+                JLabel noItemsFound = new JLabel("<html><pre>No Item Requests Found</pre></html>");
+                noItemsFound.setFont(regular.deriveFont(30f));
+                noItemsFound.setPreferredSize(new Dimension(1000, 275));
+                noItemsFound.setHorizontalAlignment(JLabel.CENTER);
+                noItemsFound.setVerticalAlignment(JLabel.CENTER);
+                noItemsFound.setForeground(gray);
+                itemRequestsContainer.add(noItemsFound);
+                return;
+            }
             int numRows = 0;
             for (Trader t : itemRequests.keySet())
                 numRows += itemRequests.get(t).size();
@@ -247,6 +260,18 @@ public class OverviewPanel extends JPanel {
 
     private void getAllUnFreezeRequests() {
         ArrayList<User> unFreezeRequests = frozenManager.getAllUnfreezeRequests();
+        if(unFreezeRequests.size() == 0) {
+            unFreezeRequestsContainer = new JPanel();
+            unFreezeRequestsContainer.setBackground(bg);
+            JLabel noTradersFound = new JLabel("<html><pre>No Requests Found</pre></html>");
+            noTradersFound.setFont(regular.deriveFont(30f));
+            noTradersFound.setPreferredSize(new Dimension(400, 275));
+            noTradersFound.setHorizontalAlignment(JLabel.CENTER);
+            noTradersFound.setVerticalAlignment(JLabel.CENTER);
+            noTradersFound.setForeground(gray);
+            unFreezeRequestsContainer.add(noTradersFound);
+            return;
+        }
         int numRows = unFreezeRequests.size();
         if (numRows < 4)
             numRows = 4;
@@ -305,6 +330,18 @@ public class OverviewPanel extends JPanel {
 
     private void getAllToBeFrozenUsers() {
         ArrayList<Trader> tobeFrozenList = frozenManager.getShouldBeFrozen();
+        if (tobeFrozenList.size() == 0) {
+            freezeTradersContainer = new JPanel();
+            freezeTradersContainer.setBackground(bg);
+            JLabel noTradersFound = new JLabel("<html><pre>No Traders to freeze</pre></html>");
+            noTradersFound.setFont(regular.deriveFont(30f));
+            noTradersFound.setPreferredSize(new Dimension(400, 275));
+            noTradersFound.setHorizontalAlignment(JLabel.CENTER);
+            noTradersFound.setVerticalAlignment(JLabel.CENTER);
+            noTradersFound.setForeground(gray);
+            freezeTradersContainer.add(noTradersFound);
+            return;
+        }
         int numRows = tobeFrozenList.size();
         if (numRows < 4)
             numRows = 4;
