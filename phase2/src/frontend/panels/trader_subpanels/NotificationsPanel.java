@@ -113,7 +113,14 @@ public class NotificationsPanel extends JPanel {
             sendMessageButton.setPreferredSize(new Dimension(225, 75));
             sendMessageButton.setBorder(BorderFactory.createMatteBorder(10, 50, 10, 50, bg));
             sendMessageButton.addActionListener(e1 -> {
-                // ADD SEND MESSAGE METHOD
+                try {
+                    if(userNameInput.getText().trim().length() != 0 && fullMessageBody.getText().trim().length() != 0) {
+                        messageManager.sendMessage(trader.getId(), messageManager.getUserByUsername(userNameInput.getText().trim()).getId(), fullMessageBody.getText().trim());
+                        messageDetailsModal.dispose();
+                    }
+				} catch (UserNotFoundException | AuthorizationException e2) {
+                    System.out.println(e2.getMessage());
+				}
             });
 
             messageDetailsPanel.add(userNameTitle);
