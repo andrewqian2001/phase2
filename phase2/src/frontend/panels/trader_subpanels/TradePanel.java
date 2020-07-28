@@ -216,12 +216,12 @@ public class TradePanel extends JPanel implements ActionListener {
                 JLabel otherTraderName, otherTraderItemName, traderItemName;
                 if(isTraderFirstUser) {
                     otherTraderName = new JLabel(tradeManager.getUser(tradeRequest.getSecondUserId()).getUsername());
-                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).getName());
-                    traderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).getName());
+                    otherTraderItemName = tradeRequest.getSecondUserOffer().equals("") ? new JLabel("N/A") : new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).getName());
+                    traderItemName = tradeRequest.getFirstUserOffer().equals("") ? new JLabel("N/A") : new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).getName());
                 } else {
                     otherTraderName = new JLabel(tradeManager.getUser(tradeRequest.getFirstUserId()).getUsername());
-                    otherTraderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).getName());
-                    traderItemName = new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).getName());
+                    otherTraderItemName = tradeRequest.getFirstUserOffer().equals("") ? new JLabel("N/A") : new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).getName());
+                    traderItemName = tradeRequest.getSecondUserOffer().equals("") ? new JLabel("N/A") : new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).getName());
                 }
 
                 // JLabel otherTraderName = new JLabel("otherTrader #" + (i + 1));
