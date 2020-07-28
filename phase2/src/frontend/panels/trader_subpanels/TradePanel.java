@@ -208,7 +208,7 @@ public class TradePanel extends JPanel implements ActionListener {
         for(String tradeID : trader.getRequestedTrades()) {
             try {
                 Trade tradeRequest = tradeManager.getTrade(tradeID);
-                if(!tradeRequest.getFirstUserId().equals(trader.getId())) {
+                if((tradeRequest.getFirstUserId().equals(trader.getId()) && tradeRequest.getUserTurnToEdit().equals(trader.getId())) || !tradeRequest.getFirstUserId().equals(trader.getId())) {
                     JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 7, 10, 0));
                     tradeRequestPanel.setPreferredSize(new Dimension(1000, 75));
                     tradeRequestPanel.setBackground(gray);
