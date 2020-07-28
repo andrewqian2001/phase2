@@ -91,6 +91,8 @@ public class MessageManager extends Manager {
      * @param toUserId   user being reported
      * @param message    what the report is about
      * @return whether or not the report successfully went through
+     * @throws UserNotFoundException user wasn't found
+     * @throws AuthorizationException report is invalid
      */
     public boolean reportUser(String fromUserId, String toUserId, String message) throws UserNotFoundException, AuthorizationException {
         boolean successful = false;

@@ -241,9 +241,9 @@ public class TradingInfoManager extends Manager {
      * @param trader1 is the id of this trader
      * @param trader2 is the trader this trader wants to trade with
      * @return a hashmap of the items that can be traded between two users (key is your item to lend, value the item to borrow)
-     * @throws UserNotFoundException
-     * @throws AuthorizationException
-     * @throws TradableItemNotFoundException
+     * @throws UserNotFoundException bad trader ids
+     * @throws AuthorizationException can't suggest because user is not a trader or is frozen
+     * @throws TradableItemNotFoundException a tradable item wasn't found
      */
     public HashMap<TradableItem, TradableItem> suggestTrade(String trader1, String trader2) throws
             UserNotFoundException, AuthorizationException, TradableItemNotFoundException {

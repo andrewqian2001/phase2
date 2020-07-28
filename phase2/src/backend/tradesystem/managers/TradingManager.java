@@ -292,8 +292,10 @@ public class TradingManager extends Manager {
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException  if the other user of the trade is not found
+     * @throws CannotTradeException can't trade
      */
-    public void confirmMeetingGeneral(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException, CannotTradeException {
+    public void confirmMeetingGeneral(String traderId, String tradeId, boolean status) throws TradeNotFoundException,
+            AuthorizationException, UserNotFoundException, CannotTradeException {
         Trade t = getTrade(tradeId);
         if (t.isFirstUserConfirmed1() && t.isSecondUserConfirmed1()) {
             confirmSecondMeeting(traderId, tradeId, status);
