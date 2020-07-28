@@ -34,6 +34,7 @@ public class OverviewPanel extends JPanel {
     private Color blue = new Color(0, 240, 239);
     private Color gray = new Color(142, 142, 142);
     private Color confirmButton = new Color(27, 158, 36);
+    private Color current = new Color(32, 32, 32);
     private Color red = new Color(219, 58, 52);
 
     public OverviewPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
@@ -247,6 +248,18 @@ public class OverviewPanel extends JPanel {
 
     private void getAllUnFreezeRequests() {
         ArrayList<User> unFreezeRequests = frozenManager.getAllUnfreezeRequests();
+        if(unFreezeRequests.size() == 0) {
+            unFreezeRequestsContainer = new JPanel();
+            unFreezeRequestsContainer.setBackground(bg);
+            JLabel noTradersFound = new JLabel("<html><pre>No Requests Found</pre></html>");
+            noTradersFound.setFont(regular.deriveFont(30f));
+            noTradersFound.setPreferredSize(new Dimension(400, 275));
+            noTradersFound.setHorizontalAlignment(JLabel.CENTER);
+            noTradersFound.setVerticalAlignment(JLabel.CENTER);
+            noTradersFound.setForeground(gray);
+            unFreezeRequestsContainer.add(noTradersFound);
+            return;
+        }
         int numRows = unFreezeRequests.size();
         if (numRows < 4)
             numRows = 4;
