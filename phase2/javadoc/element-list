@@ -5,4 +5,8 @@ backend.models
 backend.models.users
 backend.tradesystem
 backend.tradesystem.managers
-main
+frontend
+frontend.controllers
+frontend.panels
+frontend.panels.admin_subpanels
+frontend.panels.trader_subpanels
