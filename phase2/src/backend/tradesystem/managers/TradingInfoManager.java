@@ -223,6 +223,10 @@ public class TradingInfoManager extends Manager {
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
         Trader otherTrader = getTrader(otherTraderId);
         ArrayList<TradableItem> suggestions = new ArrayList<>();
+        /*
+        I think this function should be called suggestBorrow?
+        b/c it gets the other users items that this user wishes to have
+         */
         for (String wishlistId : thisTrader.getWishlist()) {
             for (String tradableItemId : otherTrader.getAvailableItems()) {
                 if (wishlistId.equals(tradableItemId)) {
@@ -260,4 +264,120 @@ public class TradingInfoManager extends Manager {
         }
         return suggestedTrades;
     }
+
+    /**
+     * Checks through wishlist of all other traders and returns the most reasonable trade (returns the info necessary to make a trade not an actual trade object)
+     * @param itemGet is the item the trader wishes to get
+     * @param itemGive is the item the trader wishes to give
+     * @param thisTraderId is the id of the trader
+     * @return an array with two cells, first cell containing the traders name, second cell containing the item name
+     */
+    public String[] automatedTradeSuggestion(String thisTraderId, String itemGet, String itemGive) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+        //! note that suggestLend may need to be changed, reason commented in suggestLend
+        //and if we do change it then we will also need to change 2 lines on suggestTrade
+
+        ArrayList<Trader> allTraders = getAllTraders();
+        Trader thisTrader = getTrader(thisTraderId);
+        allTraders.remove(thisTrader); //so it doesn't trade with itself
+
+        //This will return traders with the exact items to trade
+        //IDK if this is 100 percent necessary but If i don't include this then it will take longer to find an exact match
+        //since it will have to go through a more complex searching algorithm
+        for(Trader trader: allTraders){
+            HashMap<TradableItem, TradableItem> items = suggestTrade(thisTraderId,trader.getId());
+            if(suggestTrade(thisTraderId,trader.getId()) != null){
+                TradableItem key = ((TradableItem)items.keySet().toArray()[0]); //gets first key in hashmap
+                String[] tradeSuggestion = {trader.getUsername(),items.get(key).getName()};
+                return tradeSuggestion;
+            }
+        }
+
+        //if there are no exact matches then it will search for items with similar names
+        int max = 0;
+        String mostSimItem = null;
+        String mostSimTrader = null;
+
+
+        for(Trader otherTrader: allTraders){
+            //returns the most similar item to the one that the trader wishes to have
+            HashMap similarGetItem = similarSearch(itemGet, otherTrader.getAvailableItems());
+
+            //returns the most similar item to the one that the trader wishes to give away
+            HashMap similarGiveItem = similarSearch(itemGive, otherTrader.getWishlist());
+
+            //the keys of the hashmap are the item names, the values of the hashmap
+            //are how similar it is the the inputted item.
+            String keyGet = (String)similarGetItem.keySet().toArray()[0];
+            String keyGive = (String)similarGiveItem.keySet().toArray()[0];
+
+            if(((int)similarGiveItem.get(keyGive) + (int)similarGetItem.get(keyGet))> max){
+                max = (int)similarGiveItem.get(keyGive) + (int)similarGetItem.get(keyGet);
+                mostSimItem = keyGet;
+                mostSimTrader = otherTrader.getUsername();
+            }
+        }
+        String[] tradeSuggestion = {mostSimTrader, mostSimItem};
+        return tradeSuggestion;
+
+    }
+
+    /**checks how many similarities name has with strings in list
+     *
+     * @param name is the name of the item we wish to find a similar name of
+     * @param list is the list of strings that we are traversing through
+     * @return the most similar name in list
+     */
+    public HashMap<String, Integer> similarSearch(String name, ArrayList<String> list){
+            HashMap<String, Integer>  similarNames = new HashMap<>();
+
+            //If this ever gets fully functional it can be used instead of our current queries
+
+        //Goes through all items in list and counts how many of the same chars are in the word
+        for(String otherNames: list){
+            int maxSim = 0;
+
+            //traverses otherName, on each char of otherName, it will traverse up to
+            //name.length() more chars and will see how many chars are the same. It will then store the max amount of same
+            //chars that otherName has with name and store that in a hashmap
+            for(int i = 0; i < otherNames.length(); i++){
+                int similarities = 0;
+                int i2 = i;
+                int j = 0;
+                while(j < name.length() && i2 < otherNames.length()){
+                    if(otherNames.charAt(i2) == name.charAt(j))similarities ++;
+                    j++;
+                    i2++;
+                }
+
+                if(similarities > maxSim){
+                    maxSim = similarities;
+                }
+            }
+            //hashmap keys represent item names, hashmap values represent similarity score
+            similarNames.put(otherNames, maxSim);
+        }
+
+        /*
+        We may also have to consider size of the string when determining which string is most similar b/c for e.g say we are searching for a name called An,
+        then we should return And instead of Andrew however the algorithm currently does not implement this
+         */
+
+        //finds highest value in hashmap (which indicates most similar OtherName)
+        int max = 0;
+        String mostSimilarName = null;
+        for (String simName : similarNames.keySet()) {
+            int x = similarNames.get(simName); //x is similarity score
+            if(x > max){
+                max = x;
+                mostSimilarName = simName;
+            }
+        }
+        HashMap<String, Integer> simMap = new HashMap<>();
+        simMap.put(mostSimilarName, max);
+        return simMap;
+    }
+
+
+
+
 }
