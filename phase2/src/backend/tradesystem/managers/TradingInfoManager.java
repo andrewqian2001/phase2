@@ -7,6 +7,7 @@ import backend.models.users.Trader;
 import backend.models.users.User;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -63,11 +64,6 @@ public class TradingInfoManager extends Manager {
         return similarTraders;
 
     }
-
-
-
-
-
     /**
      * Gets all the traders within the same city
      * @param city the city name
@@ -234,6 +230,32 @@ public class TradingInfoManager extends Manager {
                 }
             }
         }
+
         return suggestions;
+    }
+
+    /**
+     * Suggests all item trades that can be done between two users
+     * @param trader1 is the id of this trader
+     * @param trader2 is the trader this trader wants to trade with
+     * @return a hashmap of the items that can be traded between two users (key is your item to lend, value the item to borrow)
+     * @throws UserNotFoundException
+     * @throws AuthorizationException
+     * @throws TradableItemNotFoundException
+     */
+    public HashMap<TradableItem, TradableItem> suggestTrade(String trader1, String trader2)throws
+            UserNotFoundException, AuthorizationException, TradableItemNotFoundException{
+        Trader thisTrader = getTrader(trader1);
+        HashMap<TradableItem, TradableItem> suggestedTrades = new  HashMap<>();
+        if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
+
+        ArrayList<TradableItem> lend  = suggestLend(trader1, trader2);
+        ArrayList<TradableItem> borrow  = suggestLend(trader2, trader1);
+        int i = 0;
+        while(i < lend.size() && i < borrow.size()){
+            suggestedTrades.put(lend.get(i), borrow.get(i));
+            i++;
+        }
+        return suggestedTrades;
     }
 }
