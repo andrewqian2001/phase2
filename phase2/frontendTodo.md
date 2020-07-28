@@ -34,7 +34,8 @@ SearchPanel:
 
 TODO: adminPanel
 
-- Fix menuContainer width just like traderPanel
+- ~~Fix menuContainer width just like traderPanel~~
+- Fix the logo circle icon 
 
 OverviewPanel:
     - ScrollPane top headers for all 3 panels
