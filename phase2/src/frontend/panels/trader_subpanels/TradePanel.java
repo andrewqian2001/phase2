@@ -626,12 +626,38 @@ public class TradePanel extends JPanel implements ActionListener {
                     tradeDetailsModal.setVisible(true);
                 });
 
-                JButton tradeConfirmButton = new JButton("Confirm");
-                tradeConfirmButton.setFont(bold.deriveFont(20f));
-                tradeConfirmButton.setForeground(Color.WHITE);
-                tradeConfirmButton.setBackground(green);
-                tradeConfirmButton.setOpaque(true);
-                tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+                JButton tradeConfirmButton = new JButton();
+
+                if((isTraderFirstUser && (ongoingTrade.isFirstUserConfirmed1() || ongoingTrade.isFirstUserConfirmed2())) || (!isTraderFirstUser && (ongoingTrade.isSecondUserConfirmed1() || ongoingTrade.isSecondUserConfirmed2()))) {
+                    tradeConfirmButton.setText("Confirmed");
+                    tradeConfirmButton.setFont(boldItalic.deriveFont(20f));
+                    tradeConfirmButton.setForeground(Color.WHITE);
+                    tradeConfirmButton.setBackground(bg);
+                    tradeConfirmButton.setEnabled(false);
+                    tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+                } else {
+                    tradeConfirmButton.setText("Confirm");
+                    tradeConfirmButton.setFont(bold.deriveFont(20f));
+                    tradeConfirmButton.setForeground(Color.WHITE);
+                    tradeConfirmButton.setBackground(green);
+                    tradeConfirmButton.setOpaque(true);
+                    tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+                    tradeConfirmButton.addActionListener(e -> {
+                        try {
+                            tradeManager.confirmMeetingGeneral(trader.getId(), tradeID, true);
+                            tradeConfirmButton.setBackground(bg);
+                            tradeConfirmButton.setText("Confirmed");
+                            tradeConfirmButton.setEnabled(false);
+                            tradeConfirmButton.setFont(boldItalic.deriveFont(20f));
+                            ongoingTradesContainer.revalidate();
+                            ongoingTradesContainer.repaint();
+                        } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException
+                                | CannotTradeException e1) {
+                            System.out.println(e1.getMessage());
+                        }
+                    });
+                }
+                
 
                 ongoingTradePanel.add(otherTraderName);
                 ongoingTradePanel.add(tradeLocation);
