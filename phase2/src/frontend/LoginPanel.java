@@ -89,7 +89,7 @@ public class LoginPanel extends JPanel implements ActionListener {
         inputs.add(passwordInput, gbc);
 
         //TODO: REMOVE before final deployment (only for testing)
-        usernameInput = new JTextField("trader2");
+        usernameInput = new JTextField("trader7");
         passwordInput = new JPasswordField("userPassword1");
 
         buttonContainer = new JPanel();
