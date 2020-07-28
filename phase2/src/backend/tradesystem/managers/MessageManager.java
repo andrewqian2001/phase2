@@ -64,6 +64,17 @@ public class MessageManager extends Manager {
         user.clearMessages();
         updateUserDatabase(user);
     }
+    /**
+     * Empty out messages that were received from a single user
+     * @param userId the user being checked
+     * @param clearUserId the messages received from this user that will get cleared
+     * @throws UserNotFoundException if the user isn't found
+     */
+    public void clearMessagesFromUser(String userId, String clearUserId) throws UserNotFoundException {
+        User user = getUser(userId);
+        user.getMessages().remove(clearUserId);
+        updateUserDatabase(user);
+    }
 
     /**
      * Get all messages received by a user
