@@ -88,12 +88,12 @@ public class TradingInfoManager extends Manager {
      * @param name the name to check for
      * @return list of tradable items that match the name
      */
-    public TradableItem[] getTradableItemsWithName(String name) {
+    public ArrayList<TradableItem> getTradableItemsWithName(String name) {
         ArrayList<TradableItem> items = new ArrayList<>();
         for (TradableItem item : getTradableItemDatabase().getItems())
             if (item.getName().toLowerCase().contains(name.toLowerCase()))
                 items.add(item);
-        return (TradableItem[]) items.toArray();
+        return items;
     }
 
     /**

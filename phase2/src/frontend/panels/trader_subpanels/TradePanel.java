@@ -73,10 +73,10 @@ public class TradePanel extends JPanel implements ActionListener {
         gbc.weighty = 0.1;
         ongoingTrades.add(ongoingTradesTitleContainer, gbc);
 
-        ongoingTradesHeader = new JPanel(new GridLayout(1,5));
+        ongoingTradesHeader = new JPanel(new GridLayout(1,5, 25, 0));
         ongoingTradesHeader.setPreferredSize(new Dimension(1200,25));
         ongoingTradesHeader.setBackground(gray);
-        ongoingTradesHeader.setBorder(BorderFactory.createEmptyBorder(0, 60, 0, 80));
+        ongoingTradesHeader.setBorder(BorderFactory.createEmptyBorder(0,25, 0, 80));
         addOngoingTradesHeader();
         gbc.gridy = 1;
         gbc.weighty = 0.1;
@@ -107,9 +107,9 @@ public class TradePanel extends JPanel implements ActionListener {
         gbc.weighty = 0.1;
         tradeRequests.add(tradeRequestsTitle, gbc);
 
-        tradeRequestsHeader = new JPanel(new GridLayout(1,7));
+        tradeRequestsHeader = new JPanel(new GridLayout(1,8,20, 0));
         tradeRequestsHeader.setPreferredSize(new Dimension(1200,25));
-        tradeRequestsHeader.setBorder(BorderFactory.createEmptyBorder(0, 60, 0, 120));
+        tradeRequestsHeader.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 120));
         tradeRequestsHeader.setBackground(gray);
         addTradeRequestsHeader();
         gbc.gridy = 1;
@@ -140,17 +140,18 @@ public class TradePanel extends JPanel implements ActionListener {
         location.setForeground(Color.BLACK);
         location.setHorizontalAlignment(JLabel.CENTER);
 
-        JLabel meetingTime = new JLabel("Current Meeting Time");
+        JLabel meetingTime = new JLabel("           Meeting Time");
         meetingTime.setFont(this.regular.deriveFont(20f));
         meetingTime.setForeground(Color.BLACK);
-        meetingTime.setHorizontalAlignment(JLabel.RIGHT);
+        meetingTime.setHorizontalAlignment(JLabel.CENTER);
 
-        JLabel empty1 = new JLabel("");
         JLabel empty2 = new JLabel("");
+        JLabel empty1 = new JLabel("");
 
         ongoingTradesHeader.add(name);
         ongoingTradesHeader.add(location);
         ongoingTradesHeader.add(meetingTime);
+
         ongoingTradesHeader.add(empty1);
         ongoingTradesHeader.add(empty2);
     }
@@ -159,22 +160,22 @@ public class TradePanel extends JPanel implements ActionListener {
         JLabel name = new JLabel("Name");
         name.setFont(this.regular.deriveFont(20f));
         name.setForeground(Color.BLACK);
-        name.setHorizontalAlignment(JLabel.LEFT);
+        name.setHorizontalAlignment(JLabel.CENTER);
 
-        JLabel location = new JLabel("Location   ");
+        JLabel location = new JLabel("Location");
         location.setFont(this.regular.deriveFont(20f));
         location.setForeground(Color.BLACK);
         location.setHorizontalAlignment(JLabel.CENTER);
 
-        JLabel theirItem = new JLabel("    Their Item");
+        JLabel theirItem = new JLabel("Their Item");
         theirItem.setFont(this.regular.deriveFont(20f));
         theirItem.setForeground(Color.BLACK);
         theirItem.setHorizontalAlignment(JLabel.CENTER);
 
-        JLabel yourItem = new JLabel("Your Item");
+        JLabel yourItem = new JLabel("Your Item   ");
         yourItem.setFont(this.regular.deriveFont(20f));
         yourItem.setForeground(Color.BLACK);
-        yourItem.setHorizontalAlignment(JLabel.RIGHT);
+        yourItem.setHorizontalAlignment(JLabel.CENTER);
 
         JLabel empty1 = new JLabel("");
         JLabel empty2 = new JLabel("");
