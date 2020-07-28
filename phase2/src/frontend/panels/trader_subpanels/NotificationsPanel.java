@@ -23,7 +23,7 @@ public class NotificationsPanel extends JPanel {
             bottomSplitContainer, topTitleHeaderContainer;
     private JLabel messagesTitle, freqTradersTitle, freqTradableItemsTitle;
     private JScrollPane messagesScrollPane;
-    private JButton clearAllmessagesButton;
+    private JButton clearAllmessagesButton, addNewMessageButton;
 
     private MessageManager messageManager;
 
@@ -56,14 +56,89 @@ public class NotificationsPanel extends JPanel {
         infoManager = new TradingInfoManager();
         messageManager = new MessageManager();
 
-        topTitleHeaderContainer = new JPanel(new GridLayout(1, 2));
+        topTitleHeaderContainer = new JPanel(new GridLayout(1, 3));
         topTitleHeaderContainer.setPreferredSize(new Dimension(1200, 75));
+
+        addNewMessageButton = new JButton("New Message");
+        addNewMessageButton.setBackground(bg);
+        addNewMessageButton.setForeground(Color.CYAN);
+        addNewMessageButton.setFont(boldItalic.deriveFont(25f));
+        addNewMessageButton.setOpaque(true);
+        addNewMessageButton.setBorderPainted(false);
+        addNewMessageButton.setHorizontalAlignment(JButton.LEFT);
+        addNewMessageButton.addActionListener(e -> {
+            JDialog messageDetailsModal = new JDialog();
+            messageDetailsModal.setTitle("Compose New Message");
+            messageDetailsModal.setSize(600, 500);
+            messageDetailsModal.setResizable(false);
+            messageDetailsModal.setLocationRelativeTo(null);
+
+            JPanel messageDetailsPanel = new JPanel();
+            messageDetailsPanel.setPreferredSize(new Dimension(600, 500));
+            messageDetailsPanel.setBackground(bg);
+
+            JLabel userNameTitle = new JLabel("Sender Username:");
+            userNameTitle.setFont(italic.deriveFont(20f));
+            userNameTitle.setPreferredSize(new Dimension(500, 50));
+            userNameTitle.setOpaque(false);
+            userNameTitle.setForeground(Color.WHITE);
+
+
+            JTextField userNameInput = new JTextField();
+            userNameInput.setFont(regular.deriveFont(20f));
+            userNameInput.setBackground(gray2);
+            userNameInput.setForeground(Color.BLACK);
+            userNameInput.setPreferredSize(new Dimension(500, 50));
+            userNameInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    
+            JLabel messageBodyTitle = new JLabel("Full Message:");
+            messageBodyTitle.setFont(italic.deriveFont(20f));
+            messageBodyTitle.setPreferredSize(new Dimension(500, 50));
+            messageBodyTitle.setOpaque(false);
+            messageBodyTitle.setForeground(Color.WHITE);
+
+            JTextArea fullMessageBody = new JTextArea();
+            fullMessageBody.setFont(regular.deriveFont(20f));
+            fullMessageBody.setBackground(gray2);
+            fullMessageBody.setForeground(Color.BLACK);
+            fullMessageBody.setPreferredSize(new Dimension(500, 200));
+            fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            fullMessageBody.setLineWrap(true);
+
+            JButton sendMessageButton = new JButton("Send");
+            sendMessageButton.setFont(bold.deriveFont(25f));
+            sendMessageButton.setBackground(green);
+            sendMessageButton.setOpaque(true);
+            sendMessageButton.setForeground(Color.WHITE);
+            sendMessageButton.setPreferredSize(new Dimension(225, 75));
+            sendMessageButton.setBorder(BorderFactory.createMatteBorder(10, 50, 10, 50, bg));
+            sendMessageButton.addActionListener(e1 -> {
+                try {
+                    if(userNameInput.getText().trim().length() != 0 && fullMessageBody.getText().trim().length() != 0) {
+                        messageManager.sendMessage(trader.getId(), messageManager.getUserByUsername(userNameInput.getText().trim()).getId(), fullMessageBody.getText().trim());
+                        messageDetailsModal.dispose();
+                    }
+				} catch (UserNotFoundException | AuthorizationException e2) {
+                    System.out.println(e2.getMessage());
+				}
+            });
+
+            messageDetailsPanel.add(userNameTitle);
+            messageDetailsPanel.add(userNameInput);
+            messageDetailsPanel.add(messageBodyTitle);
+            messageDetailsPanel.add(fullMessageBody);
+            messageDetailsModal.add(messageDetailsPanel);
+            messageDetailsModal.add(sendMessageButton, BorderLayout.SOUTH);
+            messageDetailsModal.setModal(true);
+            messageDetailsModal.setVisible(true);
+        });
 
         messagesTitle = new JLabel("Messages");
         messagesTitle.setBackground(bg);
         messagesTitle.setForeground(Color.WHITE);
         messagesTitle.setOpaque(true);
         messagesTitle.setFont(regular.deriveFont(30f));
+        messagesTitle.setHorizontalAlignment(JButton.CENTER);
 
         clearAllmessagesButton = new JButton("Clear All Messages");
         clearAllmessagesButton.setBackground(bg);
@@ -113,6 +188,8 @@ public class NotificationsPanel extends JPanel {
         freqTradableItemsTitle.setForeground(Color.WHITE);
         freqTradableItemsTitle.setOpaque(false);
 
+
+        topTitleHeaderContainer.add(addNewMessageButton);
         topTitleHeaderContainer.add(messagesTitle);
         topTitleHeaderContainer.add(clearAllmessagesButton);
 
@@ -236,7 +313,6 @@ public class NotificationsPanel extends JPanel {
                     replyButton.setBackground(green);
                     replyButton.setOpaque(true);
                     replyButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
-
 
                     messagePanel.add(userName);
                     messagePanel.add(messageBody);
