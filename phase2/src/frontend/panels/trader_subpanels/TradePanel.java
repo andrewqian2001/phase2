@@ -384,28 +384,67 @@ public class TradePanel extends JPanel implements ActionListener {
                     editTradeButton.addActionListener(e -> {
                         JDialog tradeEditsModal = new JDialog();
                         tradeEditsModal.setTitle("Trade Edit");
-                        tradeEditsModal.setSize(900, 200);
+                        tradeEditsModal.setSize(900, 900);
                         tradeEditsModal.setResizable(false);
                         tradeEditsModal.setLocationRelativeTo(null);
 
                         JPanel tradeEditsPanel = new JPanel();
-                        tradeEditsPanel.setPreferredSize(new Dimension(900, 200));
+                        tradeEditsPanel.setPreferredSize(new Dimension(900, 900));
                         tradeEditsPanel.setBackground(bg);
 
+                        JLabel traderItemTitle = new JLabel("Item from your Inventory:");
+                        traderItemTitle.setFont(italic.deriveFont(20f));
+                        traderItemTitle.setPreferredSize(new Dimension(425, 50));
+                        traderItemTitle.setOpaque(false);
+                        traderItemTitle.setForeground(Color.WHITE);
+
+
+                        JComboBox<TradableItem> traderItems = new JComboBox<>();
+                        traderItems.setFont(regular.deriveFont(20f));
+                        traderItems.setBackground(gray2);
+                        traderItems.setForeground(Color.BLACK);
+                        traderItems.setOpaque(true);
+                        traderItems.setPreferredSize(new Dimension(425, 50));
+                        for (String itemId : trader.getAvailableItems()) {
+                            try {
+                                traderItems.addItem(tradeManager.getTradableItem(itemId));
+                            } catch (TradableItemNotFoundException e1) {
+                                System.out.println(e1.getMessage());
+                            }
+                        }
+                        // traderItems.setSelectedItem();
+                        
+                        JLabel otherTraderItemTitle = new JLabel("Item from their Inventory:");
+                        otherTraderItemTitle.setFont(italic.deriveFont(20f));
+                        otherTraderItemTitle.setPreferredSize(new Dimension(425, 50));
+                        otherTraderItemTitle.setOpaque(false);
+                        otherTraderItemTitle.setForeground(Color.WHITE);
+                        
+                        JComboBox<TradableItem> otherTraderItems = new JComboBox<>();
+                        otherTraderItems.setFont(regular.deriveFont(20f));
+                        otherTraderItems.setBackground(gray2);
+                        otherTraderItems.setForeground(Color.BLACK);
+                        otherTraderItems.setOpaque(true);
+                        otherTraderItems.setPreferredSize(new Dimension(425, 50));
+                        try {
+                            for (String itemId : ((Trader) tradeManager.getUser(tradeRequest.getFirstUserId())).getAvailableItems()) {
+                                otherTraderItems.addItem(tradeManager.getTradableItem(itemId));
+                            }
+                        } catch (TradableItemNotFoundException | UserNotFoundException e1) {
+                            System.out.println(e1.getMessage());
+                        }
+                            // otherTraderItems.setSelectedItem();
+                        
                         JLabel meetingLocationTitle = new JLabel("Meeting Location:");
                         meetingLocationTitle.setFont(italic.deriveFont(20f));
-                        meetingLocationTitle.setPreferredSize(new Dimension(290, 50));
+                        meetingLocationTitle.setPreferredSize(new Dimension(425, 50));
                         meetingLocationTitle.setOpaque(false);
                         meetingLocationTitle.setForeground(Color.WHITE);
 
-                        JLabel meetingLocationName = new JLabel("<html><pre>" + tradeRequest.getMeetingLocation() + "</pre></html>");
-                        meetingLocationName.setFont(italic.deriveFont(20f));
-                        meetingLocationName.setPreferredSize(new Dimension(290, 50));
-                        meetingLocationName.setOpaque(false);
-                        meetingLocationName.setForeground(Color.WHITE);
 
-                        JTextField meetingLocationInput = new JTextField();
-                        meetingLocationInput.setPreferredSize(new Dimension(290, 50));
+                        JTextField meetingLocationInput = new JTextField(tradeRequest.getMeetingLocation());
+                        meetingLocationInput.setPreferredSize(new Dimension(425, 50));
+                        meetingLocationInput.setFont(regular.deriveFont(20f));
 
                         JLabel firstMeetingDateTitle = new JLabel("First Meeting Date:");
                         firstMeetingDateTitle.setPreferredSize(new Dimension(290, 50));
@@ -456,11 +495,14 @@ public class TradePanel extends JPanel implements ActionListener {
                         JButton submit = new JButton("Submit");
                         submit.setForeground(Color.red);
                         submit.addActionListener(f -> {
-                            Date date = tradeRequest.getMeetingTime();
+                            // Date date = tradeRequest.getMeetingTime();
                         });
 
+                        tradeEditsPanel.add(traderItemTitle);
+                        tradeEditsPanel.add(traderItems);
+                        tradeEditsPanel.add(otherTraderItemTitle);
+                        tradeEditsPanel.add(otherTraderItems);
                         tradeEditsPanel.add(meetingLocationTitle);
-                        tradeEditsPanel.add(meetingLocationName);
                         tradeEditsPanel.add(meetingLocationInput);
                         tradeEditsPanel.add(firstMeetingDateTitle);
                         tradeEditsPanel.add(firstMeetingDate);
@@ -816,7 +858,7 @@ public class TradePanel extends JPanel implements ActionListener {
         traderItemTitle.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         traderItemTitle.setForeground(Color.WHITE);
 
-        JComboBox<String> traderItems = new JComboBox<>();
+        JComboBox<TradableItem> traderItems = new JComboBox<>();
         traderItems.setFont(regular.deriveFont(20f));
         traderItems.setBackground(gray2);
         traderItems.setForeground(Color.BLACK);
@@ -824,7 +866,7 @@ public class TradePanel extends JPanel implements ActionListener {
         traderItems.setPreferredSize(new Dimension(450,50));
         for(String itemId : trader.getAvailableItems()) {
             try {
-                traderItems.addItem(tradeManager.getTradableItem(itemId).getName());
+                traderItems.addItem(tradeManager.getTradableItem(itemId));
             } catch (TradableItemNotFoundException e1) {
                 System.out.println(e1.getMessage());
             }
