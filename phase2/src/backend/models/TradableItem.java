@@ -40,4 +40,12 @@ public class TradableItem extends DatabaseItem implements Serializable {
         return DESCRIPTION;
     }
 
+    /**
+     * name of the item
+     * @return name of the item
+     */
+    @Override
+    public String toString(){
+        return NAME;
+    }
 }

@@ -127,4 +127,13 @@ public abstract class User extends DatabaseItem implements Serializable {
     public HashMap<String, ArrayList<String>> getMessages(){
         return this.messages;
     }
+
+    /**
+     * Name of the user
+     * @return name of the user
+     */
+    @Override
+    public String toString(){
+        return username;
+    }
 }
