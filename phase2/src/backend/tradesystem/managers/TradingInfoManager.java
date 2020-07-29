@@ -281,8 +281,16 @@ public class TradingInfoManager extends Manager {
         for (Trade lendTrade : toLend){
             for(String candidateItem : getTrader(lendTrade.getSecondUserId()).getAvailableItems()){
                 if (thisTraderWishlist.getOrDefault(candidateItem, false)){
-                    lendTrade.setSecondUserOffer(candidateItem);
-                    suggestedTrades.add(lendTrade);
+                    TradeBuilder builder = new TradeBuilder();
+                    builder.fromUser(thisTraderId);
+                    builder.toUser(lendTrade.getSecondUserId());
+                    builder.setFirstUserOffer(lendTrade.getFirstUserOffer());
+                    builder.setSecondUserOffer(candidateItem);
+                    builder.setMeeting1(new Date(System.currentTimeMillis() + 100000));
+                    builder.setMeeting2(new Date(System.currentTimeMillis() + 1000000));
+                    builder.setAllowedEditsPerUser(3);
+                    builder.setLocation(thisTrader.getCity());
+                    suggestedTrades.add(builder.createTrade());
                 }
             }
         }
