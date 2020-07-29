@@ -12,6 +12,7 @@ import backend.tradesystem.managers.TradingInfoManager;
 import backend.tradesystem.managers.TradingManager;
 
 import java.awt.*;
+import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -152,6 +153,89 @@ public class ItemsPanel extends JPanel {
         addWishlistItemButton.setHorizontalAlignment(JButton.RIGHT);
         addWishlistItemButton.setOpaque(true);
         addWishlistItemButton.setBorderPainted(false);
+        addWishlistItemButton.addActionListener(event -> {
+            JDialog addNewItemModal = new JDialog();
+            addNewItemModal.setTitle("Add Item to Wishlist");
+            addNewItemModal.setSize(500, 500);
+            addNewItemModal.setResizable(false);
+            addNewItemModal.setLocationRelativeTo(null);
+
+            JPanel addNewItemPanel = new JPanel();
+            addNewItemPanel.setPreferredSize(new Dimension(500, 500));
+            addNewItemPanel.setBackground(bg);
+
+            JLabel itemNameTitle = new JLabel("Trader Username:");
+            itemNameTitle.setFont(italic.deriveFont(20f));
+            itemNameTitle.setPreferredSize(new Dimension(450, 50));
+            itemNameTitle.setOpaque(false);
+            itemNameTitle.setForeground(Color.WHITE);
+
+            JComboBox<Trader> traders = new JComboBox<>();
+            traders.setPreferredSize(new Dimension(450, 50));
+            traders.setFont(regular.deriveFont(20f));
+            traders.setBackground(gray2);
+            traders.setForeground(Color.BLACK);
+            traders.setOpaque(true);
+            infoManager.getAllTraders().forEach(t -> {
+                if(!t.getUsername().equals(trader.getUsername()))
+                    traders.addItem(t);  
+            });
+            
+            JLabel inventoryItemTitle = new JLabel("Item from their Inventory:");
+            inventoryItemTitle.setFont(italic.deriveFont(20f));
+            inventoryItemTitle.setPreferredSize(new Dimension(450, 50));
+            inventoryItemTitle.setOpaque(false);
+            inventoryItemTitle.setForeground(Color.WHITE);
+
+            JComboBox<TradableItem> inventoryItems = new JComboBox<>();
+            inventoryItems.setPreferredSize(new Dimension(450, 50));
+            inventoryItems.setFont(regular.deriveFont(20f));
+            inventoryItems.setBackground(gray2);
+            inventoryItems.setForeground(Color.BLACK);
+            inventoryItems.setOpaque(true);
+
+            JButton itemSubmitButton = new JButton("Submit Request");
+            itemSubmitButton.setFont(bold.deriveFont(25f));
+            itemSubmitButton.setBackground(green);
+            itemSubmitButton.setOpaque(true);
+            itemSubmitButton.setForeground(Color.WHITE);
+            itemSubmitButton.setPreferredSize(new Dimension(225, 75));
+            itemSubmitButton.setBorder(BorderFactory.createLineBorder(bg, 15));
+            itemSubmitButton.addActionListener(e -> {
+                if(inventoryItems.getSelectedItem() != null) {
+                    try {
+                        traderManager.addToWishList(trader.getId(),((TradableItem) inventoryItems.getSelectedItem()).getId());
+                        addNewItemModal.dispose();
+                    } catch (UserNotFoundException | TradableItemNotFoundException | AuthorizationException e1) {
+                        System.out.println(e1.getMessage());
+                    }
+                }
+            });
+
+            traders.addItemListener(e -> {
+                if(e.getStateChange() == ItemEvent.SELECTED) {
+                    inventoryItems.setVisible(false);
+                    inventoryItems.removeAllItems();
+                    for(String itemId : ((Trader) e.getItem()).getAvailableItems()) {
+                        try {
+                            inventoryItems.addItem(tradeManager.getTradableItem(itemId));
+                        } catch (TradableItemNotFoundException e1) {
+                            System.out.println(e1.getMessage());
+                        }
+                    }
+                    inventoryItems.setVisible(true);
+                }
+            });
+
+            addNewItemPanel.add(itemNameTitle);
+            addNewItemPanel.add(traders);
+            addNewItemPanel.add(inventoryItemTitle);
+            addNewItemPanel.add(inventoryItems);
+            addNewItemModal.add(addNewItemPanel);
+            addNewItemModal.add(itemSubmitButton, BorderLayout.SOUTH);
+            addNewItemModal.setModal(true);
+            addNewItemModal.setVisible(true);
+        });
 
         wishlistItemsScrollPane = new JScrollPane();
         wishlistItemsScrollPane.setBorder(null);
