@@ -11,8 +11,10 @@ import backend.exceptions.CannotTradeException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
+import backend.tradesystem.managers.TradingInfoManager;
 import backend.tradesystem.managers.TradingManager;
 
 public class TradePanel extends JPanel implements ActionListener {
@@ -25,6 +27,7 @@ public class TradePanel extends JPanel implements ActionListener {
     private TradingManager tradeManager;
     private Trader trader;
     private GridBagConstraints gbc;
+    private TradingInfoManager infoManager;
 
     private Color bg = new Color(51, 51, 51);
     private Color gray = new Color(196,196,196);
@@ -40,6 +43,7 @@ public class TradePanel extends JPanel implements ActionListener {
         this.boldItalic = boldItalic;
 
         tradeManager = new TradingManager();
+        infoManager = new TradingInfoManager();
 
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
         this.setBackground(bg);
@@ -691,12 +695,16 @@ public class TradePanel extends JPanel implements ActionListener {
         otherTraderNameTitle.setOpaque(false);
         otherTraderNameTitle.setForeground(Color.WHITE);
 
-        JTextField otherTraderNameInput = new JTextField();
-        otherTraderNameInput.setFont(regular.deriveFont(20f));
-        otherTraderNameInput.setBackground(gray2);
-        otherTraderNameInput.setForeground(Color.BLACK);
-        otherTraderNameInput.setPreferredSize(new Dimension(450,50));
-        otherTraderNameInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        JComboBox<Trader> traders = new JComboBox<>();
+        traders.setPreferredSize(new Dimension(450, 50));
+        traders.setFont(regular.deriveFont(20f));
+        traders.setBackground(gray2);
+        traders.setForeground(Color.BLACK);
+        traders.setOpaque(true);
+        infoManager.getAllTraders().forEach(t -> {
+            if (!t.getUsername().equals(trader.getUsername()))
+                traders.addItem(t);
+        });
 
         JButton tradeSubmitButton = new JButton("Submit");
         tradeSubmitButton.setFont(bold.deriveFont(25f));
@@ -733,13 +741,28 @@ public class TradePanel extends JPanel implements ActionListener {
         otherTraderItemTitle.setOpaque(false);
         otherTraderItemTitle.setForeground(Color.WHITE);
 
-        JComboBox<String> otherTraderItems = new JComboBox<>();
-        otherTraderItems.setPreferredSize(new Dimension(450,50));
+        JComboBox<TradableItem> otherTraderItems = new JComboBox<>();
+        otherTraderItems.setPreferredSize(new Dimension(450, 50));
         otherTraderItems.setFont(regular.deriveFont(20f));
         otherTraderItems.setBackground(gray2);
         otherTraderItems.setForeground(Color.BLACK);
         otherTraderItems.setOpaque(true);
-        otherTraderItems.addItem("TEST");
+
+
+        traders.addItemListener(ev -> {
+            if (ev.getStateChange() == ItemEvent.SELECTED) {
+                otherTraderItems.setVisible(false);
+                otherTraderItems.removeAllItems();
+                for (String itemId : ((Trader) ev.getItem()).getAvailableItems()) {
+                    try {
+                        otherTraderItems.addItem(tradeManager.getTradableItem(itemId));
+                    } catch (TradableItemNotFoundException e1) {
+                        System.out.println(e1.getMessage());
+                    }
+                }
+                otherTraderItems.setVisible(true);
+            }
+        });
 
 
         JLabel meetingLocationTitle = new JLabel("Meeting Location");
@@ -788,7 +811,7 @@ public class TradePanel extends JPanel implements ActionListener {
         });
 
         addNewTradePanel.add(otherTraderNameTitle);
-        addNewTradePanel.add(otherTraderNameInput);
+        addNewTradePanel.add(traders);
         addNewTradePanel.add(traderItemTitle);
         addNewTradePanel.add(traderItems);
         addNewTradePanel.add(otherTraderItemTitle);
