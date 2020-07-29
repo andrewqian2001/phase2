@@ -121,27 +121,6 @@ public class TradingInfoManager extends Manager {
         throw new TradableItemNotFoundException();
     }
 
-    /**
-     * return the 3 most recent traders that this trader has traded with.
-     *
-     * @param traderId the trader being checked for
-     * @return a Trader array list of the 3 most recently traded with Traders
-     * @throws AuthorizationException trader is not allowed to know the frequent traders
-     * @throws UserNotFoundException  user not found
-     * @throws TradeNotFoundException trade not found
-     */
-    public ArrayList<Trader> getRecentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
-        ArrayList<Trader> traders = new ArrayList<>();
-        Trader trader = getTrader(traderId);
-        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
-        ArrayList<String> completedTradesIds = trader.getCompletedTrades();
-        for (int i = completedTradesIds.size() - 1; i >= Math.max(completedTradesIds.size() - 3, 0); i--) {
-            Trade trade = getTrade(completedTradesIds.get(i));
-            if (trade.getFirstUserId().equals(traderId)) traders.add((getTrader(trade.getSecondUserId())));
-            else traders.add(getTrader(trade.getFirstUserId()));
-        }
-        return traders;
-    }
 
     /**
      * Return the 3 most frequent traders that this trader has traded with.
