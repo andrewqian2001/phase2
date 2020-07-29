@@ -15,7 +15,6 @@ import frontend.WindowManager;
 import backend.models.users.Admin;
 import frontend.panels.admin_subpanels.ControlPanel;
 import frontend.panels.admin_subpanels.OverviewPanel;
-import sun.misc.JavaLangAccess;
 
 public class AdminPanel extends JPanel implements ActionListener {
 
