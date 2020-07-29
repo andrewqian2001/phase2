@@ -493,7 +493,8 @@ public class TradePanel extends JPanel implements ActionListener {
                         availableEdits.setForeground(Color.WHITE);
 
                         JButton submit = new JButton("Submit");
-                        submit.setForeground(Color.red);
+                        submit.setBackground(green);
+                        submit.setForeground(Color.WHITE);
                         submit.addActionListener(f -> {
                             // Date date = tradeRequest.getMeetingTime();
                         });
@@ -512,6 +513,7 @@ public class TradePanel extends JPanel implements ActionListener {
                         tradeEditsPanel.add(secondMeetingInput);
                         tradeEditsPanel.add(availableEditsTitle);
                         tradeEditsPanel.add(availableEdits);
+                        tradeEditsPanel.add(submit);
 
                         tradeEditsModal.add(tradeEditsPanel);
                         tradeEditsModal.setModal(true);
