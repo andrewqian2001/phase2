@@ -118,7 +118,7 @@ public class TradingInfoManager extends Manager {
                 return trader;
             }
         }
-        throw new TradableItemNotFoundException("No trader contains this item");
+        throw new TradableItemNotFoundException();
     }
 
     /**
