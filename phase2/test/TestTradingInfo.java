@@ -31,10 +31,10 @@ public class TestTradingInfo {
 
     private Trader[] traders;
     private Admin admin;
-    private final String USER_PATH = "./phase2/test/testUsers.ser";
-    private final String TRADABLE_ITEM_PATH = "./phase2/test/testTradableItems.ser";
-    private final String TRADE_PATH = "./phase2/test/testTrades.ser";
-    private final String TRADER_PROPERTY_FILE_PATH = "./phase2/test/trader.properties";
+    private final String USER_PATH = "./test/testUsers.ser";
+    private final String TRADABLE_ITEM_PATH = "./test/testTradableItems.ser";
+    private final String TRADE_PATH = "./test/testTrades.ser";
+    private final String TRADER_PROPERTY_FILE_PATH = "./test/trader.properties";
     private Date goodDate = new Date(System.currentTimeMillis() + 99999999);
     private Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
 

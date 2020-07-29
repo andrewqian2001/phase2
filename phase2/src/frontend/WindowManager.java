@@ -25,9 +25,9 @@ public class WindowManager extends JFrame {
         bold = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Bold.ttf"));
         italic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Italic.ttf"));
         boldItalic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-BoldItalic.ttf"));
-        LoginBg = ImageIO.read(new File("phase2/src/frontend/images/LoginPanelBg.jpg"));
-        AdminBg = ImageIO.read(new File("phase2/src/frontend/images/IconAdmin.jpg"));
-        TraderBg = ImageIO.read(new File("phase2/src/frontend/images/IconTrader.jpg"));
+        LoginBg = ImageIO.read(new File("./src/frontend/images/LoginPanelBg.jpg"));
+        AdminBg = ImageIO.read(new File("./src/frontend/images/IconAdmin.jpg"));
+        TraderBg = ImageIO.read(new File("./src/frontend/images/IconTrader.jpg"));
         loginPanel = new LoginPanel(regular, bold, italic, boldItalic);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
