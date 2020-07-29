@@ -388,17 +388,17 @@ public class TradePanel extends JPanel implements ActionListener {
                     editTradeButton.addActionListener(e -> {
                         JDialog tradeEditsModal = new JDialog();
                         tradeEditsModal.setTitle("Trade Edit");
-                        tradeEditsModal.setSize(900, 900);
+                        tradeEditsModal.setSize(700, 500);
                         tradeEditsModal.setResizable(false);
                         tradeEditsModal.setLocationRelativeTo(null);
 
                         JPanel tradeEditsPanel = new JPanel();
-                        tradeEditsPanel.setPreferredSize(new Dimension(900, 900));
+                        tradeEditsPanel.setPreferredSize(new Dimension(700, 500));
                         tradeEditsPanel.setBackground(bg);
 
                         JLabel traderItemTitle = new JLabel("Item from your Inventory:");
                         traderItemTitle.setFont(italic.deriveFont(20f));
-                        traderItemTitle.setPreferredSize(new Dimension(425, 50));
+                        traderItemTitle.setPreferredSize(new Dimension(325, 50));
                         traderItemTitle.setOpaque(false);
                         traderItemTitle.setForeground(Color.WHITE);
 
@@ -408,7 +408,7 @@ public class TradePanel extends JPanel implements ActionListener {
                         traderItems.setBackground(gray2);
                         traderItems.setForeground(Color.BLACK);
                         traderItems.setOpaque(true);
-                        traderItems.setPreferredSize(new Dimension(425, 50));
+                        traderItems.setPreferredSize(new Dimension(325, 50));
                         for (String itemId : trader.getAvailableItems()) {
                             try {
                                 traderItems.addItem(tradeManager.getTradableItem(itemId));
@@ -420,7 +420,7 @@ public class TradePanel extends JPanel implements ActionListener {
                         
                         JLabel otherTraderItemTitle = new JLabel("Item from their Inventory:");
                         otherTraderItemTitle.setFont(italic.deriveFont(20f));
-                        otherTraderItemTitle.setPreferredSize(new Dimension(425, 50));
+                        otherTraderItemTitle.setPreferredSize(new Dimension(325, 50));
                         otherTraderItemTitle.setOpaque(false);
                         otherTraderItemTitle.setForeground(Color.WHITE);
                         
@@ -429,7 +429,7 @@ public class TradePanel extends JPanel implements ActionListener {
                         otherTraderItems.setBackground(gray2);
                         otherTraderItems.setForeground(Color.BLACK);
                         otherTraderItems.setOpaque(true);
-                        otherTraderItems.setPreferredSize(new Dimension(425, 50));
+                        otherTraderItems.setPreferredSize(new Dimension(325, 50));
                         try {
                             for (String itemId : ((Trader) tradeManager.getUser(tradeRequest.getFirstUserId())).getAvailableItems()) {
                                 otherTraderItems.addItem(tradeManager.getTradableItem(itemId));
@@ -441,65 +441,50 @@ public class TradePanel extends JPanel implements ActionListener {
                         
                         JLabel meetingLocationTitle = new JLabel("Meeting Location:");
                         meetingLocationTitle.setFont(italic.deriveFont(20f));
-                        meetingLocationTitle.setPreferredSize(new Dimension(425, 50));
+                        meetingLocationTitle.setPreferredSize(new Dimension(325, 50));
                         meetingLocationTitle.setOpaque(false);
                         meetingLocationTitle.setForeground(Color.WHITE);
 
 
                         JTextField meetingLocationInput = new JTextField(tradeRequest.getMeetingLocation());
-                        meetingLocationInput.setPreferredSize(new Dimension(425, 50));
+                        meetingLocationInput.setPreferredSize(new Dimension(325, 50));
                         meetingLocationInput.setFont(regular.deriveFont(20f));
 
                         JLabel firstMeetingDateTitle = new JLabel("First Meeting Date:");
-                        firstMeetingDateTitle.setPreferredSize(new Dimension(290, 50));
+                        firstMeetingDateTitle.setPreferredSize(new Dimension(200, 50));
                         firstMeetingDateTitle.setFont(italic.deriveFont(20f));
                         firstMeetingDateTitle.setOpaque(false);
                         firstMeetingDateTitle.setForeground(Color.WHITE);
 
-                        JLabel firstMeetingDate = new JLabel("<html><pre>" + dateFormat.format(tradeRequest.getMeetingTime()) + "</pre></html>");
-                        firstMeetingDate.setFont(italic.deriveFont(20f));
-                        firstMeetingDate.setPreferredSize(new Dimension(290, 50));
-                        firstMeetingDate.setOpaque(false);
-                        firstMeetingDate.setForeground(Color.WHITE);
-
                         JPanel firstMeetingInput = dateInput();
 
                         JLabel secondMeetingDateTitle = new JLabel("Second Meeting Date:");
-                        secondMeetingDateTitle.setPreferredSize(new Dimension(290, 50));
+                        secondMeetingDateTitle.setPreferredSize(new Dimension(200, 50));
                         secondMeetingDateTitle.setFont(italic.deriveFont(20f));
                         secondMeetingDateTitle.setOpaque(false);
                         secondMeetingDateTitle.setForeground(Color.WHITE);
 
-                        JLabel secondMeetingDate = new JLabel();
-                        secondMeetingDate.setFont(bold.deriveFont(20f));
-                        secondMeetingDate.setPreferredSize(new Dimension(290, 50));
-                        secondMeetingDate.setOpaque(false);
-                        secondMeetingDate.setForeground(Color.WHITE);
-
-                        if(tradeRequest.getSecondMeetingTime() != null) {
-                            secondMeetingDate.setText("<html><pre>" + dateFormat.format(tradeRequest.getSecondMeetingTime()) + "</pre></html>");
-                        } else {
-                            secondMeetingDate.setText("N/A");
-                        }
-
                         JPanel secondMeetingInput = dateInput();
 
                         JLabel availableEditsTitle = new JLabel("Available Edits Left:");
-                        availableEditsTitle.setPreferredSize(new Dimension(290, 50));
+                        availableEditsTitle.setPreferredSize(new Dimension(325, 50));
                         availableEditsTitle.setFont(bold.deriveFont(20f));
                         availableEditsTitle.setOpaque(false);
                         availableEditsTitle.setForeground(Color.WHITE);
 
-                        JLabel availableEdits = new JLabel("<html><pre>" + (tradeRequest.getMaxAllowedEdits()/2 - tradeRequest.getNumEdits())+ "</pre></html>");
+                        JLabel availableEdits = new JLabel("<html><pre>" + (tradeRequest.getMaxAllowedEdits()/2 - tradeRequest.getNumEdits())+ " Edits Remaining</pre></html>");
                         availableEdits.setFont(italic.deriveFont(20f));
-                        availableEdits.setPreferredSize(new Dimension(290, 50));
+                        availableEdits.setPreferredSize(new Dimension(325, 50));
+                        availableEdits.setHorizontalAlignment(JLabel.CENTER);
                         availableEdits.setOpaque(false);
                         availableEdits.setForeground(Color.WHITE);
 
-                        JButton submit = new JButton("Submit");
-                        submit.setBackground(green);
-                        submit.setForeground(Color.WHITE);
-                        submit.addActionListener(f -> {
+                        JButton submitButton = new JButton("Submit");
+                        submitButton.setFont(bold.deriveFont(20f));
+                        submitButton.setBackground(green);
+                        submitButton.setForeground(Color.WHITE);
+                        submitButton.setPreferredSize(new Dimension(325, 50));
+                        submitButton.addActionListener(f -> {
                             // Date date = tradeRequest.getMeetingTime();
                         });
 
@@ -510,16 +495,14 @@ public class TradePanel extends JPanel implements ActionListener {
                         tradeEditsPanel.add(meetingLocationTitle);
                         tradeEditsPanel.add(meetingLocationInput);
                         tradeEditsPanel.add(firstMeetingDateTitle);
-                        tradeEditsPanel.add(firstMeetingDate);
                         tradeEditsPanel.add(firstMeetingInput);
                         tradeEditsPanel.add(secondMeetingDateTitle);
-                        tradeEditsPanel.add(secondMeetingDate);
                         tradeEditsPanel.add(secondMeetingInput);
                         tradeEditsPanel.add(availableEditsTitle);
                         tradeEditsPanel.add(availableEdits);
-                        tradeEditsPanel.add(submit);
 
                         tradeEditsModal.add(tradeEditsPanel);
+                        tradeEditsModal.add(submitButton, BorderLayout.SOUTH);
                         tradeEditsModal.setModal(true);
                         tradeEditsModal.setVisible(true);
                     });
@@ -976,26 +959,56 @@ public class TradePanel extends JPanel implements ActionListener {
     {
         JPanel meetingInput = new JPanel();
         meetingInput.setBackground(bg);
-        meetingInput.setPreferredSize(new Dimension(290, 50));
+        meetingInput.setPreferredSize(new Dimension(450, 50));
 
-        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-        JComboBox month = new JComboBox(months);
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        JComboBox<String> month = new JComboBox<>(months);
         month.setPreferredSize(new Dimension(100, 50));
+        month.setFont(regular.deriveFont(20f));
         meetingInput.add(month);
 
-        String[] days = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14",
-                "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31"};
-        JComboBox day = new JComboBox(days);
-        day.setPreferredSize(new Dimension(60, 50));
-        meetingInput.add(day);
+        JComboBox<Integer> days = new JComboBox<>();
+        days.setFont(regular.deriveFont(20f));
+        days.setPreferredSize(new Dimension(60, 50));
+        for(int i = 1; i < 32; i++)
+            days.addItem(i);
+        meetingInput.add(days);
 
-        JTextField hour = new JTextField();
-        hour.setPreferredSize(new Dimension(50, 50));
-        meetingInput.add(hour);
+        month.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                int numDays = 0;
+                if(e.getItem().equals("Apr") || e.getItem().equals("Jun") || e.getItem().equals("Sep") || e.getItem().equals("Nov"))
+                    numDays = 30;
+                else if(e.getItem().equals("Feb"))
+                    numDays = 28;
+                else
+                    numDays = 31;
+                days.removeAllItems();
+                for(int i = 1; i <= numDays; i++)
+                    days.addItem(i);
+            }
+        });
 
-        JTextField minute = new JTextField();
-        minute.setPreferredSize(new Dimension(50, 50));
-        meetingInput.add(minute);
+        JComboBox<Integer> years = new JComboBox<>();
+        years.setPreferredSize(new Dimension(100, 50));
+        years.setFont(regular.deriveFont(20f));
+        for(int i = 2020; i < 2026; i++)
+            years.addItem(i);
+        meetingInput.add(years);
+
+        JComboBox<Integer> hours = new JComboBox<>();
+        hours.setPreferredSize(new Dimension(50, 50));
+        hours.setFont(regular.deriveFont(20f));
+        for (int i = 0; i < 24; i++)
+            hours.addItem(i);
+        meetingInput.add(hours);
+
+        JComboBox<Integer> minutes = new JComboBox<>();
+        minutes.setPreferredSize(new Dimension(50, 50));
+        minutes.setFont(regular.deriveFont(20f));
+        for (int i = 0; i < 60; i++)
+            minutes.addItem(i);
+        meetingInput.add(minutes);
 
         return meetingInput;
     }
