@@ -367,11 +367,10 @@ public class TradingInfoManager extends Manager {
      * @return an array with two cells containing the items name and the score of how similar it is
      */
     private Object[] similarSearch(String name, ArrayList<String> list) {
-        HashMap<String, Integer> similarNames = new HashMap<>();
 
+        ArrayList<Object[]> similarNames = new ArrayList<>();
         //Can accurately work with different letters and different number of words however missing letters
         // will prob cause a problem
-
 
         //Goes through all items in list and counts how many of the same chars are in the word
         for (String otherNames : list) {
@@ -394,23 +393,24 @@ public class TradingInfoManager extends Manager {
                     maxSim = similarities;
                 }
             }
-            //hashmap keys represent item names, hashmap values represent similarity score
-            similarNames.put(otherNames, maxSim);
+            similarNames.add(new Object[]{otherNames, maxSim});
         }
 
         /*
         We may also have to consider size of the string when determining which string is most similar b/c for e.g say we are searching for a name called An,
-        then we should return And instead of Andrew however the algorithm currently does not implement this
+        then we should return And instead of Andrew however the algorithm currently does not implement this, can
+        just add another condition on (x>max)
          */
 
-        //finds highest value in hashmap (which indicates most similar OtherName)
+        //finds highest value in array (which indicates most similar OtherName)
         int max = 0;
         String mostSimilarName = null;
-        for (String simName : similarNames.keySet()) {
-            int x = similarNames.get(simName); //x is similarity score
+        for (Object[] simNameArr : similarNames) {
+            int x = (int)simNameArr[1]; //x is similarity score
+            String similarName = (String)simNameArr[0];
             if (x > max) {
                 max = x;
-                mostSimilarName = simName;
+                mostSimilarName = similarName;
             }
         }
         Object[] arr = {mostSimilarName, max};
