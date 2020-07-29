@@ -1,10 +1,6 @@
 package frontend;
 
-import java.awt.*;
-import java.io.*;
-
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * This is where the program starts running
