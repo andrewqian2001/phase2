@@ -1,4 +1,4 @@
-I'll delete this later, its just to keep track
+# FRONT END TODO (not back end)
 
 **TODO: GENERAL** 
 
@@ -17,7 +17,7 @@ I'll delete this later, its just to keep track
 **TODO: traderPanel**
 
 TradePanel:  
-  - ~~Edit button in TradeRequests~~   
+  - Edit button in TradeRequests 
   - Finish Add New Trade Window + Submit Button  
   - ~~Fix scrollpane top header alignment~~
   
@@ -34,9 +34,9 @@ NotificationsPanel:
   - ~~'Clear all notifications' button~~  
   
 SearchPanel:  
-  - ~~trader details button modal in trader search~~
-  - ~~Finalize trader search scroll pane items (can only be done after backend is done)  ~~
-  - ~~Finalize tradable item search scroll pane items (can only   be done after backend is done)  ~~
+  - trader details button **modal** in trader search
+  - ~~Finalize trader search scroll pane items (can only be done after backend is done)~~
+  - ~~Finalize tradable item search scroll pane items (can only   be done after backend is done)~~
   - ~~Change details button to 'Add to wishlist' in tradable   item search~~  
   - ~~Finish AddToWishlist Button~~
   
