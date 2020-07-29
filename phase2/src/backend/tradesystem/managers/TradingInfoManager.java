@@ -92,13 +92,14 @@ public class TradingInfoManager extends Manager {
     public ArrayList<TradableItem> getTradableItemsWithName(String name) {
         ArrayList<TradableItem> items = new ArrayList<>();
         for (Trader trader : getAllTraders()) {
-            for (String item : trader.getAvailableItems()) {
-                if (item.toLowerCase().contains(name.toLowerCase()))
-                    try {
-                        items.add(getTradableItem(item));
-                    } catch (TradableItemNotFoundException e) {
-                        e.printStackTrace();
-                    }
+            for (String id : trader.getAvailableItems()) {
+                try {
+                    TradableItem item = getTradableItem(id);
+                    if (item.getName().toLowerCase().contains(name.toLowerCase()))
+                        items.add(item);
+                } catch (TradableItemNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return items;
