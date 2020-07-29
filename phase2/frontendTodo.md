@@ -22,19 +22,20 @@ TradePanel:
   - ~~Fix scrollpane top header alignment~~
   
 ItemsPanel:  
-  - 'Add Item to wishlist' button with modal JDialog and   buttons finished  
   - scrollpane top headers for both invent. + wishlist  
+  - ~~'Add Item to wishlist' button with modal JDialog and   buttons finished ~~
   
 NotificationsPanel:  
   - !Important: Change each 'messagepanel' to just one for each   user (instead of one for each message)  
-  - When composing a new message, need to check if the username   is legal (maybe through a verify button)  
   - ScrollPane header for messages   
+  - ~~ When composing a new message, need to check if the username   is legal (maybe through a verify button) ~~ 
   - ~~Make ScrollPane for messages and get messages for the   trader~~  
   - ~~make 'Compose new message' button~~  
   - ~~'Clear all notifications' button~~  
   
 SearchPanel:  
-  - ~~Finalize trader search scroll pane items + trader details   button (can only be done after backend is done)  ~~
+  - trader details button modal in trader search
+  - ~~Finalize trader search scroll pane items (can only be done after backend is done)  ~~
   - ~~Finalize tradable item search scroll pane items (can only   be done after backend is done)  ~~
   - ~~Change details button to 'Add to wishlist' in tradable   item search~~  
   - ~~Finish AddToWishlist Button~~

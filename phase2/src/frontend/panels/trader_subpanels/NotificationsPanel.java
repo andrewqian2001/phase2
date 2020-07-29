@@ -84,12 +84,16 @@ public class NotificationsPanel extends JPanel {
             userNameTitle.setForeground(Color.WHITE);
 
 
-            JTextField userNameInput = new JTextField();
-            userNameInput.setFont(regular.deriveFont(20f));
-            userNameInput.setBackground(gray2);
-            userNameInput.setForeground(Color.BLACK);
-            userNameInput.setPreferredSize(new Dimension(500, 50));
-            userNameInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            JComboBox<Trader> traders = new JComboBox<>();
+            traders.setPreferredSize(new Dimension(500, 50));
+            traders.setFont(regular.deriveFont(20f));
+            traders.setBackground(gray2);
+            traders.setForeground(Color.BLACK);
+            traders.setOpaque(true);
+            infoManager.getAllTraders().forEach(t -> {
+                if (!t.getUsername().equals(trader.getUsername()))
+                    traders.addItem(t);
+            });
     
             JLabel messageBodyTitle = new JLabel("Full Message:");
             messageBodyTitle.setFont(italic.deriveFont(20f));
@@ -114,8 +118,8 @@ public class NotificationsPanel extends JPanel {
             sendMessageButton.setBorder(BorderFactory.createMatteBorder(10, 50, 10, 50, bg));
             sendMessageButton.addActionListener(e1 -> {
                 try {
-                    if(userNameInput.getText().trim().length() != 0 && fullMessageBody.getText().trim().length() != 0) {
-                        messageManager.sendMessage(trader.getId(), messageManager.getUserByUsername(userNameInput.getText().trim()).getId(), fullMessageBody.getText().trim());
+                    if(fullMessageBody.getText().trim().length() != 0) {
+                        messageManager.sendMessage(trader.getId(), ((Trader)traders.getSelectedItem()).getId(), fullMessageBody.getText().trim());
                         messageDetailsModal.dispose();
                     }
 				} catch (UserNotFoundException | AuthorizationException e2) {
@@ -124,7 +128,7 @@ public class NotificationsPanel extends JPanel {
             });
 
             messageDetailsPanel.add(userNameTitle);
-            messageDetailsPanel.add(userNameInput);
+            messageDetailsPanel.add(traders);
             messageDetailsPanel.add(messageBodyTitle);
             messageDetailsPanel.add(fullMessageBody);
             messageDetailsModal.add(messageDetailsPanel);
