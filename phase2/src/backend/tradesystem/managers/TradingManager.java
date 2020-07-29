@@ -63,8 +63,7 @@ public class TradingManager extends Manager {
             throw new CannotTradeException("You have not lent enough to borrow");
 
         // This is used to check if the items are in each user's inventory
-        if ((!firstUserOfferId.equals("") && !trader.getAvailableItems().contains(firstUserOfferId)) ||
-                (!secondUserOfferId.equals("") && !secondTrader.getAvailableItems().contains(secondUserOfferId)))
+        if (!hasItem(trader, firstUserOfferId) || !hasItem(secondTrader, secondUserOfferId))
             throw new AuthorizationException("The trade offer contains an item that the user does not have");
 
         // Check whether the two dates are valid.
