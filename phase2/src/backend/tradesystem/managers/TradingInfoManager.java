@@ -262,10 +262,9 @@ public class TradingInfoManager extends Manager {
      * @return a list of all possible suggested trades (trades where each trader gives an item from the other trader's wishlist)
      * @throws UserNotFoundException bad trader ids
      * @throws AuthorizationException can't suggest because user is not a trader or is frozen
-     * @throws TradableItemNotFoundException a tradable item wasn't found
      */
     public ArrayList<Trade> suggestTrade(String thisTraderId) throws
-            UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+            UserNotFoundException, AuthorizationException {
         Trader thisTrader = getTrader(thisTraderId);
         ArrayList<Trade> suggestedTrades = new ArrayList<>();
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
