@@ -266,71 +266,70 @@ public class TradingInfoManager extends Manager {
     }
 
     /**
-     * Checks through wishlist of all other traders and returns the most reasonable trade (returns the info necessary to make a trade not an actual trade object)
-     * @param itemGet is the item the trader wishes to get
-     * @param itemGive is the item the trader wishes to give
+     * trader inputs an item they want to trade then it gets an array of most reasonable trades, with every
+     * item in the this traders wishlist
      * @param thisTraderId is the id of the trader
-     * @return an array with two cells, first cell containing the traders name, second cell containing the item name
+     * @param itemToLend is the name of the item that the trader wants to lend from the traders inventory
+     * @param meetingTime is the time of the first meeting
+     * @param secondMeetingTime is the time of the second meeting
+     * @param location is the location of the meetings
+     * @param allowedEdits is the max num of edits the traders can max
+     * @param message
+     * @return An array of trades(the most reasonable trades with every item in the users wishlist)
+     * @throws UserNotFoundException
+     * @throws AuthorizationException
+     * @throws TradableItemNotFoundException
      */
-    public String[] automatedTradeSuggestion(String thisTraderId, String itemGet, String itemGive) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
-        //! note that suggestLend may need to be changed, reason commented in suggestLend
-        //and if we do change it then we will also need to change 2 lines on suggestTrade
+    public ArrayList<Trade> automatedTradeSuggestion(String thisTraderId, String itemToLend, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
         ArrayList<Trader> allTraders = getAllTraders();
+        ArrayList<Trade> suggestedTrades = new ArrayList<>();
         Trader thisTrader = getTrader(thisTraderId);
         allTraders.remove(thisTrader); //so it doesn't trade with itself
 
-        //This will return traders with the exact items to trade
-        //IDK if this is 100 percent necessary but If i don't include this then it will take longer to find an exact match
-        //since it will have to go through a more complex searching algorithm
-        for(Trader trader: allTraders){
-            HashMap<TradableItem, TradableItem> items = suggestTrade(thisTraderId,trader.getId());
-            if(suggestTrade(thisTraderId,trader.getId()) != null){
-                TradableItem key = ((TradableItem)items.keySet().toArray()[0]); //gets first key in hashmap
-                String[] tradeSuggestion = {trader.getUsername(),items.get(key).getName()};
-                return tradeSuggestion;
+
+        //goes through this traders wishlist and creates the most reasonable trades
+        for(String wishlistItemIds: thisTrader.getWishlist()){
+            String wishlistItemName = getTradableItem(wishlistItemIds).getName();
+            int max = 0;
+            String mostSimItem = null;
+            String mostSimTraderId = null;
+
+            for(Trader otherTrader: allTraders){
+
+                //returns the most similar item to the one that the trader wishes to have
+                Object[] similarGetItem = similarSearch(wishlistItemName, otherTrader.getAvailableItems());
+
+                //returns the most similar item to the one that the trader wishes to give away
+                Object[] similarGiveItem = similarSearch(itemToLend, otherTrader.getWishlist());
+
+                if(((int)similarGetItem[1] + (int)similarGiveItem[1]) > max){
+                    max = ((int)similarGetItem[1] + (int)similarGetItem[1]);
+                    mostSimItem = (String)similarGetItem[0];
+                    mostSimTraderId = otherTrader.getId();
+                }
             }
+            Trade trade = new Trade(thisTraderId, mostSimTraderId,meetingTime, secondMeetingTime, location, itemToLend, mostSimItem, allowedEdits, message);
+            suggestedTrades.add(trade);
         }
-
-        //if there are no exact matches then it will search for items with similar names
-        int max = 0;
-        String mostSimItem = null;
-        String mostSimTrader = null;
-
-
-        for(Trader otherTrader: allTraders){
-            //returns the most similar item to the one that the trader wishes to have
-            HashMap similarGetItem = similarSearch(itemGet, otherTrader.getAvailableItems());
-
-            //returns the most similar item to the one that the trader wishes to give away
-            HashMap similarGiveItem = similarSearch(itemGive, otherTrader.getWishlist());
-
-            //the keys of the hashmap are the item names, the values of the hashmap
-            //are how similar it is the the inputted item.
-            String keyGet = (String)similarGetItem.keySet().toArray()[0];
-            String keyGive = (String)similarGiveItem.keySet().toArray()[0];
-
-            if(((int)similarGiveItem.get(keyGive) + (int)similarGetItem.get(keyGet))> max){
-                max = (int)similarGiveItem.get(keyGive) + (int)similarGetItem.get(keyGet);
-                mostSimItem = keyGet;
-                mostSimTrader = otherTrader.getUsername();
-            }
-        }
-        String[] tradeSuggestion = {mostSimTrader, mostSimItem};
-        return tradeSuggestion;
+        return suggestedTrades;
 
     }
+
+
 
     /**checks how many similarities name has with strings in list
      *
      * @param name is the name of the item we wish to find a similar name of
      * @param list is the list of strings that we are traversing through
-     * @return the most similar name in list
+     * @return an array with two cells containing the items name and the score of how similar it is
      */
-    public HashMap<String, Integer> similarSearch(String name, ArrayList<String> list){
+    private Object[] similarSearch(String name, ArrayList<String> list){
             HashMap<String, Integer>  similarNames = new HashMap<>();
 
-            //If this ever gets fully functional it can be used instead of our current queries
+            //Can accurately work with different letters and different number of words however missing letters
+        // will prob cause a problem
+
 
         //Goes through all items in list and counts how many of the same chars are in the word
         for(String otherNames: list){
@@ -372,9 +371,8 @@ public class TradingInfoManager extends Manager {
                 mostSimilarName = simName;
             }
         }
-        HashMap<String, Integer> simMap = new HashMap<>();
-        simMap.put(mostSimilarName, max);
-        return simMap;
+        Object[] arr = {mostSimilarName, max};
+        return arr;
     }
 
 
