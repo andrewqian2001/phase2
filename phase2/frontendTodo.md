@@ -43,7 +43,7 @@ SearchPanel:
   
 **TODO: adminPanel**  
   
-- Fix the logo circle icon   
+- ~~Fix the logo circle icon~~   
 - ~~Fix menuContainer width just like traderPanel~~  
   
 OverviewPanel:  
