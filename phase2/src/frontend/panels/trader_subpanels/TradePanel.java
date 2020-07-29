@@ -5,7 +5,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.CannotTradeException;
@@ -35,6 +37,8 @@ public class TradePanel extends JPanel implements ActionListener {
     private Color gray2 = new Color(142,142,142);
     private Color green = new Color(27,158,36);
     private Color red = new Color(219, 58, 52);
+
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
     public TradePanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.trader = trader;
@@ -319,7 +323,7 @@ public class TradePanel extends JPanel implements ActionListener {
                         firstMeetingDateTitle.setOpaque(false);
                         firstMeetingDateTitle.setForeground(Color.WHITE);
 
-                        JLabel firstMeetingDate = new JLabel("<html><pre>" + tradeRequest.getMeetingTime().toString().substring(0, tradeRequest.getMeetingTime().toString().length() - 12) + "</pre></html>");
+                        JLabel firstMeetingDate = new JLabel("<html><pre>" + dateFormat.format(tradeRequest.getMeetingTime()) + "</pre></html>");
                         firstMeetingDate.setFont(italic.deriveFont(20f));
                         firstMeetingDate.setPreferredSize(new Dimension(290, 50));
                         firstMeetingDate.setOpaque(false);
@@ -338,7 +342,7 @@ public class TradePanel extends JPanel implements ActionListener {
                         secondMeetingDate.setForeground(Color.WHITE);
 
                         if(tradeRequest.getSecondMeetingTime() != null) {
-                            secondMeetingDate.setText("<html><pre>" + tradeRequest.getSecondMeetingTime().toString().substring(0, tradeRequest.getSecondMeetingTime().toString().length() - 12) + "</pre></html>");
+                            secondMeetingDate.setText("<html><pre>" + dateFormat.format(tradeRequest.getSecondMeetingTime()) + "</pre></html>");
                         } else {
                             secondMeetingDate.setText("N/A");
                         }
@@ -452,7 +456,7 @@ public class TradePanel extends JPanel implements ActionListener {
                         firstMeetingDateTitle.setOpaque(false);
                         firstMeetingDateTitle.setForeground(Color.WHITE);
 
-                        JLabel firstMeetingDate = new JLabel("<html><pre>" + tradeRequest.getMeetingTime().toString().substring(0, tradeRequest.getMeetingTime().toString().length() - 12) + "</pre></html>");
+                        JLabel firstMeetingDate = new JLabel("<html><pre>" + dateFormat.format(tradeRequest.getMeetingTime()) + "</pre></html>");
                         firstMeetingDate.setFont(italic.deriveFont(20f));
                         firstMeetingDate.setPreferredSize(new Dimension(290, 50));
                         firstMeetingDate.setOpaque(false);
@@ -473,7 +477,7 @@ public class TradePanel extends JPanel implements ActionListener {
                         secondMeetingDate.setForeground(Color.WHITE);
 
                         if(tradeRequest.getSecondMeetingTime() != null) {
-                            secondMeetingDate.setText("<html><pre>" + tradeRequest.getSecondMeetingTime().toString().substring(0, tradeRequest.getSecondMeetingTime().toString().length() - 12) + "</pre></html>");
+                            secondMeetingDate.setText("<html><pre>" + dateFormat.format(tradeRequest.getSecondMeetingTime()) + "</pre></html>");
                         } else {
                             secondMeetingDate.setText("N/A");
                         }
@@ -625,9 +629,9 @@ public class TradePanel extends JPanel implements ActionListener {
 
                 JLabel tradeMeetingTime;
                 if(ongoingTrade.isFirstUserConfirmed1() && ongoingTrade.isSecondUserConfirmed1()) {
-                    tradeMeetingTime = new JLabel(ongoingTrade.getSecondMeetingTime().toString().substring(0, ongoingTrade.getSecondMeetingTime().toString().length() - 12));
+                    tradeMeetingTime = new JLabel(dateFormat.format(ongoingTrade.getSecondMeetingTime()));
                 } else {
-                    tradeMeetingTime = new JLabel(ongoingTrade.getMeetingTime().toString().substring(0, ongoingTrade.getMeetingTime().toString().length() - 12));
+                    tradeMeetingTime = new JLabel(dateFormat.format(ongoingTrade.getMeetingTime()));
                 }
                 // JLabel tradeMeetingTime = new JLabel("2020/07/30@14:2"+i);
                 tradeMeetingTime.setFont(regular.deriveFont(20f));
@@ -728,7 +732,7 @@ public class TradePanel extends JPanel implements ActionListener {
                     firstMeetingDateTitle.setOpaque(false);
                     firstMeetingDateTitle.setForeground(Color.WHITE);
 
-                    JLabel firstMeetingDate = new JLabel("<html><pre>" + ongoingTrade.getMeetingTime().toString().substring(0, ongoingTrade.getMeetingTime().toString().length() - 12) + "</pre></html>");
+                    JLabel firstMeetingDate = new JLabel("<html><pre>" + dateFormat.format(ongoingTrade.getMeetingTime()) + "</pre></html>");
                     firstMeetingDate.setFont(italic.deriveFont(20f));
                     firstMeetingDate.setPreferredSize(new Dimension(290, 50));
                     firstMeetingDate.setOpaque(false);
@@ -747,7 +751,7 @@ public class TradePanel extends JPanel implements ActionListener {
                     secondMeetingDate.setForeground(Color.WHITE);
 
                     if(ongoingTrade.getSecondMeetingTime() != null) {
-                        secondMeetingDate.setText("<html><pre>" + ongoingTrade.getSecondMeetingTime().toString().substring(0, ongoingTrade.getSecondMeetingTime().toString().length() - 12) + "</pre></html>");
+                        secondMeetingDate.setText("<html><pre>" + dateFormat.format(ongoingTrade.getSecondMeetingTime()) + "</pre></html>");
                     } else {
                         secondMeetingDate.setText("N/A");
                     }
