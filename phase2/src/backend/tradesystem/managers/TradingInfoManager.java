@@ -329,8 +329,7 @@ public class TradingInfoManager extends Manager {
         Trader thisTrader = getTrader(thisTraderId);
         allTraders.remove(thisTrader); //so it doesn't trade with itself
 
-
-        //goes through this traders wishlist and creates the most reasonable trades
+        //goes through this traders wishlist and creates the most reasonable trades with other traders
         for (String wishlistItemIds : thisTrader.getWishlist()) {
             String wishlistItemName = getTradableItem(wishlistItemIds).getName();
             int max = 0;
@@ -369,16 +368,14 @@ public class TradingInfoManager extends Manager {
     private Object[] similarSearch(String name, ArrayList<String> list) {
 
         ArrayList<Object[]> similarNames = new ArrayList<>();
+
         //Can accurately work with different letters and different number of words however missing letters
         // will prob cause a problem
 
         //Goes through all items in list and counts how many of the same chars are in the word
         for (String otherNames : list) {
             int maxSim = 0;
-
-            //traverses otherName, on each char of otherName, it will traverse up to
-            //name.length() more chars and will see how many chars are the same. It will then store the max amount of same
-            //chars that otherName has with name and store that in a hashmap
+            //Finds the maximum similarity score for each word in list then adds it to similarNames
             for (int i = 0; i < otherNames.length(); i++) {
                 int similarities = 0;
                 int i2 = i;
@@ -393,22 +390,34 @@ public class TradingInfoManager extends Manager {
                     maxSim = similarities;
                 }
             }
+            //Note similarNames contains the max similarity score for each String in list, not
+            //then we need to find the max of those similarity scores and return it
             similarNames.add(new Object[]{otherNames, maxSim});
+
         }
 
         /*
         We may also have to consider size of the string when determining which string is most similar b/c for e.g say we are searching for a name called An,
         then we should return And instead of Andrew however the algorithm currently does not implement this, can
         just add another condition on (x>max)
+
+        We also have to consider when there is a missing char in the string, rn it can work with
+        misspelled strings but if a char is missing the search wont be as accurate
+        for eg if we are looking for apple and we have aple the similarity score should be
+        4 but it will prob be 2
          */
 
-        //finds highest value in array (which indicates most similar OtherName)
+        //finds the max similarity score in similarNames
         int max = 0;
         String mostSimilarName = null;
         for (Object[] simNameArr : similarNames) {
             int x = (int)simNameArr[1]; //x is similarity score
             String similarName = (String)simNameArr[0];
-            if (x > max) {
+
+            //The reason for the || x== max && .... is b/c
+            //say we have name = a, one of the strings in list is an, however another name is andrew
+            // both a and andrew would have the same similarity score but an is obviously better
+            if (x > max || x == max && (Math.abs(similarName.length()-name.length()) < (Math.abs(mostSimilarName.length()-name.length())))){
                 max = x;
                 mostSimilarName = similarName;
             }
