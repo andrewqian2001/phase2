@@ -5,6 +5,7 @@ import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
 import backend.models.users.User;
+import frontend.TradeBuilder;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -208,60 +209,92 @@ public class TradingInfoManager extends Manager {
     }
 
     /**
-     * Used for suggesting what items that otherTrader will want from thisTrader based on the wishlist
+     * Returns a list of the best lends that trader thisTraderId can preform
      *
-     * @param thisTraderId  the trader that wants to know what otherTrader will want
-     * @param otherTraderId the other trader
-     * @return list of items that otherTrader will want
-     * @throws UserNotFoundException         if user isn't found
-     * @throws AuthorizationException        thisTrader isn't allowed to get suggestions
-     * @throws TradableItemNotFoundException if the tradable item isn't found
+     * @param thisTraderId The id of the trader that will be lending the item
+     * @return a list of the best lends that trader thisTraderId can preform
+     * @throws UserNotFoundException if the user can not be found
+     * @throws AuthorizationException if the user is frozen
      */
-    public ArrayList<TradableItem> suggestLend(String thisTraderId, String otherTraderId) throws
-            UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+    public ArrayList<Trade> suggestLend(String thisTraderId) throws
+            UserNotFoundException, AuthorizationException {
         Trader thisTrader = getTrader(thisTraderId);
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
-        Trader otherTrader = getTrader(otherTraderId);
-        ArrayList<TradableItem> suggestions = new ArrayList<>();
-        /*
-        I think this function should be called suggestBorrow?
-        b/c it gets the other users items that this user wishes to have
-         */
-        for (String wishlistId : thisTrader.getWishlist()) {
-            for (String tradableItemId : otherTrader.getAvailableItems()) {
-                if (wishlistId.equals(tradableItemId)) {
-                    suggestions.add(getTradableItem(wishlistId));
-                    break;
+
+        ArrayList<Trade> result = new ArrayList<>();
+        HashMap<String, Boolean> thisTraderItems = new HashMap<>();
+        HashMap<String, ArrayList<String>> suggestions = new HashMap<>(); // trader id to list of suggestions
+
+        // Store possible suggestions in a hashmap for better time complexity
+        for(String item : thisTrader.getAvailableItems()){
+            thisTraderItems.put(item, true);
+        }
+
+        // Get suggested items for all traders
+        for (Trader trader : getAllTradersInCity(thisTrader.getCity())){
+            if (trader.getId() == thisTraderId){
+                continue;
+            }
+            for (String item : trader.getWishlist()){
+                if (thisTraderItems.getOrDefault(item, false)){
+
+                    TradeBuilder builder = new TradeBuilder();
+                    builder.fromUser(thisTraderId);
+                    builder.toUser(trader.getId());
+                    builder.setFirstUserOffer(item);
+                    builder.setMeeting1(new Date(System.currentTimeMillis() + 100000));
+                    builder.setMeeting2(new Date(System.currentTimeMillis() + 1000000));
+                    builder.setAllowedEditsPerUser(3);
+                    builder.setLocation(thisTrader.getCity());
+                    result.add(builder.createTrade());
+
                 }
             }
         }
 
-        return suggestions;
+        return result;
     }
 
     /**
      * Suggests all item trades that can be done between two users
      *
-     * @param trader1 is the id of this trader
-     * @param trader2 is the trader this trader wants to trade with
-     * @return a hashmap of the items that can be traded between two users (key is your item to lend, value the item to borrow)
+     * @param thisTraderId is the id of this trader
+     * @return a list of all possible suggested trades (trades where each trader gives an item from the other trader's wishlist)
      * @throws UserNotFoundException bad trader ids
      * @throws AuthorizationException can't suggest because user is not a trader or is frozen
-     * @throws TradableItemNotFoundException a tradable item wasn't found
      */
-    public HashMap<TradableItem, TradableItem> suggestTrade(String trader1, String trader2) throws
-            UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
-        Trader thisTrader = getTrader(trader1);
-        HashMap<TradableItem, TradableItem> suggestedTrades = new HashMap<>();
+    public ArrayList<Trade> suggestTrade(String thisTraderId) throws
+            UserNotFoundException, AuthorizationException {
+        Trader thisTrader = getTrader(thisTraderId);
+        ArrayList<Trade> suggestedTrades = new ArrayList<>();
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
 
-        ArrayList<TradableItem> lend = suggestLend(trader1, trader2);
-        ArrayList<TradableItem> borrow = suggestLend(trader2, trader1);
-        int i = 0;
-        while (i < lend.size() && i < borrow.size()) {
-            suggestedTrades.put(lend.get(i), borrow.get(i));
-            i++;
+        ArrayList<Trade> toLend = suggestLend(thisTraderId);
+
+        HashMap<String, Boolean> thisTraderWishlist = new HashMap<>();
+        // Store wishlist items in a hashmap for better time complexity
+        for(String item : thisTrader.getAvailableItems()){
+            thisTraderWishlist.put(item, true);
         }
+
+        // Create trades where both traders give an item that is in each other's wish list
+        for (Trade lendTrade : toLend){
+            for(String candidateItem : getTrader(lendTrade.getSecondUserId()).getAvailableItems()){
+                if (thisTraderWishlist.getOrDefault(candidateItem, false)){
+                    TradeBuilder builder = new TradeBuilder();
+                    builder.fromUser(thisTraderId);
+                    builder.toUser(lendTrade.getSecondUserId());
+                    builder.setFirstUserOffer(lendTrade.getFirstUserOffer());
+                    builder.setSecondUserOffer(candidateItem);
+                    builder.setMeeting1(new Date(System.currentTimeMillis() + 100000));
+                    builder.setMeeting2(new Date(System.currentTimeMillis() + 1000000));
+                    builder.setAllowedEditsPerUser(3);
+                    builder.setLocation(thisTrader.getCity());
+                    suggestedTrades.add(builder.createTrade());
+                }
+            }
+        }
+
         return suggestedTrades;
     }
 
