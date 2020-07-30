@@ -130,11 +130,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         logoutButton.setOpaque(true);
         logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(e -> {
-            try {
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout();
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
         });
         gbc.weighty = 0.1;
         gbc.gridy = 7;

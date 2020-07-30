@@ -109,7 +109,7 @@ public class TemporarySetup {
         }
     }
 
-
+    // Deletes info in the ser files to reset it
     private void refreshFiles() {
         String[] paths = {DatabaseFilePaths.TRADE.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(),
                 DatabaseFilePaths.USER.getFilePath()};

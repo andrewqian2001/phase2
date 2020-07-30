@@ -13,89 +13,137 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 
+/**
+ * This represents the login screen
+ */
 public class LoginPanel extends JPanel implements ActionListener {
-
-    private JLabel title, usernameTitle, passwordTitle, loginNotification, copyright;
+    private final JLabel loginNotification  = new JLabel();
     protected JTextField usernameInput;
     protected JPasswordField passwordInput;
-    private JPanel buttonContainer, info, inputs;
-    private GridBagConstraints gbc;
     protected JButton loginButton, registerButton;
-    private LoginManager loginManager;
+    private final LoginManager loginManager = new LoginManager();
 
-    // Color Palette
-    private Color bg = new Color(15, 20, 23);
-    private Color red = new Color(219, 58, 52);
-    private Color blue = new Color(8, 76, 97);
-    private Color purple = new Color(121,35,89);
-    private Color input = new Color(156,156,156);
-
+    /**
+     * New login panel
+     * @param regular font for regular
+     * @param bold font for bold
+     * @param italic font for italics
+     * @param boldItalic font for bold italics
+     * @throws IOException if logging in causes issues
+     */
     public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+        // Colours
+        final Color red = new Color(219, 58, 52);
+        final Color input = new Color(156,156,156);
+
+        // Overall panel settings
         this.setSize(480, 720);
         this.setBorder(BorderFactory.createEmptyBorder(60, 50, 20, 50));
-        // this.setBackground(bg);
         this.setLayout(new GridLayout(4, 1));
         this.setOpaque(false);
 
-        loginManager = new LoginManager();
+        // For managing spacing
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        title = new JLabel("TradeSystem");
-        title.setFont(boldItalic.deriveFont(60f));
-        title.setForeground(Color.WHITE);
-        title.setHorizontalAlignment(JLabel.CENTER);
-
-        inputs = new JPanel();
-        inputs.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
-        inputs.setLayout(new GridBagLayout());
-        gbc = new GridBagConstraints();
-        gbc.insets = new Insets(0,0,40,10);
-        inputs.setOpaque(false);
-
-        usernameTitle = new JLabel("Username:");
-        usernameTitle.setFont(italic.deriveFont(20f));
-        usernameTitle.setForeground(Color.WHITE);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        inputs.add(usernameTitle, gbc);
-
-        usernameInput = new JTextField();
-        usernameInput.setFont(regular.deriveFont(20f));
-        usernameInput.setBackground(input);
-        usernameInput.setForeground(Color.BLACK);
-        usernameInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        gbc.gridx = 1;
-        gbc.weightx = 1.0;
-        inputs.add(usernameInput, gbc);
-
-        gbc.insets = new Insets(0,0,0,10);
-
-        passwordTitle = new JLabel("Password:");
-        passwordTitle.setFont(italic.deriveFont(20f));
-        passwordTitle.setForeground(Color.WHITE);
-        passwordTitle.setHorizontalAlignment(JLabel.LEFT);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.weightx = 0.0;
-        inputs.add(passwordTitle, gbc);
-
-        passwordInput = new JPasswordField();
-        passwordInput.setFont(regular.deriveFont(20f));
-        passwordInput.setBackground(input);
-        passwordInput.setForeground(Color.BLACK);
-        passwordInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        gbc.gridx = 1;
-        gbc.weightx = 1.0;
-        inputs.add(passwordInput, gbc);
-
-        //TODO: REMOVE before final deployment (only for testing)
+        // Content of the login screen
+        JLabel title = getTitleLabel(boldItalic, "TradeSystem", 60f, JLabel.CENTER);
+        JPanel inputs = getInputsPanel();
+        manageUsernameTitleLabel(italic, gbc, inputs);
+        manageUsernameInputField(regular, input, gbc, inputs);
+        managePasswordTitle(italic, gbc, inputs);
+        managePasswordField(regular, input, gbc, inputs);
+        //TODO: REMOVE BELOW FOR DEPLOYMENT (only for testing)
         usernameInput = new JTextField("trader7");
         passwordInput = new JPasswordField("userPassword1");
+        //TODO: REMOVE ABOVE BEFORE DEPLOYMENT
+        JPanel buttonContainer = manageButtonPanel(bold, gbc);
+        manageRegisterButton(bold, gbc, buttonContainer);
+        JPanel info = manageInfoPanel();
+        manageLoginNotification(boldItalic, red, info);
+        manageCopyrightLabel(regular, info);
+        this.add(title);
+        this.add(inputs);
+        this.add(buttonContainer);
+        this.add(info);
 
-        buttonContainer = new JPanel();
+    }
+    /**
+     * Used for displaying some message in the login screen
+     * @param msg the message being displayed
+     */
+    public void notifyLogin(String msg) {
+        loginNotification.setText(msg);
+        loginNotification.setVisible(true);
+    }
+
+    /**
+     * For actions of the button
+     * @param e the event that occurred
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getActionCommand().equals("Login")) {
+            try {
+                User loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                ((WindowManager)SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+            } catch (UserNotFoundException ignored) {
+                notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } else if(e.getActionCommand().equals("Register")) {
+            try {
+                User loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+            } catch(BadPasswordException ex) {
+                notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
+            } catch(UserAlreadyExistsException ignored) {
+                notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
+            } catch(IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void manageCopyrightLabel(Font regular, JPanel info) {
+        JLabel copyright = new JLabel("Copyright © 2020 group_56. All rights reserved.");
+        copyright.setFont(regular.deriveFont(10f));
+        copyright.setForeground(new Color(169,169,169));
+        copyright.setHorizontalAlignment(JLabel.CENTER);
+        info.add(copyright);
+    }
+
+    private void manageLoginNotification(Font boldItalic, Color red, JPanel info) {
+        loginNotification.setFont(boldItalic.deriveFont(20f));
+        loginNotification.setForeground(red);
+        loginNotification.setHorizontalAlignment(JLabel.CENTER);
+        loginNotification.setVisible(false);
+        info.add(loginNotification);
+    }
+
+    private JPanel manageInfoPanel() {
+        JPanel info = new JPanel();
+        info.setLayout(new GridLayout(2,0));
+        info.setOpaque(false);
+        return info;
+    }
+
+    private void manageRegisterButton(Font bold, GridBagConstraints gbc, JPanel buttonContainer) {
+        registerButton = new JButton("Register");
+        registerButton.setFont(bold.deriveFont(20f));
+        registerButton.setForeground(Color.RED);
+        registerButton.setOpaque(false);
+        registerButton.setContentAreaFilled(false);
+        registerButton.setBorderPainted(false);
+        registerButton.addActionListener(this);
+        gbc.gridy = 1;
+        buttonContainer.add(registerButton, gbc);
+    }
+
+    private JPanel manageButtonPanel(Font bold, GridBagConstraints gbc) {
+        JPanel buttonContainer = new JPanel();
         buttonContainer.setLayout(new GridBagLayout());
         buttonContainer.setOpaque(false);
-
         gbc.insets = new Insets(0,80,0,80);
         loginButton = new JButton("Login");
         loginButton.setForeground(new Color(98,123,255));
@@ -107,69 +155,66 @@ public class LoginPanel extends JPanel implements ActionListener {
         gbc.gridx = 0;
         gbc.gridy = 0;
         buttonContainer.add(loginButton, gbc);
+        return buttonContainer;
+    }
 
-        registerButton = new JButton("Register");
-        registerButton.setFont(bold.deriveFont(20f));
-        registerButton.setForeground(Color.RED);
-        registerButton.setOpaque(false);
-        registerButton.setContentAreaFilled(false);
-        registerButton.setBorderPainted(false);
-        registerButton.addActionListener(this);
+    private void managePasswordField(Font regular, Color input, GridBagConstraints gbc, JPanel inputs) {
+        passwordInput = new JPasswordField();
+        passwordInput.setFont(regular.deriveFont(20f));
+        passwordInput.setBackground(input);
+        passwordInput.setForeground(Color.BLACK);
+        passwordInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        inputs.add(passwordInput, gbc);
+    }
+
+    private void managePasswordTitle(Font italic, GridBagConstraints gbc, JPanel inputs) {
+        JLabel passwordTitle = getTitleLabel(italic, "Password:", 20f, JLabel.LEFT);
+        gbc.insets = new Insets(0,0,0,10);
+        gbc.gridx = 0;
         gbc.gridy = 1;
-        buttonContainer.add(registerButton, gbc);
-
-        info = new JPanel();
-        info.setLayout(new GridLayout(2,0));
-        info.setOpaque(false);
-
-        loginNotification = new JLabel();
-        loginNotification.setFont(boldItalic.deriveFont(20f));
-        loginNotification.setForeground(red);
-        loginNotification.setHorizontalAlignment(JLabel.CENTER);
-        loginNotification.setVisible(false);
-        info.add(loginNotification);
-
-        copyright = new JLabel("Copyright © 2020 group_56. All rights reserved.");
-        copyright.setFont(regular.deriveFont(10f));
-        copyright.setForeground(new Color(169,169,169));
-        copyright.setHorizontalAlignment(JLabel.CENTER);
-        info.add(copyright);
-
-        this.add(title);
-        this.add(inputs);
-        this.add(buttonContainer);
-        this.add(info);
-
+        gbc.weightx = 0.0;
+        inputs.add(passwordTitle, gbc);
     }
 
-    public void notifyLogin(String msg) {
-        loginNotification.setText(msg);
-        loginNotification.setVisible(true);
+    private void manageUsernameInputField(Font regular, Color input, GridBagConstraints gbc, JPanel inputs) {
+        usernameInput = new JTextField();
+        usernameInput.setFont(regular.deriveFont(20f));
+        usernameInput.setBackground(input);
+        usernameInput.setForeground(Color.BLACK);
+        usernameInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        gbc.gridx = 1;
+        gbc.weightx = 1.0;
+        inputs.add(usernameInput, gbc);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("Login")) {
-            try {
-                User loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
-                ((WindowManager)SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
-            } catch (UserNotFoundException exception) {
-                notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
-            } catch (IOException exception) {
-                System.out.println(exception.getMessage());
-            }
-        } else if(e.getActionCommand().equals("Register")) {
-            try {
-                User loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
-                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
-            } catch(BadPasswordException exception) { 
-                notifyLogin("<html><b><i>Invalid Password: " + exception.getMessage() + "</i></b></html>");
-            } catch(UserAlreadyExistsException exception) {
-                notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
-            } catch(IOException exception) {
-                System.out.println(exception.getMessage());
-            }
-        }
+    private void manageUsernameTitleLabel(Font italic, GridBagConstraints gbc, JPanel inputs) {
+        JLabel usernameTitle = new JLabel("Username:");
+        usernameTitle.setFont(italic.deriveFont(20f));
+        usernameTitle.setForeground(Color.WHITE);
+        gbc.insets = new Insets(0,0,40,10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        inputs.add(usernameTitle, gbc);
     }
-    
+
+    private JPanel getInputsPanel() {
+        JPanel inputs = new JPanel();
+        inputs.setBorder(BorderFactory.createEmptyBorder(30, 0, 0, 0));
+        inputs.setLayout(new GridBagLayout());
+        inputs.setOpaque(false);
+        return inputs;
+    }
+
+    private JLabel getTitleLabel(Font boldItalic, String tradeSystem, float v, int center) {
+        JLabel title = new JLabel(tradeSystem);
+        title.setFont(boldItalic.deriveFont(v));
+        title.setForeground(Color.WHITE);
+        title.setHorizontalAlignment(center);
+        return title;
+    }
+
+
 }
