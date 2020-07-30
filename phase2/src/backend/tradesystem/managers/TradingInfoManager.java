@@ -326,14 +326,14 @@ public class TradingInfoManager extends Manager {
      */
     public Trade automatedTradeSuggestion(String thisTraderId, String itemToBorrow, String itemToLend, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
-        ArrayList<Trader> allTraders = getAllTraders();
+        //Note that the item this trader will lend is for sure going to be itemToLend, however
+        //the item you borrow is the one most similar to itemToBorrow
 
+        ArrayList<Trader> allTraders = getAllTraders();
         Trader thisTrader = getTrader(thisTraderId);
         allTraders.remove(thisTrader); //so it doesn't trade with itself
 
         //goes through this traders wishlist and creates the most reasonable trades with other traders
-
-
         int max = 0;
         String mostSimItem = null;
         String mostSimTraderId = null;
@@ -341,20 +341,20 @@ public class TradingInfoManager extends Manager {
         for (Trader otherTrader : allTraders) {
             //returns the most similar item to the one that the trader wishes to have
             Object[] similarGetItem = similarSearch(itemToBorrow, otherTrader.getAvailableItems());
-            System.out.println(similarGetItem[0] + " is the sim item of trader " + otherTrader.getUsername());
+
             //returns the most similar item to the one that the trader wishes to give away
             Object[] similarGiveItem = similarSearch(itemToLend, otherTrader.getWishlist());
+            System.out.println("similar item to crack : " + similarGiveItem[0]);
 
-            if (((int) similarGetItem[1] + (int) similarGiveItem[1]) > max) {
+            if (((int)similarGetItem[1] + (int)similarGiveItem[1]) > max) {
 
-                max = ((int) similarGetItem[1] + (int) similarGetItem[1]);
+                max = ((int)similarGetItem[1] + (int)similarGiveItem[1]);
                 mostSimItem = (String) similarGetItem[0];
                 mostSimTraderId = otherTrader.getId();
+
             }
         }
         Trade trade = new Trade(thisTraderId, mostSimTraderId, meetingTime, secondMeetingTime, location, itemToLend, mostSimItem, allowedEdits, message);
-        System.out.println(getTrader(mostSimTraderId) + "is the most sim trader, " + mostSimItem +" is the most similar item");
-
         return trade;
 
     }
@@ -387,13 +387,12 @@ public class TradingInfoManager extends Manager {
         for (String otherNamesId : list) {
 
             String otherNames;
+
             if(isListOfTraders){
                 otherNames = getTrader(otherNamesId).getUsername();
             }else{
                 otherNames = getTradableItem(otherNamesId).getName();
             }
-            System.out.println();
-            System.out.println(otherNames + " should be a name not a id, name is " + name);
 
             int maxSim = 0;
             //Finds the maximum similarity score for each word in list then adds it to similarNames
@@ -430,8 +429,10 @@ public class TradingInfoManager extends Manager {
             if (x > max || x == max && (Math.abs(similarName.length()-name.length()) < (Math.abs(mostSimilarName.length()-name.length())))){
                 max = x;
                 mostSimilarName = similarName;
+
             }
         }
+
         Object[] arr = {mostSimilarName, max};
         return arr;
     }

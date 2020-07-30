@@ -32,6 +32,11 @@ public class TestTradingInfo {
     private Trader[] traders;
 
     private Trader tHasWishlist;
+    private Trader tHasInventory1;
+    private Trader tHasInventory2;
+    private Trader tHasInventory3;
+    private Trader tHasInventory4;
+    private Trader tHasInventory5;
 
     private Admin admin;
     private final String USER_PATH = "./test/testUsers.ser";
@@ -71,23 +76,11 @@ public class TestTradingInfo {
             //Testing for automatedTradeSuggestion below
 
             tHasWishlist = (Trader) loginManager.registerUser("tHasWishlist", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
+            userDatabase.update(tHasWishlist);
             TradableItem crack = new TradableItem("crack", "crack");
             tradableItemDatabase.update(crack);
-            System.out.println(crack.getName());
-            tHasWishlist = traderManager.addRequestItem(tHasWishlist.getId(), crack.getId(), "desc");
+            tHasWishlist = traderManager.addRequestItem(tHasWishlist.getId(), crack.getName(), "desc");
             tHasWishlist = handleRequestsManager.processItemRequest(tHasWishlist.getId(), tHasWishlist.getRequestedItems().get(0), true);
-
-            userDatabase.update(tHasWishlist);
-
-            /*
-            ???????????????????????????????????????
-            why is the name of the items an id?
-             */
-            for(String ids: tHasWishlist.getAvailableItems()){
-                System.out.println("id : " + ids);
-                System.out.println("name : " + tradingInfoManager.getTradableItem(ids).getName());
-            }
-            /*
 
 
             tHasInventory1 = (Trader) loginManager.registerUser("tHasInventory1", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
@@ -102,6 +95,7 @@ public class TestTradingInfo {
             tHasInventory1 = traderManager.addRequestItem(tHasInventory1.getId(), "wack ballet", "desc");
             tHasInventory1 = handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
             traderManager.addToWishList(tHasInventory1.getId(), crack.getId());
+
             userDatabase.update(tHasInventory1);
 
             tHasInventory2 = (Trader) loginManager.registerUser("tHasInventory2", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
@@ -117,6 +111,15 @@ public class TestTradingInfo {
             tHasInventory2 = handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
             traderManager.addToWishList(tHasInventory2.getId(), crack.getId());
             userDatabase.update(tHasInventory2);
+            /*
+            ????????????????????????????????????????????
+            Why is the wishlist empty when i added crack to the wishlist
+             */
+            for(String ids: tHasInventory2.getWishlist()){
+                //System.out.println("wishlist item : " + tradingInfoManager.getTradableItem(ids).getName());
+            }
+
+
 
             tHasInventory3 = (Trader) loginManager.registerUser("tHasInventory3", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
             tHasInventory3 = traderManager.addRequestItem(tHasInventory3.getId(), "wack watcr", "desc");
@@ -159,7 +162,7 @@ public class TestTradingInfo {
             tHasInventory5 = handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
             traderManager.addToWishList(tHasInventory5.getId(), crack.getId());
             userDatabase.update(tHasInventory5);
-            */
+
 
         } catch (IOException ignored) {
             fail("ERRORS WITH SETTING UP DATABASE FILES");
@@ -314,30 +317,47 @@ public class TestTradingInfo {
         }
     }
 
+    @Test
     public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
-
-        /*
-        THE TRADERS AND TRADABLE ITEMS ARE NOT PROPERLY SET UP
         Date date = new Date();
         String location = "Toronto";
         String message = "This is a trade";
         int allowedEdits = 3;
-        Trade t1 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"watch" ,"crack", date, date, location,3, message);
-        Trade t2 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"phone" ,"crack", date, date, location,3, message);
-        Trade t3 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"laptop" ,"crack", date, date, location,3, message);
-        Trade t4 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"barbell" ,"crack", date, date, location,3, message);
-        Trade t5 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"wallet" ,"crack", date, date, location,3, message);
-        assertEquals(new Trade(tHasWishlist.getId(), tHasInventory1.getId(), date, date, location, "crack", "apple watch", allowedEdits, message), t1);
-        assertEquals(new Trade(tHasWishlist.getId(), tHasInventory2.getId(), date, date, location, "crack", "samsung phone", allowedEdits, message),t2);
-        assertEquals(new Trade(tHasWishlist.getId(), tHasInventory3.getId(), date, date, location, "crack", "acer LAPTOP", allowedEdits, message),t3);
-        assertEquals(new Trade(tHasWishlist.getId(), tHasInventory4.getId(), date, date, location, "crack", "45kg barbell", allowedEdits, message),t4);
-        assertEquals(new Trade(tHasWishlist.getId(), tHasInventory5.getId(), date, date, location, "crack", "leather wallet", allowedEdits, message),t5);
+        Trade t1 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"watch" ,"crack", date, date, location,allowedEdits, message);
+        Trade t2 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"phone" ,"crack", date, date, location,allowedEdits, message);
+        Trade t3 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"laptop" ,"crack", date, date, location,allowedEdits, message);
+        Trade t4 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"barbell" ,"crack", date, date, location,allowedEdits, message);
+        Trade t5 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"wallet" ,"crack", date, date, location,allowedEdits, message);
 
-        */
+        assertEquals("crack", t1.getFirstUserOffer());
+        assertEquals("apple watch", t1.getSecondUserOffer());
+        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t1.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory1", tradingInfoManager.getTrader(t1.getSecondUserId()).getUsername());
+
+        assertEquals("crack", t2.getFirstUserOffer());
+        assertEquals("samsung phone", t2.getSecondUserOffer());
+        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t2.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory2", tradingInfoManager.getTrader(t2.getSecondUserId()).getUsername());
+
+        assertEquals("crack", t3.getFirstUserOffer());
+        assertEquals("acer LAPTOP", t3.getSecondUserOffer());
+        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t3.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory3", tradingInfoManager.getTrader(t3.getSecondUserId()).getUsername());
+
+        assertEquals("crack", t4.getFirstUserOffer());
+        assertEquals("45kg barbell", t4.getSecondUserOffer());
+        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t4.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory4", tradingInfoManager.getTrader(t4.getSecondUserId()).getUsername());
+
+        assertEquals("crack", t5.getFirstUserOffer());
+        assertEquals("leather wallet", t5.getSecondUserOffer());
+        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t5.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory5", tradingInfoManager.getTrader(t5.getSecondUserId()).getUsername());
+
 
     }
 
-    @Test
+    //@Test
     public void testSimilarSearch() throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         //need to change similarSearch to private after finished testing
 
@@ -346,37 +366,68 @@ public class TestTradingInfo {
         //similar search rn still needs a way to deal with strings with missing chars and when the item in wishlist is larger then the item in inventory by a lot
         //apple watch, watch
 
-/*      THE TRADERS ARE TRADABLE ITEMS ARNT PROPERLY SET UP, ALSO HAVE TO CHANGE LISTNAMES TO HOLD STRINGS
-        listNames.add("andrer");
-        listNames.add("ANDREW");
+
+
+        TradableItem i1 = new TradableItem("andrer", "test");
+        TradableItem i2 = new TradableItem("ANDREW", "test");
+        tradableItemDatabase.update(i1);
+        tradableItemDatabase.update(i2);
+        listNames.add(i1.getId());
+        listNames.add(i2.getId());
         Object[] name = tradingInfoManager.similarSearch("andrew", listNames); //tests for ignoring capital case
         assertEquals("ANDREW", name[0]);
         assertEquals(6, name[1]);
 
-        listNames.add("plastic water bottle");
-        listNames.add("bowtle");
+        TradableItem i3 = new TradableItem("plastic water bottle", "test");
+        TradableItem i4 = new TradableItem("bowtle", "test");
+        tradableItemDatabase.update(i3);
+        tradableItemDatabase.update(i4);
+        listNames.add(i3.getId());
+        listNames.add(i4.getId());
         Object[] name2 = tradingInfoManager.similarSearch("bottle", listNames); //tests for multiple words case
         assertEquals("plastic water bottle", name2[0]);
         assertEquals(6, name2[1]);
 
-        listNames.add("123456");
-        listNames.add("1234567");
+        TradableItem i5 = new TradableItem("123456", "test");
+        TradableItem i6 = new TradableItem("1234567", "test");
+        tradableItemDatabase.update(i5);
+        tradableItemDatabase.update(i6);
+        listNames.add(i5.getId());
+        listNames.add(i6.getId());
         Object[] name3 = tradingInfoManager.similarSearch("1234567", listNames); //tests for most accurate word with words with diff length
         assertEquals("1234567", name3[0]);
         assertEquals(7,name3[1]);
 
-        listNames.add(("55554"));
-        listNames.add("55544");
+        TradableItem i7 = new TradableItem("55554", "test");
+        TradableItem i8 = new TradableItem("55544", "test");
+        tradableItemDatabase.update(i7);
+        tradableItemDatabase.update(i8);
+        listNames.add(i7.getId());
+        listNames.add(i8.getId());
         Object[] name4 = tradingInfoManager.similarSearch(("55555"), listNames); //tests for misspelled strings (not the same as strings missing chars which is a problem rn)
         assertEquals("55554", name4[0]);
         assertEquals(4, name4[1]);
 
-        listNames.add("Jan");
-        listNames.add("January");
+        TradableItem i9 = new TradableItem("Jan", "test");
+        TradableItem i10 = new TradableItem("January", "test");
+        tradableItemDatabase.update(i9);
+        tradableItemDatabase.update(i10);
+        listNames.add(i9.getId());
+        listNames.add(i10.getId());
         Object[] name5 =  tradingInfoManager.similarSearch(("j"), listNames);//tests for most similar length if similarity score is the same
         // (ie if we search for a, with a list of andrew, an, it should return an)
         assertEquals("Jan", name5[0]);
         assertEquals(1, name5[1]);
+
+        TradableItem i11 = new TradableItem("samsung phone", "test");
+        TradableItem i12 = new TradableItem("wack phonw", "test");
+        tradableItemDatabase.update(i11);
+        tradableItemDatabase.update(i12);
+        listNames.add(i11.getId());
+        listNames.add(i12.getId());
+        Object[] name6 =  tradingInfoManager.similarSearch(("phone"), listNames);
+        assertEquals( "samsung phone",name6[0]);
+        assertEquals(5, name6[1]);
 
         /*
             problem with similarSearch rn is when a string is missing a letter
