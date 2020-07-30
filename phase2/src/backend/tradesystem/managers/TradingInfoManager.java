@@ -371,10 +371,7 @@ public class TradingInfoManager extends Manager {
         if(list.size() == 0){
             return new Object[]{"", 0};
         }
-
         ArrayList<Object[]> similarNames = new ArrayList<>();
-        //Can accurately work with different letters and different number of words however missing letters
-        // will prob cause a problem
 
         //This is to check what type of list the parameter list is so that this function can work with traders
         // and tradable items
@@ -383,26 +380,42 @@ public class TradingInfoManager extends Manager {
             if(traders.getId().equals(list.get(0))) isListOfTraders = true;
         }
 
-        //Goes through all items in list and counts how many of the same chars are in the word
+        /*
+        Goes through all items in list and finds similarity score
+        The score is calculated like this, for every char in otherNames, we traverse name.length() more chars
+        and find how many match, then store the max number of char matches so that we have the max matches for every otherName
+        in the list. We put that into an array and find the otherName with the highest number of matches which is the most similar string
+
+        Current problems with this algorithm:
+        1. (solved) when length of name > length of otherNames (e.g name = red hat, otherName = hat)
+        2. when a char is added or a char is missing to the strings
+         */
         for (String otherNamesId : list) {
 
             String otherNames;
-
-            if(isListOfTraders){
+            if(isListOfTraders){ //this is here to allow similarSearch to work with traders and tradableItems
                 otherNames = getTrader(otherNamesId).getUsername();
             }else{
                 otherNames = getTradableItem(otherNamesId).getName();
             }
 
+            //the solution for problem 1.
+            String longerName = otherNames;
+            String shorterName = name;
+            if(otherNames.length() < name.length()){
+                longerName = name;
+                shorterName = otherNames;
+            }
+
             int maxSim = 0;
             //Finds the maximum similarity score for each word in list then adds it to similarNames
-            for (int i = 0; i < otherNames.length(); i++) {
+            for (int i = 0; i < longerName.length(); i++) {
                 int similarities = 0;
                 int i2 = i;
                 int j = 0;
 
-                while (j < name.length() && i2 < otherNames.length()) {
-                    if (Character.toLowerCase(name.charAt(j)) == Character.toLowerCase(otherNames.charAt(i2))) similarities++;
+                while (j < shorterName.length() && i2 < longerName.length()) {
+                    if (Character.toLowerCase(shorterName.charAt(j)) == Character.toLowerCase(longerName.charAt(i2))) similarities++;
                     j++;
                     i2++;
                 }
@@ -411,6 +424,9 @@ public class TradingInfoManager extends Manager {
                     maxSim = similarities;
                 }
             }
+
+
+
             //Note similarNames contains the max similarity score for each String in list, not
             //then we need to find the max of those similarity scores and return it
             similarNames.add(new Object[]{otherNames, maxSim});
@@ -425,7 +441,7 @@ public class TradingInfoManager extends Manager {
             String similarName = (String) simNameArr[0];
             //The reason for the || x== max && .... is b/c
             //say we have name = a, one of the strings in list is an, however another name is andrew
-            // both a and andrew would have the same similarity score but an is obviously better
+            // both a and andrew would have the same similarity score but an is obviously more similar
             if (x > max || x == max && (Math.abs(similarName.length()-name.length()) < (Math.abs(mostSimilarName.length()-name.length())))){
                 max = x;
                 mostSimilarName = similarName;
