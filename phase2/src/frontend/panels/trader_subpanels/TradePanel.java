@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -19,6 +20,7 @@ import backend.models.Trade;
 import backend.models.users.Trader;
 import backend.tradesystem.managers.TradingInfoManager;
 import backend.tradesystem.managers.TradingManager;
+import frontend.TradeBuilder;
 
 public class TradePanel extends JPanel implements ActionListener {
 
@@ -32,6 +34,8 @@ public class TradePanel extends JPanel implements ActionListener {
     private Trader trader;
     private GridBagConstraints gbc;
     private TradingInfoManager infoManager;
+
+    private TradeBuilder tradeBuilder;
 
     private Color bg = new Color(51, 51, 51);
     private Color gray = new Color(196, 196, 196);
@@ -50,6 +54,7 @@ public class TradePanel extends JPanel implements ActionListener {
 
         tradeManager = new TradingManager();
         infoManager = new TradingInfoManager();
+        tradeBuilder = new TradeBuilder();
 
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
         this.setBackground(bg);
@@ -976,10 +981,83 @@ public class TradePanel extends JPanel implements ActionListener {
             }
         });
 
-        tradeSubmitButton.addActionListener(e1 -> {
-            boolean areDatesGood = true;
-            if(otherTraderItems.isEnabled() && areDatesGood && (!meetingLocationInput.getText().trim().equals("")) && ((traderItems.getSelectedItem() != null ^ otherTraderItems.getSelectedItem() != null) || (traderItems.getSelectedItem() != null && otherTraderItems.getSelectedItem() != null))) {
-                System.out.println("Let's Trade Baby!");
+        JLabel error = new JLabel();
+        error.setPreferredSize(new Dimension(500, 50));
+        error.setForeground(red);
+        error.setFont(boldItalic.deriveFont(20f));
+        error.setHorizontalAlignment(JLabel.CENTER);
+        error.setVisible(false);
+
+        tradeSubmitButton.addActionListener(e1 -> { 
+            if(otherTraderItems.isEnabled()  && (!meetingLocationInput.getText().trim().equals("")) && ((traderItems.getSelectedItem() != null ^ otherTraderItems.getSelectedItem() != null) || (traderItems.getSelectedItem() != null && otherTraderItems.getSelectedItem() != null))) {
+                // meetingInput.add(months);    0
+                // meetingInput.add(days);      1
+                // meetingInput.add(years);     2
+                // meetingInput.add(hours);     3
+                // meetingInput.add(minutes);   4
+                String firstMeetingString = "";
+                String secondMeetingString = "";
+                for(int i = 0; i < 5; i++) {
+                    Component c = firstMeetingDate.getComponent(i);
+                    if(c instanceof JComboBox<?>) {
+                        if(((String)((JComboBox<?>) c).getSelectedItem().toString()).length() == 1) {
+                            firstMeetingString += "0" + ((JComboBox<?>) c).getSelectedItem();
+                        } else {
+                            firstMeetingString += ((JComboBox<?>) c).getSelectedItem();
+                        } if(i == 3) {
+                            firstMeetingString += ":";
+                        } else {
+                            firstMeetingString += " ";
+                        }
+                    }
+                }
+                if(isTemporaryButton.isSelected()) {
+                    for (int i = 0; i < 5; i++) {
+                        Component c = secondMeetingDate.getComponent(i);
+                        if (c instanceof JComboBox<?>) {
+                            if (((String) ((JComboBox<?>) c).getSelectedItem().toString()).length() == 1) {
+                                secondMeetingString += "0" + ((JComboBox<?>) c).getSelectedItem();
+                            } else {
+                                secondMeetingString += ((JComboBox<?>) c).getSelectedItem();
+                            }
+                            if (i == 3) {
+                                secondMeetingString += ":";
+                            } else {
+                                secondMeetingString += " ";
+                            }
+                        }
+                    }
+                    
+                }
+                try {
+                    Date firstMeeting = dateFormat.parse(firstMeetingString);
+                    Date secondMeeting = secondMeetingString.equals("") ? null : dateFormat.parse(secondMeetingString);
+                    tradeBuilder.toUser(((Trader) traders.getSelectedItem()).getId());
+                    tradeBuilder.setLocation(meetingLocationInput.getText());
+                    tradeBuilder.fromUser(trader.getId());
+                    tradeBuilder.setMeeting1(firstMeeting);
+                    tradeBuilder.setMeeting2(secondMeeting);
+                    tradeBuilder.setAllowedEditsPerUser(3);
+
+                    if (traderItems.getSelectedItem() == null) {
+                        tradeBuilder.setFirstUserOffer("");
+                    } else if (traderItems.getSelectedItem() instanceof TradableItem) {
+                        tradeBuilder.setFirstUserOffer(((TradableItem) traderItems.getSelectedItem()).getId());
+                    }
+
+                    if (otherTraderItems.getSelectedItem() == null) {
+                        tradeBuilder.setSecondUserOffer("");
+                    } else if (otherTraderItems.getSelectedItem() instanceof TradableItem) {
+                        tradeBuilder.setSecondUserOffer(((TradableItem) otherTraderItems.getSelectedItem()).getId());
+                    }
+
+                    tradeManager.requestTrade(tradeBuilder.createTrade());
+                    addNewTradeModal.dispose();
+				} catch (ParseException | UserNotFoundException | AuthorizationException | CannotTradeException e2) {
+                    System.out.println(e2.getMessage());
+                    error.setText(e2.getMessage());
+                    error.setVisible(true);
+				}
             }
         });
 
@@ -997,6 +1075,7 @@ public class TradePanel extends JPanel implements ActionListener {
         addNewTradePanel.add(firstMeetingDate);
         addNewTradePanel.add(secondMeetingDateTitle);
         addNewTradePanel.add(secondMeetingDate);
+        addNewTradePanel.add(error);
         
         addNewTradeModal.add(addNewTradePanel);
         addNewTradeModal.add(tradeSubmitButton, BorderLayout.SOUTH);
@@ -1009,20 +1088,18 @@ public class TradePanel extends JPanel implements ActionListener {
         meetingInput.setBackground(bg);
         meetingInput.setPreferredSize(new Dimension(450, 50));
 
-        String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
-        JComboBox<String> month = new JComboBox<>(months);
-        month.setPreferredSize(new Dimension(100, 50));
-        month.setFont(regular.deriveFont(20f));
-        meetingInput.add(month);
+        String[] monthList = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        JComboBox<String> months = new JComboBox<>(monthList);
+        months.setPreferredSize(new Dimension(100, 50));
+        months.setFont(regular.deriveFont(20f));
 
         JComboBox<Integer> days = new JComboBox<>();
         days.setFont(regular.deriveFont(20f));
         days.setPreferredSize(new Dimension(60, 50));
         for (int i = 1; i < 32; i++)
             days.addItem(i);
-        meetingInput.add(days);
 
-        month.addItemListener(e -> {
+        months.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 int numDays = 0;
                 if (e.getItem().equals("Apr") || e.getItem().equals("Jun") || e.getItem().equals("Sep")
@@ -1043,22 +1120,24 @@ public class TradePanel extends JPanel implements ActionListener {
         years.setFont(regular.deriveFont(20f));
         for (int i = 2020; i < 2026; i++)
             years.addItem(i);
-        meetingInput.add(years);
 
         JComboBox<Integer> hours = new JComboBox<>();
         hours.setPreferredSize(new Dimension(50, 50));
         hours.setFont(regular.deriveFont(20f));
         for (int i = 0; i < 24; i++)
             hours.addItem(i);
-        meetingInput.add(hours);
-
+            
         JComboBox<Integer> minutes = new JComboBox<>();
         minutes.setPreferredSize(new Dimension(50, 50));
         minutes.setFont(regular.deriveFont(20f));
         for (int i = 0; i < 60; i++)
             minutes.addItem(i);
-        meetingInput.add(minutes);
 
+        meetingInput.add(months);
+        meetingInput.add(days);
+        meetingInput.add(years);
+        meetingInput.add(hours);
+        meetingInput.add(minutes);
         return meetingInput;
     }
 }
