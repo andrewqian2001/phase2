@@ -344,7 +344,7 @@ public class TradingInfoManager extends Manager {
 
             //returns the most similar item to the one that the trader wishes to give away
             Object[] similarGiveItem = similarSearch(itemToLend, otherTrader.getWishlist());
-            System.out.println("similar item to crack : " + similarGiveItem[0]);
+            //System.out.println("similar item to crack : " + similarGiveItem[0]);
 
             if (((int)similarGetItem[1] + (int)similarGiveItem[1]) > max) {
 
