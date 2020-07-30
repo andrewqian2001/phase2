@@ -1,6 +1,7 @@
 package frontend.panels;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 
 import java.awt.*;
 import java.io.IOException;
@@ -176,6 +177,134 @@ public class SearchPanel extends JPanel {
             traderDetailsButton.setBackground(detailsButton);
             traderDetailsButton.setOpaque(true);
             traderDetailsButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
+            traderDetailsButton.addActionListener(e -> {
+                JDialog traderDetailsModal = new JDialog();
+                traderDetailsModal.setTitle("Trader Details");
+                traderDetailsModal.setSize(600, 600);
+                traderDetailsModal.setResizable(false);
+                traderDetailsModal.setLocationRelativeTo(null);
+
+                JPanel traderDetailsPanel = new JPanel();
+                traderDetailsPanel.setPreferredSize(new Dimension(600, 600));
+                traderDetailsPanel.setBackground(bg);
+
+                JLabel traderNameTitle = new JLabel("Trader Username:");
+                traderNameTitle.setFont(italic.deriveFont(20f));
+                traderNameTitle.setPreferredSize(new Dimension(290, 50));
+                traderNameTitle.setOpaque(false);
+                traderNameTitle.setForeground(Color.WHITE);
+
+                JLabel traderNameLabel = new JLabel("<html><pre>" + traderName.getText() + "</pre></html>");
+                traderNameLabel.setFont(regular.deriveFont(20f));
+                traderNameLabel.setPreferredSize(new Dimension(290, 50));
+                traderNameLabel.setOpaque(false);
+                traderNameLabel.setForeground(Color.WHITE);
+
+                JLabel traderIdTitle = new JLabel("Trader ID:");
+                traderIdTitle.setFont(italic.deriveFont(20f));
+                traderIdTitle.setPreferredSize(new Dimension(290, 50));
+                traderIdTitle.setOpaque(false);
+                traderIdTitle.setForeground(Color.WHITE);
+
+                JLabel traderIdLabel = new JLabel(traderId.getText());
+                traderIdLabel.setFont(regular.deriveFont(20f));
+                traderIdLabel.setPreferredSize(new Dimension(290, 50));
+                traderIdLabel.setOpaque(false);
+                traderIdLabel.setForeground(Color.WHITE);
+
+                JLabel traderCityTitle = new JLabel("City:");
+                traderCityTitle.setFont(italic.deriveFont(20f));
+                traderCityTitle.setPreferredSize(new Dimension(290, 50));
+                traderCityTitle.setOpaque(false);
+                traderCityTitle.setForeground(Color.WHITE);
+
+                JLabel traderCityLabel = new JLabel("<html><pre>" + t.getCity() + "</pre></html>");
+                traderCityLabel.setFont(regular.deriveFont(20f));
+                traderCityLabel.setPreferredSize(new Dimension(290, 50));
+                traderCityLabel.setOpaque(false);
+                traderCityLabel.setForeground(Color.WHITE);
+
+                JLabel traderNumTradesTitle = new JLabel("Trade Items Ratio:");
+                traderNumTradesTitle.setFont(italic.deriveFont(20f));
+                traderNumTradesTitle.setPreferredSize(new Dimension(290, 50));
+                traderNumTradesTitle.setOpaque(false);
+                traderNumTradesTitle.setForeground(Color.WHITE);
+
+                JLabel traderNumTradesLabel = new JLabel("<html><pre>" + t.getTotalItemsBorrowed() + " borrowed / " + t.getTotalItemsLent() + " lent </pre></html>");
+                traderNumTradesLabel.setFont(regular.deriveFont(20f));
+                traderNumTradesLabel.setPreferredSize(new Dimension(290, 50));
+                traderNumTradesLabel.setOpaque(false);
+                traderNumTradesLabel.setForeground(Color.WHITE);
+
+                JLabel traderReviewsTitle = new JLabel("Reviews by other Traders:");
+                traderReviewsTitle.setFont(italic.deriveFont(20f));
+                traderReviewsTitle.setPreferredSize(new Dimension(580, 50));
+                traderReviewsTitle.setOpaque(false);
+                traderReviewsTitle.setForeground(Color.WHITE);
+
+                JScrollPane traderReviewScrollPane = new JScrollPane();
+                traderReviewScrollPane.setPreferredSize(new Dimension(580, 250));
+                traderReviewScrollPane.setBorder(null);
+                traderReviewScrollPane.setBackground(gray);
+
+                int numberOfRows = t.getReviews().size();
+                if(numberOfRows < 4) numberOfRows = 4;
+                JPanel traderReviews = new JPanel(new GridLayout(numberOfRows, 1));
+                traderReviews.setBackground(gray2);
+                traderReviews.setPreferredSize(new Dimension(580, 250));
+                t.getReviews().forEach(review -> {
+                    JPanel traderReview = new JPanel(new GridLayout(1,3));
+                    traderReview.setBackground(gray2);
+                    traderReview.setPreferredSize(new Dimension(500, 50));
+                    traderReview.setBorder(BorderFactory.createMatteBorder(0, 0 , 2, 0 , bg));
+
+                    JLabel otherTraderName = new JLabel("DUMMY TEXT");
+                    try {
+                        otherTraderName.setText(traderManager.getUser(review.getFromUserId()).getUsername());
+                    } catch(UserNotFoundException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                    otherTraderName.setFont(regular.deriveFont(20f));
+                    otherTraderName.setForeground(Color.WHITE);
+                    otherTraderName.setHorizontalAlignment(JLabel.LEFT);
+                    otherTraderName.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+                    otherTraderName.setOpaque(false);
+
+                    JLabel reviewRating = new JLabel(review.getRating() + "");
+                    reviewRating.setFont(regular.deriveFont(20f));
+                    reviewRating.setForeground(Color.WHITE);
+                    reviewRating.setHorizontalAlignment(JLabel.CENTER);
+                    reviewRating.setOpaque(false);
+
+                    JLabel reviewMsg = new JLabel("<html><pre>" + review.getMessage()  + "</pre></html>");
+                    reviewMsg.setFont(regular.deriveFont(20f));
+                    reviewMsg.setForeground(Color.WHITE);
+                    reviewMsg.setHorizontalAlignment(JLabel.LEFT);
+                    reviewMsg.setOpaque(false);
+
+                    traderReview.add(otherTraderName);
+                    traderReview.add(reviewRating);
+                    traderReview.add(reviewMsg);
+
+                    traderReviews.add(traderReview);
+                });
+                traderReviewScrollPane.setViewportView(traderReviews);
+
+                traderDetailsPanel.add(traderNameTitle);
+                traderDetailsPanel.add(traderNameLabel);
+                traderDetailsPanel.add(traderIdTitle);
+                traderDetailsPanel.add(traderIdLabel);
+                traderDetailsPanel.add(traderCityTitle);
+                traderDetailsPanel.add(traderCityLabel);
+                traderDetailsPanel.add(traderNumTradesTitle);
+                traderDetailsPanel.add(traderNumTradesLabel);
+                traderDetailsPanel.add(traderReviewsTitle);
+                traderDetailsPanel.add(traderReviewScrollPane);
+
+                traderDetailsModal.add(traderDetailsPanel); 
+                traderDetailsModal.setModal(true);
+                traderDetailsModal.setVisible(true);
+            });
 
             trader.add(traderName);
             trader.add(traderId);
