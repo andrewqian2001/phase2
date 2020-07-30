@@ -5,7 +5,6 @@ import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
 import backend.models.users.User;
-import backend.tradesystem.TradeBuilder;
 
 import java.io.IOException;
 import java.util.*;
@@ -206,38 +205,20 @@ public class TradingInfoManager extends Manager {
             UserNotFoundException, AuthorizationException {
         Trader thisTrader = getTrader(thisTraderId);
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
-
         ArrayList<Trade> result = new ArrayList<>();
-        HashMap<String, Boolean> thisTraderItems = new HashMap<>();
-        HashMap<String, ArrayList<String>> suggestions = new HashMap<>(); // trader id to list of suggestions
-
-        // Store possible suggestions in a hashmap for better time complexity
-        for (String item : thisTrader.getAvailableItems()) {
-            thisTraderItems.put(item, true);
-        }
-
+        HashSet<String> thisTraderItems = new HashSet<>(thisTrader.getAvailableItems());
         // Get suggested items for all traders
         for (Trader trader : getAllTradersInCity(thisTrader.getCity())) {
-            if (trader.getId() == thisTraderId) {
+            if (trader.getId().equals(thisTraderId)) {
                 continue;
             }
             for (String item : trader.getWishlist()) {
-                if (thisTraderItems.getOrDefault(item, false)) {
-
-                    TradeBuilder builder = new TradeBuilder();
-                    builder.fromUser(thisTraderId);
-                    builder.toUser(trader.getId());
-                    builder.setFirstUserOffer(item);
-                    builder.setMeeting1(new Date(System.currentTimeMillis() + 100000));
-                    builder.setMeeting2(new Date(System.currentTimeMillis() + 1000000));
-                    builder.setAllowedEditsPerUser(3);
-                    builder.setLocation(thisTrader.getCity());
-                    result.add(builder.createTrade());
-
+                if (thisTraderItems.contains(item)) {
+                    result.add(new Trade(thisTraderId, trader.getId(), new Date(System.currentTimeMillis() + 100000),
+                            new Date(System.currentTimeMillis() + 1000000), thisTrader.getCity(), item, "", 3, ""));
                 }
             }
         }
-
         return result;
     }
 
@@ -257,26 +238,15 @@ public class TradingInfoManager extends Manager {
 
         ArrayList<Trade> toLend = suggestLend(thisTraderId);
 
-        HashMap<String, Boolean> thisTraderWishlist = new HashMap<>();
-        // Store wishlist items in a hashmap for better time complexity
-        for (String item : thisTrader.getAvailableItems()) {
-            thisTraderWishlist.put(item, true);
-        }
+        HashSet<String> thisTraderWishlist = new HashSet<>(thisTrader.getWishlist());
 
         // Create trades where both traders give an item that is in each other's wish list
         for (Trade lendTrade : toLend) {
             for (String candidateItem : getTrader(lendTrade.getSecondUserId()).getAvailableItems()) {
-                if (thisTraderWishlist.getOrDefault(candidateItem, false)) {
-                    TradeBuilder builder = new TradeBuilder();
-                    builder.fromUser(thisTraderId);
-                    builder.toUser(lendTrade.getSecondUserId());
-                    builder.setFirstUserOffer(lendTrade.getFirstUserOffer());
-                    builder.setSecondUserOffer(candidateItem);
-                    builder.setMeeting1(new Date(System.currentTimeMillis() + 100000));
-                    builder.setMeeting2(new Date(System.currentTimeMillis() + 1000000));
-                    builder.setAllowedEditsPerUser(3);
-                    builder.setLocation(thisTrader.getCity());
-                    suggestedTrades.add(builder.createTrade());
+                if (thisTraderWishlist.contains(candidateItem)) {
+                    suggestedTrades.add(new Trade(thisTraderId, lendTrade.getSecondUserId(), lendTrade.getMeetingTime(),
+                            lendTrade.getSecondMeetingTime(), lendTrade.getMeetingLocation(), lendTrade.getFirstUserOffer(),
+                            candidateItem, lendTrade.getNumEdits(), lendTrade.getMessage()));
                 }
             }
         }
@@ -389,13 +359,13 @@ public class TradingInfoManager extends Manager {
         int max = 0;
         String mostSimilarName = null;
         for (Object[] simNameArr : similarNames) {
-            int x = (int)simNameArr[1]; //x is similarity score
-            String similarName = (String)simNameArr[0];
+            int x = (int) simNameArr[1]; //x is similarity score
+            String similarName = (String) simNameArr[0];
 
             //The reason for the || x== max && .... is b/c
             //say we have name = a, one of the strings in list is an, however another name is andrew
             // both a and andrew would have the same similarity score but an is obviously better
-            if (x > max || x == max && (Math.abs(similarName.length()-name.length()) < (Math.abs(mostSimilarName.length()-name.length())))){
+            if (x > max || x == max && (Math.abs(similarName.length() - name.length()) < (Math.abs(mostSimilarName.length() - name.length())))) {
                 max = x;
                 mostSimilarName = similarName;
             }

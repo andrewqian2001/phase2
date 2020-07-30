@@ -17,8 +17,8 @@
 **TODO: traderPanel**
 
 TradePanel:  
-  - Edit button in TradeRequests 
-  - Finish Add New Trade Window + Submit Button  
+  - In the editTradeRequest modal, get the current meeting dates and automatically set the JComboBoxes to the date
+  - ~~Finish Add New Trade Window + Submit Button~~ 
   - ~~Fix scrollpane top header alignment~~
   
 ItemsPanel:  
