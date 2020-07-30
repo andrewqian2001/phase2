@@ -1,6 +1,7 @@
 package backend.tradesystem.managers;
 
 import backend.exceptions.*;
+import backend.models.DatabaseItem;
 import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
@@ -48,6 +49,18 @@ public class TradingInfoManager extends Manager {
             if (user instanceof Trader)
                 allTraders.add((Trader) user);
         return allTraders;
+    }
+
+    /**
+     *
+     * @return all tradable items in database
+     */
+    public ArrayList<TradableItem> getAllTradableItems() {
+        ArrayList<TradableItem> allTradableItems = new ArrayList<>();
+        for (TradableItem item : getTradableItemDatabase().getItems())
+            if (item instanceof TradableItem)
+                allTradableItems.add(item);
+        return allTradableItems;
     }
 
     /**
@@ -311,7 +324,7 @@ public class TradingInfoManager extends Manager {
      * item in the this traders wishlist
      *
      * @param thisTraderId      is the id of the trader
-     * @param itemToLend        is the name of the item that the trader wants to lend from the traders inventory
+     * @param itemToLend        is the name of the item that this trader wants to lend from this traders inventory
      * @param meetingTime       is the time of the first meeting
      * @param secondMeetingTime is the time of the second meeting
      * @param location          is the location of the meetings
@@ -322,6 +335,9 @@ public class TradingInfoManager extends Manager {
      * @throws AuthorizationException
      * @throws TradableItemNotFoundException
      */
+    /*
+    !!!I emailed Lindsey to ask how the extension should be, she didn't reply yet so im keeping this to be safe
+
     public ArrayList<Trade> automatedTradeSuggestion(String thisTraderId, String itemToLend, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
         ArrayList<Trader> allTraders = getAllTraders();
@@ -356,7 +372,57 @@ public class TradingInfoManager extends Manager {
         return suggestedTrades;
 
     }
+     */
 
+    /**
+     * The user types in a item that is wanted, the function finds the most similar item and then returns a trade
+     * @param thisTraderId is the id of this trader
+     * @param itemToBorrow is the string that the user types in which represents the item the user wants
+     * @param itemToLend is the item from the users inventory that is going to be given
+     * @param meetingTime is the meeting time
+     * @param secondMeetingTime is the second meeting time
+     * @param location ois the location of the meeting
+     * @param allowedEdits is the max number of edits the traders can make
+     * @param message
+     * @return the most reasonable trade between this user and another trader in the database
+     * @throws UserNotFoundException
+     * @throws AuthorizationException
+     * @throws TradableItemNotFoundException
+     */
+    public Trade automatedTradeSuggestion(String thisTraderId, String itemToBorrow, String itemToLend, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+
+        ArrayList<Trader> allTraders = getAllTraders();
+
+        Trader thisTrader = getTrader(thisTraderId);
+        allTraders.remove(thisTrader); //so it doesn't trade with itself
+
+        //goes through this traders wishlist and creates the most reasonable trades with other traders
+
+
+        int max = 0;
+        String mostSimItem = null;
+        String mostSimTraderId = null;
+
+        for (Trader otherTrader : allTraders) {
+            //returns the most similar item to the one that the trader wishes to have
+            Object[] similarGetItem = similarSearch(itemToBorrow, otherTrader.getAvailableItems());
+            System.out.println(similarGetItem[0] + " is the sim item of trader " + otherTrader.getUsername());
+            //returns the most similar item to the one that the trader wishes to give away
+            Object[] similarGiveItem = similarSearch(itemToLend, otherTrader.getWishlist());
+
+            if (((int) similarGetItem[1] + (int) similarGiveItem[1]) > max) {
+
+                max = ((int) similarGetItem[1] + (int) similarGetItem[1]);
+                mostSimItem = (String) similarGetItem[0];
+                mostSimTraderId = otherTrader.getId();
+            }
+        }
+        Trade trade = new Trade(thisTraderId, mostSimTraderId, meetingTime, secondMeetingTime, location, itemToLend, mostSimItem, allowedEdits, message);
+        System.out.println(getTrader(mostSimTraderId) + "is the most sim trader, " + mostSimItem +" is the most similar item");
+
+        return trade;
+
+    }
 
     /**
      * checks how many similarities name has with strings in list
@@ -365,23 +431,44 @@ public class TradingInfoManager extends Manager {
      * @param list is the list of strings that we are traversing through
      * @return an array with two cells containing the items name and the score of how similar it is
      */
-    private Object[] similarSearch(String name, ArrayList<String> list) {
+    public Object[] similarSearch(String name, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+
+        if(list.size() == 0){
+            return new Object[]{"", 0};
+        }
 
         ArrayList<Object[]> similarNames = new ArrayList<>();
-
         //Can accurately work with different letters and different number of words however missing letters
         // will prob cause a problem
 
+        //This is to check what type of list the parameter list is so that this function can work with traders
+        // and tradable items
+        boolean isListOfTraders= false;
+        for(Trader traders: getAllTraders()){
+            if(traders.getId().equals(list.get(0))) isListOfTraders = true;
+        }
+
         //Goes through all items in list and counts how many of the same chars are in the word
-        for (String otherNames : list) {
+        for (String otherNamesId : list) {
+
+            String otherNames;
+            if(isListOfTraders){
+                otherNames = getTrader(otherNamesId).getUsername();
+            }else{
+                otherNames = getTradableItem(otherNamesId).getName();
+            }
+            System.out.println();
+            System.out.println(otherNames + " should be a name not a id, name is " + name);
+
             int maxSim = 0;
             //Finds the maximum similarity score for each word in list then adds it to similarNames
             for (int i = 0; i < otherNames.length(); i++) {
                 int similarities = 0;
                 int i2 = i;
                 int j = 0;
+
                 while (j < name.length() && i2 < otherNames.length()) {
-                    if (otherNames.charAt(i2) == name.charAt(j)) similarities++;
+                    if (Character.toLowerCase(name.charAt(j)) == Character.toLowerCase(otherNames.charAt(i2))) similarities++;
                     j++;
                     i2++;
                 }
@@ -396,20 +483,9 @@ public class TradingInfoManager extends Manager {
 
         }
 
-        /*
-        We may also have to consider size of the string when determining which string is most similar b/c for e.g say we are searching for a name called An,
-        then we should return And instead of Andrew however the algorithm currently does not implement this, can
-        just add another condition on (x>max)
-
-        We also have to consider when there is a missing char in the string, rn it can work with
-        misspelled strings but if a char is missing the search wont be as accurate
-        for eg if we are looking for apple and we have aple the similarity score should be
-        4 but it will prob be 2
-         */
-
         //finds the max similarity score in similarNames
         int max = 0;
-        String mostSimilarName = null;
+        String mostSimilarName = "";
         for (Object[] simNameArr : similarNames) {
             int x = (int)simNameArr[1]; //x is similarity score
             String similarName = (String)simNameArr[0];
@@ -417,6 +493,7 @@ public class TradingInfoManager extends Manager {
             //The reason for the || x== max && .... is b/c
             //say we have name = a, one of the strings in list is an, however another name is andrew
             // both a and andrew would have the same similarity score but an is obviously better
+
             if (x > max || x == max && (Math.abs(similarName.length()-name.length()) < (Math.abs(mostSimilarName.length()-name.length())))){
                 max = x;
                 mostSimilarName = similarName;
