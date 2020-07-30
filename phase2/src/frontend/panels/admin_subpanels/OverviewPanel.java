@@ -84,7 +84,7 @@ public class OverviewPanel extends JPanel {
         itemRequestsHeader.setPreferredSize(new Dimension(1200,25));
         itemRequestsHeader.setBackground(bg);
         itemRequestsHeader.setBorder(BorderFactory.createEmptyBorder(0,25, 0, 80));
-        additemRequestsHeader();
+        addItemRequestsHeader();
         gbc.insets = new Insets(0,0,1,0);
         gbc.gridy = 1;
         gbc.weighty = 0.1;
@@ -226,36 +226,28 @@ public class OverviewPanel extends JPanel {
     private void addUnFreezeRequestsHeader() {
     }
 
-    private void additemRequestsHeader() {
+    private void addItemRequestsHeader() {
         JLabel name = new JLabel("Name");
         name.setFont(this.regular.deriveFont(20f));
         name.setForeground(Color.WHITE);
-        name.setHorizontalAlignment(JLabel.CENTER);
+        name.setHorizontalAlignment(JLabel.LEFT);
 
-        JLabel location = new JLabel("Location");
-        location.setFont(this.regular.deriveFont(20f));
-        location.setForeground(Color.WHITE);
-        location.setHorizontalAlignment(JLabel.CENTER);
+        JLabel item = new JLabel("Item");
+        item.setFont(this.regular.deriveFont(20f));
+        item.setForeground(Color.WHITE);
+        item.setHorizontalAlignment(JLabel.LEFT);
 
-        JLabel theirItem = new JLabel("Their Item");
-        theirItem.setFont(this.regular.deriveFont(20f));
-        theirItem.setForeground(Color.WHITE);
-        theirItem.setHorizontalAlignment(JLabel.CENTER);
+        JLabel itemDesc = new JLabel("    Item Description");
+        itemDesc.setFont(this.regular.deriveFont(20f));
+        itemDesc.setForeground(Color.WHITE);
+        itemDesc.setHorizontalAlignment(JLabel.CENTER);
 
-        JLabel yourItem = new JLabel("Your Item   ");
-        yourItem.setFont(this.regular.deriveFont(20f));
-        yourItem.setForeground(Color.WHITE);
-        yourItem.setHorizontalAlignment(JLabel.CENTER);
-
-        JLabel empty1 = new JLabel("");
         JLabel empty2 = new JLabel("");
         JLabel empty3 = new JLabel("");
 
         itemRequestsHeader.add(name);
-        itemRequestsHeader.add(location);
-        itemRequestsHeader.add(theirItem);
-        itemRequestsHeader.add(yourItem);
-        itemRequestsHeader.add(empty1);
+        itemRequestsHeader.add(item);
+        itemRequestsHeader.add(itemDesc);
         itemRequestsHeader.add(empty2);
         itemRequestsHeader.add(empty3);
     }
