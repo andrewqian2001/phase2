@@ -330,6 +330,69 @@ public class NotificationsPanel extends JPanel {
                     replyButton.setBackground(green);
                     replyButton.setOpaque(true);
                     replyButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+                    replyButton.addActionListener(e -> {
+                        JDialog messageReplyModal = new JDialog();
+                        messageReplyModal.setTitle("Message Details");
+                        messageReplyModal.setSize(600, 400);
+                        messageReplyModal.setResizable(false);
+                        messageReplyModal.setLocationRelativeTo(null);
+
+                        JPanel messageReplyPanel = new JPanel();
+                        messageReplyPanel.setPreferredSize(new Dimension(600, 400));
+                        messageReplyPanel.setBackground(bg);
+
+                        JLabel userNameTitle = new JLabel("Sender Username:");
+                        userNameTitle.setFont(italic.deriveFont(20f));
+                        userNameTitle.setPreferredSize(new Dimension(550, 50));
+                        userNameTitle.setOpaque(false);
+                        userNameTitle.setForeground(Color.WHITE);
+
+                        userName.setForeground(Color.WHITE);
+
+                        JLabel messageBodyTitle= new JLabel("Enter Message:");
+                        messageBodyTitle.setFont(italic.deriveFont(20f));
+                        messageBodyTitle.setPreferredSize(new Dimension(550, 50));
+                        messageBodyTitle.setOpaque(false);
+                        messageBodyTitle.setForeground(Color.WHITE);
+
+                        JTextArea fullMessageBody = new JTextArea();
+                        fullMessageBody.setFont(regular.deriveFont(20f));
+                        fullMessageBody.setPreferredSize(new Dimension(550, 150));
+                        fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                        fullMessageBody.setLineWrap(true);
+
+
+                        JButton submitButton = new JButton("Submit");
+                        submitButton.setFont(bold.deriveFont(20f));
+                        submitButton.setBackground(green);
+                        submitButton.setForeground(Color.WHITE);
+                        submitButton.setPreferredSize(new Dimension(325, 50));
+                        submitButton.addActionListener(e1 -> {
+                            if(fullMessageBody.getText().trim().length() > 0) {
+                                try {
+                                messageManager.sendMessage(trader.getId(), u.getId(), fullMessageBody.getText());
+                                messageManager.clearMessagesFromUser(trader.getId(), u.getId());
+                                messageReplyModal.dispose();
+                                messagesListContainer.remove(messagePanel);
+                                messagesListContainer.revalidate();
+                                messagesListContainer.repaint();
+                            } catch (UserNotFoundException | AuthorizationException e2) {
+                                System.out.println(e2.getMessage());
+                            }
+                            }
+                        });
+
+                        messageReplyPanel.add(userNameTitle);
+                        messageReplyPanel.add(userName);
+                        messageReplyPanel.add(messageBodyTitle);
+                        messageReplyPanel.add(fullMessageBody);
+
+                        messageReplyModal.add(messageReplyPanel);
+                        messageReplyModal.add(submitButton, BorderLayout.SOUTH);
+                        messageReplyModal.setModal(true);
+                        messageReplyModal.setVisible(true);
+
+                    });
 
                     messagePanel.add(userName);
                     messagePanel.add(detailsButton);
