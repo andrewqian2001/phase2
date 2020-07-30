@@ -53,7 +53,7 @@ public class LoginPanel extends JPanel implements ActionListener {
         managePasswordTitle(italic, gbc, inputs);
         managePasswordField(regular, input, gbc, inputs);
         //TODO: REMOVE BELOW FOR DEPLOYMENT (only for testing)
-        usernameInput = new JTextField("admin1");
+        usernameInput = new JTextField("trader7");
         passwordInput = new JPasswordField("userPassword1");
         //TODO: REMOVE ABOVE BEFORE DEPLOYMENT
         JPanel buttonContainer = manageButtonPanel(bold, gbc);
