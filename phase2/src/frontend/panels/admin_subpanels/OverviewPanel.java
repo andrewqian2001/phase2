@@ -19,7 +19,7 @@ import java.util.HashMap;
 public class OverviewPanel extends JPanel {
 
     private JPanel itemRequestsTitleContainer, itemRequestsContainer, frozenTraderTitleContainer,
-            unFreezeRequestsContainer, freezeTradersContainer, bottomSplitContainer;
+            unFreezeRequestsContainer, freezeTradersContainer, bottomSplitContainer, itemRequestsHeader, unFreezeRequestsHeader, freezeTradersHeader;
     private JScrollPane itemRequestsScrollPane, unFreezeRequestsScrollPane, freezeTradersScrollPane;
     private JButton acceptAllItemRequestsButton, unFreezeAllTradersButton, freezeAllTradersButton;
     private JLabel itemRequestsTitle, unFreezeRequestsTitle, freezeTraderTitle;
@@ -45,7 +45,6 @@ public class OverviewPanel extends JPanel {
         this.italic = italic;
         this.boldItalic = boldItalic;
 
-        this.setPreferredSize(new Dimension(1000, 900)); // fix this later
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 25));
         this.setBackground(Color.BLACK);
 
@@ -54,26 +53,51 @@ public class OverviewPanel extends JPanel {
 
         itemRequestsTitleContainer = new JPanel(new GridLayout(1, 2));
         itemRequestsTitleContainer.setOpaque(false);
-        itemRequestsTitleContainer.setPreferredSize(new Dimension(1200, 75));
+        itemRequestsTitleContainer.setPreferredSize(new Dimension(1200, 50));
 
         itemRequestsTitle = new JLabel("Item Requests");
         itemRequestsTitle.setFont(this.regular.deriveFont(28f));
         itemRequestsTitle.setForeground(Color.WHITE);
         itemRequestsTitle.setHorizontalAlignment(JLabel.LEFT);
+        itemRequestsTitle.setBackground(Color.black);
+        itemRequestsTitle.setOpaque(true);
         itemRequestsTitleContainer.add(itemRequestsTitle);
 
         acceptAllItemRequestsButton = new JButton("Accept All");
         acceptAllItemRequestsButton.setFont(this.boldItalic.deriveFont(20f));
         acceptAllItemRequestsButton.setHorizontalAlignment(JButton.RIGHT);
         acceptAllItemRequestsButton.setForeground(blue);
-        acceptAllItemRequestsButton.setBackground(Color.BLACK);
+        acceptAllItemRequestsButton.setBackground(Color.black);
         acceptAllItemRequestsButton.setOpaque(true);
         acceptAllItemRequestsButton.setBorderPainted(false);
         itemRequestsTitleContainer.add(acceptAllItemRequestsButton);
 
+        JPanel itemRequests = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 0;
+        gbc.weighty = 0.1;
+        itemRequests.add(itemRequestsTitleContainer, gbc);
+
+        itemRequestsHeader = new JPanel(new GridLayout(1,5, 25, 0));
+        itemRequestsHeader.setPreferredSize(new Dimension(1200,25));
+        itemRequestsHeader.setBackground(bg);
+        itemRequestsHeader.setBorder(BorderFactory.createEmptyBorder(0,25, 0, 80));
+        additemRequestsHeader();
+        gbc.insets = new Insets(0,0,1,0);
+        gbc.gridy = 1;
+        gbc.weighty = 0.1;
+        itemRequests.add(itemRequestsHeader, gbc);
+
         getAllItemRequests();
-        getAllUnFreezeRequests();
-        getAllToBeFrozenUsers();
+        itemRequestsScrollPane = new JScrollPane(itemRequestsContainer);
+        itemRequestsScrollPane.setPreferredSize(new Dimension(1200, 325));
+        itemRequestsScrollPane.setBorder(null);
+        gbc.insets = new Insets(0,0,0,0);
+        gbc.gridy = 2;
+        gbc.weighty = 0.8;
+        itemRequests.add(itemRequestsScrollPane, gbc);
 
         frozenTraderTitleContainer = new JPanel(new GridLayout(1, 4, 50, 0));
         frozenTraderTitleContainer.setOpaque(false);
@@ -109,26 +133,58 @@ public class OverviewPanel extends JPanel {
         freezeAllTradersButton.setBorderPainted(false);
         frozenTraderTitleContainer.add(freezeAllTradersButton);
 
-        itemRequestsScrollPane = new JScrollPane(itemRequestsContainer);
-        itemRequestsScrollPane.setPreferredSize(new Dimension(1200, 300));
-        itemRequestsScrollPane.setBorder(null);
+        gbc = new GridBagConstraints();
+        JPanel unFreezeRequests = new JPanel(new GridBagLayout());
 
+        unFreezeRequestsHeader = new JPanel(new GridLayout(1,5, 25, 0));
+        unFreezeRequestsHeader.setBackground(bg);
+        unFreezeRequestsHeader.setBorder(BorderFactory.createEmptyBorder(0,25, 0, 80));
+        unFreezeRequestsHeader.setPreferredSize(new Dimension(575, 25));
+        addUnFreezeRequestsHeader();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(0,0,1,0);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weighty = 0.1;
+        unFreezeRequests.add(unFreezeRequestsHeader, gbc);
+
+        getAllUnFreezeRequests();
         unFreezeRequestsScrollPane = new JScrollPane(unFreezeRequestsContainer);
-        unFreezeRequestsScrollPane.setPreferredSize(new Dimension(600, 300));
         unFreezeRequestsScrollPane.setBorder(null);
+        unFreezeRequestsScrollPane.setPreferredSize(new Dimension(575, 274));
+        gbc.insets = new Insets(0,0,0,0);
+        gbc.gridy = 1;
+        gbc.weighty = 0.9;
+        unFreezeRequests.add(unFreezeRequestsScrollPane, gbc);
 
+        JPanel freezeTraders = new JPanel(new GridBagLayout());
+
+        freezeTradersHeader = new JPanel(new GridLayout(1,5, 25, 0));
+        freezeTradersHeader.setBackground(bg);
+        freezeTradersHeader.setBorder(BorderFactory.createEmptyBorder(0,25, 0, 80));
+        freezeTradersHeader.setPreferredSize(new Dimension(575, 25));
+        addFreezeTradersHeader();
+        gbc.insets = new Insets(0,0,1,0);
+        gbc.gridy = 0;
+        gbc.weighty = 0.1;
+        freezeTraders.add(freezeTradersHeader, gbc);
+
+        getAllToBeFrozenUsers();
         freezeTradersScrollPane = new JScrollPane(freezeTradersContainer);
-        freezeTradersScrollPane.setPreferredSize(new Dimension(600, 300));
         freezeTradersScrollPane.setBorder(null);
+        freezeTradersScrollPane.setPreferredSize(new Dimension(575, 274));
+        gbc.insets = new Insets(0,0,0,0);
+        gbc.gridy = 1;
+        gbc.weighty = 0.9;
+        freezeTraders.add(freezeTradersScrollPane, gbc);
 
         bottomSplitContainer = new JPanel(new GridLayout(1, 2, 50, 0));
         bottomSplitContainer.setPreferredSize(new Dimension(1200, 300));
         bottomSplitContainer.setBackground(Color.BLACK);
-        bottomSplitContainer.add(unFreezeRequestsScrollPane);
-        bottomSplitContainer.add(freezeTradersScrollPane);
+        bottomSplitContainer.add(unFreezeRequests);
+        bottomSplitContainer.add(freezeTraders);
 
-        this.add(itemRequestsTitleContainer);
-        this.add(itemRequestsScrollPane);
+        this.add(itemRequests);
         this.add(frozenTraderTitleContainer);
         this.add(bottomSplitContainer);
 
@@ -162,6 +218,46 @@ public class OverviewPanel extends JPanel {
             }
         });
 
+    }
+
+    private void addFreezeTradersHeader() {
+    }
+
+    private void addUnFreezeRequestsHeader() {
+    }
+
+    private void additemRequestsHeader() {
+        JLabel name = new JLabel("Name");
+        name.setFont(this.regular.deriveFont(20f));
+        name.setForeground(Color.WHITE);
+        name.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel location = new JLabel("Location");
+        location.setFont(this.regular.deriveFont(20f));
+        location.setForeground(Color.WHITE);
+        location.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel theirItem = new JLabel("Their Item");
+        theirItem.setFont(this.regular.deriveFont(20f));
+        theirItem.setForeground(Color.WHITE);
+        theirItem.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel yourItem = new JLabel("Your Item   ");
+        yourItem.setFont(this.regular.deriveFont(20f));
+        yourItem.setForeground(Color.WHITE);
+        yourItem.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel empty1 = new JLabel("");
+        JLabel empty2 = new JLabel("");
+        JLabel empty3 = new JLabel("");
+
+        itemRequestsHeader.add(name);
+        itemRequestsHeader.add(location);
+        itemRequestsHeader.add(theirItem);
+        itemRequestsHeader.add(yourItem);
+        itemRequestsHeader.add(empty1);
+        itemRequestsHeader.add(empty2);
+        itemRequestsHeader.add(empty3);
     }
 
     private void getAllItemRequests() {
