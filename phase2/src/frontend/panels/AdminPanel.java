@@ -55,7 +55,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuPanelContainer.setBackground(bg);
 
         iconText = new JLabel(admin.getUsername().toUpperCase().substring(0, 1));
-        iconText.setBorder(BorderFactory.createEmptyBorder(14, 0, 0, 0));
+        iconText.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         iconText.setFont(boldItalic.deriveFont(55f));
         iconText.setForeground(Color.WHITE);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -67,13 +67,13 @@ public class AdminPanel extends JPanel implements ActionListener {
                 : admin.getUsername()));
         usernameTitle.setFont(regular.deriveFont(35f));
         usernameTitle.setForeground(Color.WHITE);
-        usernameTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        usernameTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
+        usernameTitle.setHorizontalAlignment(JLabel.CENTER);
         gbc.weighty = 0.01;
         gbc.gridy = 1;
         menuContainer.add(usernameTitle, gbc);
 
-        userIdTitle = new JLabel(
-                "<html><pre>ID: #" + admin.getId().substring(admin.getId().length() - 12) + "</pre></html>");
+        userIdTitle = new JLabel("<html><pre>ID: #" + admin.getId().substring(admin.getId().length() - 12) + "</pre></html>");
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(gray);
         userIdTitle.setHorizontalAlignment(JLabel.CENTER);
@@ -83,7 +83,8 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuContainer.add(userIdTitle, gbc);
 
         overviewPanelButton = new JButton("Overview");
-        overviewPanelButton.setFont(bold.deriveFont(25f));
+        overviewPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        overviewPanelButton.setFont(regular.deriveFont(30f));
         overviewPanelButton.setForeground(Color.WHITE);
         overviewPanelButton.setBackground(current);
         overviewPanelButton.setOpaque(true);
@@ -95,7 +96,8 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuContainer.add(overviewPanelButton,gbc);
 
         controlPanelButton = new JButton("Control Panel");
-        controlPanelButton.setFont(bold.deriveFont(25f));
+        controlPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        controlPanelButton.setFont(regular.deriveFont(30f));
         controlPanelButton.setForeground(Color.WHITE);
         controlPanelButton.setBackground(current);
         controlPanelButton.setOpaque(false);
@@ -105,7 +107,8 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuContainer.add(controlPanelButton,gbc);
 
         searchPanelButton = new JButton("Search");
-        searchPanelButton.setFont(bold.deriveFont(25f));
+        searchPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        searchPanelButton.setFont(regular.deriveFont(30f));
         searchPanelButton.setForeground(Color.WHITE);
         searchPanelButton.setBackground(current);
         searchPanelButton.setOpaque(false);
@@ -114,7 +117,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         gbc.gridy = 5;
         menuContainer.add(searchPanelButton,gbc);
 
-        gbc.weighty = 0.26;
+        gbc.weighty = 0.28;
         JPanel emptyPanel2 = new JPanel();
         emptyPanel2.setOpaque(false);
         gbc.gridy = 6;
@@ -127,11 +130,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         logoutButton.setOpaque(true);
         logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(e -> {
-            try {
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout();
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
         });
         gbc.weighty = 0.1;
         gbc.gridy = 7;

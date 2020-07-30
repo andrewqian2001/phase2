@@ -1,4 +1,4 @@
-I'll delete this later, its just to keep track
+# FRONT END TODO (not back end)
 
 **TODO: GENERAL** 
 
@@ -17,8 +17,8 @@ I'll delete this later, its just to keep track
 **TODO: traderPanel**
 
 TradePanel:  
-  - Edit button in TradeRequests   
-  - Finish Add New Trade Window + Submit Button  
+  - In the editTradeRequest modal, get the current meeting dates and automatically set the JComboBoxes to the date
+  - ~~Finish Add New Trade Window + Submit Button~~ 
   - ~~Fix scrollpane top header alignment~~
   
 ItemsPanel:  
@@ -34,16 +34,16 @@ NotificationsPanel:
   - ~~'Clear all notifications' button~~  
   
 SearchPanel:  
-  - trader details button modal in trader search
-  - ~~Finalize trader search scroll pane items (can only be done after backend is done)  ~~
-  - ~~Finalize tradable item search scroll pane items (can only   be done after backend is done)  ~~
+  - trader details button **modal** in trader search
+  - ~~Finalize trader search scroll pane items (can only be done after backend is done)~~
+  - ~~Finalize tradable item search scroll pane items (can only   be done after backend is done)~~
   - ~~Change details button to 'Add to wishlist' in tradable   item search~~  
   - ~~Finish AddToWishlist Button~~
   
   
 **TODO: adminPanel**  
   
-- Fix the logo circle icon   
+- ~~Fix the logo circle icon~~   
 - ~~Fix menuContainer width just like traderPanel~~  
   
 OverviewPanel:  

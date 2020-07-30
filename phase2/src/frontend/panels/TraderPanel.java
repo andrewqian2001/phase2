@@ -136,11 +136,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         logoutButton.setOpaque(true);
         logoutButton.setBorderPainted(false);
         logoutButton.addActionListener(e -> {
-            try {
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout();
-            } catch(IOException ex) {
-                System.out.println(ex.getMessage());
-            }
         }); 
         gbc.gridy = 8;
         menuContainer.add(logoutButton, gbc);
