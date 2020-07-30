@@ -23,7 +23,14 @@ public class LoginPanel extends JPanel implements ActionListener {
     protected JButton loginButton, registerButton;
     private final LoginManager loginManager = new LoginManager();
 
-
+    /**
+     * New login panel
+     * @param regular font for regular
+     * @param bold font for bold
+     * @param italic font for italics
+     * @param boldItalic font for bold italics
+     * @throws IOException if logging in causes issues
+     */
     public LoginPanel(Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         // Colours
         final Color red = new Color(219, 58, 52);
