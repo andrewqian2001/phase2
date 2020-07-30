@@ -58,7 +58,10 @@ public class TestTradingInfo {
                 traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
                 traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
                 traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
-
+            }
+            for (int i = 0; i < traders.length; i++) {
+                traders[i] = traderManager.addToWishList(traders[i].getId(), traders[i + 1 == traders.length ? 0 : i + 1].getAvailableItems().get(0));
+                traders[i] = traderManager.addToWishList(traders[i].getId(), traders[i - 1 == -1 ? traders.length - 1 : i - 1].getAvailableItems().get(0));
             }
             admin = (Admin) loginManager.registerUser("admin", "PASDASDFDSAFpadsf1", UserTypes.ADMIN);
         } catch (IOException ignored) {
@@ -105,8 +108,8 @@ public class TestTradingInfo {
                     tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
                 }
             }
-            for (int i = 0; i < n; i++){
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(),traders[n-1-i].getId());
+            for (int i = 0; i < n; i++) {
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(), traders[n - 1 - i].getId());
             }
 
             for (int j = 0; j < 2; j++) {
@@ -122,13 +125,13 @@ public class TestTradingInfo {
                     tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId(), true);
                 }
             }
-            for (int i = 0; i < n; i++){
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(),traders[n-1-i].getId());
+            for (int i = 0; i < n; i++) {
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(), traders[n - 1 - i].getId());
             }
-            for (int i = 0; i < n -1; i+=2){
-                if (i == 4){
+            for (int i = 0; i < n - 1; i += 2) {
+                if (i == 4) {
                     // This is becasue 4->5, and so 4 traded with 5 3 times
-                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0).getId(),traders[5].getId());
+                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0).getId(), traders[5].getId());
                     continue;
                 }
                 assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(1).getId(), traders[i + 1].getId());
@@ -148,13 +151,13 @@ public class TestTradingInfo {
                 tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId(), true);
             }
 
-            for (int i = 0; i < n; i++){
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(),traders[n-1-i].getId());
+            for (int i = 0; i < n; i++) {
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(), traders[n - 1 - i].getId());
             }
-            for (int i = 0; i < n -1; i+=2){
-                if (i == 4){
+            for (int i = 0; i < n - 1; i += 2) {
+                if (i == 4) {
                     // This is becasue 4->5, and so 4 traded with 5 3 times
-                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0).getId(),traders[5].getId());
+                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0).getId(), traders[5].getId());
                     continue;
                 }
                 assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(1).getId(), traders[i + 1].getId());
@@ -164,6 +167,51 @@ public class TestTradingInfo {
             }
 
         } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testSuggestLend() {
+        try {
+            for (int i = 1; i < traders.length - 1; i++) {
+                ArrayList<Trade> suggested = tradingInfoManager.suggestLend(traders[i].getId());
+                assertEquals(suggested.size(), 2);
+                assertEquals(suggested.get(0).getFirstUserId(), traders[i].getId());
+                assertEquals(suggested.get(1).getFirstUserId(), traders[i].getId());
+                assertEquals(suggested.get(0).getSecondUserId(), traders[i - 1].getId());
+                assertEquals(suggested.get(1).getSecondUserId(), traders[i + 1].getId());
+
+                assertEquals(suggested.get(0).getFirstUserOffer(), traders[i - 1].getWishlist().get(0));
+                assertEquals(suggested.get(0).getSecondUserOffer(), "");
+                assertEquals(suggested.get(1).getFirstUserOffer(), traders[i + 1].getWishlist().get(1));
+                assertEquals(suggested.get(1).getSecondUserOffer(), "");
+
+            }
+        } catch (Exception e) {
+            fail(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void testSuggestTrade(){
+        try {
+            for (int i = 1; i < traders.length - 1; i++) {
+                ArrayList<Trade> suggested = tradingInfoManager.suggestTrade(traders[i].getId());
+                assertEquals(suggested.size(), 2);
+                assertEquals(suggested.get(0).getFirstUserId(), traders[i].getId());
+                assertEquals(suggested.get(1).getFirstUserId(), traders[i].getId());
+                assertEquals(suggested.get(0).getSecondUserId(), traders[i - 1].getId());
+                assertEquals(suggested.get(1).getSecondUserId(), traders[i + 1].getId());
+
+                assertEquals(suggested.get(0).getFirstUserOffer(), traders[i - 1].getWishlist().get(0));
+                assertEquals(suggested.get(0).getSecondUserOffer(), traders[i - 1].getAvailableItems().get(0));
+                assertEquals(suggested.get(1).getFirstUserOffer(), traders[i + 1].getWishlist().get(1));
+                assertEquals(suggested.get(1).getSecondUserOffer(), traders[i + 1].getAvailableItems().get(0));
+
+            }
+        } catch (Exception e) {
             fail(e.getMessage());
             e.printStackTrace();
         }
