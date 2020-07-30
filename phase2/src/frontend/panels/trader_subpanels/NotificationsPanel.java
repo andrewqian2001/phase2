@@ -230,17 +230,13 @@ public class NotificationsPanel extends JPanel {
                 noMessagesFound.setForeground(Color.WHITE);
                 messagesListContainer.add(noMessagesFound);
                 return;
-            } int numRows = 0;
-            for(User user : messages.keySet()) {
-                numRows += messages.get(user).size();
-            }
+            } int numRows = messages.keySet().size();
             if (numRows < 4)
                 numRows = 4;
             messagesListContainer = new JPanel(new GridLayout(numRows, 1));
             messagesListContainer.setPreferredSize(new Dimension(1200, 400));
             messagesListContainer.setBackground(gray3);
-            messages.forEach((u, msgs) -> {
-                msgs.forEach(message -> {
+            messages.keySet().forEach(u -> {
                     JPanel messagePanel = new JPanel(new GridLayout(1, 5));
                     messagePanel.setPreferredSize(new Dimension(1000, 75));
                     messagePanel.setBackground(gray2);
@@ -255,12 +251,12 @@ public class NotificationsPanel extends JPanel {
                     userName.setHorizontalAlignment(JLabel.LEFT);
                     userName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                    JLabel messageBody = new JLabel("<html><pre>" + (message.length() > 27 ? message.substring(0, 27) + "..." : message) + "</pre></html>");
+                    JLabel messageBody = new JLabel("<html><pre>" + (messages.get(u).get(0).length() > 27 ? messages.get(u).get(0).substring(0, 27) + "..." : messages.get(u).get(0)) + "</pre></html>");
                     messageBody.setFont(regular.deriveFont(17f));
                     messageBody.setForeground(Color.BLACK);
                     messageBody.setHorizontalAlignment(JLabel.LEFT);
 
-                    JButton detailsButton = new JButton("View Full Message");
+                    JButton detailsButton = new JButton("View Conversation");
                     detailsButton.setFont(bold.deriveFont(20f));
                     detailsButton.setForeground(Color.WHITE);
                     detailsButton.setBackground(gray3);
@@ -291,7 +287,11 @@ public class NotificationsPanel extends JPanel {
                         messageBodyTitle.setOpaque(false);
                         messageBodyTitle.setForeground(Color.WHITE);
 
-                        JTextArea fullMessageBody = new JTextArea(message);
+                        StringBuilder fullMessageString = new StringBuilder("");
+                        messages.get(u).forEach(msg -> {
+                            fullMessageString.append("-> " + msg + "\n");
+                        });
+                        JTextArea fullMessageBody = new JTextArea(fullMessageString.toString());
                         fullMessageBody.setFont(regular.deriveFont(20f));
                         fullMessageBody.setBackground(gray);
                         fullMessageBody.setForeground(Color.WHITE);
@@ -323,7 +323,7 @@ public class NotificationsPanel extends JPanel {
                     messagePanel.add(detailsButton);
                     messagePanel.add(replyButton);
                     messagesListContainer.add(messagePanel);
-                });
+                
             });
         } catch (UserNotFoundException e) {
             System.out.println(e.getMessage());

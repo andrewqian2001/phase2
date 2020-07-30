@@ -26,8 +26,8 @@ ItemsPanel:
   - ~~'Add Item to wishlist' button with modal JDialog and   buttons finished ~~
   
 NotificationsPanel:  
-  - !Important: Change each 'messagepanel' to just one for each   user (instead of one for each message)  
   - ScrollPane header for messages   
+  - ~~!Important: Change each 'messagepanel' to just one for each   user (instead of one for each message)~~  
   - ~~When composing a new message, need to check if the username   is legal (maybe through a verify button)~~ 
   - ~~Make ScrollPane for messages and get messages for the   trader~~  
   - ~~make 'Compose new message' button~~  
