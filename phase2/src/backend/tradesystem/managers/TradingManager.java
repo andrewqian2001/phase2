@@ -333,6 +333,10 @@ public class TradingManager extends Manager {
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) {
             throw new CannotTradeException("Too many edits. Trade is cancelled.");
         }
+        if (!datesAreValid(meetingTime,secondMeetingTime)){
+            throw new CannotTradeException("The suggested date(s) are not possible");
+        }
+
         // if the trader sending the request is the first user...
         if (trader1.getId().equals(traderId)){
             if (!trader1.getAvailableItems().contains(thisTraderOffer) || !trader2.getAvailableItems().contains(thatTraderOffer)){
@@ -350,6 +354,7 @@ public class TradingManager extends Manager {
         trade.setMeetingTime(meetingTime);
         trade.setSecondMeetingTime(secondMeetingTime);
         trade.setMeetingLocation(meetingLocation);
+
         if (trade.getFirstUserId().equals(traderId)) {
             trade.setFirstUserOffer(thisTraderOffer);
             trade.setSecondUserOffer(thatTraderOffer);
