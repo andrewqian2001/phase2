@@ -491,7 +491,12 @@ public class TradePanel extends JPanel implements ActionListener {
                         firstMeetingDateTitle.setOpaque(false);
                         firstMeetingDateTitle.setForeground(Color.WHITE);
 
-                        JPanel firstMeetingDate = dateInput();
+                        String month = tradeRequest.getMeetingTime().toString().substring(4, 7);
+                        int day = Integer.parseInt(tradeRequest.getMeetingTime().toString().substring(8, 10));
+                        int year = Integer.parseInt(tradeRequest.getMeetingTime().toString().substring(24, 28));
+                        int hour = Integer.parseInt(tradeRequest.getMeetingTime().toString().substring(11, 13));
+                        int min = Integer.parseInt(tradeRequest.getMeetingTime().toString().substring(14, 16));
+                        JPanel firstMeetingDate = setDateInput(month, day, year, hour, min);
 
                         JLabel secondMeetingDateTitle = new JLabel("Second Meeting Date:");
                         secondMeetingDateTitle.setPreferredSize(new Dimension(200, 50));
@@ -499,7 +504,12 @@ public class TradePanel extends JPanel implements ActionListener {
                         secondMeetingDateTitle.setOpaque(false);
                         secondMeetingDateTitle.setForeground(Color.WHITE);
 
-                        JPanel secondMeetingDate = dateInput();
+                        String month2 = tradeRequest.getSecondMeetingTime().toString().substring(4, 7);
+                        int day2 = Integer.parseInt(tradeRequest.getSecondMeetingTime().toString().substring(8, 10));
+                        int year2 = Integer.parseInt(tradeRequest.getSecondMeetingTime().toString().substring(24, 28));
+                        int hour2 = Integer.parseInt(tradeRequest.getSecondMeetingTime().toString().substring(11, 13));
+                        int min2 = Integer.parseInt(tradeRequest.getSecondMeetingTime().toString().substring(14, 16));
+                        JPanel secondMeetingDate = setDateInput(month2, day2, year2, hour2, min2);
 
                         JLabel availableEditsTitle = new JLabel("Available Edits Left:");
                         availableEditsTitle.setPreferredSize(new Dimension(325, 50));
@@ -1230,6 +1240,70 @@ public class TradePanel extends JPanel implements ActionListener {
         minutes.setFont(regular.deriveFont(20f));
         for (int i = 0; i < 60; i++)
             minutes.addItem(i);
+
+        meetingInput.add(months);
+        meetingInput.add(days);
+        meetingInput.add(years);
+        meetingInput.add(hours);
+        meetingInput.add(minutes);
+        return meetingInput;
+    }
+
+    private JPanel setDateInput(String month, int day, int year, int hour, int min) {
+        JPanel meetingInput = new JPanel();
+        meetingInput.setBackground(bg);
+        meetingInput.setPreferredSize(new Dimension(450, 50));
+
+        String[] monthList = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        JComboBox<String> months = new JComboBox<>(monthList);
+        months.setPreferredSize(new Dimension(100, 50));
+        months.setFont(regular.deriveFont(20f));
+
+        JComboBox<Integer> days = new JComboBox<>();
+        days.setFont(regular.deriveFont(20f));
+        days.setPreferredSize(new Dimension(60, 50));
+        for (int i = 1; i < 32; i++)
+            days.addItem(i);
+
+        months.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                int numDays = 0;
+                if (e.getItem().equals("Apr") || e.getItem().equals("Jun") || e.getItem().equals("Sep")
+                        || e.getItem().equals("Nov"))
+                    numDays = 30;
+                else if (e.getItem().equals("Feb"))
+                    numDays = 28;
+                else
+                    numDays = 31;
+                days.removeAllItems();
+                for (int i = 1; i <= numDays; i++)
+                    days.addItem(i);
+            }
+        });
+
+        JComboBox<Integer> years = new JComboBox<>();
+        years.setPreferredSize(new Dimension(100, 50));
+        years.setFont(regular.deriveFont(20f));
+        for (int i = 2020; i < 2026; i++)
+            years.addItem(i);
+
+        JComboBox<Integer> hours = new JComboBox<>();
+        hours.setPreferredSize(new Dimension(50, 50));
+        hours.setFont(regular.deriveFont(20f));
+        for (int i = 0; i < 24; i++)
+            hours.addItem(i);
+
+        JComboBox<Integer> minutes = new JComboBox<>();
+        minutes.setPreferredSize(new Dimension(50, 50));
+        minutes.setFont(regular.deriveFont(20f));
+        for (int i = 0; i < 60; i++)
+            minutes.addItem(i);
+
+        months.setSelectedItem(month);
+        days.setSelectedItem(day);
+        years.setSelectedItem(year);
+        hours.setSelectedItem(hour);
+        minutes.setSelectedItem(min);
 
         meetingInput.add(months);
         meetingInput.add(days);
