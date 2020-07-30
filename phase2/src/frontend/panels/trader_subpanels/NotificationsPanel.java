@@ -251,10 +251,6 @@ public class NotificationsPanel extends JPanel {
                     userName.setHorizontalAlignment(JLabel.LEFT);
                     userName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                    JLabel messageBody = new JLabel("<html><pre>" + (messages.get(u).get(0).length() > 27 ? messages.get(u).get(0).substring(0, 27) + "..." : messages.get(u).get(0)) + "</pre></html>");
-                    messageBody.setFont(regular.deriveFont(17f));
-                    messageBody.setForeground(Color.BLACK);
-                    messageBody.setHorizontalAlignment(JLabel.LEFT);
 
                     JButton detailsButton = new JButton("View Conversation");
                     detailsButton.setFont(bold.deriveFont(20f));
@@ -275,7 +271,7 @@ public class NotificationsPanel extends JPanel {
 
                         JLabel userNameTitle = new JLabel("Sender Username:");
                         userNameTitle.setFont(italic.deriveFont(20f));
-                        userNameTitle.setPreferredSize(new Dimension(500, 50));
+                        userNameTitle.setPreferredSize(new Dimension(550, 50));
                         userNameTitle.setOpaque(false);
                         userNameTitle.setForeground(Color.WHITE);
 
@@ -283,7 +279,7 @@ public class NotificationsPanel extends JPanel {
 
                         JLabel messageBodyTitle= new JLabel("Full Message:");
                         messageBodyTitle.setFont(italic.deriveFont(20f));
-                        messageBodyTitle.setPreferredSize(new Dimension(500, 50));
+                        messageBodyTitle.setPreferredSize(new Dimension(550, 50));
                         messageBodyTitle.setOpaque(false);
                         messageBodyTitle.setForeground(Color.WHITE);
 
@@ -295,7 +291,7 @@ public class NotificationsPanel extends JPanel {
                         fullMessageBody.setFont(regular.deriveFont(20f));
                         fullMessageBody.setBackground(gray);
                         fullMessageBody.setForeground(Color.WHITE);
-                        fullMessageBody.setPreferredSize(new Dimension(500, 200));
+                        fullMessageBody.setPreferredSize(new Dimension(550, 200));
                         fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                         fullMessageBody.setLineWrap(true);
                         fullMessageBody.setEditable(false);
@@ -311,6 +307,23 @@ public class NotificationsPanel extends JPanel {
 
                     }); 
 
+                    JButton clearButton = new JButton("Clear");
+                    clearButton.setFont(bold.deriveFont(20f));
+                    clearButton.setForeground(Color.WHITE);
+                    clearButton.setBackground(red);
+                    clearButton.setOpaque(true);
+                    clearButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+                    clearButton.addActionListener(e -> {
+                        try {
+                        messageManager.clearMessagesFromUser(trader.getId(), u.getId());
+                        messagesListContainer.remove(messagePanel);
+                        messagesListContainer.revalidate();
+                        messagesListContainer.repaint();
+                    } catch (UserNotFoundException e1) {
+                        System.out.println(e1.getMessage());
+                    }
+                    });
+
                     JButton replyButton = new JButton("Reply");
                     replyButton.setFont(bold.deriveFont(20f));
                     replyButton.setForeground(Color.WHITE);
@@ -319,8 +332,8 @@ public class NotificationsPanel extends JPanel {
                     replyButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
 
                     messagePanel.add(userName);
-                    messagePanel.add(messageBody);
                     messagePanel.add(detailsButton);
+                    messagePanel.add(clearButton);
                     messagePanel.add(replyButton);
                     messagesListContainer.add(messagePanel);
                 
