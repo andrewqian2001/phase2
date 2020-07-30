@@ -5,10 +5,9 @@ import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
 import backend.models.users.User;
-import frontend.TradeBuilder;
+import backend.tradesystem.TradeBuilder;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
