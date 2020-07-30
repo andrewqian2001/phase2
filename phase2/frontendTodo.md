@@ -47,7 +47,7 @@ SearchPanel:
 - ~~Fix menuContainer width just like traderPanel~~  
   
 OverviewPanel:  
-  - ScrollPane top headers for all 3 panels  
+  - ~~ScrollPane top headers for all 3 panels~~  
   - ~~empty list messages for all 3 panels~~  
   
 ControlPanel:  
