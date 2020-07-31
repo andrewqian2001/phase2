@@ -1,24 +1,40 @@
 package frontend.panels;
 
-import frontend.WindowManager;
-import frontend.panels.trader_subpanels.*;
-
-import javax.swing.*;
-import javax.swing.plaf.metal.MetalButtonUI;
-
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.plaf.metal.MetalButtonUI;
+
 import backend.models.users.Trader;
+import frontend.WindowManager;
+import frontend.panels.trader_subpanels.ItemsPanel;
+import frontend.panels.trader_subpanels.NotificationsPanel;
+import frontend.panels.trader_subpanels.SettingsPanel;
+import frontend.panels.trader_subpanels.TradePanel;
 
 public class TraderPanel extends JPanel implements ActionListener {
 
     private JLabel usernameTitle, userIdTitle, iconText, gap;
-    private JPanel tradePanel, itemsPanel, notificationsPanel, searchPanel, menuContainer,
+    private JPanel tradePanel, itemsPanel, notificationsPanel, searchPanel, settingsPanel, menuContainer,
             menuPanelContainer;
     private JButton tradePanelButton, itemsPanelButton, notificationsPanelButton,
-            searchPanelButton, logoutButton;
+            searchPanelButton, logoutButton, settingsPanelButton;
     private CardLayout cardLayout;
     private GridBagConstraints gbc;
 
@@ -36,6 +52,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         itemsPanel = new ItemsPanel(trader, regular, bold, italic, boldItalic);
         notificationsPanel = new NotificationsPanel(trader, regular, bold, italic, boldItalic);
         searchPanel = new SearchPanel(trader, regular, bold, italic, boldItalic);
+        settingsPanel = new SettingsPanel(trader, regular, bold, italic, boldItalic);
 
         menuContainer = new JPanel(new GridBagLayout());
         menuContainer.setPreferredSize(new Dimension(250, this.getHeight()));
@@ -124,10 +141,16 @@ public class TraderPanel extends JPanel implements ActionListener {
         gbc.gridy = 6;
         menuContainer.add(searchPanelButton, gbc);
 
-        gap = new JLabel("    ");
-        gap.setFont(regular.deriveFont(30f));
+       settingsPanelButton = new JButton("Settings");
+       settingsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+       settingsPanelButton.setFont(regular.deriveFont(30f));
+       settingsPanelButton.setForeground(Color.BLACK);
+       settingsPanelButton.setBackground(current);
+       settingsPanelButton.setOpaque(false);
+       settingsPanelButton.setBorderPainted(false);
+       settingsPanelButton.addActionListener(this);
         gbc.gridy = 7;
-        menuContainer.add(gap, gbc);
+        menuContainer.add(settingsPanelButton, gbc);
 
         logoutButton = new JButton("Logout");
         logoutButton.setFont(boldItalic.deriveFont(25f));
@@ -145,6 +168,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuPanelContainer.add(itemsPanel, "Items");
         menuPanelContainer.add(notificationsPanel, "Notifications");
         menuPanelContainer.add(searchPanel, "Search");
+        menuPanelContainer.add(settingsPanel, "Settings");
 
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
