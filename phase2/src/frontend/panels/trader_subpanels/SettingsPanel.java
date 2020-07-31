@@ -1,14 +1,27 @@
 package frontend.panels.trader_subpanels;
 
-import java.awt.Color;
-import java.awt.Font;
 
-import javax.swing.JPanel;
+import java.awt.*;
+import java.io.IOException;
 
+import javax.swing.*;
+
+import backend.exceptions.AuthorizationException;
+import backend.exceptions.BadPasswordException;
+import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
+import backend.tradesystem.managers.LoginManager;
+import backend.tradesystem.managers.TraderManager;
 
 public class SettingsPanel extends JPanel {
     private Font regular, bold, italic, boldItalic;
+    private Trader trader;
+
+    private JLabel settingsTitleLabel;
+    private JPanel changePasswordPanel, changeCityPanel;
+
+    private TraderManager traderManager;
+    private LoginManager loginManager;
 
     private Color bg = new Color(51, 51, 51);
     private Color gray = new Color(196, 196, 196);
@@ -16,7 +29,116 @@ public class SettingsPanel extends JPanel {
     private Color green = new Color(27, 158, 36);
     private Color red = new Color(219, 58, 52);
 
-    public SettingsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) {
+    public SettingsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+
         this.setBackground(bg);
+        this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
+
+        this.trader = trader;
+        this.regular = regular;
+        this.bold = bold;
+        this.italic = italic;
+        this.boldItalic = boldItalic;
+
+        traderManager = new TraderManager();
+        loginManager = new LoginManager();
+
+        settingsTitleLabel = new JLabel("Account Settings");
+        settingsTitleLabel.setFont(regular.deriveFont(35f));
+        settingsTitleLabel.setPreferredSize(new Dimension(1200, 75));
+        settingsTitleLabel.setForeground(Color.WHITE);
+        settingsTitleLabel.setOpaque(false);
+
+        changePasswordPanel = getChangePasswordPanel();
+        changeCityPanel = getChangeCityPanel();
+
+        this.add(settingsTitleLabel);
+        this.add(changePasswordPanel);
+        this.add(changeCityPanel);
+    }
+
+    private JPanel getChangePasswordPanel() {
+        JPanel changePassPanel = new JPanel(new GridLayout(1, 4));
+        changePassPanel.setPreferredSize(new Dimension(1200, 100));
+        changePassPanel.setBackground(gray2);
+
+        JLabel changePasswordLabel = new JLabel("Change Password:");
+        changePasswordLabel.setFont(italic.deriveFont(25f));
+        changePasswordLabel.setForeground(Color.BLACK);
+        changePasswordLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        changePasswordLabel.setOpaque(false);
+
+        JPasswordField changePassword = new JPasswordField(trader.getPassword());
+        changePassword.setFont(regular.deriveFont(25f));
+        changePassword.setForeground(Color.BLACK);
+        changePassword.setBackground(gray);
+        changePassword.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(15, 25, 15, 50, gray2), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        
+        JButton changePasswordButton = new JButton("Submit");
+        changePasswordButton.setFont(bold.deriveFont(20f));
+        changePasswordButton.setBackground(green);
+        changePasswordButton.setForeground(Color.WHITE);
+        changePasswordButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
+        changePasswordButton.addActionListener(e -> {
+            try {
+                loginManager.changePassword(trader.getId(), String.valueOf(changePassword.getPassword()));
+                changePasswordLabel.setFont(regular.deriveFont(25f));
+                changePasswordLabel.setText("Password Changed!");
+                changePassword.setText("");
+            } catch (UserNotFoundException | BadPasswordException e1) {
+                changePasswordLabel.setFont(boldItalic.deriveFont(20f));
+                changePasswordLabel.setText(e1.getMessage());
+            }
+        });
+
+        changePassPanel.add(changePasswordLabel);
+        changePassPanel.add(changePassword);
+        changePassPanel.add(changePasswordButton);
+
+        return changePassPanel;
+
+    }
+
+    private JPanel getChangeCityPanel() {
+        JPanel cityPanel = new JPanel(new GridLayout(1, 3));
+        cityPanel.setPreferredSize(new Dimension(1200, 100));
+        cityPanel.setBackground(gray2);
+
+        JLabel changeCityLabel = new JLabel("Change City:");
+        changeCityLabel.setFont(italic.deriveFont(25f));
+        changeCityLabel.setForeground(Color.BLACK);
+        changeCityLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        changeCityLabel.setOpaque(false);
+
+        JTextField changeCity = new JTextField(trader.getCity());
+        changeCity.setFont(regular.deriveFont(25f));
+        changeCity.setForeground(Color.BLACK);
+        changeCity.setBackground(gray);
+        changeCity.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(15, 25, 15, 50, gray2),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+        JButton changeCityButton = new JButton("Submit");
+        changeCityButton.setFont(bold.deriveFont(20f));
+        changeCityButton.setBackground(green);
+        changeCityButton.setForeground(Color.WHITE);
+        changeCityButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
+        changeCityButton.addActionListener(e -> {
+            if (changeCity.getText().trim().length() != 0) {
+                try {
+                    traderManager.setCity(trader.getId(), changeCity.getText());
+                    changeCityLabel.setText("City Changed!");
+                    changeCity.setText("");
+                } catch (UserNotFoundException | AuthorizationException e1) {
+                    System.out.println(e1.getMessage());
+                }
+            }
+        });
+
+       cityPanel.add(changeCityLabel);
+       cityPanel.add(changeCity);
+       cityPanel.add(changeCityButton);
+
+        return  cityPanel;
     }
 }
