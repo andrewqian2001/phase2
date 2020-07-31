@@ -167,6 +167,7 @@ public class TraderManager extends Manager {
         else if (rating > 10) rating = 10;
         Review review = new Review(fromUser, toUser, rating, message);
         trader.addReview(review);
+        updateUserDatabase(trader);
         return review;
     }
 
