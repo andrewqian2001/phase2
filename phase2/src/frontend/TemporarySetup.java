@@ -98,6 +98,9 @@ public class TemporarySetup {
             messageManager.reportUser(traders[1].getId(), traders[6].getId(), "This user flew away with my helicopter and never gave me what I wanted");
             // For messaging users
             messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "Dallas is pretty far can you come to New York instead");
+            messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "Ik its a lot to ask but like yeehaw");
+            messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "Dplease i got covid19 come to new yorkkk");
+            messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "uk what fine, i never liked you anyway");
             messageManager.sendMessage(traders[0].getId(), traders[1].getId(), "Can I buy your Ryerson hat for my pokemon cards");
             // List of admins
             for (int i = 0; i < admins.length; i++) {

@@ -116,6 +116,7 @@ public class TestTradingInfo {
             Why is the wishlist empty when i added crack to the wishlist
              */
             for(String ids: tHasInventory2.getWishlist()){
+                System.out.println("?????????????????????????????????????????????");
                 //System.out.println("wishlist item : " + tradingInfoManager.getTradableItem(ids).getName());
             }
 
@@ -357,7 +358,7 @@ public class TestTradingInfo {
 
     }
 
-    //@Test
+    @Test
     public void testSimilarSearch() throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         //need to change similarSearch to private after finished testing
 
@@ -365,8 +366,6 @@ public class TestTradingInfo {
 
         //similar search rn still needs a way to deal with strings with missing chars and when the item in wishlist is larger then the item in inventory by a lot
         //apple watch, watch
-
-
 
         TradableItem i1 = new TradableItem("andrer", "test");
         TradableItem i2 = new TradableItem("ANDREW", "test");
@@ -419,15 +418,27 @@ public class TestTradingInfo {
         assertEquals("Jan", name5[0]);
         assertEquals(1, name5[1]);
 
-        TradableItem i11 = new TradableItem("samsung phone", "test");
-        TradableItem i12 = new TradableItem("wack phonw", "test");
+        TradableItem i11 = new TradableItem("comuter", "test");
+        TradableItem i12 = new TradableItem("computww", "test");
         tradableItemDatabase.update(i11);
         tradableItemDatabase.update(i12);
         listNames.add(i11.getId());
         listNames.add(i12.getId());
-        Object[] name6 =  tradingInfoManager.similarSearch(("phone"), listNames);
-        assertEquals( "samsung phone",name6[0]);
-        assertEquals(5, name6[1]);
+        Object[] name6 =  tradingInfoManager.similarSearch(("computer"), listNames);//tests for missing char
+        //assertEquals( "comuter",name6[0]);
+        //assertEquals(7, name6[1]);
+
+        TradableItem i13 = new TradableItem("hat", "test");
+        TradableItem i14 = new TradableItem("hwat", "test");
+        tradableItemDatabase.update(i13);
+        tradableItemDatabase.update(i14);
+        listNames.add(i13.getId());
+        listNames.add(i14.getId());
+        Object[] name7 =  tradingInfoManager.similarSearch(("red hat"), listNames);//tests for when the string we are searching for, is bigger then the name of the item
+        assertEquals( "hat",name7[0]);
+        assertEquals(3, name7[1]);
+
+
 
         /*
             problem with similarSearch rn is when a string is missing a letter

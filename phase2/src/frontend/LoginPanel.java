@@ -1,17 +1,30 @@
 package frontend;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.LoginManager;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
 
 /**
  * This represents the login screen
@@ -52,10 +65,11 @@ public class LoginPanel extends JPanel implements ActionListener {
         manageUsernameInputField(regular, input, gbc, inputs);
         managePasswordTitle(italic, gbc, inputs);
         managePasswordField(regular, input, gbc, inputs);
+        
         //TODO: REMOVE BELOW FOR DEPLOYMENT (only for testing)
         usernameInput = new JTextField("trader7");
         passwordInput = new JPasswordField("userPassword1");
-        //TODO: REMOVE ABOVE BEFORE DEPLOYMENT
+
         JPanel buttonContainer = manageButtonPanel(bold, gbc);
         manageRegisterButton(bold, gbc, buttonContainer);
         JPanel info = manageInfoPanel();
@@ -94,6 +108,9 @@ public class LoginPanel extends JPanel implements ActionListener {
         } else if(e.getActionCommand().equals("Register")) {
             try {
                 User loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                if(loggedInUser instanceof Trader) {
+                    ((Trader) loggedInUser).setCity("Toronto");
+                }
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch(BadPasswordException ex) {
                 notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");

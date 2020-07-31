@@ -7,12 +7,12 @@
 - Panel for Idle Users  
 - Panel for Demo  
 - Button to load demo account in LoginPanel  
-- Add a settings menu for Trader to allow them to enter 'idle mode'  
 - Add reviews and reports to all trades/(messages ?)  
 - User should be able to trade based on city  
-- Add ability for user to enter city on registration (and change city in settings)  
 - Admin undo abilities  
 - javadoc? maybe?
+- ~~Add a settings menu for Trader to allow them to enter 'idle mode'~~  
+- ~~Add ability for user to enter city on registration (and change city in settings)~~ 
 
 **TODO: traderPanel**
 
@@ -26,8 +26,8 @@ ItemsPanel:
   - ~~'Add Item to wishlist' button with modal JDialog and   buttons finished ~~
   
 NotificationsPanel:  
-  - !Important: Change each 'messagepanel' to just one for each   user (instead of one for each message)  
   - ScrollPane header for messages   
+  - ~~!Important: Change each 'messagepanel' to just one for each   user (instead of one for each message)~~  
   - ~~When composing a new message, need to check if the username   is legal (maybe through a verify button)~~ 
   - ~~Make ScrollPane for messages and get messages for the   trader~~  
   - ~~make 'Compose new message' button~~  

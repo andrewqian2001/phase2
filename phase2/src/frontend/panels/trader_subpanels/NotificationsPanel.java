@@ -1,11 +1,22 @@
 package frontend.panels.trader_subpanels;
 
-import javax.swing.*;
-
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
@@ -230,17 +241,13 @@ public class NotificationsPanel extends JPanel {
                 noMessagesFound.setForeground(Color.WHITE);
                 messagesListContainer.add(noMessagesFound);
                 return;
-            } int numRows = 0;
-            for(User user : messages.keySet()) {
-                numRows += messages.get(user).size();
-            }
+            } int numRows = messages.keySet().size();
             if (numRows < 4)
                 numRows = 4;
             messagesListContainer = new JPanel(new GridLayout(numRows, 1));
             messagesListContainer.setPreferredSize(new Dimension(1200, 400));
             messagesListContainer.setBackground(gray3);
-            messages.forEach((u, msgs) -> {
-                msgs.forEach(message -> {
+            messages.keySet().forEach(u -> {
                     JPanel messagePanel = new JPanel(new GridLayout(1, 5));
                     messagePanel.setPreferredSize(new Dimension(1000, 75));
                     messagePanel.setBackground(gray2);
@@ -255,12 +262,8 @@ public class NotificationsPanel extends JPanel {
                     userName.setHorizontalAlignment(JLabel.LEFT);
                     userName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                    JLabel messageBody = new JLabel("<html><pre>" + (message.length() > 27 ? message.substring(0, 27) + "..." : message) + "</pre></html>");
-                    messageBody.setFont(regular.deriveFont(17f));
-                    messageBody.setForeground(Color.BLACK);
-                    messageBody.setHorizontalAlignment(JLabel.LEFT);
 
-                    JButton detailsButton = new JButton("View Full Message");
+                    JButton detailsButton = new JButton("View Conversation");
                     detailsButton.setFont(bold.deriveFont(20f));
                     detailsButton.setForeground(Color.WHITE);
                     detailsButton.setBackground(gray3);
@@ -279,7 +282,7 @@ public class NotificationsPanel extends JPanel {
 
                         JLabel userNameTitle = new JLabel("Sender Username:");
                         userNameTitle.setFont(italic.deriveFont(20f));
-                        userNameTitle.setPreferredSize(new Dimension(500, 50));
+                        userNameTitle.setPreferredSize(new Dimension(550, 50));
                         userNameTitle.setOpaque(false);
                         userNameTitle.setForeground(Color.WHITE);
 
@@ -287,15 +290,19 @@ public class NotificationsPanel extends JPanel {
 
                         JLabel messageBodyTitle= new JLabel("Full Message:");
                         messageBodyTitle.setFont(italic.deriveFont(20f));
-                        messageBodyTitle.setPreferredSize(new Dimension(500, 50));
+                        messageBodyTitle.setPreferredSize(new Dimension(550, 50));
                         messageBodyTitle.setOpaque(false);
                         messageBodyTitle.setForeground(Color.WHITE);
 
-                        JTextArea fullMessageBody = new JTextArea(message);
+                        StringBuilder fullMessageString = new StringBuilder("");
+                        messages.get(u).forEach(msg -> {
+                            fullMessageString.append("-> " + msg + "\n");
+                        });
+                        JTextArea fullMessageBody = new JTextArea(fullMessageString.toString());
                         fullMessageBody.setFont(regular.deriveFont(20f));
                         fullMessageBody.setBackground(gray);
                         fullMessageBody.setForeground(Color.WHITE);
-                        fullMessageBody.setPreferredSize(new Dimension(500, 200));
+                        fullMessageBody.setPreferredSize(new Dimension(550, 200));
                         fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                         fullMessageBody.setLineWrap(true);
                         fullMessageBody.setEditable(false);
@@ -311,19 +318,99 @@ public class NotificationsPanel extends JPanel {
 
                     }); 
 
+                    JButton clearButton = new JButton("Clear");
+                    clearButton.setFont(bold.deriveFont(20f));
+                    clearButton.setForeground(Color.WHITE);
+                    clearButton.setBackground(red);
+                    clearButton.setOpaque(true);
+                    clearButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+                    clearButton.addActionListener(e -> {
+                        try {
+                        messageManager.clearMessagesFromUser(trader.getId(), u.getId());
+                        messagesListContainer.remove(messagePanel);
+                        messagesListContainer.revalidate();
+                        messagesListContainer.repaint();
+                    } catch (UserNotFoundException e1) {
+                        System.out.println(e1.getMessage());
+                    }
+                    });
+
                     JButton replyButton = new JButton("Reply");
                     replyButton.setFont(bold.deriveFont(20f));
                     replyButton.setForeground(Color.WHITE);
                     replyButton.setBackground(green);
                     replyButton.setOpaque(true);
                     replyButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+                    replyButton.addActionListener(e -> {
+                        JDialog messageReplyModal = new JDialog();
+                        messageReplyModal.setTitle("Message Details");
+                        messageReplyModal.setSize(600, 400);
+                        messageReplyModal.setResizable(false);
+                        messageReplyModal.setLocationRelativeTo(null);
+
+                        JPanel messageReplyPanel = new JPanel();
+                        messageReplyPanel.setPreferredSize(new Dimension(600, 400));
+                        messageReplyPanel.setBackground(bg);
+
+                        JLabel userNameTitle = new JLabel("Sender Username:");
+                        userNameTitle.setFont(italic.deriveFont(20f));
+                        userNameTitle.setPreferredSize(new Dimension(550, 50));
+                        userNameTitle.setOpaque(false);
+                        userNameTitle.setForeground(Color.WHITE);
+
+                        userName.setForeground(Color.WHITE);
+
+                        JLabel messageBodyTitle= new JLabel("Enter Message:");
+                        messageBodyTitle.setFont(italic.deriveFont(20f));
+                        messageBodyTitle.setPreferredSize(new Dimension(550, 50));
+                        messageBodyTitle.setOpaque(false);
+                        messageBodyTitle.setForeground(Color.WHITE);
+
+                        JTextArea fullMessageBody = new JTextArea();
+                        fullMessageBody.setFont(regular.deriveFont(20f));
+                        fullMessageBody.setPreferredSize(new Dimension(550, 150));
+                        fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                        fullMessageBody.setLineWrap(true);
+
+
+                        JButton submitButton = new JButton("Submit");
+                        submitButton.setFont(bold.deriveFont(20f));
+                        submitButton.setBackground(green);
+                        submitButton.setForeground(Color.WHITE);
+                        submitButton.setPreferredSize(new Dimension(325, 50));
+                        submitButton.addActionListener(e1 -> {
+                            if(fullMessageBody.getText().trim().length() > 0) {
+                                try {
+                                messageManager.sendMessage(trader.getId(), u.getId(), fullMessageBody.getText());
+                                messageManager.clearMessagesFromUser(trader.getId(), u.getId());
+                                messageReplyModal.dispose();
+                                messagesListContainer.remove(messagePanel);
+                                messagesListContainer.revalidate();
+                                messagesListContainer.repaint();
+                            } catch (UserNotFoundException | AuthorizationException e2) {
+                                System.out.println(e2.getMessage());
+                            }
+                            }
+                        });
+
+                        messageReplyPanel.add(userNameTitle);
+                        messageReplyPanel.add(userName);
+                        messageReplyPanel.add(messageBodyTitle);
+                        messageReplyPanel.add(fullMessageBody);
+
+                        messageReplyModal.add(messageReplyPanel);
+                        messageReplyModal.add(submitButton, BorderLayout.SOUTH);
+                        messageReplyModal.setModal(true);
+                        messageReplyModal.setVisible(true);
+
+                    });
 
                     messagePanel.add(userName);
-                    messagePanel.add(messageBody);
                     messagePanel.add(detailsButton);
+                    messagePanel.add(clearButton);
                     messagePanel.add(replyButton);
                     messagesListContainer.add(messagePanel);
-                });
+                
             });
         } catch (UserNotFoundException e) {
             System.out.println(e.getMessage());

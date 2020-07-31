@@ -358,6 +358,7 @@ public class OverviewPanel extends JPanel {
             noTradersFound.setVerticalAlignment(JLabel.CENTER);
             noTradersFound.setForeground(gray);
             unFreezeRequestsContainer.add(noTradersFound);
+            unFreezeRequestsHeader.setVisible(false);
             return;
         }
         int numRows = unFreezeRequests.size();
@@ -428,6 +429,7 @@ public class OverviewPanel extends JPanel {
             noTradersFound.setVerticalAlignment(JLabel.CENTER);
             noTradersFound.setForeground(gray);
             freezeTradersContainer.add(noTradersFound);
+            freezeTradersHeader.setVisible(false);
             return;
         }
         int numRows = tobeFrozenList.size();

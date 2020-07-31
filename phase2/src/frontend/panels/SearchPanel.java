@@ -1,11 +1,20 @@
 package frontend.panels;
 
-import javax.swing.*;
-import javax.swing.border.Border;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
@@ -253,38 +262,24 @@ public class SearchPanel extends JPanel {
                 traderReviews.setBackground(gray2);
                 traderReviews.setPreferredSize(new Dimension(580, 250));
                 t.getReviews().forEach(review -> {
-                    JPanel traderReview = new JPanel(new GridLayout(1,3));
+                    JPanel traderReview = new JPanel(new GridLayout(1,1));
                     traderReview.setBackground(gray2);
                     traderReview.setPreferredSize(new Dimension(500, 50));
                     traderReview.setBorder(BorderFactory.createMatteBorder(0, 0 , 2, 0 , bg));
 
-                    JLabel otherTraderName = new JLabel("DUMMY TEXT");
+                    JLabel text = new JLabel("DUMMY TEXT");
                     try {
-                        otherTraderName.setText(traderManager.getUser(review.getFromUserId()).getUsername());
+                        text.setText(traderManager.getUser(review.getFromUserId()).getUsername() + ": " + (review.getRating() + "   ->  ") + review.getMessage());
                     } catch(UserNotFoundException ex) {
                         System.out.println(ex.getMessage());
                     }
-                    otherTraderName.setFont(regular.deriveFont(20f));
-                    otherTraderName.setForeground(Color.WHITE);
-                    otherTraderName.setHorizontalAlignment(JLabel.LEFT);
-                    otherTraderName.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-                    otherTraderName.setOpaque(false);
+                    text.setFont(regular.deriveFont(20f));
+                    text.setForeground(Color.BLACK);
+                    text.setHorizontalAlignment(JLabel.LEFT);
+                    text.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+                    text.setOpaque(false);
 
-                    JLabel reviewRating = new JLabel(review.getRating() + "");
-                    reviewRating.setFont(regular.deriveFont(20f));
-                    reviewRating.setForeground(Color.WHITE);
-                    reviewRating.setHorizontalAlignment(JLabel.CENTER);
-                    reviewRating.setOpaque(false);
-
-                    JLabel reviewMsg = new JLabel("<html><pre>" + review.getMessage()  + "</pre></html>");
-                    reviewMsg.setFont(regular.deriveFont(20f));
-                    reviewMsg.setForeground(Color.WHITE);
-                    reviewMsg.setHorizontalAlignment(JLabel.LEFT);
-                    reviewMsg.setOpaque(false);
-
-                    traderReview.add(otherTraderName);
-                    traderReview.add(reviewRating);
-                    traderReview.add(reviewMsg);
+                    traderReview.add(text);
 
                     traderReviews.add(traderReview);
                 });
