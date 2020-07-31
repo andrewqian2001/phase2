@@ -7,6 +7,7 @@ import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
+import backend.tradesystem.managers.ItemQuery;
 import backend.tradesystem.managers.TraderManager;
 import backend.tradesystem.managers.TradingInfoManager;
 import backend.tradesystem.managers.TradingManager;
@@ -35,6 +36,7 @@ public class ItemsPanel extends JPanel {
     private TradingManager tradeManager;
     private TraderManager traderManager;
     private TradingInfoManager infoManager;
+    private final ItemQuery itemQuery = new ItemQuery();
 
     public ItemsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
@@ -218,7 +220,7 @@ public class ItemsPanel extends JPanel {
                     inventoryItems.removeAllItems();
                     for(String itemId : ((Trader) e.getItem()).getAvailableItems()) {
                         try {
-                            inventoryItems.addItem(tradeManager.getTradableItem(itemId));
+                            inventoryItems.addItem(itemQuery.getName(itemId));
                         } catch (TradableItemNotFoundException e1) {
                             System.out.println(e1.getMessage());
                         }

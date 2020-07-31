@@ -21,7 +21,7 @@ public class ReportManager extends Manager {
      *
      * @throws IOException if something goes wrong with getting database
      */
-    public MessageManager() throws IOException {
+    public ReportManager() throws IOException {
         super();
     }
 
@@ -33,58 +33,8 @@ public class ReportManager extends Manager {
      * @param tradeFilePath        the trade database file path
      * @throws IOException issues with getting the file path
      */
-    public MessageManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
+    public ReportManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
         super(userFilePath, tradableItemFilePath, tradeFilePath);
-    }
-
-    /**
-     * Send a message
-     * @param userId the user sending the message
-     * @param toUserId the user receiving the message
-     * @param message the message
-     * @throws UserNotFoundException if one of the users don't exist
-     * @throws AuthorizationException if not allowed to send the message
-     */
-    public void sendMessage(String userId, String toUserId, String message) throws UserNotFoundException, AuthorizationException {
-        if (userId.equals(toUserId)) throw new AuthorizationException("Cannot send a message to self");
-        if (getUser(userId).isFrozen()) throw new AuthorizationException("You are frozen and cant send a message.");
-        getUser(userId); // Ensures the user exists
-        User toUser = getUser(toUserId);
-        toUser.addMessage(userId, message);
-        updateUserDatabase(toUser);
-    }
-
-    /**
-     * Empty out messages that were received
-     * @param userId the user being checked
-     * @throws UserNotFoundException if the user isn't found
-     */
-    public void clearMessages(String userId) throws UserNotFoundException {
-        User user = getUser(userId);
-        user.clearMessages();
-        updateUserDatabase(user);
-    }
-    /**
-     * Empty out messages that were received from a single user
-     * @param userId the user being checked
-     * @param clearUserId the messages received from this user that will get cleared
-     * @throws UserNotFoundException if the user isn't found
-     */
-    public void clearMessagesFromUser(String userId, String clearUserId) throws UserNotFoundException {
-        User user = getUser(userId);
-        user.getMessages().remove(clearUserId);
-        updateUserDatabase(user);
-    }
-
-    /**
-     * Get all messages received by a user
-     * @param userId the user being checked for
-     * @return user to messages
-     * @throws UserNotFoundException if the user isn't found
-     */
-    public HashMap<String, ArrayList<String>> getMessages(String userId) throws UserNotFoundException {
-        User user = getUser(userId);
-        return user.getMessages();
     }
 
     /**
@@ -94,13 +44,14 @@ public class ReportManager extends Manager {
      * @param toUserId   user being reported
      * @param message    what the report is about
      * @return whether or not the report successfully went through
-     * @throws UserNotFoundException user wasn't found
+     * @throws UserNotFoundException  user wasn't found
      * @throws AuthorizationException report is invalid
      */
     public boolean reportUser(String fromUserId, String toUserId, String message) throws UserNotFoundException, AuthorizationException {
         boolean successful = false;
         if (fromUserId.equals(toUserId)) throw new AuthorizationException("You cannot report yourself.");
-        if (getUser(fromUserId).isFrozen()) throw new AuthorizationException("This user is frozen and can't report others.");
+        if (getUser(fromUserId).isFrozen())
+            throw new AuthorizationException("This user is frozen and can't report others.");
         Report report = new Report(fromUserId, toUserId, message);
 
         // Add the report to all admins so that they can see the report.
@@ -117,27 +68,36 @@ public class ReportManager extends Manager {
 
     /**
      * Gets all reports
+     * Each element in the list is structured like such: [fromUserId, reportedUserId, message, reportId]
+     *
      * @return all reports
      */
-    public ArrayList<Report> getReports(){
+    public ArrayList<String[]> getReports() {
         for (User user : getUserDatabase().getItems()) {
             if (user instanceof Admin) {
                 Admin admin = ((Admin) user);
-                return admin.getReports();
+                ArrayList<String[]> reports = new ArrayList<>();
+                for (Report report : admin.getReports()) {
+                    String[] item = {report.getFromUserId(), report.getReportOnUserId(), report.getMessage(), report.getId()};
+                    reports.add(item);
+                }
+                return reports;
             }
         }
         return new ArrayList<>();
     }
 
     /**
-     * Set the list of all reports that admins see
-     * @param reports list of all reports
+     * Remove a report from the list of reports
+     *
+     * @param reportId the report being removed
      */
-    public void setReports(ArrayList<Report> reports){
+    public void clearReports(String reportId) {
         for (User user : getUserDatabase().getItems()) {
             if (user instanceof Admin) {
                 Admin admin = ((Admin) user);
-                admin.setReports(reports);
+                ArrayList<Report> reports = admin.getReports();
+                reports.removeIf(report -> report.getId().equals(reportId));
                 updateUserDatabase(admin);
             }
         }
@@ -146,7 +106,7 @@ public class ReportManager extends Manager {
     /**
      * Clears all reports
      */
-    public void clearReports(){
+    public void clearReports() {
         for (User user : getUserDatabase().getItems()) {
             if (user instanceof Admin) {
                 Admin admin = ((Admin) user);

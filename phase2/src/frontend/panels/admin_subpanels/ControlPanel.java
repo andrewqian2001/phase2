@@ -1,10 +1,8 @@
 package frontend.panels.admin_subpanels;
 
 import backend.models.users.User;
-import sun.java2d.windows.GDIRenderer;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 

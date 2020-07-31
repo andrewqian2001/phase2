@@ -99,13 +99,20 @@ public class UserQuery extends Manager {
 
     /**
      * Gets all reviews of a trader
+     * It is returned in the form of [fromUserId, toUserId, message, rating, reportId] for each element in the list
      * @param traderId The id of the trader being checked
      * @return all reviews of the trader
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
-    public ArrayList<Review> getReviews(String traderId) throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getReviews();
+    public ArrayList<String[]> getReviews(String traderId) throws UserNotFoundException, AuthorizationException {
+        ArrayList<String[]> reviews = new ArrayList<>();
+        for (Review review:  getTrader(traderId).getReviews()){
+            String[] items = {review.getFromUserId(), review.getReportOnUserId(), review.getMessage(),
+                    review.getRating() + "", review.getId()};
+            reviews.add(items);
+        }
+        return reviews;
     }
 
 
