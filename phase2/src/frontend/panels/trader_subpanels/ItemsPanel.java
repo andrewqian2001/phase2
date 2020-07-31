@@ -7,10 +7,7 @@ import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
-import backend.tradesystem.managers.ItemQuery;
-import backend.tradesystem.managers.TraderManager;
-import backend.tradesystem.managers.TradingInfoManager;
-import backend.tradesystem.managers.TradingManager;
+import backend.tradesystem.managers.*;
 
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -19,7 +16,7 @@ import java.util.ArrayList;
 
 public class ItemsPanel extends JPanel {
 
-    private Trader trader;
+    private String traderId;
     private Font regular, bold, italic, boldItalic;
 
     private JScrollPane inventoryItemsScrollPane, wishlistItemsScrollPane;
@@ -37,10 +34,11 @@ public class ItemsPanel extends JPanel {
     private TraderManager traderManager;
     private TradingInfoManager infoManager;
     private final ItemQuery itemQuery = new ItemQuery();
+    private final UserQuery userQuery = new UserQuery();
 
-    public ItemsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    public ItemsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
-        this.trader = trader;
+        this.traderId = traderId;
         this.regular = regular;
         this.bold = bold;
         this.italic = italic;
@@ -115,7 +113,7 @@ public class ItemsPanel extends JPanel {
             itemSubmitButton.addActionListener(event -> {
                 if (itemNameInput.getText().trim().length() > 0 && itemDescInput.getText().trim().length() > 0) {
                     try {
-                        traderManager.addRequestItem(trader.getId(), itemNameInput.getText().trim(), itemDescInput.getText().trim());
+                        traderManager.addRequestItem(traderId, itemNameInput.getText().trim(), itemDescInput.getText().trim());
                         addNewItemModal.dispose();
                     } catch (UserNotFoundException | AuthorizationException e1) {
                         System.out.println(e1.getMessage());
@@ -137,7 +135,11 @@ public class ItemsPanel extends JPanel {
         inventoryItemsScrollPane = new JScrollPane();
         inventoryItemsScrollPane.setBorder(null);
         inventoryItemsScrollPane.setPreferredSize(new Dimension(1200, 325));
-        getInventory();
+        try {
+            getInventory();
+        } catch (UserNotFoundException | AuthorizationException e) {
+            e.printStackTrace();
+        }
         inventoryItemsScrollPane.setViewportView(inventoryItemsContainer);
 
         wishlistTitleContainer = new JPanel(new GridLayout(1, 2));
@@ -172,24 +174,24 @@ public class ItemsPanel extends JPanel {
             itemNameTitle.setOpaque(false);
             itemNameTitle.setForeground(Color.WHITE);
 
-            JComboBox<Trader> traders = new JComboBox<>();
+            JComboBox<TraderComboBoxItem> traders = new JComboBox<>();
             traders.setPreferredSize(new Dimension(450, 50));
             traders.setFont(regular.deriveFont(20f));
             traders.setBackground(gray2);
             traders.setForeground(Color.BLACK);
             traders.setOpaque(true);
-            infoManager.getAllTraders().forEach(t -> {
-                if(!t.getUsername().equals(trader.getUsername()))
-                    traders.addItem(t);  
+            infoManager.getAllTraders().forEach(id -> {
+                if (!id.equals(this.traderId))
+                    traders.addItem(new TraderComboBoxItem(id));
             });
-            
+
             JLabel inventoryItemTitle = new JLabel("Item from their Inventory:");
             inventoryItemTitle.setFont(italic.deriveFont(20f));
             inventoryItemTitle.setPreferredSize(new Dimension(450, 50));
             inventoryItemTitle.setOpaque(false);
             inventoryItemTitle.setForeground(Color.WHITE);
 
-            JComboBox<TradableItem> inventoryItems = new JComboBox<>();
+            JComboBox<InventoryComboBoxItem> inventoryItems = new JComboBox<>();
             inventoryItems.setPreferredSize(new Dimension(450, 50));
             inventoryItems.setFont(regular.deriveFont(20f));
             inventoryItems.setBackground(gray2);
@@ -204,9 +206,9 @@ public class ItemsPanel extends JPanel {
             itemSubmitButton.setPreferredSize(new Dimension(225, 75));
             itemSubmitButton.setBorder(BorderFactory.createLineBorder(bg, 15));
             itemSubmitButton.addActionListener(e -> {
-                if(inventoryItems.getSelectedItem() != null) {
+                if (inventoryItems.getSelectedItem() != null) {
                     try {
-                        traderManager.addToWishList(trader.getId(),((TradableItem) inventoryItems.getSelectedItem()).getId());
+                        traderManager.addToWishList(traderId, ((InventoryComboBoxItem) inventoryItems.getSelectedItem()).getId());
                         addNewItemModal.dispose();
                     } catch (UserNotFoundException | TradableItemNotFoundException | AuthorizationException e1) {
                         System.out.println(e1.getMessage());
@@ -215,15 +217,15 @@ public class ItemsPanel extends JPanel {
             });
 
             traders.addItemListener(e -> {
-                if(e.getStateChange() == ItemEvent.SELECTED) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
                     inventoryItems.setVisible(false);
                     inventoryItems.removeAllItems();
-                    for(String itemId : ((Trader) e.getItem()).getAvailableItems()) {
-                        try {
-                            inventoryItems.addItem(itemQuery.getName(itemId));
-                        } catch (TradableItemNotFoundException e1) {
-                            System.out.println(e1.getMessage());
+                    try {
+                        for (String itemId : userQuery.getAvailableItems(((TraderComboBoxItem) e.getItem()).getId())) {
+                            inventoryItems.addItem(new InventoryComboBoxItem(itemId));
                         }
+                    } catch (UserNotFoundException | AuthorizationException ex) {
+                        ex.printStackTrace();
                     }
                     inventoryItems.setVisible(true);
                 }
@@ -242,7 +244,11 @@ public class ItemsPanel extends JPanel {
         wishlistItemsScrollPane = new JScrollPane();
         wishlistItemsScrollPane.setBorder(null);
         wishlistItemsScrollPane.setPreferredSize(new Dimension(1200, 325));
-        getWishlist();
+        try {
+            getWishlist();
+        } catch (UserNotFoundException | AuthorizationException e) {
+            e.printStackTrace();
+        }
         wishlistItemsScrollPane.setViewportView(wishlistItemsContainer);
 
         inventoryTitleContainer.add(inventoryTitle);
@@ -257,33 +263,32 @@ public class ItemsPanel extends JPanel {
         this.add(wishlistItemsScrollPane);
     }
 
-    private void getInventory() {
-        int numRows = trader.getAvailableItems().size();
-        if(numRows < 4) numRows = 4;
+    private void getInventory() throws UserNotFoundException, AuthorizationException {
+        int numRows = userQuery.getAvailableItems(traderId).size();
+        if (numRows < 4) numRows = 4;
         inventoryItemsContainer = new JPanel(new GridLayout(numRows, 1));
         inventoryItemsContainer.setBackground(gray2);
         inventoryItemsContainer.setBorder(null);
 
-        for (String itemId : trader.getAvailableItems()) {
+        for (String itemId : userQuery.getAvailableItems(traderId)) {
             try {
-                TradableItem item = tradeManager.getTradableItem(itemId);
                 JPanel itemPanel = new JPanel(new GridLayout(1, 4, 10, 0));
                 itemPanel.setPreferredSize(new Dimension(1000, 75));
                 itemPanel.setBackground(gray);
                 itemPanel.setBorder(BorderFactory.createLineBorder(bg));
 
-                JLabel itemName = new JLabel(item.getName());
+                JLabel itemName = new JLabel(itemQuery.getName(itemId));
                 itemName.setFont(regular.deriveFont(20f));
                 itemName.setForeground(Color.BLACK);
                 itemName.setHorizontalAlignment(JLabel.LEFT);
                 itemName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                JLabel itemDesc = new JLabel(item.getDesc());
+                JLabel itemDesc = new JLabel(itemQuery.getDesc(itemId));
                 itemDesc.setFont(regular.deriveFont(20f));
                 itemDesc.setForeground(Color.BLACK);
                 itemDesc.setHorizontalAlignment(JLabel.LEFT);
 
-                JLabel itemIdTitle = new JLabel("<html><pre>#" + item.getId().substring(item.getId().length() - 12) + "</pre></html>");
+                JLabel itemIdTitle = new JLabel("<html><pre>#" + itemId.substring(itemId.length() - 12) + "</pre></html>");
                 itemIdTitle.setFont(regular.deriveFont(20f));
                 itemIdTitle.setForeground(Color.BLACK);
                 itemIdTitle.setHorizontalAlignment(JLabel.LEFT);
@@ -294,7 +299,7 @@ public class ItemsPanel extends JPanel {
                 removeItemButton.setBackground(red);
                 removeItemButton.setOpaque(true);
                 removeItemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
-                
+
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
                 itemPanel.add(itemIdTitle);
@@ -303,7 +308,7 @@ public class ItemsPanel extends JPanel {
 
                 removeItemButton.addActionListener(event -> {
                     try {
-                        traderManager.removeFromInventory(trader.getId(), itemId);
+                        traderManager.removeFromInventory(traderId, itemId);
                         inventoryItemsContainer.remove(itemPanel);
                         inventoryItemsContainer.revalidate();
                         inventoryItemsContainer.repaint();
@@ -317,39 +322,38 @@ public class ItemsPanel extends JPanel {
             }
         }
     }
-    
-    private void getWishlist() {
-        int numRows = trader.getWishlist().size();
-        if(numRows < 4) numRows = 4;
+
+    private void getWishlist() throws UserNotFoundException, AuthorizationException {
+        int numRows = userQuery.getWishlist(traderId).size();
+        if (numRows < 4) numRows = 4;
         wishlistItemsContainer = new JPanel(new GridLayout(numRows, 1));
         wishlistItemsContainer.setBackground(gray2);
         wishlistItemsContainer.setBorder(null);
-        
-        for (String itemId : trader.getWishlist()) {
+
+        for (String itemId : userQuery.getWishlist(traderId)) {
             try {
-                TradableItem item = tradeManager.getTradableItem(itemId);
                 JPanel itemPanel = new JPanel(new GridLayout(1, 5, 10, 0));
                 itemPanel.setPreferredSize(new Dimension(1000, 75));
                 itemPanel.setBackground(gray);
                 itemPanel.setBorder(BorderFactory.createLineBorder(bg));
 
-                JLabel itemName = new JLabel(item.getName());
+                JLabel itemName = new JLabel(itemQuery.getName(itemId));
                 itemName.setFont(regular.deriveFont(20f));
                 itemName.setForeground(Color.BLACK);
                 itemName.setHorizontalAlignment(JLabel.LEFT);
                 itemName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                JLabel itemDesc = new JLabel(item.getDesc());
+                JLabel itemDesc = new JLabel(itemQuery.getDesc(itemId));
                 itemDesc.setFont(regular.deriveFont(20f));
                 itemDesc.setForeground(Color.BLACK);
                 itemDesc.setHorizontalAlignment(JLabel.LEFT);
 
-                JLabel itemIdTitle = new JLabel("<html><pre>#" + item.getId().substring(item.getId().length() - 12) + "</pre></html>");
+                JLabel itemIdTitle = new JLabel("<html><pre>#" + itemId.substring(itemId.length() - 12) + "</pre></html>");
                 itemIdTitle.setFont(regular.deriveFont(20f));
                 itemIdTitle.setForeground(Color.BLACK);
                 itemIdTitle.setHorizontalAlignment(JLabel.LEFT);
 
-                JLabel itemOwnerName = new JLabel(infoManager.getTraderThatHasTradableItemId(itemId).getUsername());
+                JLabel itemOwnerName = new JLabel(userQuery.getUsername(infoManager.getTraderThatHasTradableItemId(itemId)));
                 itemOwnerName.setFont(regular.deriveFont(20f));
                 itemOwnerName.setForeground(Color.BLACK);
                 itemOwnerName.setHorizontalAlignment(JLabel.CENTER);
@@ -360,7 +364,7 @@ public class ItemsPanel extends JPanel {
                 removeItemButton.setBackground(red);
                 removeItemButton.setOpaque(true);
                 removeItemButton.setBorder(BorderFactory.createLineBorder(gray, 15));
-                
+
                 itemPanel.add(itemName);
                 itemPanel.add(itemDesc);
                 itemPanel.add(itemIdTitle);
@@ -370,7 +374,7 @@ public class ItemsPanel extends JPanel {
 
                 removeItemButton.addActionListener(event -> {
                     try {
-                        traderManager.removeFromWishList(trader.getId(), itemId);
+                        traderManager.removeFromWishList(traderId, itemId);
                         wishlistItemsContainer.remove(itemPanel);
                         wishlistItemsContainer.revalidate();
                         wishlistItemsContainer.repaint();
@@ -383,5 +387,48 @@ public class ItemsPanel extends JPanel {
                 System.out.println(exception.getMessage());
             }
         }
+    }
+
+    private class TraderComboBoxItem {
+        final String id;
+
+        public TraderComboBoxItem(String id) {
+            this.id = id;
+        }
+
+        public String toString() {
+            try {
+                return userQuery.getUsername(id);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+
+        public String getId() {
+            return id;
+        }
+    }
+
+    private class InventoryComboBoxItem {
+        final String id;
+
+        public InventoryComboBoxItem(String id) {
+            this.id = id;
+        }
+
+        public String toString() {
+            try {
+                return itemQuery.getName(id);
+            } catch (TradableItemNotFoundException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+
+        public String getId() {
+            return id;
+        }
+
     }
 }
