@@ -1,6 +1,5 @@
 package frontend.panels.trader_subpanels;
 
-
 import java.awt.*;
 import java.io.IOException;
 
@@ -19,7 +18,7 @@ public class SettingsPanel extends JPanel {
     private Trader trader;
 
     private JLabel settingsTitleLabel;
-    private JPanel changePasswordPanel, changeCityPanel, changeUsernamePanel;
+    private JPanel changePasswordPanel, changeCityPanel, changeUsernamePanel, goIdlePanel;
 
     private TraderManager traderManager;
     private LoginManager loginManager;
@@ -53,11 +52,13 @@ public class SettingsPanel extends JPanel {
         changeUsernamePanel = getChangeUsernamePanel();
         changePasswordPanel = getChangePasswordPanel();
         changeCityPanel = getChangeCityPanel();
+        goIdlePanel = getGoIdlePanel();
 
         this.add(settingsTitleLabel);
         this.add(changeUsernamePanel);
         this.add(changePasswordPanel);
         this.add(changeCityPanel);
+        this.add(goIdlePanel);
     }
 
     private JPanel getChangeUsernamePanel() {
@@ -104,6 +105,7 @@ public class SettingsPanel extends JPanel {
         return changeNamePanel;
 
     }
+
     private JPanel getChangePasswordPanel() {
         JPanel changePassPanel = new JPanel(new GridLayout(1, 4));
         changePassPanel.setPreferredSize(new Dimension(1200, 100));
@@ -121,7 +123,7 @@ public class SettingsPanel extends JPanel {
         changePassword.setBackground(gray);
         changePassword.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(15, 25, 15, 50, gray2), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-        
+
         JButton changePasswordButton = new JButton("Submit");
         changePasswordButton.setFont(bold.deriveFont(20f));
         changePasswordButton.setBackground(green);
@@ -182,10 +184,52 @@ public class SettingsPanel extends JPanel {
             }
         });
 
-       cityPanel.add(changeCityLabel);
-       cityPanel.add(changeCity);
-       cityPanel.add(changeCityButton);
+        cityPanel.add(changeCityLabel);
+        cityPanel.add(changeCity);
+        cityPanel.add(changeCityButton);
 
-        return  cityPanel;
+        return cityPanel;
+    }
+
+    private JPanel getGoIdlePanel() {
+        JPanel idlePanel = new JPanel(new GridLayout(1, 3));
+        idlePanel.setPreferredSize(new Dimension(1200, 150));
+        idlePanel.setBackground(gray2);
+        idlePanel.setBorder(BorderFactory.createMatteBorder(50, 0, 0, 0, bg));
+
+        JLabel idleLabel = new JLabel("Idle Mode");
+        idleLabel.setFont(bold.deriveFont(25f));
+        idleLabel.setForeground(Color.BLACK);
+        idleLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        idleLabel.setOpaque(false);
+
+        JLabel errMsg = new JLabel("You cannot trade in this mode.");
+        errMsg.setFont(italic.deriveFont(25f));
+        errMsg.setForeground(Color.BLACK);
+        errMsg.setOpaque(false);
+
+        JButton goIdleButton = new JButton("Toggle Idle");
+        goIdleButton.setFont(bold.deriveFont(20f));
+        goIdleButton.setBackground(red);
+        goIdleButton.setForeground(Color.WHITE);
+        goIdleButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
+        goIdleButton.addActionListener(e -> {
+            try {
+                traderManager.setIdle(trader.getId(), !trader.isIdle());
+                goIdleButton.setBackground(bg);
+                goIdleButton.setFont(boldItalic.deriveFont(20f));
+                goIdleButton.setText("Activated");
+                goIdleButton.setSelected(true);
+            } catch (UserNotFoundException | AuthorizationException e1) {
+                errMsg.setFont(boldItalic.deriveFont(20f));
+                errMsg.setText(e1.getMessage());
+            };
+        });
+
+        idlePanel.add(idleLabel);
+        idlePanel.add(errMsg);
+        idlePanel.add(goIdleButton);
+        // idlePanel.add();
+        return idlePanel;
     }
 }
