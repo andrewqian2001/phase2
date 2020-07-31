@@ -59,7 +59,7 @@ public class Manager {
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
-    public Trader getTrader(String id) throws UserNotFoundException, AuthorizationException {
+    protected Trader getTrader(String id) throws UserNotFoundException, AuthorizationException {
         User tmp = getUser(id);
         if (tmp instanceof Trader) return (Trader) tmp;
         throw new AuthorizationException("The user requested is not a trader");
@@ -72,7 +72,7 @@ public class Manager {
      * @return the user object
      * @throws UserNotFoundException if the user id wasn't found
      */
-    public User getUser(String id) throws UserNotFoundException {
+    protected User getUser(String id) throws UserNotFoundException {
         try {
             return userDatabase.populate(id);
         } catch (EntryNotFoundException e) {
@@ -87,7 +87,7 @@ public class Manager {
      * @return the item object
      * @throws TradableItemNotFoundException if the item could not be found in the database
      */
-    public TradableItem getTradableItem(String id) throws TradableItemNotFoundException {
+    protected TradableItem getTradableItem(String id) throws TradableItemNotFoundException {
         try {
             return tradableItemDatabase.populate(id);
         } catch (EntryNotFoundException e) {
@@ -102,7 +102,7 @@ public class Manager {
      * @return the trade object
      * @throws TradeNotFoundException if the trade wasn't found
      */
-    public Trade getTrade(String id) throws TradeNotFoundException {
+    protected Trade getTrade(String id) throws TradeNotFoundException {
         Trade trade;
         try {
             trade = tradeDatabase.populate(id);
@@ -173,14 +173,14 @@ public class Manager {
      * Gets a user by username
      *
      * @param username username of the User
-     * @return the user
+     * @return the user id
      * @throws UserNotFoundException cant find username
      */
-    public User getUserByUsername(String username) throws UserNotFoundException {
+    public String getUserByUsername(String username) throws UserNotFoundException {
         ArrayList<User> users = getUserDatabase().getItems();
         for (User user : users)
             if (user.getUsername().equals(username))
-                return user;
+                return user.getId();
         throw new UserNotFoundException();
     }
 }

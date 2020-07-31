@@ -57,7 +57,7 @@ public class LoginManager extends Manager {
      * @throws UserAlreadyExistsException username is not unique
      * @throws BadPasswordException       password isn't valid
      */
-    public User registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException {
+    public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException {
         // Get current default limits
         int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
         int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
@@ -70,12 +70,12 @@ public class LoginManager extends Manager {
             throw new UserAlreadyExistsException();
         switch (type) {
             case ADMIN:
-                return updateUserDatabase(new Admin(username, password));
+                return updateUserDatabase(new Admin(username, password)).getId();
             case TRADER:
                 tryToRefreshTradeCount();
             default:
                 return updateUserDatabase(new Trader(username, password, "", defaultTradeLimit, defaultIncompleteTradeLim,
-                        defaultMinimumAmountNeededToBorrow));
+                        defaultMinimumAmountNeededToBorrow)).getId();
         }
     }
 
@@ -87,7 +87,7 @@ public class LoginManager extends Manager {
      * @return the user id of the logged in user
      * @throws UserNotFoundException could not find the user
      */
-    public User login(String username, String password) throws UserNotFoundException {
+    public String login(String username, String password) throws UserNotFoundException {
         ArrayList<User> users = getUserDatabase().getItems();
         for (User user : users)
             if (user.getUsername().equals(username) && (user.getPassword().equals(password))) {
@@ -95,7 +95,7 @@ public class LoginManager extends Manager {
                     tryToRefreshTradeCount();
                     removeInvalidRequests(user.getId());
                 }
-                return user;
+                return user.getId();
             }
         throw new UserNotFoundException();
     }
@@ -135,18 +135,18 @@ public class LoginManager extends Manager {
      *
      * @param userId   the existing user
      * @param username the new username
-     * @return the new User
+     * @return the user id
      * @throws UserAlreadyExistsException if the username is taken
      * @throws UserNotFoundException      the userId wasn't found
      */
-    public User changeUsername(String userId, String username) throws UserAlreadyExistsException, UserNotFoundException {
+    public String changeUsername(String userId, String username) throws UserAlreadyExistsException, UserNotFoundException {
         if (!isUsernameUnique(username)) {
             throw new UserAlreadyExistsException();
         }
         User user = getUser(userId);
         user.setUsername(username);
         updateUserDatabase(user);
-        return user;
+        return user.getId();
     }
 
     /**
@@ -154,16 +154,16 @@ public class LoginManager extends Manager {
      *
      * @param userId   the user
      * @param password the new password
-     * @return the new user
+     * @return the user id
      * @throws BadPasswordException  if the password isn't valid
      * @throws UserNotFoundException if the user wasn't found
      */
-    public User changePassword(String userId, String password) throws BadPasswordException, UserNotFoundException {
+    public String changePassword(String userId, String password) throws BadPasswordException, UserNotFoundException {
         validatePassword(password);
         User user = getUser(userId);
         user.setPassword(password);
         updateUserDatabase(user);
-        return user;
+        return user.getId();
     }
 
     /**
