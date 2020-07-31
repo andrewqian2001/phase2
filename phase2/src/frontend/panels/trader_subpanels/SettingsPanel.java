@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
+import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
 import backend.tradesystem.managers.LoginManager;
@@ -18,7 +19,7 @@ public class SettingsPanel extends JPanel {
     private Trader trader;
 
     private JLabel settingsTitleLabel;
-    private JPanel changePasswordPanel, changeCityPanel;
+    private JPanel changePasswordPanel, changeCityPanel, changeUsernamePanel;
 
     private TraderManager traderManager;
     private LoginManager loginManager;
@@ -49,14 +50,60 @@ public class SettingsPanel extends JPanel {
         settingsTitleLabel.setForeground(Color.WHITE);
         settingsTitleLabel.setOpaque(false);
 
+        changeUsernamePanel = getChangeUsernamePanel();
         changePasswordPanel = getChangePasswordPanel();
         changeCityPanel = getChangeCityPanel();
 
         this.add(settingsTitleLabel);
+        this.add(changeUsernamePanel);
         this.add(changePasswordPanel);
         this.add(changeCityPanel);
     }
 
+    private JPanel getChangeUsernamePanel() {
+        JPanel changeNamePanel = new JPanel(new GridLayout(1, 4));
+        changeNamePanel.setPreferredSize(new Dimension(1200, 100));
+        changeNamePanel.setBackground(gray2);
+
+        JLabel changeUsernameLabel = new JLabel("Change Username:");
+        changeUsernameLabel.setFont(italic.deriveFont(25f));
+        changeUsernameLabel.setForeground(Color.BLACK);
+        changeUsernameLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        changeUsernameLabel.setOpaque(false);
+
+        JTextField changeUsername = new JTextField(trader.getUsername());
+        changeUsername.setFont(regular.deriveFont(25f));
+        changeUsername.setForeground(Color.BLACK);
+        changeUsername.setBackground(gray);
+        changeUsername.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(15, 25, 15, 50, gray2), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+
+        JButton changeUsernameButton = new JButton("Submit");
+        changeUsernameButton.setFont(bold.deriveFont(20f));
+        changeUsernameButton.setBackground(green);
+        changeUsernameButton.setForeground(Color.WHITE);
+        changeUsernameButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
+        changeUsernameButton.addActionListener(e -> {
+            if (changeUsername.getText().trim().length() != 0) {
+                try {
+                    loginManager.changeUsername(trader.getId(), changeUsername.getText());
+                    changeUsernameLabel.setFont(regular.deriveFont(25f));
+                    changeUsernameLabel.setText("Username Changed!");
+                    changeUsername.setText("");
+                } catch (UserNotFoundException | UserAlreadyExistsException e1) {
+                    changeUsernameLabel.setFont(boldItalic.deriveFont(22.5f));
+                    changeUsernameLabel.setText("'" + changeUsername.getText().trim() + "' is taken");
+                }
+            }
+        });
+
+        changeNamePanel.add(changeUsernameLabel);
+        changeNamePanel.add(changeUsername);
+        changeNamePanel.add(changeUsernameButton);
+
+        return changeNamePanel;
+
+    }
     private JPanel getChangePasswordPanel() {
         JPanel changePassPanel = new JPanel(new GridLayout(1, 4));
         changePassPanel.setPreferredSize(new Dimension(1200, 100));
