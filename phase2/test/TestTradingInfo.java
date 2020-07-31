@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.*;
 
-public class TestTradingInfo {
+public class TestTradingInfo extends TestManager{
     private TraderManager traderManager;
     private LoginManager loginManager;
     private HandleItemRequestsManager handleRequestsManager;
@@ -46,6 +46,10 @@ public class TestTradingInfo {
     private Date goodDate = new Date(System.currentTimeMillis() + 99999999);
     private Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
 
+    public TestTradingInfo() throws IOException {
+        super();
+    }
+
     @Before
     public void beforeEach() {
         try {
@@ -59,56 +63,56 @@ public class TestTradingInfo {
             tradableItemDatabase = new Database<>(TRADABLE_ITEM_PATH);
             traders = new Trader[10];
             for (int i = 0; i < traders.length; i++) {
-                traders[i] = (Trader) loginManager.registerUser("user" + i, "passssssssS11", UserTypes.TRADER);
-                traders[i] = traderManager.addRequestItem(traders[i].getId(), "apple" + i, "desc" + i);
-                traders[i] = traderManager.addRequestItem(traders[i].getId(), "fruit" + i, "desc second" + i);
-                traders[i] = traderManager.addRequestItem(traders[i].getId(), "another" + i, "desc third" + i);
-                traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
-                traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
-                traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
+                traders[i] = getTrader(loginManager.registerUser("user" + i, "passssssssS11", UserTypes.TRADER));
+                traderManager.addRequestItem(traders[i].getId(), "apple" + i, "desc" + i);
+                traderManager.addRequestItem(traders[i].getId(), "fruit" + i, "desc second" + i);
+                traderManager.addRequestItem(traders[i].getId(), "another" + i, "desc third" + i);
+                handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
+                handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
+                handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
             }
             for (int i = 0; i < traders.length; i++) {
                 traders[i] = traderManager.addToWishList(traders[i].getId(), traders[i + 1 == traders.length ? 0 : i + 1].getAvailableItems().get(0));
                 traders[i] = traderManager.addToWishList(traders[i].getId(), traders[i - 1 == -1 ? traders.length - 1 : i - 1].getAvailableItems().get(0));
             }
-            admin = (Admin) loginManager.registerUser("admin", "PASDASDFDSAFpadsf1", UserTypes.ADMIN);
+            admin = (Admin) getUser(loginManager.registerUser("admin", "PASDASDFDSAFpadsf1", UserTypes.ADMIN));
 
             //Testing for automatedTradeSuggestion below
 
-            tHasWishlist = (Trader) loginManager.registerUser("tHasWishlist", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
+            tHasWishlist = getTrader(loginManager.registerUser("tHasWishlist", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
             userDatabase.update(tHasWishlist);
             TradableItem crack = new TradableItem("crack", "crack");
             tradableItemDatabase.update(crack);
             tHasWishlist = traderManager.addRequestItem(tHasWishlist.getId(), crack.getName(), "desc");
-            tHasWishlist = handleRequestsManager.processItemRequest(tHasWishlist.getId(), tHasWishlist.getRequestedItems().get(0), true);
+            handleRequestsManager.processItemRequest(tHasWishlist.getId(), tHasWishlist.getRequestedItems().get(0), true);
 
 
-            tHasInventory1 = (Trader) loginManager.registerUser("tHasInventory1", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
-            tHasInventory1 = traderManager.addRequestItem(tHasInventory1.getId(), "apple watch", "desc");
-            tHasInventory1 = handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-            tHasInventory1 = traderManager.addRequestItem(tHasInventory1.getId(), "wack phonw", "desc");
-            tHasInventory1 = handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-            tHasInventory1 = traderManager.addRequestItem(tHasInventory1.getId(), "wack waptop", "desc");
-            tHasInventory1 = handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-            tHasInventory1 = traderManager.addRequestItem(tHasInventory1.getId(), "wack warbell", "desc");
-            tHasInventory1 = handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-            tHasInventory1 = traderManager.addRequestItem(tHasInventory1.getId(), "wack ballet", "desc");
-            tHasInventory1 = handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+            tHasInventory1 = getTrader(loginManager.registerUser("tHasInventory1", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+            traderManager.addRequestItem(tHasInventory1.getId(), "apple watch", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory1.getId(), "wack phonw", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+           traderManager.addRequestItem(tHasInventory1.getId(), "wack waptop", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory1.getId(), "wack warbell", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory1.getId(), "wack ballet", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
             traderManager.addToWishList(tHasInventory1.getId(), crack.getId());
 
             userDatabase.update(tHasInventory1);
 
-            tHasInventory2 = (Trader) loginManager.registerUser("tHasInventory2", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
-            tHasInventory2 = traderManager.addRequestItem(tHasInventory2.getId(), "wack watct", "desc");
-            tHasInventory2 = handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            tHasInventory2 = traderManager.addRequestItem(tHasInventory2.getId(), "samsung phone", "desc");
-            tHasInventory2 = handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            tHasInventory2 = traderManager.addRequestItem(tHasInventory2.getId(), "wack haptop", "desc");
-            tHasInventory2 = handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            tHasInventory2 = traderManager.addRequestItem(tHasInventory2.getId(), "wack harhell", "desc");
-            tHasInventory2 = handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            tHasInventory2 = traderManager.addRequestItem(tHasInventory2.getId(), "wack callet", "desc");
-            tHasInventory2 = handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+            tHasInventory2 = getTrader(loginManager.registerUser("tHasInventory2", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+            traderManager.addRequestItem(tHasInventory2.getId(), "wack watct", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory2.getId(), "samsung phone", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory2.getId(), "wack haptop", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory2.getId(), "wack harhell", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory2.getId(), "wack callet", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
             traderManager.addToWishList(tHasInventory2.getId(), crack.getId());
             userDatabase.update(tHasInventory2);
             /*
@@ -122,45 +126,45 @@ public class TestTradingInfo {
 
 
 
-            tHasInventory3 = (Trader) loginManager.registerUser("tHasInventory3", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
-            tHasInventory3 = traderManager.addRequestItem(tHasInventory3.getId(), "wack watcr", "desc");
-            tHasInventory3 = handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            tHasInventory3 = traderManager.addRequestItem(tHasInventory3.getId(), "wack pwone", "desc");
-            tHasInventory3 = handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            tHasInventory3 = traderManager.addRequestItem(tHasInventory3.getId(), "acer LAPTOP", "desc");
-            tHasInventory3 = handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            tHasInventory3 = traderManager.addRequestItem(tHasInventory3.getId(), "wack hashell", "desc");
-            tHasInventory3 = handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            tHasInventory3 = traderManager.addRequestItem(tHasInventory3.getId(), "wack calret", "desc");
-            tHasInventory3 = handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+            tHasInventory3 = getTrader(loginManager.registerUser("tHasInventory3", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+            traderManager.addRequestItem(tHasInventory3.getId(), "wack watcr", "desc");
+             handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory3.getId(), "wack pwone", "desc");
+           handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory3.getId(), "acer LAPTOP", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory3.getId(), "wack hashell", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory3.getId(), "wack calret", "desc");
+             handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
             traderManager.addToWishList(tHasInventory3.getId(), crack.getId());
             userDatabase.update(tHasInventory3);
 
-            tHasInventory4 = (Trader) loginManager.registerUser("tHasInventory4", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
-            tHasInventory4 = traderManager.addRequestItem(tHasInventory4.getId(), "wack watct", "desc");
-            tHasInventory4 = handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-            tHasInventory4 = traderManager.addRequestItem(tHasInventory4.getId(), "wack thone", "desc");
-            tHasInventory4 = handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-            tHasInventory4 = traderManager.addRequestItem(tHasInventory4.getId(), "wack haptop", "desc");
-            tHasInventory4 = handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-            tHasInventory4 = traderManager.addRequestItem(tHasInventory4.getId(), "45kg barbell", "desc");
-            tHasInventory4 = handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-            tHasInventory4 = traderManager.addRequestItem(tHasInventory4.getId(), "wack callet", "desc");
-            tHasInventory4 = handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+            tHasInventory4 = getTrader(loginManager.registerUser("tHasInventory4", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+            traderManager.addRequestItem(tHasInventory4.getId(), "wack watct", "desc");
+     handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+          traderManager.addRequestItem(tHasInventory4.getId(), "wack thone", "desc");
+          handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+         traderManager.addRequestItem(tHasInventory4.getId(), "wack haptop", "desc");
+    handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+       traderManager.addRequestItem(tHasInventory4.getId(), "45kg barbell", "desc");
+     handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+     traderManager.addRequestItem(tHasInventory4.getId(), "wack callet", "desc");
+        handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
             traderManager.addToWishList(tHasInventory4.getId(), crack.getId());
             userDatabase.update(tHasInventory4);
 
-            tHasInventory5 = (Trader) loginManager.registerUser("tHasInventory5", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER);
-            tHasInventory5 = traderManager.addRequestItem(tHasInventory5.getId(), "wack watct", "desc");
-            tHasInventory5 = handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-            tHasInventory5 = traderManager.addRequestItem(tHasInventory5.getId(), "wack thone", "desc");
-            tHasInventory5 = handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-            tHasInventory5 = traderManager.addRequestItem(tHasInventory5.getId(), "wack haptop", "desc");
-            tHasInventory5 = handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-            tHasInventory5 = traderManager.addRequestItem(tHasInventory5.getId(), "wack garbell", "desc");
-            tHasInventory5 = handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-            tHasInventory5 = traderManager.addRequestItem(tHasInventory5.getId(), "leather wallet", "desc");
-            tHasInventory5 = handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+            tHasInventory5 = getTrader(loginManager.registerUser("tHasInventory5", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+            traderManager.addRequestItem(tHasInventory5.getId(), "wack watct", "desc");
+            handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory5.getId(), "wack thone", "desc");
+           handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+        traderManager.addRequestItem(tHasInventory5.getId(), "wack haptop", "desc");
+             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory5.getId(), "wack garbell", "desc");
+             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+            traderManager.addRequestItem(tHasInventory5.getId(), "leather wallet", "desc");
+             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
             traderManager.addToWishList(tHasInventory5.getId(), crack.getId());
             userDatabase.update(tHasInventory5);
 
@@ -200,8 +204,8 @@ public class TestTradingInfo {
                 for (int i = 0; i < traders.length / 2; i++) {
                     String item1 = traders[i].getAvailableItems().get(0);
                     String item2 = traders[traders.length - i - 1].getAvailableItems().get(0);
-                    Trade trade = tradingManager.requestTrade(trade(traders[i].getId(), traders[traders.length - i - 1].getId(), goodDate, goodDate2, "home",
-                            item1, item2, 3, "This is a trade"));
+                    Trade trade = getTrade(tradingManager.requestTrade(trade(traders[i].getId(), traders[traders.length - i - 1].getId(), goodDate, goodDate2, "home",
+                            item1, item2, 3, "This is a trade")));
                     tradingManager.acceptRequest(traders[traders.length - i - 1].getId(), trade.getId());
                     tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
                     tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
@@ -217,8 +221,8 @@ public class TestTradingInfo {
                 for (int i = 0; i < traders.length - 1; i += 2) {
                     String item1 = traders[i].getAvailableItems().get(2);
                     String item2 = traders[i + 1].getAvailableItems().get(2);
-                    Trade trade = tradingManager.requestTrade(trade(traders[i].getId(), traders[i + 1].getId(), goodDate, goodDate2, "home",
-                            item1, item2, 3, "This is a trade"));
+                    Trade trade = getTrade(tradingManager.requestTrade(trade(traders[i].getId(), traders[i + 1].getId(), goodDate, goodDate2, "home",
+                            item1, item2, 3, "This is a trade")));
                     tradingManager.acceptRequest(traders[i + 1].getId(), trade.getId());
                     tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
                     tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId(), true);
@@ -243,8 +247,8 @@ public class TestTradingInfo {
             for (int i = 0; i < traders.length - 2; i += 3) {
                 String item1 = traders[i].getAvailableItems().get(0);
                 String item2 = traders[i + 2].getAvailableItems().get(0);
-                Trade trade = tradingManager.requestTrade(trade(traders[i].getId(), traders[i + 2].getId(), goodDate, goodDate2, "home",
-                        item1, item2, 3, "This is a trade"));
+                Trade trade = getTrade(tradingManager.requestTrade(trade(traders[i].getId(), traders[i + 2].getId(), goodDate, goodDate2, "home",
+                        item1, item2, 3, "This is a trade")));
                 tradingManager.acceptRequest(traders[i + 2].getId(), trade.getId());
                 tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
                 tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId(), true);
@@ -332,28 +336,28 @@ public class TestTradingInfo {
 
         assertEquals("crack", t1.getFirstUserOffer());
         assertEquals("apple watch", t1.getSecondUserOffer());
-        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t1.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory1", tradingInfoManager.getTrader(t1.getSecondUserId()).getUsername());
+        assertEquals("tHasWishlist", getTrader(t1.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory1", getTrader(t1.getSecondUserId()).getUsername());
 
         assertEquals("crack", t2.getFirstUserOffer());
         assertEquals("samsung phone", t2.getSecondUserOffer());
-        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t2.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory2", tradingInfoManager.getTrader(t2.getSecondUserId()).getUsername());
+        assertEquals("tHasWishlist", getTrader(t2.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory2", getTrader(t2.getSecondUserId()).getUsername());
 
         assertEquals("crack", t3.getFirstUserOffer());
         assertEquals("acer LAPTOP", t3.getSecondUserOffer());
-        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t3.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory3", tradingInfoManager.getTrader(t3.getSecondUserId()).getUsername());
+        assertEquals("tHasWishlist", getTrader(t3.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory3", getTrader(t3.getSecondUserId()).getUsername());
 
         assertEquals("crack", t4.getFirstUserOffer());
         assertEquals("45kg barbell", t4.getSecondUserOffer());
-        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t4.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory4", tradingInfoManager.getTrader(t4.getSecondUserId()).getUsername());
+        assertEquals("tHasWishlist", getTrader(t4.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory4", getTrader(t4.getSecondUserId()).getUsername());
 
         assertEquals("crack", t5.getFirstUserOffer());
         assertEquals("leather wallet", t5.getSecondUserOffer());
-        assertEquals("tHasWishlist", tradingInfoManager.getTrader(t5.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory5", tradingInfoManager.getTrader(t5.getSecondUserId()).getUsername());
+        assertEquals("tHasWishlist", getTrader(t5.getFirstUserId()).getUsername());
+        assertEquals("tHasInventory5", getTrader(t5.getSecondUserId()).getUsername());
 
 
     }
@@ -448,9 +452,9 @@ public class TestTradingInfo {
         private void update() {
         try {
             for (int i = 0; i < traders.length; i++) {
-                traders[i] = traderManager.getTrader(traders[i].getId());
+                traders[i] = getTrader(traders[i].getId());
             }
-            admin = (Admin) traderManager.getUser(admin.getId());
+            admin = (Admin) getUser(admin.getId());
 
         } catch (UserNotFoundException | AuthorizationException e) {
             e.printStackTrace();
