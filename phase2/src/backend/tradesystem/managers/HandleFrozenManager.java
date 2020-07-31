@@ -35,13 +35,11 @@ public class HandleFrozenManager extends Manager {
      * @param userId the user id
      * @param status if the user requested to be unfrozen
      * @throws UserNotFoundException if the user wasn't found
-     * @return the updated user
      */
-    public User requestUnfreeze(String userId, boolean status) throws UserNotFoundException {
+    public void requestUnfreeze(String userId, boolean status) throws UserNotFoundException {
         User user = getUser(userId);
         user.setUnfrozenRequested(status);
         updateUserDatabase(user);
-        return user;
     }
 
     /**
@@ -50,14 +48,12 @@ public class HandleFrozenManager extends Manager {
      * @param userID       the user id
      * @param freezeStatus to freeze the user
      * @throws UserNotFoundException can't find user id
-     * @return the updated user
      */
-    public User setFrozen(String userID, boolean freezeStatus) throws UserNotFoundException {
+    public void setFrozen(String userID, boolean freezeStatus) throws UserNotFoundException {
         try {
             User user = getUser(userID);
             user.setFrozen(freezeStatus);
             updateUserDatabase(user);
-            return user;
         } catch (EntryNotFoundException e) {
             throw new UserNotFoundException(userID);
         }
@@ -66,26 +62,26 @@ public class HandleFrozenManager extends Manager {
     /**
      * Gets a list of all users that requested to be unfrozen
      *
-     * @return a list of all users that requested to be unfrozen
+     * @return a list of all user ids that requested to be unfrozen
      */
-    public ArrayList<User> getAllUnfreezeRequests() {
-        ArrayList<User> result = new ArrayList<>();
+    public ArrayList<String> getAllUnfreezeRequests() {
+        ArrayList<String> result = new ArrayList<>();
         for (User user : getUserDatabase().getItems())
             if (user.isUnfrozenRequested())
-                result.add(user);
+                result.add(user.getId());
         return result;
     }
 
     /**
-     * Return traders that should be considered to be frozen due to too many incomplete trades
+     * Return trader ids that should be considered to be frozen due to too many incomplete trades
      *
      * @return true if the user should be frozen, false otherwise
      */
-    public ArrayList<Trader> getShouldBeFrozen() {
-        ArrayList<Trader> freezable = new ArrayList<>();
+    public ArrayList<String> getShouldBeFrozen() {
+        ArrayList<String> freezable = new ArrayList<>();
         for (User user : getUserDatabase().getItems()) {
             if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()) {
-                freezable.add((Trader) user);
+                freezable.add(user.getId());
             }
         }
         return freezable;
