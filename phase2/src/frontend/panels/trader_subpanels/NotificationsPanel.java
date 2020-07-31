@@ -25,8 +25,10 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.models.users.User;
+import backend.tradesystem.managers.ItemQuery;
 import backend.tradesystem.managers.MessageManager;
 import backend.tradesystem.managers.TradingInfoManager;
+import backend.tradesystem.managers.UserQuery;
 
 public class NotificationsPanel extends JPanel {
 
@@ -37,6 +39,8 @@ public class NotificationsPanel extends JPanel {
     private JButton clearAllmessagesButton, addNewMessageButton;
 
     private MessageManager messageManager;
+    private final ItemQuery itemQuery = new ItemQuery();
+    private final UserQuery userQuery = new UserQuery();
 
     private Color bg = new Color(51, 51, 51);
     private Color current = new Color(159, 159, 159);
@@ -48,13 +52,13 @@ public class NotificationsPanel extends JPanel {
 
     private Font regular, bold, italic, boldItalic;
 
-    private Trader trader;
+    private String traderId;
 
     private TradingInfoManager infoManager;
 
-    public NotificationsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
-        this.trader = trader;
+        this.traderId = traderId;
         this.regular = regular;
         this.bold = bold;
         this.italic = italic;
@@ -95,15 +99,15 @@ public class NotificationsPanel extends JPanel {
             userNameTitle.setForeground(Color.WHITE);
 
 
-            JComboBox<Trader> traders = new JComboBox<>();
+            JComboBox<TraderComboBoxItem> traders = new JComboBox<>();
             traders.setPreferredSize(new Dimension(500, 50));
             traders.setFont(regular.deriveFont(20f));
             traders.setBackground(gray2);
             traders.setForeground(Color.BLACK);
             traders.setOpaque(true);
-            infoManager.getAllTraders().forEach(t -> {
-                if (!t.getUsername().equals(trader.getUsername()))
-                    traders.addItem(t);
+            infoManager.getAllTraders().forEach(id -> {
+                if (!id.equals(traderId))
+                    traders.addItem(new TraderComboBoxItem(id));
             });
     
             JLabel messageBodyTitle = new JLabel("Full Message:");
@@ -130,7 +134,7 @@ public class NotificationsPanel extends JPanel {
             sendMessageButton.addActionListener(e1 -> {
                 try {
                     if(fullMessageBody.getText().trim().length() != 0) {
-                        messageManager.sendMessage(trader.getId(), ((Trader)traders.getSelectedItem()).getId(), fullMessageBody.getText().trim());
+                        messageManager.sendMessage(traderId, ((TraderComboBoxItem)traders.getSelectedItem()).getId(), fullMessageBody.getText().trim());
                         messageDetailsModal.dispose();
                     }
 				} catch (UserNotFoundException | AuthorizationException e2) {
@@ -164,7 +168,7 @@ public class NotificationsPanel extends JPanel {
         clearAllmessagesButton.setHorizontalAlignment(JButton.RIGHT);
         clearAllmessagesButton.addActionListener(e -> {
             try {
-                messageManager.clearMessages(trader.getId());
+                messageManager.clearMessages(traderId);
                 messagesListContainer.removeAll();
                 messagesListContainer.setLayout(new BorderLayout());
                 messagesListContainer.setBackground(gray3);
@@ -229,7 +233,7 @@ public class NotificationsPanel extends JPanel {
 
     private void getMessages() {
         try {
-            HashMap<User, ArrayList<String>> messages = messageManager.getMessages(trader.getId());
+            HashMap<User, ArrayList<String>> messages = messageManager.getMessages(traderId);
             if(messages.size() == 0) {
                 messagesListContainer = new JPanel();
                 messagesListContainer.setBackground(gray3);
@@ -326,7 +330,7 @@ public class NotificationsPanel extends JPanel {
                     clearButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
                     clearButton.addActionListener(e -> {
                         try {
-                        messageManager.clearMessagesFromUser(trader.getId(), u.getId());
+                        messageManager.clearMessagesFromUser(traderId, u.getId());
                         messagesListContainer.remove(messagePanel);
                         messagesListContainer.revalidate();
                         messagesListContainer.repaint();
@@ -461,5 +465,25 @@ public class NotificationsPanel extends JPanel {
             System.out.println(e.getMessage());
         }
 
+    }
+    private class TraderComboBoxItem {
+        final String id;
+
+        public TraderComboBoxItem(String id) {
+            this.id = id;
+        }
+
+        public String toString() {
+            try {
+                return userQuery.getUsername(id);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+            return "";
+        }
+
+        public String getId() {
+            return id;
+        }
     }
 }
