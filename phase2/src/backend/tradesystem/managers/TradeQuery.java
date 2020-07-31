@@ -32,6 +32,7 @@ public class TradeQuery extends Manager{
 
     /**
      * The message along with the trade offer
+     * @param tradeId The id of the trade which is being checked
      * @return the message
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -41,7 +42,7 @@ public class TradeQuery extends Manager{
 
     /**
      * if first meeting is confirmed by the first user
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return if the user that initialized the trade confirmed the first meeting
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -51,7 +52,7 @@ public class TradeQuery extends Manager{
 
     /**
      * if the user that got sent the trade confirmed the first meeting
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return if the user that got sent the trade confirmed the first meeting
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -61,7 +62,7 @@ public class TradeQuery extends Manager{
 
     /**
      * if the user that initialized the trade confirmed the second meeting
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return if the user that initialized the trade confirmed the second meeting
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -71,7 +72,7 @@ public class TradeQuery extends Manager{
 
     /**
      * if the user that initialized the trade confirmed the second meeting
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return if the user that initialized the trade confirmed the second meeting
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -81,7 +82,7 @@ public class TradeQuery extends Manager{
 
     /**
      * number of times the trade has been edited
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return number of times the trade has been edited
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -91,7 +92,7 @@ public class TradeQuery extends Manager{
 
     /**
      * when the first trade is taking place
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return when the first trade is taking place
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -101,7 +102,7 @@ public class TradeQuery extends Manager{
 
     /**
      * when the second trade is taking place
-     *@param tradeId The id of the trade which is being checked.
+     *@param tradeId The id of the trade which is being checked
      * @return when the second trade is taking place
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -111,7 +112,7 @@ public class TradeQuery extends Manager{
 
     /**
      * where the trade is taking place
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return where the trade is taking place
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -122,7 +123,7 @@ public class TradeQuery extends Manager{
 
     /**
      * the id of the item that the user that initialized the trade is willing to offer
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return the id of the item that the user that initialized the trade is willing to offer
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -132,7 +133,7 @@ public class TradeQuery extends Manager{
 
     /**
      * the id of the item that the user that got sent the trade is willing to offer
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return the id of the item that the user that got sent the trade is willing to offer
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -142,7 +143,7 @@ public class TradeQuery extends Manager{
 
     /**
      * how many edits can be done
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return how many edits can be done
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -152,7 +153,7 @@ public class TradeQuery extends Manager{
 
     /**
      * the user id of the person's turn to edit the trade
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return the user id of the person's turn to edit the trade
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -162,7 +163,7 @@ public class TradeQuery extends Manager{
 
     /**
      * if the first user has confirmed the trade request
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return if the first user has confirmed the trade request
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
@@ -172,7 +173,7 @@ public class TradeQuery extends Manager{
 
     /**
      * if the second user has confirmed the trade request
-     * @param tradeId The id of the trade which is being checked.
+     * @param tradeId The id of the trade which is being checked
      * @return if the second user has confirmed the trade request
      * @throws TradeNotFoundException if the trade could not be found in the system
      */
