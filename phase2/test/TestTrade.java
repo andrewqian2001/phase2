@@ -18,6 +18,7 @@ import java.util.Properties;
 import static org.junit.Assert.*;
 
 public class TestTrade {
+    // Test branch set up
     private TraderManager traderManager;
     private LoginManager loginManager;
     private HandleItemRequestsManager handleRequestsManager;
