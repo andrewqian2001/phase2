@@ -4,6 +4,8 @@ package backend.tradesystem.managers;
 import backend.exceptions.*;
 import backend.models.Trade;
 import backend.models.users.Trader;
+import backend.tradesystem.TradeBuilder;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -35,23 +37,25 @@ public class TradingManager extends Manager {
      * Adds a new trade to the system and acknowledges that it is a requested trade between two users in the trade.
      * A trade is a borrow if the the item the first user is offering is "".
      * A trade is a lend if the item the second user is offering is "".
-     * @param trade the trade that is to be added to the traders.
+     * @param traderId1 The id of the trader sending the trade
+     * @param traderId2 The id of the trader receiving the trade
+     * @param meetingTime The first meeting time for the trade
+     * @param secondMeetingTime The second meeting time for the trade. Null for this means the trade is permanent
+     * @param location The location the trade will occur
+     * @param firstUserOfferId The trade sender's offer (empty string for trader1 to offer nothing)
+     * @param secondUserOfferId The trade receiver's offer (empty string for trader2 to offer nothing)
+     * @param allowedEdits The amount of times each trader can edit the trade
+     * @param message The message that will be sent along with this trade
      * @return the trade object's id
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        the item for trading cannot be traded
      * @throws CannotTradeException          cannot request a trade
      */
-    public String requestTrade(Trade trade)
+    public String requestTrade(String traderId1, String traderId2,  Date meetingTime, Date secondMeetingTime, String location,
+                               String firstUserOfferId, String secondUserOfferId,int allowedEdits, String message)
             throws  UserNotFoundException, AuthorizationException, CannotTradeException {
-        String traderId1 = trade.getFirstUserId();
-        String traderId2 = trade.getSecondUserId();
-        String firstUserOfferId = trade.getFirstUserOffer();
-        String secondUserOfferId = trade.getSecondUserOffer();
-        Date meetingTime = trade.getMeetingTime();
-        Date secondMeetingTime = trade.getSecondMeetingTime();
         Trader trader = getTrader(traderId1);
         Trader secondTrader = getTrader(traderId2);
-
         if (traderId2.equals(traderId1)) throw new CannotTradeException("Cannot trade with yourself");
 
         // If neither trader can trade, throw an exception
@@ -76,6 +80,18 @@ public class TradingManager extends Manager {
                 secondTrader.getIncompleteTradeCount() >= secondTrader.getIncompleteTradeLim()) {
             throw new CannotTradeException("One of the two users has too many active trades.");
         }
+
+        TradeBuilder builder = new TradeBuilder();
+        builder.fromUser(traderId1);
+        builder.toUser(traderId2);
+        builder.setMeeting1(meetingTime);
+        builder.setMeeting2(secondMeetingTime);
+        builder.setLocation(location);
+        builder.setAllowedEditsPerUser(allowedEdits);
+        builder.setMessage(message);
+        builder.setFirstUserOffer(firstUserOfferId);
+        builder.setSecondUserOffer(secondUserOfferId);
+        Trade trade = builder.createTrade();
 
         // This trade has now been requested, so add it to the requested trades of each trader
         trader.getRequestedTrades().add(trade.getId());

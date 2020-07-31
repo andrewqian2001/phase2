@@ -72,8 +72,8 @@ public class TestTradingInfo extends TestManager{
                 handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
             }
             for (int i = 0; i < traders.length; i++) {
-                traders[i] = traderManager.addToWishList(traders[i].getId(), traders[i + 1 == traders.length ? 0 : i + 1].getAvailableItems().get(0));
-                traders[i] = traderManager.addToWishList(traders[i].getId(), traders[i - 1 == -1 ? traders.length - 1 : i - 1].getAvailableItems().get(0));
+                traderManager.addToWishList(traders[i].getId(), traders[i + 1 == traders.length ? 0 : i + 1].getAvailableItems().get(0));
+                traderManager.addToWishList(traders[i].getId(), traders[i - 1 == -1 ? traders.length - 1 : i - 1].getAvailableItems().get(0));
             }
             admin = (Admin) getUser(loginManager.registerUser("admin", "PASDASDFDSAFpadsf1", UserTypes.ADMIN));
 
@@ -83,7 +83,7 @@ public class TestTradingInfo extends TestManager{
             userDatabase.update(tHasWishlist);
             TradableItem crack = new TradableItem("crack", "crack");
             tradableItemDatabase.update(crack);
-            tHasWishlist = traderManager.addRequestItem(tHasWishlist.getId(), crack.getName(), "desc");
+            traderManager.addRequestItem(tHasWishlist.getId(), crack.getName(), "desc");
             handleRequestsManager.processItemRequest(tHasWishlist.getId(), tHasWishlist.getRequestedItems().get(0), true);
 
 
@@ -204,8 +204,8 @@ public class TestTradingInfo extends TestManager{
                 for (int i = 0; i < traders.length / 2; i++) {
                     String item1 = traders[i].getAvailableItems().get(0);
                     String item2 = traders[traders.length - i - 1].getAvailableItems().get(0);
-                    Trade trade = getTrade(tradingManager.requestTrade(trade(traders[i].getId(), traders[traders.length - i - 1].getId(), goodDate, goodDate2, "home",
-                            item1, item2, 3, "This is a trade")));
+                    Trade trade = getTrade(tradingManager.requestTrade(traders[i].getId(), traders[traders.length - i - 1].getId(), goodDate, goodDate2, "home",
+                            item1, item2, 3, "This is a trade"));
                     tradingManager.acceptRequest(traders[traders.length - i - 1].getId(), trade.getId());
                     tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
                     tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
@@ -214,15 +214,15 @@ public class TestTradingInfo extends TestManager{
                 }
             }
             for (int i = 0; i < n; i++) {
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(), traders[n - 1 - i].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0), traders[n - 1 - i].getId());
             }
 
             for (int j = 0; j < 2; j++) {
                 for (int i = 0; i < traders.length - 1; i += 2) {
                     String item1 = traders[i].getAvailableItems().get(2);
                     String item2 = traders[i + 1].getAvailableItems().get(2);
-                    Trade trade = getTrade(tradingManager.requestTrade(trade(traders[i].getId(), traders[i + 1].getId(), goodDate, goodDate2, "home",
-                            item1, item2, 3, "This is a trade")));
+                    Trade trade = getTrade(tradingManager.requestTrade(traders[i].getId(), traders[i + 1].getId(), goodDate, goodDate2, "home",
+                            item1, item2, 3, "This is a trade"));
                     tradingManager.acceptRequest(traders[i + 1].getId(), trade.getId());
                     tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
                     tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId(), true);
@@ -231,15 +231,15 @@ public class TestTradingInfo extends TestManager{
                 }
             }
             for (int i = 0; i < n; i++) {
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(), traders[n - 1 - i].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0), traders[n - 1 - i].getId());
             }
             for (int i = 0; i < n - 1; i += 2) {
                 if (i == 4) {
                     // This is becasue 4->5, and so 4 traded with 5 3 times
-                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0).getId(), traders[5].getId());
+                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0), traders[5].getId());
                     continue;
                 }
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(1).getId(), traders[i + 1].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(1), traders[i + 1].getId());
             }
 
 
@@ -247,8 +247,8 @@ public class TestTradingInfo extends TestManager{
             for (int i = 0; i < traders.length - 2; i += 3) {
                 String item1 = traders[i].getAvailableItems().get(0);
                 String item2 = traders[i + 2].getAvailableItems().get(0);
-                Trade trade = getTrade(tradingManager.requestTrade(trade(traders[i].getId(), traders[i + 2].getId(), goodDate, goodDate2, "home",
-                        item1, item2, 3, "This is a trade")));
+                Trade trade = getTrade(tradingManager.requestTrade(traders[i].getId(), traders[i + 2].getId(), goodDate, goodDate2, "home",
+                        item1, item2, 3, "This is a trade"));
                 tradingManager.acceptRequest(traders[i + 2].getId(), trade.getId());
                 tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
                 tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId(), true);
@@ -257,18 +257,18 @@ public class TestTradingInfo extends TestManager{
             }
 
             for (int i = 0; i < n; i++) {
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0).getId(), traders[n - 1 - i].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(0), traders[n - 1 - i].getId());
             }
             for (int i = 0; i < n - 1; i += 2) {
                 if (i == 4) {
                     // This is becasue 4->5, and so 4 traded with 5 3 times
-                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0).getId(), traders[5].getId());
+                    assertEquals(tradingInfoManager.getFrequentTraders(traders[4].getId()).get(0), traders[5].getId());
                     continue;
                 }
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(1).getId(), traders[i + 1].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(1), traders[i + 1].getId());
             }
             for (int i = 0; i < traders.length - 2; i += 3) {
-                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(2).getId(), traders[i + 2].getId());
+                assertEquals(tradingInfoManager.getFrequentTraders(traders[i].getId()).get(2), traders[i + 2].getId());
             }
 
         } catch (UserNotFoundException | AuthorizationException | CannotTradeException | TradeNotFoundException e) {
@@ -276,6 +276,10 @@ public class TestTradingInfo extends TestManager{
             e.printStackTrace();
         }
     }
+
+    /*
+    This is for andrew!
+
 
     @Test
     public void testSuggestLend() {
@@ -303,7 +307,7 @@ public class TestTradingInfo extends TestManager{
     public void testSuggestTrade(){
         try {
             for (int i = 1; i < traders.length - 1; i++) {
-                ArrayList<Trade> suggested = tradingInfoManager.suggestTrade(traders[i].getId());
+                ArrayList<String[]> suggested = tradingInfoManager.suggestTrade(traders[i].getId());
                 assertEquals(suggested.size(), 2);
                 assertEquals(suggested.get(0).getFirstUserId(), traders[i].getId());
                 assertEquals(suggested.get(1).getFirstUserId(), traders[i].getId());
@@ -444,11 +448,11 @@ public class TestTradingInfo extends TestManager{
 
 
 
-        /*
-            problem with similarSearch rn is when a string is missing a letter
-         */
-    }
 
+            problem with similarSearch rn is when a string is missing a letter
+
+    }
+*/
         private void update() {
         try {
             for (int i = 0; i < traders.length; i++) {

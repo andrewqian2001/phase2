@@ -107,8 +107,8 @@ public class TestTrade extends TestManager{
         try{
             String item1 = userQuery.getAvailableItems(trader1.getId()).get(0);
             String item2 = userQuery.getAvailableItems(trader2.getId()).get(0);
-            Trade trade = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
-                    item1, item2, 3, "This is a trade")));
+            Trade trade = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    item1, item2, 3, "This is a trade"));
             // make sure that the trades are requested
             update();
             assertEquals(userQuery.getRequestedTrades(trader1.getId()).get(0), userQuery.getRequestedTrades(trader2.getId()).get(0));
@@ -276,8 +276,8 @@ public class TestTrade extends TestManager{
         try {
             String item1 = trader1.getAvailableItems().get(0);
             String item2 = trader2.getAvailableItems().get(0);
-            Trade trade = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
-                    item1, item2, 3, "This is a trade")));
+            Trade trade = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    item1, item2, 3, "This is a trade"));
             // make sure that the trades are requested
             update();
             assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
@@ -351,8 +351,8 @@ public class TestTrade extends TestManager{
             String item3 = trader1.getAvailableItems().get(1);
             String item4 = trader2.getAvailableItems().get(1);
 
-            Trade trade1 = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
-                    item1, item2, 1, "This is a trade")));
+            Trade trade1 = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    item1, item2, 1, "This is a trade"));
 
             ///Trade is requested
             update();
@@ -449,8 +449,8 @@ public class TestTrade extends TestManager{
             userDatabase.update(trader1);
 
             try {
-                tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
-                        item1, "", 1, "This is a lend"));
+                tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        item1, "", 1, "This is a lend");
                 fail("Trade limit is exceeded");
             }
             catch (CannotTradeException e){
@@ -458,8 +458,8 @@ public class TestTrade extends TestManager{
             }
             trader1.setTradeCount(0);
             userDatabase.update(trader1);
-            Trade t = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
-                        item1, "", 1, "This is a lend")));
+            Trade t = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        item1, "", 1, "This is a lend"));
 
             update();
             assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
@@ -500,15 +500,15 @@ public class TestTrade extends TestManager{
             String item3 = trader1.getAvailableItems().get(0);
             String item4 = trader2.getAvailableItems().get(0);
             try {
-                tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
-                        item3, "", 1, "This is a lend2"));
+                tradingManager.requestTrade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                        item3, "", 1, "This is a lend2");
                 fail("Offering an item i dont' have");
             }
             catch (AuthorizationException e){
                 assertEquals("The trade offer contains an item that the user does not have", e.getMessage());
             }
-            t= getTrade(tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
-                    item4, "", 1, "This is a lend2")));
+            t= getTrade(tradingManager.requestTrade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                    item4, "", 1, "This is a lend2"));
 
             tradingManager.acceptRequest(trader1.getId(), t.getId());
             update();
@@ -555,8 +555,8 @@ public class TestTrade extends TestManager{
             String item2 = trader2.getAvailableItems().get(0);
 
             try {
-                tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
-                        "", item1, 1, "This is a lend"));
+                tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        "", item1, 1, "This is a lend");
                 fail("Did not lend first");
             }
             catch (CannotTradeException e){
@@ -567,8 +567,8 @@ public class TestTrade extends TestManager{
             userDatabase.update(trader1);
 
             try {
-                tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
-                        "", item1, 1, "This is a lend"));
+                tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        "", item1, 1, "This is a lend");
                 fail("The item does not exist in the other person's inventory");
             }
             catch (AuthorizationException e){
@@ -579,8 +579,8 @@ public class TestTrade extends TestManager{
             userDatabase.update(trader1);
 
             try {
-                tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
-                        "", item2, 1, "This is a lend"));
+                tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                        "", item2, 1, "This is a lend");
                 fail("Trade limit is exceeded");
             }
             catch (CannotTradeException e){
@@ -588,8 +588,8 @@ public class TestTrade extends TestManager{
             }
             trader1.setTradeCount(0);
             userDatabase.update(trader1);
-            Trade t = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
-                    "", item2, 1, "This is a lend")));
+            Trade t = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "Home",
+                    "", item2, 1, "This is a lend"));
 
             update();
             assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
@@ -631,8 +631,8 @@ public class TestTrade extends TestManager{
             String item4 = trader2.getAvailableItems().get(0);
 
             try {
-                tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
-                        "",item3, 1, "This is a lend2"));
+                tradingManager.requestTrade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                        "",item3, 1, "This is a lend2");
                 fail("Have not borrowed");
             }
             catch (CannotTradeException e){
@@ -643,15 +643,15 @@ public class TestTrade extends TestManager{
             userDatabase.update(trader2);
 
             try {
-                tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
-                        "",item4, 1, "This is a lend2"));
+                tradingManager.requestTrade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                        "",item4, 1, "This is a lend2");
                 fail("Offering an item i dont' have");
             }
             catch (AuthorizationException e){
                 assertEquals("The trade offer contains an item that the user does not have", e.getMessage());
             }
-            t= getTrade(tradingManager.requestTrade(trade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
-                    "", item3, 1, "This is a lend2")));
+            t= getTrade(tradingManager.requestTrade(trader2.getId(), trader1.getId(), goodDate, goodDate2, "home",
+                    "", item3, 1, "This is a lend2"));
 
             tradingManager.acceptRequest(trader1.getId(), t.getId());
             update();
@@ -704,12 +704,12 @@ public class TestTrade extends TestManager{
             String item5 = trader2.getAvailableItems().get(1);
             trader1.setTotalItemsLent(trader1.getTotalItemsLent() + 1);
             userDatabase.update(trader1);
-            Trade t1 = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
-                    item1, "", 1, "This is a lend2")));
-            Trade t2 =getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
-                    item2, item4, 1, "This is a lend2")));
-            Trade t3 =getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
-                    "", item5, 1, "This is a lend2")));
+            Trade t1 = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    item1, "", 1, "This is a lend2"));
+            Trade t2 =getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    item2, item4, 1, "This is a lend2"));
+            Trade t3 =getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    "", item5, 1, "This is a lend2"));
 
             update();
             assertTrue(trader1.getRequestedTrades().contains(t1.getId()));
@@ -762,12 +762,12 @@ public class TestTrade extends TestManager{
             String item5 = trader2.getAvailableItems().get(1);
             trader1.setTotalItemsLent(1);
             userDatabase.update(trader1);
-            Trade t1 = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
-                    item1, "", 1, "This is a lend2")));
-            Trade t2 =getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
-                    item2, item4, 1, "This is a lend2")));
-            Trade t3 =getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, null, "home",
-                    "", item5, 1, "This is a lend2")));
+            Trade t1 = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    item1, "", 1, "This is a lend2"));
+            Trade t2 =getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    item2, item4, 1, "This is a lend2"));
+            Trade t3 =getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "home",
+                    "", item5, 1, "This is a lend2"));
 
             update();
             assertTrue(trader1.getRequestedTrades().contains(t1.getId()));
@@ -814,8 +814,8 @@ public class TestTrade extends TestManager{
             } catch (Exception e){
 
             }
-            Trade lend = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
-                    item1, "", 1, "This is a lend2")));
+            Trade lend = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    item1, "", 1, "This is a lend2"));
             tradingManager.acceptRequest(trader2.getId(), lend.getId());
             tradingManager.rescindOngoingTrade(lend.getId());
             update();
@@ -831,8 +831,8 @@ public class TestTrade extends TestManager{
 
             trader1.setTotalItemsLent(2);
             userDatabase.update(trader1);
-            Trade borrow = getTrade(tradingManager.requestTrade(trade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
-                    "", item4, 1, "This is a lend2")));
+            Trade borrow = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "home",
+                    "", item4, 1, "This is a lend2"));
             tradingManager.acceptRequest(trader2.getId(), borrow.getId());
             tradingManager.rescindOngoingTrade(borrow.getId());
             update();
