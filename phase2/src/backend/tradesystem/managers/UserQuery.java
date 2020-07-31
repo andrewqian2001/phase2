@@ -270,16 +270,21 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * Getting reports
-     * @return the reports
+     * Getting the reports sent to an admin
+     * @param adminId The id of the admin
+     * @return the reports sent to this admin
+     * @throws UserNotFoundException if the admin does not exist
+     * @throws AuthorizationException if the user isn't an admin
      */
-    public ArrayList<Report> getReports() {
-        return getAreports;
+    public ArrayList<Report> getReports(String adminId) throws UserNotFoundException, AuthorizationException {
+        return getAdmin(adminId).getReports();
     }
 
-    private Admin getAdmin(String adminId){
+    private Admin getAdmin(String adminId) throws UserNotFoundException, AuthorizationException {
         User user = getUser(adminId);
-        if ()
+        if (!(user instanceof Admin)){
+            throw new AuthorizationException("This user is not an admin");
+        }
         return (Admin) getUser(adminId);
     }
 
