@@ -35,8 +35,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
-import backend.tradesystem.managers.TradingInfoManager;
-import backend.tradesystem.managers.TradingManager;
+import backend.tradesystem.managers.*;
 import backend.tradesystem.TradeBuilder;
 
 public class TradePanel extends JPanel implements ActionListener {
@@ -60,6 +59,10 @@ public class TradePanel extends JPanel implements ActionListener {
     private Color green = new Color(27, 158, 36);
     private Color red = new Color(219, 58, 52);
 
+    private TradeQuery tradeQuery;
+    private UserQuery userQuery;
+    private ItemQuery itemQuery;
+
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
     public TradePanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
@@ -72,6 +75,10 @@ public class TradePanel extends JPanel implements ActionListener {
         tradeManager = new TradingManager();
         infoManager = new TradingInfoManager();
         tradeBuilder = new TradeBuilder();
+
+        tradeQuery = new TradeQuery();
+        userQuery = new UserQuery();
+        itemQuery = new ItemQuery();
 
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
         this.setBackground(bg);
@@ -241,21 +248,19 @@ public class TradePanel extends JPanel implements ActionListener {
         tradeRequestsContainer.setBorder(null);
         for (String tradeID : trader.getRequestedTrades()) {
             try {
-                Trade tradeRequest = tradeManager.getTrade(tradeID);
-                if ((tradeRequest.getFirstUserId().equals(trader.getId())
-                        && tradeRequest.getUserTurnToEdit().equals(trader.getId()))
-                        || !tradeRequest.getFirstUserId().equals(trader.getId())) {
+                if ((tradeQuery.getFirstUserId(tradeID).equals(trader.getId())
+                        && tradeQuery.getUserTurnToEdit(tradeID).equals(trader.getId()))
+                        || !tradeQuery.getFirstUserId(tradeID).equals(trader.getId())) {
                     JPanel tradeRequestPanel = new JPanel(new GridLayout(1, 7, 10, 0));
                     tradeRequestPanel.setPreferredSize(new Dimension(1000, 75));
                     tradeRequestPanel.setBackground(gray);
                     tradeRequestPanel.setBorder(BorderFactory.createLineBorder(bg));
 
-                    JLabel otherTraderName = new JLabel(
-                            tradeManager.getUser(tradeRequest.getFirstUserId()).getUsername());
-                    JLabel otherTraderItemName = tradeRequest.getFirstUserOffer().equals("") ? new JLabel("N/A")
-                            : new JLabel(tradeManager.getTradableItem(tradeRequest.getFirstUserOffer()).getName());
-                    JLabel traderItemName = tradeRequest.getSecondUserOffer().equals("") ? new JLabel("N/A")
-                            : new JLabel(tradeManager.getTradableItem(tradeRequest.getSecondUserOffer()).getName());
+                    JLabel otherTraderName = new JLabel(userQuery.getUsername(tradeQuery.getFirstUserId(tradeID)));
+                    JLabel otherTraderItemName = tradeQuery.getFirstUserOffer(tradeID).equals("") ? new JLabel("N/A")
+                            : new JLabel(itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)));
+                    JLabel traderItemName = tradeQuery.getSecondUserOffer(tradeID).equals("") ? new JLabel("N/A")
+                            : new JLabel(itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)));
 
                     // JLabel otherTraderName = new JLabel("otherTrader #" + (i + 1));
                     otherTraderName.setFont(regular.deriveFont(20f));
@@ -263,7 +268,7 @@ public class TradePanel extends JPanel implements ActionListener {
                     otherTraderName.setHorizontalAlignment(JLabel.LEFT);
                     otherTraderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                    JLabel tradeLocation = new JLabel(tradeRequest.getMeetingLocation());
+                    JLabel tradeLocation = new JLabel(tradeQuery.getMeetingLocation(tradeID));
                     // JLabel tradeLocation = new JLabel("Location #" + (i + 1));
                     tradeLocation.setFont(regular.deriveFont(20f));
                     tradeLocation.setForeground(Color.BLACK);
@@ -342,8 +347,14 @@ public class TradePanel extends JPanel implements ActionListener {
                         meetingLocationTitle.setOpaque(false);
                         meetingLocationTitle.setForeground(Color.WHITE);
 
-                        JLabel meetingLocationName = new JLabel(
-                                "<html><pre>" + tradeRequest.getMeetingLocation() + "</pre></html>");
+                        JLabel meetingLocationName = null;
+                        try {
+                            meetingLocationName = new JLabel(
+                                    "<html><pre>" + tradeQuery.getMeetingLocation(tradeID) + "</pre></html>");
+                        } catch (TradeNotFoundException tradeNotFoundException) {
+                            tradeNotFoundException.printStackTrace();
+                        }
+
                         meetingLocationName.setFont(italic.deriveFont(20f));
                         meetingLocationName.setPreferredSize(new Dimension(290, 50));
                         meetingLocationName.setOpaque(false);
@@ -355,8 +366,14 @@ public class TradePanel extends JPanel implements ActionListener {
                         firstMeetingDateTitle.setOpaque(false);
                         firstMeetingDateTitle.setForeground(Color.WHITE);
 
-                        JLabel firstMeetingDate = new JLabel(
-                                "<html><pre>" + dateFormat.format(tradeRequest.getMeetingTime()) + "</pre></html>");
+                        JLabel firstMeetingDate = null;
+                        try {
+                            firstMeetingDate = new JLabel(
+                                    "<html><pre>" + dateFormat.format(tradeQuery.getMeetingTime(tradeID)) + "</pre></html>");
+                        } catch (TradeNotFoundException tradeNotFoundException) {
+                            tradeNotFoundException.printStackTrace();
+                        }
+
                         firstMeetingDate.setFont(italic.deriveFont(20f));
                         firstMeetingDate.setPreferredSize(new Dimension(290, 50));
                         firstMeetingDate.setOpaque(false);
@@ -374,11 +391,15 @@ public class TradePanel extends JPanel implements ActionListener {
                         secondMeetingDate.setOpaque(false);
                         secondMeetingDate.setForeground(Color.WHITE);
 
-                        if (tradeRequest.getSecondMeetingTime() != null) {
-                            secondMeetingDate.setText("<html><pre>"
-                                    + dateFormat.format(tradeRequest.getSecondMeetingTime()) + "</pre></html>");
-                        } else {
-                            secondMeetingDate.setText("N/A");
+                        try {
+                            if (tradeQuery.getSecondMeetingTime(tradeID) != null) {
+                                secondMeetingDate.setText("<html><pre>"
+                                        + dateFormat.format(tradeQuery.getSecondMeetingTime(tradeID)) + "</pre></html>");
+                            } else {
+                                secondMeetingDate.setText("N/A");
+                            }
+                        } catch (TradeNotFoundException tradeNotFoundException) {
+                            tradeNotFoundException.printStackTrace();
                         }
 
                         JLabel availableEditsTitle = new JLabel("Available Edits Left:");
@@ -387,9 +408,15 @@ public class TradePanel extends JPanel implements ActionListener {
                         availableEditsTitle.setOpaque(false);
                         availableEditsTitle.setForeground(Color.WHITE);
 
-                        JLabel availableEdits = new JLabel(
-                                "<html><pre>" + (tradeRequest.getMaxAllowedEdits() / 2 - tradeRequest.getNumEdits())
-                                        + "</pre></html>");
+                        JLabel availableEdits = null;
+                        try {
+                            availableEdits = new JLabel(
+                                    "<html><pre>" + (tradeQuery.getMaxAllowedEdits(tradeID) / 2 - tradeQuery.getNumEdits(tradeID))
+                                            + "</pre></html>");
+                        } catch (TradeNotFoundException tradeNotFoundException) {
+                            tradeNotFoundException.printStackTrace();
+                        }
+
                         availableEdits.setFont(italic.deriveFont(20f));
                         availableEdits.setPreferredSize(new Dimension(290, 50));
                         availableEdits.setOpaque(false);
@@ -481,7 +508,13 @@ public class TradePanel extends JPanel implements ActionListener {
                         meetingLocationTitle.setOpaque(false);
                         meetingLocationTitle.setForeground(Color.WHITE);
 
-                        JTextField meetingLocationInput = new JTextField(tradeRequest.getMeetingLocation());
+                        JTextField meetingLocationInput = null;
+                        try {
+                            meetingLocationInput = new JTextField(tradeQuery.getMeetingLocation(tradeID));
+                        } catch (TradeNotFoundException tradeNotFoundException) {
+                            tradeNotFoundException.printStackTrace();
+                        }
+
                         meetingLocationInput.setPreferredSize(new Dimension(325, 50));
                         meetingLocationInput.setFont(regular.deriveFont(20f));
 
@@ -491,11 +524,18 @@ public class TradePanel extends JPanel implements ActionListener {
                         firstMeetingDateTitle.setOpaque(false);
                         firstMeetingDateTitle.setForeground(Color.WHITE);
 
-                        String month = tradeRequest.getMeetingTime().toString().substring(4, 7);
-                        int day = Integer.parseInt(tradeRequest.getMeetingTime().toString().substring(8, 10));
-                        int year = Integer.parseInt(tradeRequest.getMeetingTime().toString().substring(24, 28));
-                        int hour = Integer.parseInt(tradeRequest.getMeetingTime().toString().substring(11, 13));
-                        int min = Integer.parseInt(tradeRequest.getMeetingTime().toString().substring(14, 16));
+                        String month = null;
+                        int day = 0, year = 0, hour = 0, min = 0;
+                        try {
+                            month = tradeQuery.getMeetingTime(tradeID).toString().substring(4, 7);
+                            day = Integer.parseInt(tradeQuery.getMeetingTime(tradeID).toString().substring(8, 10));
+                            year = Integer.parseInt(tradeQuery.getMeetingTime(tradeID).toString().substring(24, 28));
+                            hour = Integer.parseInt(tradeQuery.getMeetingTime(tradeID).toString().substring(11, 13));
+                            min = Integer.parseInt(tradeQuery.getMeetingTime(tradeID).toString().substring(14, 16));
+                        } catch (TradeNotFoundException tradeNotFoundException) {
+                            tradeNotFoundException.printStackTrace();
+                        }
+
                         JPanel firstMeetingDate = setDateInput(month, day, year, hour, min);
 
                         JLabel secondMeetingDateTitle = new JLabel("Second Meeting Date:");
@@ -504,11 +544,17 @@ public class TradePanel extends JPanel implements ActionListener {
                         secondMeetingDateTitle.setOpaque(false);
                         secondMeetingDateTitle.setForeground(Color.WHITE);
 
-                        String month2 = tradeRequest.getSecondMeetingTime().toString().substring(4, 7);
-                        int day2 = Integer.parseInt(tradeRequest.getSecondMeetingTime().toString().substring(8, 10));
-                        int year2 = Integer.parseInt(tradeRequest.getSecondMeetingTime().toString().substring(24, 28));
-                        int hour2 = Integer.parseInt(tradeRequest.getSecondMeetingTime().toString().substring(11, 13));
-                        int min2 = Integer.parseInt(tradeRequest.getSecondMeetingTime().toString().substring(14, 16));
+                        String month2 = null;
+                        int day2 = 0, year2 = 0, hour2 = 0, min2 = 0;
+                        try {
+                            month2 = tradeQuery.getSecondMeetingTime(tradeID).toString().substring(4, 7);
+                            day2 = Integer.parseInt(tradeQuery.getSecondMeetingTime(tradeID).toString().substring(8, 10));
+                            year2 = Integer.parseInt(tradeQuery.getSecondMeetingTime(tradeID).toString().substring(24, 28));
+                            hour2 = Integer.parseInt(tradeQuery.getSecondMeetingTime(tradeID).toString().substring(11, 13));
+                            min2 = Integer.parseInt(tradeQuery.getSecondMeetingTime(tradeID).toString().substring(14, 16));
+                        } catch (TradeNotFoundException tradeNotFoundException) {
+                            tradeNotFoundException.printStackTrace();
+                        }
                         JPanel secondMeetingDate = setDateInput(month2, day2, year2, hour2, min2);
 
                         JLabel availableEditsTitle = new JLabel("Available Edits Left:");
@@ -517,9 +563,14 @@ public class TradePanel extends JPanel implements ActionListener {
                         availableEditsTitle.setOpaque(false);
                         availableEditsTitle.setForeground(Color.WHITE);
 
-                        JLabel availableEdits = new JLabel(
-                                "<html><pre>" + (tradeRequest.getMaxAllowedEdits() / 2 - tradeRequest.getNumEdits())
-                                        + " Edits Remaining</pre></html>");
+                        JLabel availableEdits = null;
+                        try {
+                            availableEdits = new JLabel(
+                                    "<html><pre>" + (tradeQuery.getMaxAllowedEdits(tradeID) / 2 - tradeQuery.getNumEdits(tradeID))
+                                            + " Edits Remaining</pre></html>");
+                        } catch (TradeNotFoundException tradeNotFoundException) {
+                            tradeNotFoundException.printStackTrace();
+                        }
                         availableEdits.setFont(italic.deriveFont(20f));
                         availableEdits.setPreferredSize(new Dimension(325, 50));
                         availableEdits.setHorizontalAlignment(JLabel.CENTER);
@@ -620,7 +671,7 @@ public class TradePanel extends JPanel implements ActionListener {
                                     Date secondMeeting = secondMeetingString.equals("") ? null : dateFormat.parse(secondMeetingString);
                                     String thisTraderOffer = traderItems.getSelectedItem() == null ? "" : ((TradableItem)traderItems.getSelectedItem()).getId();
                                     String thatTraderOffer = otherTraderItems.getSelectedItem() == null ? "" : ((TradableItem)otherTraderItems.getSelectedItem()).getId();
-                                    tradeManager.counterTradeOffer(trader.getId(), tradeRequest.getId(), firstMeeting, secondMeeting, meetingLocationInput.getText(), thisTraderOffer, thatTraderOffer);
+                                    tradeManager.counterTradeOffer(trader.getId(), tradeID, firstMeeting, secondMeeting, meetingLocationInput.getText(), thisTraderOffer, thatTraderOffer);
                                     tradeEditsModal.dispose();
                                 } catch (ParseException | TradeNotFoundException | UserNotFoundException | CannotTradeException | AuthorizationException e2) {
                                     error.setText(e2.getMessage());
@@ -644,7 +695,7 @@ public class TradePanel extends JPanel implements ActionListener {
                     tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
                     tradeConfirmButton.addActionListener(e -> {
                         try {
-                            tradeManager.acceptRequest(trader.getId(), tradeRequest.getId());
+                            tradeManager.acceptRequest(trader.getId(), tradeID);
                             tradeRequestsContainer.remove(tradeRequestPanel);
                             tradeRequestsContainer.revalidate();
                             tradeRequestsContainer.repaint();
@@ -663,7 +714,7 @@ public class TradePanel extends JPanel implements ActionListener {
                     tradeRejectButton.setBorder(BorderFactory.createLineBorder(gray, 15));
                     tradeRejectButton.addActionListener(e -> {
                         try {
-                            tradeManager.rescindTradeRequest(tradeRequest.getId());
+                            tradeManager.rescindTradeRequest(tradeID);
                             tradeRequestsContainer.remove(tradeRequestPanel);
                             tradeRequestsContainer.revalidate();
                             tradeRequestsContainer.repaint();
@@ -720,35 +771,35 @@ public class TradePanel extends JPanel implements ActionListener {
         for (String tradeID : trader.getAcceptedTrades()) {
             // for(int i = 0; i < 10; i++) {
             try {
-                Trade ongoingTrade = tradeManager.getTrade(tradeID);
+                String ongoingTrade = tradeManager.getTrade(tradeID);
                 JPanel ongoingTradePanel = new JPanel(new GridLayout(1, 5, 10, 0));
                 ongoingTradePanel.setPreferredSize(new Dimension(1000, 75));
                 ongoingTradePanel.setBorder(BorderFactory.createLineBorder(bg));
                 ongoingTradePanel.setBackground(gray);
 
-                boolean isTraderFirstUser = tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername()
+                boolean isTraderFirstUser = userQuery.getUsername(tradeQuery.getFirstUserId(tradeID))
                         .equals(trader.getUsername());
 
                 JLabel otherTraderName = new JLabel(
-                        (!isTraderFirstUser ? tradeManager.getUser(ongoingTrade.getFirstUserId()).getUsername()
-                                : tradeManager.getUser(ongoingTrade.getSecondUserId()).getUsername()));
+                        (!isTraderFirstUser ? userQuery.getUsername(tradeQuery.getFirstUserId(tradeID))
+                                : userQuery.getUsername(tradeQuery.getSecondUserId(tradeID))));
                 // JLabel otherTraderName = new JLabel("otherTrader #"+ (i + 1));
                 otherTraderName.setFont(regular.deriveFont(20f));
                 otherTraderName.setForeground(Color.BLACK);
                 otherTraderName.setHorizontalAlignment(JLabel.LEFT);
                 otherTraderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-                JLabel tradeLocation = new JLabel(ongoingTrade.getMeetingLocation());
+                JLabel tradeLocation = new JLabel(tradeQuery.getMeetingLocation(tradeID));
                 // JLabel tradeLocation = new JLabel("Meeting Location #" + (i+1));
                 tradeLocation.setFont(regular.deriveFont(20f));
                 tradeLocation.setForeground(Color.BLACK);
                 tradeLocation.setHorizontalAlignment(JLabel.CENTER);
 
                 JLabel tradeMeetingTime;
-                if (ongoingTrade.isFirstUserConfirmed1() && ongoingTrade.isSecondUserConfirmed1()) {
-                    tradeMeetingTime = new JLabel(dateFormat.format(ongoingTrade.getSecondMeetingTime()));
+                if (tradeQuery.isFirstUserConfirmed1(tradeID) && tradeQuery.isSecondUserConfirmed1(tradeID)) {
+                    tradeMeetingTime = new JLabel(dateFormat.format(tradeQuery.getSecondMeetingTime(tradeID)));
                 } else {
-                    tradeMeetingTime = new JLabel(dateFormat.format(ongoingTrade.getMeetingTime()));
+                    tradeMeetingTime = new JLabel(dateFormat.format(tradeQuery.getMeetingTime(tradeID)));
                 }
                 // JLabel tradeMeetingTime = new JLabel("2020/07/30@14:2"+i);
                 tradeMeetingTime.setFont(regular.deriveFont(20f));
@@ -800,28 +851,29 @@ public class TradePanel extends JPanel implements ActionListener {
                     JLabel otherTraderItemName = new JLabel();
                     JLabel traderItemName = new JLabel();
                     // TODO: Make this logic less ugly
+                    ;
                     try {
-                        if ((ongoingTrade.getFirstUserOffer().equals("") && isTraderFirstUser)
-                                || (ongoingTrade.getSecondUserOffer().equals("") && !isTraderFirstUser)) {
+                        if ((tradeQuery.getFirstUserOffer(tradeID).equals("") && isTraderFirstUser)
+                                || (tradeQuery.getSecondUserOffer(tradeID).equals("") && !isTraderFirstUser)) {
                             traderItemName.setText("N/A");
-                        } else if (!ongoingTrade.getFirstUserOffer().equals("") && isTraderFirstUser) {
+                        } else if (!tradeQuery.getFirstUserOffer(tradeID).equals("") && isTraderFirstUser) {
                             traderItemName
-                                    .setText(tradeManager.getTradableItem(ongoingTrade.getFirstUserOffer()).getName());
-                        } else if (!ongoingTrade.getSecondUserOffer().equals("") && !isTraderFirstUser) {
+                                    .setText(itemQuery.getName(tradeQuery.getFirstUserOffer(tradeID)));
+                        } else if (!tradeQuery.getSecondUserOffer(tradeID).equals("") && !isTraderFirstUser) {
                             traderItemName
-                                    .setText(tradeManager.getTradableItem(ongoingTrade.getSecondUserOffer()).getName());
+                                    .setText(itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)));
                         }
-                        if ((ongoingTrade.getFirstUserOffer().equals("") && !isTraderFirstUser)
-                                || (ongoingTrade.getSecondUserOffer().equals("") && isTraderFirstUser)) {
+                        if ((tradeQuery.getFirstUserOffer(tradeID).equals("") && !isTraderFirstUser)
+                                || (tradeQuery.getSecondUserOffer(tradeID).equals("") && isTraderFirstUser)) {
                             otherTraderItemName.setText("N/A");
-                        } else if (!ongoingTrade.getFirstUserOffer().equals("") && !isTraderFirstUser) {
+                        } else if (!tradeQuery.getFirstUserOffer(tradeID).equals("") && !isTraderFirstUser) {
                             otherTraderItemName
-                                    .setText(tradeManager.getTradableItem(ongoingTrade.getFirstUserOffer()).getName());
-                        } else if (!ongoingTrade.getSecondUserOffer().equals("") && isTraderFirstUser) {
+                                    .setText(itemQuery.getName(tradeQuery.getFirstUserOffer(tradeID)));
+                        } else if (!tradeQuery.getSecondUserOffer(tradeID).equals("") && isTraderFirstUser) {
                             otherTraderItemName
-                                    .setText(tradeManager.getTradableItem(ongoingTrade.getSecondUserOffer()).getName());
+                                    .setText(itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)));
                         }
-                    } catch (TradableItemNotFoundException e1) {
+                    } catch (TradableItemNotFoundException | TradeNotFoundException e1) {
                         System.out.println(e1.getMessage());
                     }
 
@@ -843,8 +895,13 @@ public class TradePanel extends JPanel implements ActionListener {
                     meetingLocationTitle.setOpaque(false);
                     meetingLocationTitle.setForeground(Color.WHITE);
 
-                    JLabel meetingLocationName = new JLabel(
-                            "<html><pre>" + ongoingTrade.getMeetingLocation() + "</pre></html>");
+                    JLabel meetingLocationName = null;
+                    try {
+                        meetingLocationName = new JLabel(
+                                "<html><pre>" + tradeQuery.getMeetingLocation(tradeID) + "</pre></html>");
+                    } catch (TradeNotFoundException tradeNotFoundException) {
+                        tradeNotFoundException.printStackTrace();
+                    }
                     meetingLocationName.setFont(italic.deriveFont(20f));
                     meetingLocationName.setPreferredSize(new Dimension(290, 50));
                     meetingLocationName.setOpaque(false);
@@ -856,8 +913,13 @@ public class TradePanel extends JPanel implements ActionListener {
                     firstMeetingDateTitle.setOpaque(false);
                     firstMeetingDateTitle.setForeground(Color.WHITE);
 
-                    JLabel firstMeetingDate = new JLabel(
-                            "<html><pre>" + dateFormat.format(ongoingTrade.getMeetingTime()) + "</pre></html>");
+                    JLabel firstMeetingDate = null;
+                    try {
+                        firstMeetingDate = new JLabel(
+                                "<html><pre>" + dateFormat.format(tradeQuery.getMeetingTime(tradeID)) + "</pre></html>");
+                    } catch (TradeNotFoundException tradeNotFoundException) {
+                        tradeNotFoundException.printStackTrace();
+                    }
                     firstMeetingDate.setFont(italic.deriveFont(20f));
                     firstMeetingDate.setPreferredSize(new Dimension(290, 50));
                     firstMeetingDate.setOpaque(false);
@@ -875,11 +937,15 @@ public class TradePanel extends JPanel implements ActionListener {
                     secondMeetingDate.setOpaque(false);
                     secondMeetingDate.setForeground(Color.WHITE);
 
-                    if (ongoingTrade.getSecondMeetingTime() != null) {
-                        secondMeetingDate.setText("<html><pre>" + dateFormat.format(ongoingTrade.getSecondMeetingTime())
-                                + "</pre></html>");
-                    } else {
-                        secondMeetingDate.setText("N/A");
+                    try {
+                        if (tradeQuery.getSecondMeetingTime(tradeID) != null) {
+                            secondMeetingDate.setText("<html><pre>" + dateFormat.format(tradeQuery.getSecondMeetingTime(tradeID))
+                                    + "</pre></html>");
+                        } else {
+                            secondMeetingDate.setText("N/A");
+                        }
+                    } catch (TradeNotFoundException tradeNotFoundException) {
+                        tradeNotFoundException.printStackTrace();
                     }
 
                     tradeDetailsPanel.add(otherTraderNameTitle);
@@ -903,9 +969,9 @@ public class TradePanel extends JPanel implements ActionListener {
                 JButton tradeConfirmButton = new JButton();
 
                 if ((isTraderFirstUser
-                        && (ongoingTrade.isFirstUserConfirmed1() || ongoingTrade.isFirstUserConfirmed2()))
+                        && (tradeQuery.isFirstUserConfirmed1(tradeID) || tradeQuery.isFirstUserConfirmed2(tradeID)))
                         || (!isTraderFirstUser
-                                && (ongoingTrade.isSecondUserConfirmed1() || ongoingTrade.isSecondUserConfirmed2()))) {
+                                && (tradeQuery.isSecondUserConfirmed1(tradeID) || tradeQuery.isSecondUserConfirmed2(tradeID)))) {
                     tradeConfirmButton.setText("Confirmed");
                     tradeConfirmButton.setFont(boldItalic.deriveFont(20f));
                     tradeConfirmButton.setForeground(Color.WHITE);
@@ -1141,26 +1207,21 @@ public class TradePanel extends JPanel implements ActionListener {
                 try {
                     Date firstMeeting = dateFormat.parse(firstMeetingString);
                     Date secondMeeting = secondMeetingString.equals("") ? null : dateFormat.parse(secondMeetingString);
-                    tradeBuilder.toUser(((Trader) traders.getSelectedItem()).getId());
-                    tradeBuilder.setLocation(meetingLocationInput.getText());
-                    tradeBuilder.fromUser(trader.getId());
-                    tradeBuilder.setMeeting1(firstMeeting);
-                    tradeBuilder.setMeeting2(secondMeeting);
-                    tradeBuilder.setAllowedEditsPerUser(3);
+                    String firstTraderOffer = "";
+                    String otherTraderOffer = "";
 
-                    if (traderItems.getSelectedItem() == null) {
-                        tradeBuilder.setFirstUserOffer("");
-                    } else if (traderItems.getSelectedItem() instanceof TradableItem) {
-                        tradeBuilder.setFirstUserOffer(((TradableItem) traderItems.getSelectedItem()).getId());
+                    if (traderItems.getSelectedItem() != null && traderItems.getSelectedItem() instanceof TradableItem) {
+                        firstTraderOffer = ((TradableItem) traderItems.getSelectedItem()).getId();
                     }
 
-                    if (otherTraderItems.getSelectedItem() == null) {
-                        tradeBuilder.setSecondUserOffer("");
-                    } else if (otherTraderItems.getSelectedItem() instanceof TradableItem) {
-                        tradeBuilder.setSecondUserOffer(((TradableItem) otherTraderItems.getSelectedItem()).getId());
+                    if (otherTraderItems.getSelectedItem() != null && otherTraderItems.getSelectedItem() instanceof TradableItem) {
+                        otherTraderOffer = ((TradableItem) otherTraderItems.getSelectedItem()).getId();
                     }
+                    //TODO: message?
+                    String message = "";
 
-                    tradeManager.requestTrade(tradeBuilder.createTrade());
+                    tradeManager.requestTrade(trader.getId(), ((Trader) traders.getSelectedItem()).getId(), firstMeeting, secondMeeting, meetingLocationInput.getText(),
+                            firstTraderOffer, otherTraderOffer, 3, message);
                     addNewTradeModal.dispose();
 				} catch (ParseException | UserNotFoundException | AuthorizationException | CannotTradeException e2) {
                     error.setText(e2.getMessage());

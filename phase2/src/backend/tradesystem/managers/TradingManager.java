@@ -104,23 +104,6 @@ public class TradingManager extends Manager {
     }
 
     /**
-     * For denying a requested trade
-     *
-     * @param tradeId trade id
-     * @throws TradeNotFoundException if the trade id wasn't found
-     * @throws AuthorizationException if the trade doesn't belong to this user
-     * @throws UserNotFoundException if the traders in the trade weren't found
-     */
-    public void denyTrade(String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
-        Trade trade = getTrade(tradeId);
-        Trader trader1 = getTrader(trade.getFirstUserId());
-        Trader trader2 = getTrader(trade.getSecondUserId());
-        trader1.getRequestedTrades().remove(tradeId);
-        trader2.getRequestedItems().remove(tradeId);
-        getTradeDatabase().delete(tradeId);
-    }
-
-    /**
      * For accepting a trade request
      *
      * @param traderId the trader confirming the meeting

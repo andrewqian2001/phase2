@@ -181,4 +181,24 @@ public class TradeQuery extends Manager{
         return getTrade(tradeId).isHasSecondUserConfirmedRequest();
     }
 
+    /**
+     * the user id of the person initializing the trade
+     * @param tradeId The id of the trade which is being checked
+     * @return the user id of the person initializing the trade
+     * @throws TradeNotFoundException if the trade could not be found in the system
+     */
+    public String getFirstUserId(String tradeId) throws TradeNotFoundException {
+        return getTrade(tradeId).getFirstUserId();
+    }
+
+    /**
+     * the user id of the person the trade is being sent to
+     * @param tradeId The id of the trade which is being checked
+     * @return the user id of the person the trade is being sent to
+     * @throws TradeNotFoundException if the trade could not be found in the system
+     */
+    public String getSecondUserId(String tradeId) throws TradeNotFoundException {
+        return getTrade(tradeId).getSecondUserId();
+    }
+
 }
