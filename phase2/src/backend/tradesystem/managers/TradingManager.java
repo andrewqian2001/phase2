@@ -36,12 +36,12 @@ public class TradingManager extends Manager {
      * A trade is a borrow if the the item the first user is offering is "".
      * A trade is a lend if the item the second user is offering is "".
      * @param trade the trade that is to be added to the traders.
-     * @return the trade object
+     * @return the trade object's id
      * @throws UserNotFoundException         the user that wants to be traded with doesn't exist
      * @throws AuthorizationException        the item for trading cannot be traded
      * @throws CannotTradeException          cannot request a trade
      */
-    public Trade requestTrade(Trade trade)
+    public String requestTrade(Trade trade)
             throws  UserNotFoundException, AuthorizationException, CannotTradeException {
         String traderId1 = trade.getFirstUserId();
         String traderId2 = trade.getSecondUserId();
@@ -84,7 +84,7 @@ public class TradingManager extends Manager {
         updateUserDatabase(trader);
         updateTradeDatabase(trade);
         updateUserDatabase(secondTrader);
-        return trade;
+        return trade.getId();
     }
 
     /**
@@ -109,7 +109,7 @@ public class TradingManager extends Manager {
      *
      * @param traderId the trader confirming the meeting
      * @param tradeId  the trade id
-     * @return if the request was confirmed
+     * @return true if the request was accepted
      * @throws TradeNotFoundException if the trade wasn't found
      * @throws AuthorizationException if the user is not a trader
      * @throws UserNotFoundException  if the user doesn't exist
@@ -307,7 +307,7 @@ public class TradingManager extends Manager {
     /**
      * Sending a counter offer
      *
-     * @param traderId          the trader id
+     * @param traderId          the trader id sending the counter offer
      * @param tradeId           the trade id
      * @param meetingTime       the new time of the trade
      * @param secondMeetingTime the second meeting time of the trade
@@ -320,7 +320,7 @@ public class TradingManager extends Manager {
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException user wasn't found
      */
-    public Trade counterTradeOffer(String traderId, String tradeId, Date meetingTime, Date secondMeetingTime, String
+    public String counterTradeOffer(String traderId, String tradeId, Date meetingTime, Date secondMeetingTime, String
             meetingLocation, String thisTraderOffer, String thatTraderOffer) throws
             CannotTradeException, TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
@@ -370,7 +370,7 @@ public class TradingManager extends Manager {
 
         trade.setNumEdits(trade.getNumEdits() + 1);
         updateTradeDatabase(trade);
-        return trade;
+        return trade.getId();
     }
 
 
@@ -412,7 +412,7 @@ public class TradingManager extends Manager {
         if (!firstTrader.getAcceptedTrades().contains(trade.getId()))
             throw new CannotTradeException("The trade is not accepted");
         if (trade.getSecondMeetingTime() != null && trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1())
-            throw new CannotTradeException("This trade's first meeting has been accepted. The trade must be complete.");
+            throw new CannotTradeException("This trade's first meeting has been accepted. The trade must be completed.");
 
 
         // Remove trades
