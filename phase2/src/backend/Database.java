@@ -115,11 +115,13 @@ public class Database<T extends DatabaseItem> implements Serializable {
             return new HashMap<>();
         }
         try {
-            InputStream buffer = new BufferedInputStream(new FileInputStream(this.FILE_PATH));
-            ObjectInput input = new ObjectInputStream(buffer);
+            BufferedInputStream buffer = new BufferedInputStream(new FileInputStream(this.FILE_PATH));
+            ObjectInputStream input = new ObjectInputStream(buffer);
             Object tmp = input.readObject();
             input.close();
-            return (HashMap<String, T>) tmp;
+            if (tmp instanceof HashMap)
+                return (HashMap<String, T>) tmp;
+            return new HashMap<>();
         } catch (IOException e) {
             logger.log(Level.INFO, "Empty file was used.");
         } catch (ClassNotFoundException e) {
@@ -141,8 +143,8 @@ public class Database<T extends DatabaseItem> implements Serializable {
             throw new FileNotFoundException();
         }
         try {
-            OutputStream buffer = new BufferedOutputStream(new FileOutputStream(FILE_PATH));
-            ObjectOutput output = new ObjectOutputStream(buffer);
+            BufferedOutputStream buffer = new BufferedOutputStream(new FileOutputStream(FILE_PATH));
+            ObjectOutputStream  output = new ObjectOutputStream(buffer);
             output.writeObject(items);
             output.close();
         } catch (IOException e) {

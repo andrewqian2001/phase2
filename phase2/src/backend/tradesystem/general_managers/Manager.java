@@ -177,9 +177,8 @@ public class Manager {
      * @throws UserNotFoundException cant find username
      */
     public String getUserByUsername(String username) throws UserNotFoundException {
-        HashMap<String, User> users = getUserDatabase().getItems();
-        for (String userId : users.keySet())
-            if (users.get(userId).getUsername().equals(username))
+        for (String userId : getUserDatabase().getItems().keySet())
+            if (getUser(userId).getUsername().equals(username))
                 return userId;
         throw new UserNotFoundException();
     }
