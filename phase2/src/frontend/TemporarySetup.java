@@ -25,86 +25,87 @@ public class TemporarySetup {
     public TemporarySetup() {
         refreshFiles(); // Deletes existing data in the ser files
         try {
-            Trader[] traders = new Trader[10];
-            Admin[] admins = new Admin[5];
+            String[] traders = new String[10];
+            String[] admins = new String[5];
             LoginManager loginManager = new LoginManager();
             TraderManager traderManager = new TraderManager();
             HandleItemRequestsManager handleRequestsManager = new HandleItemRequestsManager();
             HandleFrozenManager handleFrozenManager = new HandleFrozenManager();
             MessageManager messageManager = new MessageManager();
             TradingManager tradingManager = new TradingManager();
+            ReportManager reportManager = new ReportManager();
+            UserQuery userQuery = new UserQuery();
             // Each trader has some items that are confirmed and not confirmed
             // Username is trader{index here from 0 to 9 inclusive}
             // Password is 'userPassword1'
             for (int i = 0; i < traders.length; i++) {
-                traders[i] = (Trader) loginManager.registerUser("trader" + i, "userPassword1", UserTypes.TRADER);
-                traders[i] = traderManager.addRequestItem(traders[i].getId(), "apple" + i, "sweet" + i);
-                traders[i] = traderManager.addRequestItem(traders[i].getId(), "banananana" + i, "disgusting" + i);
-                traders[i] = traderManager.addRequestItem(traders[i].getId(), "kiwi" + i, "from oceania" + i);
-                traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
-                traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
-                traders[i] = handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
-                traders[i] = traderManager.addRequestItem(traders[i].getId(), "requested" + i, "requested desc" + i);
-                traders[i] = traderManager.addRequestItem(traders[i].getId(), "another requested" + i, "bad desc requested" + i);
-                traders[i] = traderManager.setCity(traders[i].getId(), "Toronto");
+                traders[i] = loginManager.registerUser("trader" + i, "userPassword1", UserTypes.TRADER);
+                traderManager.addRequestItem(traders[i], "apple" + i, "sweet" + i);
+                traderManager.addRequestItem(traders[i], "banananana" + i, "disgusting" + i);
+                traderManager.addRequestItem(traders[i], "kiwi" + i, "from oceania" + i);
+                handleRequestsManager.processItemRequest(traders[i], userQuery.getRequestedItems(traders[i]).get(0), true);
+                handleRequestsManager.processItemRequest(traders[i], userQuery.getRequestedItems(traders[i]).get(0), true);
+                handleRequestsManager.processItemRequest(traders[i], userQuery.getRequestedItems(traders[i]).get(0), true);
+                traderManager.addRequestItem(traders[i], "requested" + i, "requested desc" + i);
+                traderManager.addRequestItem(traders[i], "another requested" + i, "bad desc requested" + i);
+                traderManager.setCity(traders[i], "Toronto");
             }
             Date goodDate = new Date(System.currentTimeMillis() + 99999999);
             Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
             // Trades
-            for (int i = 1; i < traders.length / 2; i++){
+            for (int i = 1; i < traders.length / 2; i++) {
                 try {
-                    Trade acceptThis = tradingManager.requestTrade(new Trade(traders[i].getId(), traders[traders.length - 1 - i].getId(), goodDate, goodDate2,
-                            "123 bay street", traders[i].getAvailableItems().get(0), traders[traders.length - 1 - i].getAvailableItems().get(0),
-                            3, "give me your apple " + i)); // This is a temp trade
-                    Trade ongoing = tradingManager.requestTrade(new Trade(traders[i].getId(), traders[traders.length - 1 - i].getId(), goodDate, null,
-                            "123 bay street", traders[i].getAvailableItems().get(1), traders[traders.length - 1 - i].getAvailableItems().get(1),
-                            3, "give me your banana " + i)); // This is a perma trade
-                    Trade requestedOnly = tradingManager.requestTrade(new Trade(traders[i].getId(), traders[traders.length - 1 - i].getId(), goodDate, goodDate2,
-                            "123 bay street", traders[i].getAvailableItems().get(2), traders[traders.length - 1 - i].getAvailableItems().get(2),
-                            3, "I give you my kiwi " + i)); // this is for requesting temp trade
+                    String acceptThis = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, goodDate2,
+                            "123 bay street", userQuery.getAvailableItems(traders[i]).get(0), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(0),
+                            3, "give me your apple " + i); // This is a temp trade
+                    String ongoing = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, null,
+                            "123 bay street", userQuery.getAvailableItems(traders[i]).get(1), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(1),
+                            3, "give me your banana " + i); // This is a perma trade
+                    String requestedOnly = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, goodDate2,
+                            "123 bay street", userQuery.getAvailableItems(traders[i]).get(2), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(2),
+                            3, "I give you my kiwi " + i); // this is for requesting temp trade
                     // Only accepts request and doesn't confirm meetings so trade is ongoing
-                    tradingManager.acceptRequest(traders[traders.length - 1 - i].getId(), ongoing.getId());
+                    tradingManager.acceptRequest(traders[traders.length - 1 - i], ongoing);
                     // Confirms four meetings for a temporary trade and accepts request, meaning the trade is complete
-                    tradingManager.acceptRequest(traders[traders.length - 1 - i].getId(), acceptThis.getId());
-                    tradingManager.confirmMeetingGeneral(traders[i].getId(), acceptThis.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i].getId(), acceptThis.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[i].getId(), acceptThis.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i].getId(), acceptThis.getId(), true);
-                }
-                catch(Exception e){
+                    tradingManager.acceptRequest(traders[traders.length - 1 - i], acceptThis);
+                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis, true);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis, true);
+                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis, true);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis, true);
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
             }
             // Each trader has a wishlist of one item
             for (int i = 0; i < traders.length; i++)
-                traders[i] = traderManager.addToWishList(traders[i].getId(), traders[i - 1 == -1 ? traders.length - 1 : i - 1].getAvailableItems().get(0));
+                traderManager.addToWishList(traders[i], userQuery.getAvailableItems(traders[i - 1 == -1 ? traders.length - 1 : i - 1]).get(0));
             // For changing cities
-            traders[3] = traderManager.setCity(traders[3].getId(), "new york");
-            traders[4] = traderManager.setCity(traders[4].getId(), "new york");
-            traders[5] = traderManager.setCity(traders[5].getId(), "new york");
-            traders[6] = traderManager.setCity(traders[6].getId(), "dallas");
-            traders[7] = traderManager.setCity(traders[7].getId(), "dallas");
+            traders[3] = traderManager.setCity(traders[3], "new york");
+            traders[4] = traderManager.setCity(traders[4], "new york");
+            traders[5] = traderManager.setCity(traders[5], "new york");
+            traders[6] = traderManager.setCity(traders[6], "dallas");
+            traders[7] = traderManager.setCity(traders[7], "dallas");
             // For changing idle status
-            traders[0] = traderManager.setIdle(traders[0].getId(), true);
+            traders[0] = traderManager.setIdle(traders[0], true);
             // For adding reviews
-            traderManager.addReview(traders[0].getId(), traders[3].getId(), 5.3, "This guy was rude");
-            traderManager.addReview(traders[2].getId(), traders[3].getId(), 2.3, "This guy attacked me");
-            traderManager.addReview(traders[1].getId(), traders[4].getId(), 9.3, "This guy gave me free money");
+            traderManager.addReview(traders[0], traders[3], 5.3, "This guy was rude");
+            traderManager.addReview(traders[2], traders[3], 2.3, "This guy attacked me");
+            traderManager.addReview(traders[1], traders[4], 9.3, "This guy gave me free money");
             // For setting frozen status
-            handleFrozenManager.setFrozen(traders[8].getId(), true);
+            handleFrozenManager.setFrozen(traders[8], true);
             // For reporting users
-            messageManager.reportUser(traders[3].getId(), traders[6].getId(), "This user drove off with my lambo and never gave me what I wanted");
-            messageManager.reportUser(traders[1].getId(), traders[6].getId(), "This user flew away with my helicopter and never gave me what I wanted");
+            reportManager.reportUser(traders[3], traders[6], "This user drove off with my lambo and never gave me what I wanted");
+            reportManager.reportUser(traders[1], traders[6], "This user flew away with my helicopter and never gave me what I wanted");
             // For messaging users
-            messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "Dallas is pretty far can you come to New York instead");
-            messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "Ik its a lot to ask but like yeehaw");
-            messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "Dplease i got covid19 come to new yorkkk");
-            messageManager.sendMessage(traders[5].getId(), traders[7].getId(), "uk what fine, i never liked you anyway");
-            messageManager.sendMessage(traders[0].getId(), traders[1].getId(), "Can I buy your Ryerson hat for my pokemon cards");
+            messageManager.sendMessage(traders[5], traders[7], "Dallas is pretty far can you come to New York instead");
+            messageManager.sendMessage(traders[5], traders[7], "Ik its a lot to ask but like yeehaw");
+            messageManager.sendMessage(traders[5], traders[7], "Dplease i got covid19 come to new yorkkk");
+            messageManager.sendMessage(traders[5], traders[7], "uk what fine, i never liked you anyway");
+            messageManager.sendMessage(traders[0], traders[1], "Can I buy your Ryerson hat for my pokemon cards");
             // List of admins
             for (int i = 0; i < admins.length; i++) {
-                admins[i] = (Admin) loginManager.registerUser("admin" + i, "userPassword1", UserTypes.ADMIN);
+                admins[i] = loginManager.registerUser("admin" + i, "userPassword1", UserTypes.ADMIN);
             }
         } catch (IOException | UserAlreadyExistsException | BadPasswordException | UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
             System.out.println("Temporary set up failed");
