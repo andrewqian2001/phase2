@@ -35,6 +35,9 @@ import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.managers.*;
 import backend.tradesystem.TradeBuilder;
+import backend.tradesystem.queries.ItemQuery;
+import backend.tradesystem.queries.TradeQuery;
+import backend.tradesystem.queries.UserQuery;
 
 public class TradePanel extends JPanel implements ActionListener {
 

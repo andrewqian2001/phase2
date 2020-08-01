@@ -3,14 +3,10 @@ package frontend.panels.admin_subpanels;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.TradableItem;
-import backend.models.users.Admin;
-import backend.models.users.Trader;
-import backend.models.users.User;
 import backend.tradesystem.managers.HandleFrozenManager;
 import backend.tradesystem.managers.HandleItemRequestsManager;
-import backend.tradesystem.managers.ItemQuery;
-import backend.tradesystem.managers.UserQuery;
+import backend.tradesystem.queries.ItemQuery;
+import backend.tradesystem.queries.UserQuery;
 
 import javax.swing.*;
 import java.awt.*;

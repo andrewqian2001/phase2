@@ -1,4 +1,4 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.queries;
 
 import backend.DatabaseFilePaths;
 import backend.exceptions.AuthorizationException;
@@ -8,6 +8,7 @@ import backend.models.Review;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
+import backend.tradesystem.managers.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -275,25 +276,6 @@ public class UserQuery extends Manager {
      */
     public int getTotalItemsLent(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getTotalItemsLent();
-    }
-
-    /**
-     * Getting the reports sent to an admin
-     * @param adminId The id of the admin
-     * @return the reports sent to this admin
-     * @throws UserNotFoundException if the admin does not exist
-     * @throws AuthorizationException if the user isn't an admin
-     */
-    public ArrayList<Report> getReports(String adminId) throws UserNotFoundException, AuthorizationException {
-        return getAdmin(adminId).getReports();
-    }
-
-    private Admin getAdmin(String adminId) throws UserNotFoundException, AuthorizationException {
-        User user = getUser(adminId);
-        if (!(user instanceof Admin)){
-            throw new AuthorizationException("This user is not an admin");
-        }
-        return (Admin) getUser(adminId);
     }
 
 

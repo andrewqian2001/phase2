@@ -1,6 +1,7 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.queries;
 
 import backend.exceptions.TradeNotFoundException;
+import backend.tradesystem.managers.Manager;
 
 import java.io.IOException;
 import java.util.Date;
@@ -8,7 +9,7 @@ import java.util.Date;
 /**
  *  For getting info about a specific trade
  */
-public class TradeQuery extends Manager{
+public class TradeQuery extends Manager {
 
     /**
      * Create an instance of TradeQuery with preset file paths from Databse enum

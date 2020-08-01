@@ -9,10 +9,9 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.users.Trader;
 import backend.tradesystem.managers.LoginManager;
 import backend.tradesystem.managers.TraderManager;
-import backend.tradesystem.managers.UserQuery;
+import backend.tradesystem.queries.UserQuery;
 
 public class SettingsPanel extends JPanel {
     private Font regular, bold, italic, boldItalic;

@@ -8,10 +8,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.managers.UserQuery;
+import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
 
-import backend.models.users.Admin;
 import frontend.panels.admin_subpanels.ControlPanel;
 import frontend.panels.admin_subpanels.OverviewPanel;
 
