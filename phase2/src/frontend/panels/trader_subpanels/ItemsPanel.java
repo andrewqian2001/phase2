@@ -5,14 +5,13 @@ import javax.swing.*;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.TradableItem;
-import backend.models.users.Trader;
 import backend.tradesystem.managers.*;
+import backend.tradesystem.queries.ItemQuery;
+import backend.tradesystem.queries.UserQuery;
 
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class ItemsPanel extends JPanel {
 

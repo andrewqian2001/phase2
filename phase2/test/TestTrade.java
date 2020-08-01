@@ -9,9 +9,12 @@ import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.*;
 import backend.Database;
 import java.util.Date;
+
+import backend.tradesystem.queries.ItemQuery;
+import backend.tradesystem.queries.TradeQuery;
+import backend.tradesystem.queries.UserQuery;
 import org.junit.*;
 
-import javax.jws.soap.SOAPBinding;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Properties;

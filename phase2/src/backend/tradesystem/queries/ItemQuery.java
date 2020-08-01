@@ -1,13 +1,14 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.queries;
 
 import backend.exceptions.TradableItemNotFoundException;
+import backend.tradesystem.managers.Manager;
 
 import java.io.IOException;
 
 /**
  *  For getting info about a specific item
  */
-public class ItemQuery extends Manager{
+public class ItemQuery extends Manager {
 
     /**
      * Create an instance of ItemQuery with preset file paths from Databse enum
