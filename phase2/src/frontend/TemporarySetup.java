@@ -10,6 +10,9 @@ import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.general_managers.MessageManager;
 import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.queries.UserQuery;
+import backend.tradesystem.trader_managers.TraderManager;
+import backend.tradesystem.trader_managers.TradingManager;
+
 
 import java.io.*;
 import java.util.ArrayList;
