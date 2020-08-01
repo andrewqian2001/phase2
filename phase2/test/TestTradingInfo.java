@@ -23,7 +23,7 @@ import java.util.Properties;
 
 import static org.junit.Assert.*;
 
-public class TestTradingInfo extends TestManager{
+public class TestTradingInfo extends TestManager {
     private TraderManager traderManager;
     private LoginManager loginManager;
     private HandleItemRequestsManager handleRequestsManager;
@@ -71,106 +71,108 @@ public class TestTradingInfo extends TestManager{
                 traderManager.addRequestItem(traders[i].getId(), "apple" + i, "desc" + i);
                 traderManager.addRequestItem(traders[i].getId(), "fruit" + i, "desc second" + i);
                 traderManager.addRequestItem(traders[i].getId(), "another" + i, "desc third" + i);
+                traders[i] = getTrader(traders[i].getId());
                 handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
-                handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
-                handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(0), true);
+                handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(1), true);
+                handleRequestsManager.processItemRequest(traders[i].getId(), traders[i].getRequestedItems().get(2), true);
+                traders[i] = getTrader(traders[i].getId());
             }
             for (int i = 0; i < traders.length; i++) {
                 traderManager.addToWishList(traders[i].getId(), traders[i + 1 == traders.length ? 0 : i + 1].getAvailableItems().get(0));
                 traderManager.addToWishList(traders[i].getId(), traders[i - 1 == -1 ? traders.length - 1 : i - 1].getAvailableItems().get(0));
+                traders[i] = getTrader(traders[i].getId());
             }
             admin = (Admin) getUser(loginManager.registerUser("admin", "PASDASDFDSAFpadsf1", UserTypes.ADMIN));
 
             //Testing for automatedTradeSuggestion below
 
-            tHasWishlist = getTrader(loginManager.registerUser("tHasWishlist", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
-            userDatabase.update(tHasWishlist);
-            TradableItem crack = new TradableItem("crack", "crack");
-            tradableItemDatabase.update(crack);
-            traderManager.addRequestItem(tHasWishlist.getId(), crack.getName(), "desc");
-            handleRequestsManager.processItemRequest(tHasWishlist.getId(), tHasWishlist.getRequestedItems().get(0), true);
-
-
-            tHasInventory1 = getTrader(loginManager.registerUser("tHasInventory1", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
-            traderManager.addRequestItem(tHasInventory1.getId(), "apple watch", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory1.getId(), "wack phonw", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-           traderManager.addRequestItem(tHasInventory1.getId(), "wack waptop", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory1.getId(), "wack warbell", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory1.getId(), "wack ballet", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
-            traderManager.addToWishList(tHasInventory1.getId(), crack.getId());
-
-            userDatabase.update(tHasInventory1);
-
-            tHasInventory2 = getTrader(loginManager.registerUser("tHasInventory2", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
-            traderManager.addRequestItem(tHasInventory2.getId(), "wack watct", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory2.getId(), "samsung phone", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory2.getId(), "wack haptop", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory2.getId(), "wack harhell", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory2.getId(), "wack callet", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
-            traderManager.addToWishList(tHasInventory2.getId(), crack.getId());
-            userDatabase.update(tHasInventory2);
-            /*
-            ????????????????????????????????????????????
-            Why is the wishlist empty when i added crack to the wishlist
-             */
-            for(String ids: tHasInventory2.getWishlist()){
-                //System.out.println("?????????????????????????????????????????????");
-                //System.out.println("wishlist item : " + tradingInfoManager.getTradableItem(ids).getName());
-            }
-
-
-
-            tHasInventory3 = getTrader(loginManager.registerUser("tHasInventory3", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
-            traderManager.addRequestItem(tHasInventory3.getId(), "wack watcr", "desc");
-             handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory3.getId(), "wack pwone", "desc");
-           handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory3.getId(), "acer LAPTOP", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory3.getId(), "wack hashell", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory3.getId(), "wack calret", "desc");
-             handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
-            traderManager.addToWishList(tHasInventory3.getId(), crack.getId());
-            userDatabase.update(tHasInventory3);
-
-            tHasInventory4 = getTrader(loginManager.registerUser("tHasInventory4", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
-            traderManager.addRequestItem(tHasInventory4.getId(), "wack watct", "desc");
-     handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-          traderManager.addRequestItem(tHasInventory4.getId(), "wack thone", "desc");
-          handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-         traderManager.addRequestItem(tHasInventory4.getId(), "wack haptop", "desc");
-    handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-       traderManager.addRequestItem(tHasInventory4.getId(), "45kg barbell", "desc");
-     handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-     traderManager.addRequestItem(tHasInventory4.getId(), "wack callet", "desc");
-        handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
-            traderManager.addToWishList(tHasInventory4.getId(), crack.getId());
-            userDatabase.update(tHasInventory4);
-
-            tHasInventory5 = getTrader(loginManager.registerUser("tHasInventory5", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
-            traderManager.addRequestItem(tHasInventory5.getId(), "wack watct", "desc");
-            handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory5.getId(), "wack thone", "desc");
-           handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-        traderManager.addRequestItem(tHasInventory5.getId(), "wack haptop", "desc");
-             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory5.getId(), "wack garbell", "desc");
-             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-            traderManager.addRequestItem(tHasInventory5.getId(), "leather wallet", "desc");
-             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
-            traderManager.addToWishList(tHasInventory5.getId(), crack.getId());
-            userDatabase.update(tHasInventory5);
+//            tHasWishlist = getTrader(loginManager.registerUser("tHasWishlist", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+//            userDatabase.update(tHasWishlist);
+//            TradableItem crack = new TradableItem("crack", "crack");
+//            tradableItemDatabase.update(crack);
+//            traderManager.addRequestItem(tHasWishlist.getId(), crack.getName(), "desc");
+//            handleRequestsManager.processItemRequest(tHasWishlist.getId(), tHasWishlist.getRequestedItems().get(0), true);
+//
+//
+//            tHasInventory1 = getTrader(loginManager.registerUser("tHasInventory1", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+//            traderManager.addRequestItem(tHasInventory1.getId(), "apple watch", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory1.getId(), "wack phonw", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+//           traderManager.addRequestItem(tHasInventory1.getId(), "wack waptop", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory1.getId(), "wack warbell", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory1.getId(), "wack ballet", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory1.getId(), tHasInventory1.getRequestedItems().get(0), true);
+//            traderManager.addToWishList(tHasInventory1.getId(), crack.getId());
+//
+//            userDatabase.update(tHasInventory1);
+//
+//            tHasInventory2 = getTrader(loginManager.registerUser("tHasInventory2", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+//            traderManager.addRequestItem(tHasInventory2.getId(), "wack watct", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory2.getId(), "samsung phone", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory2.getId(), "wack haptop", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory2.getId(), "wack harhell", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory2.getId(), "wack callet", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory2.getId(), tHasInventory2.getRequestedItems().get(0), true);
+//            traderManager.addToWishList(tHasInventory2.getId(), crack.getId());
+//            userDatabase.update(tHasInventory2);
+//            /*
+//            ????????????????????????????????????????????
+//            Why is the wishlist empty when i added crack to the wishlist
+//             */
+////            for(String ids: tHasInventory2.getWishlist()){
+////                //System.out.println("?????????????????????????????????????????????");
+////                //System.out.println("wishlist item : " + tradingInfoManager.getTradableItem(ids).getName());
+////            }
+//
+//
+//            tHasInventory3 = getTrader(loginManager.registerUser("tHasInventory3", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+//            traderManager.addRequestItem(tHasInventory3.getId(), "wack watcr", "desc");
+//             handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory3.getId(), "wack pwone", "desc");
+//           handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory3.getId(), "acer LAPTOP", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory3.getId(), "wack hashell", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory3.getId(), "wack calret", "desc");
+//             handleRequestsManager.processItemRequest(tHasInventory3.getId(), tHasInventory3.getRequestedItems().get(0), true);
+//            traderManager.addToWishList(tHasInventory3.getId(), crack.getId());
+//            userDatabase.update(tHasInventory3);
+//
+//            tHasInventory4 = getTrader(loginManager.registerUser("tHasInventory4", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+//            traderManager.addRequestItem(tHasInventory4.getId(), "wack watct", "desc");
+//     handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+//          traderManager.addRequestItem(tHasInventory4.getId(), "wack thone", "desc");
+//          handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+//         traderManager.addRequestItem(tHasInventory4.getId(), "wack haptop", "desc");
+//    handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+//       traderManager.addRequestItem(tHasInventory4.getId(), "45kg barbell", "desc");
+//     handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+//     traderManager.addRequestItem(tHasInventory4.getId(), "wack callet", "desc");
+//        handleRequestsManager.processItemRequest(tHasInventory4.getId(), tHasInventory4.getRequestedItems().get(0), true);
+//            traderManager.addToWishList(tHasInventory4.getId(), crack.getId());
+//            userDatabase.update(tHasInventory4);
+//
+//            tHasInventory5 = getTrader(loginManager.registerUser("tHasInventory5", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
+//            traderManager.addRequestItem(tHasInventory5.getId(), "wack watct", "desc");
+//            handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory5.getId(), "wack thone", "desc");
+//           handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+//        traderManager.addRequestItem(tHasInventory5.getId(), "wack haptop", "desc");
+//             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory5.getId(), "wack garbell", "desc");
+//             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+//            traderManager.addRequestItem(tHasInventory5.getId(), "leather wallet", "desc");
+//             handleRequestsManager.processItemRequest(tHasInventory5.getId(), tHasInventory5.getRequestedItems().get(0), true);
+//            traderManager.addToWishList(tHasInventory5.getId(), crack.getId());
+//            userDatabase.update(tHasInventory5);
 
 
         } catch (IOException ignored) {
@@ -282,24 +284,18 @@ public class TestTradingInfo extends TestManager{
     }
 
 
-
-/*
-
     @Test
     public void testSuggestLend() {
         try {
             for (int i = 1; i < traders.length - 1; i++) {
-                ArrayList<Trade> suggested = tradingInfoManager.suggestLend(traders[i].getId());
+                ArrayList<String[]> suggested = tradingInfoManager.suggestLend(traders[i].getId());
                 assertEquals(suggested.size(), 2);
-                assertEquals(suggested.get(0).getFirstUserId(), traders[i].getId());
-                assertEquals(suggested.get(1).getFirstUserId(), traders[i].getId());
-                assertEquals(suggested.get(0).getSecondUserId(), traders[i - 1].getId());
-                assertEquals(suggested.get(1).getSecondUserId(), traders[i + 1].getId());
-
-                assertEquals(suggested.get(0).getFirstUserOffer(), traders[i - 1].getWishlist().get(0));
-                assertEquals(suggested.get(0).getSecondUserOffer(), "");
-                assertEquals(suggested.get(1).getFirstUserOffer(), traders[i + 1].getWishlist().get(1));
-                assertEquals(suggested.get(1).getSecondUserOffer(), "");
+                assertEquals(suggested.get(0)[0], traders[i].getId());
+                assertEquals(suggested.get(1)[0], traders[i].getId());
+                assertEquals(suggested.get(0)[1], traders[i - 1].getId());
+                assertEquals(suggested.get(1)[1], traders[i + 1].getId());
+                assertEquals(suggested.get(0)[2], traders[i - 1].getWishlist().get(0));
+                assertEquals(suggested.get(1)[2], traders[i + 1].getWishlist().get(1));
 
             }
         } catch (Exception e) {
@@ -331,135 +327,135 @@ public class TestTradingInfo extends TestManager{
             e.printStackTrace();
         }
     }
-*/
-    @Test
-    public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
-        Date date = new Date();
-        String location = "Toronto";
-        String message = "This is a trade";
-        int allowedEdits = 3;
-        Trade t1 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"watch" ,"crack", date, date, location,allowedEdits, message);
-        Trade t2 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"phone" ,"crack", date, date, location,allowedEdits, message);
-        Trade t3 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"laptop" ,"crack", date, date, location,allowedEdits, message);
-        Trade t4 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"barbell" ,"crack", date, date, location,allowedEdits, message);
-        Trade t5 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"wallet" ,"crack", date, date, location,allowedEdits, message);
 
-        assertEquals("crack", t1.getFirstUserOffer());
-        assertEquals("apple watch", t1.getSecondUserOffer());
-        assertEquals("tHasWishlist", getTrader(t1.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory1", getTrader(t1.getSecondUserId()).getUsername());
+//    @Test
+//    public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+//        Date date = new Date();
+//        String location = "Toronto";
+//        String message = "This is a trade";
+//        int allowedEdits = 3;
+//        Trade t1 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"watch" ,"crack", date, date, location,allowedEdits, message);
+//        Trade t2 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"phone" ,"crack", date, date, location,allowedEdits, message);
+//        Trade t3 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"laptop" ,"crack", date, date, location,allowedEdits, message);
+//        Trade t4 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"barbell" ,"crack", date, date, location,allowedEdits, message);
+//        Trade t5 = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"wallet" ,"crack", date, date, location,allowedEdits, message);
+//
+//        assertEquals("crack", t1.getFirstUserOffer());
+//        assertEquals("apple watch", t1.getSecondUserOffer());
+//        assertEquals("tHasWishlist", getTrader(t1.getFirstUserId()).getUsername());
+//        assertEquals("tHasInventory1", getTrader(t1.getSecondUserId()).getUsername());
+//
+//        assertEquals("crack", t2.getFirstUserOffer());
+//        assertEquals("samsung phone", t2.getSecondUserOffer());
+//        assertEquals("tHasWishlist", getTrader(t2.getFirstUserId()).getUsername());
+//        assertEquals("tHasInventory2", getTrader(t2.getSecondUserId()).getUsername());
+//
+//        assertEquals("crack", t3.getFirstUserOffer());
+//        assertEquals("acer LAPTOP", t3.getSecondUserOffer());
+//        assertEquals("tHasWishlist", getTrader(t3.getFirstUserId()).getUsername());
+//        assertEquals("tHasInventory3", getTrader(t3.getSecondUserId()).getUsername());
+//
+//        assertEquals("crack", t4.getFirstUserOffer());
+//        assertEquals("45kg barbell", t4.getSecondUserOffer());
+//        assertEquals("tHasWishlist", getTrader(t4.getFirstUserId()).getUsername());
+//        assertEquals("tHasInventory4", getTrader(t4.getSecondUserId()).getUsername());
+//
+//        assertEquals("crack", t5.getFirstUserOffer());
+//        assertEquals("leather wallet", t5.getSecondUserOffer());
+//        assertEquals("tHasWishlist", getTrader(t5.getFirstUserId()).getUsername());
+//        assertEquals("tHasInventory5", getTrader(t5.getSecondUserId()).getUsername());
+//
+//
+//    }
+//
+//    @Test
+//    public void testSimilarSearch() throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
+//        //need to change similarSearch to private after finished testing
+//
+//        ArrayList<String> listNames = new ArrayList<>();
+//
+//        //similar search rn still needs a way to deal with strings with missing chars
+//
+//        TradableItem i1 = new TradableItem("andrer", "test");
+//        TradableItem i2 = new TradableItem("ANDREW", "test");
+//        tradableItemDatabase.update(i1);
+//        tradableItemDatabase.update(i2);
+//        listNames.add(i1.getId());
+//        listNames.add(i2.getId());
+//        Object[] name = tradingInfoManager.similarSearch("andrew", listNames); //tests for ignoring capital case
+//        assertEquals("ANDREW", name[0]);
+//        assertEquals(6, name[1]);
+//
+//        TradableItem i3 = new TradableItem("plastic water bottle", "test");
+//        TradableItem i4 = new TradableItem("bowtle", "test");
+//        tradableItemDatabase.update(i3);
+//        tradableItemDatabase.update(i4);
+//        listNames.add(i3.getId());
+//        listNames.add(i4.getId());
+//        Object[] name2 = tradingInfoManager.similarSearch("bottle", listNames); //tests for multiple words case
+//        assertEquals("plastic water bottle", name2[0]);
+//        assertEquals(6, name2[1]);
+//
+//        TradableItem i5 = new TradableItem("123456", "test");
+//        TradableItem i6 = new TradableItem("1234567", "test");
+//        tradableItemDatabase.update(i5);
+//        tradableItemDatabase.update(i6);
+//        listNames.add(i5.getId());
+//        listNames.add(i6.getId());
+//        Object[] name3 = tradingInfoManager.similarSearch("1234567", listNames); //tests for most accurate word with words with diff length
+//        assertEquals("1234567", name3[0]);
+//        assertEquals(7,name3[1]);
+//
+//        TradableItem i7 = new TradableItem("55554", "test");
+//        TradableItem i8 = new TradableItem("55544", "test");
+//        tradableItemDatabase.update(i7);
+//        tradableItemDatabase.update(i8);
+//        listNames.add(i7.getId());
+//        listNames.add(i8.getId());
+//        Object[] name4 = tradingInfoManager.similarSearch(("55555"), listNames); //tests for replaced char strings (not the same as strings missing chars which is a problem rn)
+//        assertEquals("55554", name4[0]);
+//        assertEquals(4, name4[1]);
+//
+//        TradableItem i9 = new TradableItem("Jan", "test");
+//        TradableItem i10 = new TradableItem("January", "test");
+//        tradableItemDatabase.update(i9);
+//        tradableItemDatabase.update(i10);
+//        listNames.add(i9.getId());
+//        listNames.add(i10.getId());
+//        Object[] name5 =  tradingInfoManager.similarSearch(("j"), listNames);//tests for most similar length if similarity score is the same
+//        // (ie if we search for a, with a list of andrew, an, it should return an)
+//        assertEquals("Jan", name5[0]);
+//        assertEquals(1, name5[1]);
+//
+//        TradableItem i11 = new TradableItem("comuter", "test");
+//        TradableItem i12 = new TradableItem("computww", "test");
+//        tradableItemDatabase.update(i11);
+//        tradableItemDatabase.update(i12);
+//        listNames.add(i11.getId());
+//        listNames.add(i12.getId());
+//        Object[] name6 =  tradingInfoManager.similarSearch(("computer"), listNames);//tests for missing char or extra chars
+//        //assertEquals( "comuter",name6[0]);
+//        //assertEquals(7, name6[1]);
+//        //k so not sure how this is supposed to be done
+//
+//        TradableItem i13 = new TradableItem("hat", "test");
+//        TradableItem i14 = new TradableItem("hwat", "test");
+//        tradableItemDatabase.update(i13);
+//        tradableItemDatabase.update(i14);
+//        listNames.add(i13.getId());
+//        listNames.add(i14.getId());
+//        Object[] name7 =  tradingInfoManager.similarSearch(("red hat"), listNames);//tests for when the string we are searching for, is bigger then the name of the item
+//        assertEquals( "hat",name7[0]);
+//        assertEquals(3, name7[1]);
+//
+//
+//
+//
+//
+//
+//    }
 
-        assertEquals("crack", t2.getFirstUserOffer());
-        assertEquals("samsung phone", t2.getSecondUserOffer());
-        assertEquals("tHasWishlist", getTrader(t2.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory2", getTrader(t2.getSecondUserId()).getUsername());
-
-        assertEquals("crack", t3.getFirstUserOffer());
-        assertEquals("acer LAPTOP", t3.getSecondUserOffer());
-        assertEquals("tHasWishlist", getTrader(t3.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory3", getTrader(t3.getSecondUserId()).getUsername());
-
-        assertEquals("crack", t4.getFirstUserOffer());
-        assertEquals("45kg barbell", t4.getSecondUserOffer());
-        assertEquals("tHasWishlist", getTrader(t4.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory4", getTrader(t4.getSecondUserId()).getUsername());
-
-        assertEquals("crack", t5.getFirstUserOffer());
-        assertEquals("leather wallet", t5.getSecondUserOffer());
-        assertEquals("tHasWishlist", getTrader(t5.getFirstUserId()).getUsername());
-        assertEquals("tHasInventory5", getTrader(t5.getSecondUserId()).getUsername());
-
-
-    }
-
-    @Test
-    public void testSimilarSearch() throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
-        //need to change similarSearch to private after finished testing
-
-        ArrayList<String> listNames = new ArrayList<>();
-
-        //similar search rn still needs a way to deal with strings with missing chars
-
-        TradableItem i1 = new TradableItem("andrer", "test");
-        TradableItem i2 = new TradableItem("ANDREW", "test");
-        tradableItemDatabase.update(i1);
-        tradableItemDatabase.update(i2);
-        listNames.add(i1.getId());
-        listNames.add(i2.getId());
-        Object[] name = tradingInfoManager.similarSearch("andrew", listNames); //tests for ignoring capital case
-        assertEquals("ANDREW", name[0]);
-        assertEquals(6, name[1]);
-
-        TradableItem i3 = new TradableItem("plastic water bottle", "test");
-        TradableItem i4 = new TradableItem("bowtle", "test");
-        tradableItemDatabase.update(i3);
-        tradableItemDatabase.update(i4);
-        listNames.add(i3.getId());
-        listNames.add(i4.getId());
-        Object[] name2 = tradingInfoManager.similarSearch("bottle", listNames); //tests for multiple words case
-        assertEquals("plastic water bottle", name2[0]);
-        assertEquals(6, name2[1]);
-
-        TradableItem i5 = new TradableItem("123456", "test");
-        TradableItem i6 = new TradableItem("1234567", "test");
-        tradableItemDatabase.update(i5);
-        tradableItemDatabase.update(i6);
-        listNames.add(i5.getId());
-        listNames.add(i6.getId());
-        Object[] name3 = tradingInfoManager.similarSearch("1234567", listNames); //tests for most accurate word with words with diff length
-        assertEquals("1234567", name3[0]);
-        assertEquals(7,name3[1]);
-
-        TradableItem i7 = new TradableItem("55554", "test");
-        TradableItem i8 = new TradableItem("55544", "test");
-        tradableItemDatabase.update(i7);
-        tradableItemDatabase.update(i8);
-        listNames.add(i7.getId());
-        listNames.add(i8.getId());
-        Object[] name4 = tradingInfoManager.similarSearch(("55555"), listNames); //tests for replaced char strings (not the same as strings missing chars which is a problem rn)
-        assertEquals("55554", name4[0]);
-        assertEquals(4, name4[1]);
-
-        TradableItem i9 = new TradableItem("Jan", "test");
-        TradableItem i10 = new TradableItem("January", "test");
-        tradableItemDatabase.update(i9);
-        tradableItemDatabase.update(i10);
-        listNames.add(i9.getId());
-        listNames.add(i10.getId());
-        Object[] name5 =  tradingInfoManager.similarSearch(("j"), listNames);//tests for most similar length if similarity score is the same
-        // (ie if we search for a, with a list of andrew, an, it should return an)
-        assertEquals("Jan", name5[0]);
-        assertEquals(1, name5[1]);
-
-        TradableItem i11 = new TradableItem("comuter", "test");
-        TradableItem i12 = new TradableItem("computww", "test");
-        tradableItemDatabase.update(i11);
-        tradableItemDatabase.update(i12);
-        listNames.add(i11.getId());
-        listNames.add(i12.getId());
-        Object[] name6 =  tradingInfoManager.similarSearch(("computer"), listNames);//tests for missing char or extra chars
-        //assertEquals( "comuter",name6[0]);
-        //assertEquals(7, name6[1]);
-        //k so not sure how this is supposed to be done
-
-        TradableItem i13 = new TradableItem("hat", "test");
-        TradableItem i14 = new TradableItem("hwat", "test");
-        tradableItemDatabase.update(i13);
-        tradableItemDatabase.update(i14);
-        listNames.add(i13.getId());
-        listNames.add(i14.getId());
-        Object[] name7 =  tradingInfoManager.similarSearch(("red hat"), listNames);//tests for when the string we are searching for, is bigger then the name of the item
-        assertEquals( "hat",name7[0]);
-        assertEquals(3, name7[1]);
-
-
-
-
-
-
-    }
-
-        private void update() {
+    private void update() {
         try {
             for (int i = 0; i < traders.length; i++) {
                 traders[i] = getTrader(traders[i].getId());
