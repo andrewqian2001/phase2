@@ -13,24 +13,39 @@ import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.trader_managers.TraderManager;
 import backend.tradesystem.queries.UserQuery;
 
+/**
+ * Represents the panel where the user can adjust the settings
+ */
 public class SettingsPanel extends JPanel {
-    private Font regular, bold, italic, boldItalic;
-    private String userId;
+    private final Font regular, bold, italic, boldItalic;
+    private final String userId;
 
-    private JLabel settingsTitleLabel;
-    private JPanel changePasswordPanel, changeCityPanel, changeUsernamePanel, goIdlePanel;
 
-    private TraderManager traderManager;
-    private LoginManager loginManager;
+    private final TraderManager traderManager = new TraderManager();
+    ;
+    private final LoginManager loginManager = new LoginManager();
+    ;
     private final UserQuery userQuery = new UserQuery();
 
-    private Color bg = new Color(51, 51, 51);
-    private Color gray = new Color(196, 196, 196);
-    private Color gray2 = new Color(142, 142, 142);
-    private Color green = new Color(27, 158, 36);
-    private Color red = new Color(219, 58, 52);
+    private final Color bg = new Color(51, 51, 51);
+    private final Color gray = new Color(196, 196, 196);
+    private final Color gray2 = new Color(142, 142, 142);
+    private final Color green = new Color(27, 158, 36);
+    private final Color red = new Color(219, 58, 52);
 
-    public SettingsPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    /**
+     * Makes a settings panel
+     *
+     * @param userId     the user id
+     * @param regular    regular font
+     * @param bold       bold font
+     * @param italic     italics font
+     * @param boldItalic bold italics font
+     * @throws IOException issues with getting database files
+     * @throws UserNotFoundException user id is bad
+     * @throws AuthorizationException user isn't a trader
+     */
+    public SettingsPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
 
         this.setBackground(bg);
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
@@ -41,29 +56,23 @@ public class SettingsPanel extends JPanel {
         this.italic = italic;
         this.boldItalic = boldItalic;
 
-        traderManager = new TraderManager();
-        loginManager = new LoginManager();
 
-        settingsTitleLabel = new JLabel("Account Settings");
+        JLabel settingsTitleLabel = new JLabel("Account Settings");
         settingsTitleLabel.setFont(regular.deriveFont(35f));
         settingsTitleLabel.setPreferredSize(new Dimension(1200, 75));
         settingsTitleLabel.setForeground(Color.WHITE);
         settingsTitleLabel.setOpaque(false);
 
-        try {
-            changeUsernamePanel = getChangeUsernamePanel();
-            changePasswordPanel = getChangePasswordPanel();
-            changeCityPanel = getChangeCityPanel();
-            goIdlePanel = getGoIdlePanel();
+        JPanel changeUsernamePanel = getChangeUsernamePanel();
+        JPanel changePasswordPanel = getChangePasswordPanel();
+        JPanel changeCityPanel = getChangeCityPanel();
+        JPanel goIdlePanel = getGoIdlePanel();
 
-            this.add(settingsTitleLabel);
-            this.add(changeUsernamePanel);
-            this.add(changePasswordPanel);
-            this.add(changeCityPanel);
-            this.add(goIdlePanel);
-        } catch (UserNotFoundException | AuthorizationException e) {
-            e.printStackTrace();
-        }
+        this.add(settingsTitleLabel);
+        this.add(changeUsernamePanel);
+        this.add(changePasswordPanel);
+        this.add(changeCityPanel);
+        this.add(goIdlePanel);
     }
 
     private JPanel getChangeUsernamePanel() throws UserNotFoundException {
@@ -228,7 +237,8 @@ public class SettingsPanel extends JPanel {
             } catch (UserNotFoundException | AuthorizationException e1) {
                 errMsg.setFont(boldItalic.deriveFont(20f));
                 errMsg.setText(e1.getMessage());
-            };
+            }
+            ;
         });
 
         idlePanel.add(idleLabel);

@@ -70,6 +70,8 @@ public class TradePanel extends JPanel implements ActionListener {
      * @param italic     the italics font
      * @param boldItalic the bold italics font
      * @throws IOException issues with getting database files
+     * @throws UserNotFoundException trader is is bad
+     * @throws AuthorizationException user id isn't a trader
      */
     public TradePanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
         this.trader = trader;
