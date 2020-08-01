@@ -5,7 +5,7 @@ import backend.exceptions.*;
 import backend.models.Trade;
 import backend.models.users.Trader;
 import backend.tradesystem.TradeBuilder;
-import backend.tradesystem.general_managers.Manager;
+import backend.tradesystem.Manager;
 
 import java.io.IOException;
 import java.util.*;

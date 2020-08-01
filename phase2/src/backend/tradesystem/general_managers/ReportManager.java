@@ -4,7 +4,7 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.Report;
 import backend.models.users.Admin;
-import backend.models.users.User;
+import backend.tradesystem.Manager;
 
 import java.io.*;
 import java.util.ArrayList;

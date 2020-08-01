@@ -7,7 +7,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.Review;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
-import backend.tradesystem.general_managers.Manager;
+import backend.tradesystem.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
