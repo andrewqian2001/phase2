@@ -323,7 +323,7 @@ public class TradingManager extends Manager {
      * @throws UserNotFoundException user wasn't found
      */
     public String counterTradeOffer(String traderId, String tradeId, Date meetingTime, Date secondMeetingTime, String
-            meetingLocation, String thisTraderOffer, String thatTraderOffer) throws
+            meetingLocation, String thisTraderOffer, String thatTraderOffer, String message) throws
             CannotTradeException, TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
         Trader trader1 = getTrader(trade.getFirstUserId());
@@ -359,7 +359,7 @@ public class TradingManager extends Manager {
         trade.setMeetingTime(meetingTime);
         trade.setSecondMeetingTime(secondMeetingTime);
         trade.setMeetingLocation(meetingLocation);
-
+        trade.setMessage(message);
         if (trade.getFirstUserId().equals(traderId)) {
             trade.setFirstUserOffer(thisTraderOffer);
             trade.setSecondUserOffer(thatTraderOffer);
