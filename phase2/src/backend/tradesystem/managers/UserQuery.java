@@ -6,6 +6,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.Report;
 import backend.models.Review;
 import backend.models.users.Admin;
+import backend.models.users.Trader;
 import backend.models.users.User;
 
 import java.io.IOException;
@@ -287,6 +288,17 @@ public class UserQuery extends Manager {
         return getAdmin(adminId).getReports();
     }
 
+    /**
+     * Return whether the user is a trader
+     *
+     * @param userId The id of the user being checked
+     * @return true if the user is a trader
+     * @throws UserNotFoundException if the user does not exist
+     */
+    public boolean isTrader(String userId) throws UserNotFoundException {
+        return getUser(userId) instanceof Trader;
+    }
+
     private Admin getAdmin(String adminId) throws UserNotFoundException, AuthorizationException {
         User user = getUser(adminId);
         if (!(user instanceof Admin)){
@@ -294,6 +306,8 @@ public class UserQuery extends Manager {
         }
         return (Admin) getUser(adminId);
     }
+
+
 
 
 }
