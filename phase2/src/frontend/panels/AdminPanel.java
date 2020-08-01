@@ -13,84 +13,104 @@ import frontend.WindowManager;
 
 import frontend.panels.admin_subpanels.ControlPanel;
 import frontend.panels.admin_subpanels.OverviewPanel;
+import frontend.panels.search_panels.SearchPanel;
 
+/**
+ * This is used to represent what an admin account sees
+ */
 public class AdminPanel extends JPanel implements ActionListener {
 
-    private JLabel iconText, usernameTitle, userIdTitle;
-    private JPanel overviewPanel, searchPanel, controlPanel, menuContainer,
-            menuPanelContainer;
-    private JButton overviewPanelButton, searchPanelButton, controlPanelButton, logoutButton;
-    private CardLayout cardLayout;
-    private GridBagConstraints gbc;
+    private final JPanel menuContainer = new JPanel(new GridBagLayout()), menuPanelContainer = new JPanel();
+    private final JButton logoutButton = new JButton("Logout");
+    private final CardLayout cardLayout = new CardLayout();
 
-    private Color bg = new Color(51, 51, 51);
-    private Color current = new Color(32, 32, 32);
-    private Color gray = new Color(184, 184, 184);
-    private Color red = new Color(219, 58, 52);
-
-    private UserQuery userQuery = new UserQuery();
-
-    public AdminPanel(String admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    /**
+     * For making a new admin panel
+     *
+     * @param admin      the admin user id
+     * @param regular    regular font
+     * @param bold       bold font
+     * @param italic     italicized font
+     * @param boldItalic bold italics font
+     * @throws IOException           if access to database has issues
+     * @throws UserNotFoundException if the admin id is bad
+     */
+    public AdminPanel(String admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException {
         this.setSize(1600, 900);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
-
-        overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
-        searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
-        controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
+        Color bg = new Color(51, 51, 51);
+        Color current = new Color(32, 32, 32);
+        Color gray = new Color(184, 184, 184);
+        Color red = new Color(219, 58, 52);
+        UserQuery userQuery = new UserQuery();
+        JPanel overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
+        JPanel searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
+        JPanel controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
 
         searchPanel.setBackground(Color.BLACK);
-
-        menuContainer = new JPanel(new GridBagLayout());
         menuContainer.setPreferredSize(new Dimension(250, this.getHeight()));
-        gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.BOTH;
-        gbc.gridx = 0;
-        gbc.weightx = 1.0;
         menuContainer.setOpaque(false);
+        GridBagConstraints gbc = setupGbc();
+        setupIconText(admin, boldItalic, userQuery, gbc);
+        setupUsernameTitle(admin, regular, userQuery, gbc);
+        setupUserIdTitle(admin, regular, gray, gbc);
+        setupOverviewPanelButton(regular, current, gbc);
+        setupPanelButton(regular, current, gbc, "Control Panel", 4);
+        setupPanelButton(regular, current, gbc, "Search", 5);
+        setupEmptyPanel(gbc);
+        setupLogoutButton(boldItalic, red, gbc);
+        setupMenuPanelContainer(bg, overviewPanel, searchPanel, controlPanel);
+        this.add(menuContainer, BorderLayout.WEST);
+        this.add(menuPanelContainer, BorderLayout.CENTER);
 
-        menuPanelContainer = new JPanel();
-        cardLayout = new CardLayout();
+    }
+
+    private void setupMenuPanelContainer(Color bg, JPanel overviewPanel, JPanel searchPanel, JPanel controlPanel) {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
+        menuPanelContainer.add(overviewPanel, "Overview");
+        menuPanelContainer.add(searchPanel, "Search");
+        menuPanelContainer.add(controlPanel, "Control Panel");
+    }
 
-        try {
-            iconText = new JLabel(userQuery.getUsername(admin).toUpperCase().substring(0, 1));
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        }
-        iconText.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        iconText.setFont(boldItalic.deriveFont(55f));
-        iconText.setForeground(Color.WHITE);
-        iconText.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 0;
-        gbc.weighty = 0.16;
-        menuContainer.add(iconText, gbc);
+    private void setupLogoutButton(Font boldItalic, Color red, GridBagConstraints gbc) {
+        logoutButton.setFont(boldItalic.deriveFont(25f));
+        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setBackground(red);
+        logoutButton.setOpaque(true);
+        logoutButton.setBorderPainted(false);
+        logoutButton.addActionListener(e ->
+                ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout()
+        );
+        gbc.weighty = 0.1;
+        gbc.gridy = 7;
+        menuContainer.add(logoutButton, gbc);
+    }
 
-        try {
-            usernameTitle = new JLabel((userQuery.getUsername(admin).length() > 12 ? userQuery.getUsername(admin).substring(0, 12) + "..."
-                    : userQuery.getUsername(admin)));
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        }
-        usernameTitle.setFont(regular.deriveFont(35f));
-        usernameTitle.setForeground(Color.WHITE);
-        usernameTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
-        usernameTitle.setHorizontalAlignment(JLabel.CENTER);
-        gbc.weighty = 0.01;
-        gbc.gridy = 1;
-        menuContainer.add(usernameTitle, gbc);
+    private void setupEmptyPanel(GridBagConstraints gbc) {
+        gbc.weighty = 0.28;
+        JPanel emptyPanel2 = new JPanel();
+        emptyPanel2.setOpaque(false);
+        gbc.gridy = 6;
+        menuContainer.add(emptyPanel2, gbc);
+    }
 
-        userIdTitle = new JLabel("<html><pre>ID: #" + admin.substring(admin.length() - 12) + "</pre></html>");
-        userIdTitle.setFont(regular.deriveFont(20f));
-        userIdTitle.setForeground(gray);
-        userIdTitle.setHorizontalAlignment(JLabel.CENTER);
-        gbc.gridy = 2;
-        gbc.weighty = 0.01;
-        gbc.insets = new Insets(0, 0, 10, 0);
-        menuContainer.add(userIdTitle, gbc);
+    private void setupPanelButton(Font regular, Color current, GridBagConstraints gbc, String s, int i) {
+        JButton controlPanelButton = new JButton(s);
+        controlPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        controlPanelButton.setFont(regular.deriveFont(30f));
+        controlPanelButton.setForeground(Color.WHITE);
+        controlPanelButton.setBackground(current);
+        controlPanelButton.setOpaque(false);
+        controlPanelButton.setBorderPainted(false);
+        controlPanelButton.addActionListener(this);
+        gbc.gridy = i;
+        menuContainer.add(controlPanelButton, gbc);
+    }
 
-        overviewPanelButton = new JButton("Overview");
+    private void setupOverviewPanelButton(Font regular, Color current, GridBagConstraints gbc) {
+        JButton overviewPanelButton = new JButton("Overview");
         overviewPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
         overviewPanelButton.setFont(regular.deriveFont(30f));
         overviewPanelButton.setForeground(Color.WHITE);
@@ -100,59 +120,57 @@ public class AdminPanel extends JPanel implements ActionListener {
         overviewPanelButton.addActionListener(this);
         gbc.weighty = 0.14;
         gbc.gridy = 3;
-        gbc.insets = new Insets(0,0,0,0);
-        menuContainer.add(overviewPanelButton,gbc);
-
-        controlPanelButton = new JButton("Control Panel");
-        controlPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-        controlPanelButton.setFont(regular.deriveFont(30f));
-        controlPanelButton.setForeground(Color.WHITE);
-        controlPanelButton.setBackground(current);
-        controlPanelButton.setOpaque(false);
-        controlPanelButton.setBorderPainted(false);
-        controlPanelButton.addActionListener(this);
-        gbc.gridy = 4;
-        menuContainer.add(controlPanelButton,gbc);
-
-        searchPanelButton = new JButton("Search");
-        searchPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-        searchPanelButton.setFont(regular.deriveFont(30f));
-        searchPanelButton.setForeground(Color.WHITE);
-        searchPanelButton.setBackground(current);
-        searchPanelButton.setOpaque(false);
-        searchPanelButton.setBorderPainted(false);
-        searchPanelButton.addActionListener(this);
-        gbc.gridy = 5;
-        menuContainer.add(searchPanelButton,gbc);
-
-        gbc.weighty = 0.28;
-        JPanel emptyPanel2 = new JPanel();
-        emptyPanel2.setOpaque(false);
-        gbc.gridy = 6;
-        menuContainer.add(emptyPanel2,gbc);
-
-        logoutButton = new JButton("Logout");
-        logoutButton.setFont(boldItalic.deriveFont(25f));
-        logoutButton.setForeground(Color.WHITE);
-        logoutButton.setBackground(red);
-        logoutButton.setOpaque(true);
-        logoutButton.setBorderPainted(false);
-        logoutButton.addActionListener(e -> {
-                ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout();
-        });
-        gbc.weighty = 0.1;
-        gbc.gridy = 7;
-        menuContainer.add(logoutButton,gbc);
-
-        menuPanelContainer.add(overviewPanel, "Overview");
-        menuPanelContainer.add(searchPanel, "Search");
-        menuPanelContainer.add(controlPanel, "Control Panel");
-
-        this.add(menuContainer, BorderLayout.WEST);
-        this.add(menuPanelContainer, BorderLayout.CENTER);
-
+        gbc.insets = new Insets(0, 0, 0, 0);
+        menuContainer.add(overviewPanelButton, gbc);
     }
 
+    private void setupUserIdTitle(String admin, Font regular, Color gray, GridBagConstraints gbc) {
+        JLabel userIdTitle = new JLabel("<html><pre>ID: #" + admin.substring(admin.length() - 12) + "</pre></html>");
+        userIdTitle.setFont(regular.deriveFont(20f));
+        userIdTitle.setForeground(gray);
+        userIdTitle.setHorizontalAlignment(JLabel.CENTER);
+        gbc.gridy = 2;
+        gbc.weighty = 0.01;
+        gbc.insets = new Insets(0, 0, 10, 0);
+        menuContainer.add(userIdTitle, gbc);
+    }
+
+    private void setupUsernameTitle(String admin, Font regular, UserQuery userQuery, GridBagConstraints gbc) throws UserNotFoundException {
+        JLabel usernameTitle = new JLabel((userQuery.getUsername(admin).length() > 12 ? userQuery.getUsername(admin).substring(0, 12) + "..."
+                : userQuery.getUsername(admin)));
+        usernameTitle.setFont(regular.deriveFont(35f));
+        usernameTitle.setForeground(Color.WHITE);
+        usernameTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
+        usernameTitle.setHorizontalAlignment(JLabel.CENTER);
+        gbc.weighty = 0.01;
+        gbc.gridy = 1;
+        menuContainer.add(usernameTitle, gbc);
+    }
+
+    private void setupIconText(String admin, Font boldItalic, UserQuery userQuery, GridBagConstraints gbc) throws UserNotFoundException {
+        JLabel iconText = new JLabel(userQuery.getUsername(admin).toUpperCase().substring(0, 1));
+        iconText.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        iconText.setFont(boldItalic.deriveFont(55f));
+        iconText.setForeground(Color.WHITE);
+        iconText.setHorizontalAlignment(SwingConstants.CENTER);
+        menuContainer.add(iconText, gbc);
+    }
+
+    private GridBagConstraints setupGbc() {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridx = 0;
+        gbc.weightx = 1.0;
+        gbc.gridy = 0;
+        gbc.weighty = 0.16;
+        return gbc;
+    }
+
+    /**
+     * Used for handling events
+     *
+     * @param e the event
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         cardLayout.show(menuPanelContainer, e.getActionCommand());
