@@ -288,43 +288,41 @@ public class TradingInfoManager extends Manager {
      * traverses through the users wishlist, finds the most similar item in the database and for each item, the function then returns a trade
      *
      * @param thisTraderId      is the id of this trader
-     * @param itemToLend        is the name item from the users inventory that is going to be given
+     * @param itemToLendId      is the id of item from the users inventory that is going to be given
      * @param meetingTime       is the meeting time
      * @param secondMeetingTime is the second meeting time
      * @param location          ois the location of the meeting
      * @param allowedEdits      is the max number of edits the traders can make
      * @param message
-     * @return the most reasonable trade between this user and another trader in the database
+     * @return the most reasonable trade for every item in the users wishlist
      * @throws UserNotFoundException
      * @throws AuthorizationException
      * @throws TradableItemNotFoundException
      */
-     public ArrayList<Trade> automatedTradeSuggestion(String thisTraderId, String itemToLend, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+     public ArrayList<Trade> automatedTradeSuggestion(String thisTraderId, String itemToLendId, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
         ArrayList<String> allTraders = getAllTraders();
         allTraders.remove(thisTraderId);
         ArrayList<Trade> wishlistTrades = new ArrayList<>();
-        int max = 0;
-        String mostSimItem = null;
-        String mostSimTraderId = null;
+        //Creates the most reasonable trade object for every item in this users wishlist
+        //Every item on the users wishlist is excluded from being considered similar
+
         for(String wishlistItemId: getTrader(thisTraderId).getWishlist()){
+            int max = 0;
+            String mostSimItem = null;
+            String mostSimTraderId = null;
             for (String otherTraderId : allTraders) {
-                //returns the most similar item to the one that the trader wishes to have
                 Trader otherTrader = getTrader(otherTraderId);
-                Object[] similarGetItem = similarSearch(getTradableItem(wishlistItemId).getName(), otherTrader.getAvailableItems());
-
-                //returns the most similar item to the one that the trader wishes to give away
-                Object[] similarGiveItem = similarSearch(itemToLend, otherTrader.getWishlist());
-
+                Object[] similarGetItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
+                Object[] similarGiveItem = similarSearch(itemToLendId, otherTrader.getWishlist());
                 if (((int) similarGetItem[1] + (int) similarGiveItem[1]) > max) {
-
                     max = ((int) similarGetItem[1] + (int) similarGiveItem[1]);
                     mostSimItem = (String) similarGetItem[0];
                     mostSimTraderId = otherTrader.getId();
-
                 }
             }
-            Trade trade = new Trade(thisTraderId, mostSimTraderId, meetingTime, secondMeetingTime, location, itemToLend, mostSimItem, allowedEdits, message);
+            String itemToLendName = getTradableItem(itemToLendId).getName();
+            Trade trade = new Trade(thisTraderId, mostSimTraderId, meetingTime, secondMeetingTime, location, itemToLendName, mostSimItem, allowedEdits, message);
             wishlistTrades.add(trade);
         }
 
@@ -336,11 +334,11 @@ public class TradingInfoManager extends Manager {
     /**
      * checks how many similarities name has with strings in list
      *
-     * @param name is the name of the item we wish to find a similar name of
+     * @param nameId is the id of the item we wish to find a similar name of
      * @param list is the list of strings that we are traversing through
      * @return an array with two cells containing the items name and the score of how similar it is
      */
-    public Object[] similarSearch(String name, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+    public Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
         if (list.size() == 0) {
             return new Object[]{"", 0};
@@ -364,20 +362,24 @@ public class TradingInfoManager extends Manager {
         1. (solved) when length of name > length of otherNames (e.g name = red hat, otherName = hat)
         2. when a char is added or a char is missing to the strings
          */
+        String name;
+        if (isListOfTraders) { //this is here to allow similarSearch to work with traders and tradableItems
+            name = getTrader(nameId).getUsername();
+        } else {
+            name = getTradableItem(nameId).getName();
+        }
+
         for (String otherNamesId : list) {
 
             String otherNames;
-            String thisNameId;
             if (isListOfTraders) { //this is here to allow similarSearch to work with traders and tradableItems
                 otherNames = getTrader(otherNamesId).getUsername();
-                thisNameId = getUserByUsername(name);
             } else {
                 otherNames = getTradableItem(otherNamesId).getName();
-                thisNameId = getTradableItemByName(name);
             }
 
             //we don't want the exact item in the wishlist, b/c that would always be the most similar so if its the same item it skips over it
-            if(!otherNamesId.equals(thisNameId)){
+            if(!otherNamesId.equals(nameId)){
 
                 //the solution for problem 1.
                 String longerName = otherNames;
@@ -427,6 +429,7 @@ public class TradingInfoManager extends Manager {
             // both a and andrew would have the same similarity score but an is obviously more similar
             if (x > max || x == max && (Math.abs(similarName.length() - name.length()) < (Math.abs(mostSimilarName.length() - name.length())))) {
                 max = x;
+                //.println("max : " + max);
                 mostSimilarName = similarName;
 
             }

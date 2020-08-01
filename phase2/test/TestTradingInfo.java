@@ -36,6 +36,7 @@ public class TestTradingInfo extends TestManager {
     private Trader[] traders;
 
     private Trader tHasWishlist;
+    private TradableItem crack;
     private Trader storeItems;
     private Trader tHasInventory1;
     private Trader tHasInventory2;
@@ -103,9 +104,11 @@ public class TestTradingInfo extends TestManager {
             storeItems.getAvailableItems().add(barbell.getId());
             storeItems.getAvailableItems().add(laptop.getId());
             storeItems.getAvailableItems().add(wallet.getId());
+            userDatabase.update(storeItems);
+            storeItems = getTrader(storeItems.getId());
 
             tHasWishlist = getTrader(loginManager.registerUser("tHasWishlist", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
-            TradableItem crack = new TradableItem("crack", "crack");
+            crack = new TradableItem("crack", "crack");
             TradableItem crack2 = new TradableItem("crack2", "crack");
             tradableItemDatabase.update(crack);
             tradableItemDatabase.update(crack2);
@@ -115,6 +118,8 @@ public class TestTradingInfo extends TestManager {
             tHasWishlist.getWishlist().add(laptop.getId());
             tHasWishlist.getWishlist().add((barbell.getId()));
             tHasWishlist.getWishlist().add(wallet.getId());
+            userDatabase.update(tHasWishlist);
+            tHasWishlist = getTrader(tHasWishlist.getId());
 
             //items that should not be in trades
             TradableItem wackWatch = new TradableItem("wack watct", "desc");
@@ -137,16 +142,20 @@ public class TestTradingInfo extends TestManager {
             tHasInventory1.getAvailableItems().add(wackLaptop.getId());
             tHasInventory1.getAvailableItems().add(wackWallet.getId());
             tHasInventory1.getWishlist().add(crack2.getId());
+            userDatabase.update(tHasInventory1);
+            tHasInventory1 = getTrader(tHasInventory1.getId());
 
             tHasInventory2 = getTrader(loginManager.registerUser("tHasInventory2", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
             TradableItem phone2 = new TradableItem("samsung phone", "desc");
             tradableItemDatabase.update(phone2);
-            tHasInventory2.getAvailableItems().add(wackWallet.getId());
+            tHasInventory2.getAvailableItems().add(wackWatch.getId());
             tHasInventory2.getAvailableItems().add(phone2.getId());
             tHasInventory2.getAvailableItems().add(wackBarbell.getId());
             tHasInventory2.getAvailableItems().add(wackLaptop.getId());
             tHasInventory2.getAvailableItems().add(wackWallet.getId());
             tHasInventory2.getWishlist().add(crack2.getId());
+            userDatabase.update(tHasInventory2);
+            tHasInventory2 = getTrader(tHasInventory2.getId());
 
             tHasInventory3 = getTrader(loginManager.registerUser("tHasInventory3", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
             TradableItem laptop3 = new TradableItem("acer LAPTOP", "desc");
@@ -157,6 +166,8 @@ public class TestTradingInfo extends TestManager {
             tHasInventory3.getAvailableItems().add(laptop3.getId());
             tHasInventory3.getAvailableItems().add(wackWallet.getId());
             tHasInventory3.getWishlist().add(crack2.getId());
+            userDatabase.update(tHasInventory3);
+            tHasInventory3 = getTrader(tHasInventory3.getId());
 
             tHasInventory4 = getTrader(loginManager.registerUser("tHasInventory4", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
             TradableItem barbell4 = new TradableItem("45kg barbell", "desc");
@@ -167,6 +178,8 @@ public class TestTradingInfo extends TestManager {
             tHasInventory4.getAvailableItems().add(wackLaptop.getId());
             tHasInventory4.getAvailableItems().add(wackWallet.getId());
             tHasInventory4.getWishlist().add(crack2.getId());
+            userDatabase.update(tHasInventory4);
+            tHasInventory4 = getTrader(tHasInventory4.getId());
 
             tHasInventory5 = getTrader(loginManager.registerUser("tHasInventory5", "Passssssssssssssssssssssssssssssssssssssssss1", UserTypes.TRADER));
             TradableItem wallet5 = new TradableItem("leather wallet", "desc");
@@ -177,6 +190,8 @@ public class TestTradingInfo extends TestManager {
             tHasInventory5.getAvailableItems().add(wackLaptop.getId());
             tHasInventory5.getAvailableItems().add(wallet5.getId());
             tHasInventory5.getWishlist().add(crack2.getId());
+            userDatabase.update(tHasInventory5);
+            tHasInventory5 = getTrader(tHasInventory5.getId());
 
 
 
@@ -344,12 +359,13 @@ public class TestTradingInfo extends TestManager {
         }
     }
 
+    @Test
     public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
         Date date = new Date();
         String location = "Toronto";
         String message = "This is a trade";
         int allowedEdits = 3;
-        ArrayList<Trade> automatedTrades = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),"crack", date, date, location,allowedEdits, message);
+        ArrayList<Trade> automatedTrades = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),crack.getId(), date, date, location,allowedEdits, message);
         Trade t1 = automatedTrades.get(0);
         assertEquals("crack", t1.getFirstUserOffer());
         assertEquals("apple watch", t1.getSecondUserOffer());
@@ -383,7 +399,7 @@ public class TestTradingInfo extends TestManager {
 
     }
 
-
+    @Test
     public void testSimilarSearch() throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         //need to change similarSearch to private after finished testing
 
@@ -393,51 +409,61 @@ public class TestTradingInfo extends TestManager {
 
         TradableItem i1 = new TradableItem("andrer", "test");
         TradableItem i2 = new TradableItem("ANDREW", "test");
+        TradableItem search = new TradableItem("andrew", "test");
+        tradableItemDatabase.update(search);
         tradableItemDatabase.update(i1);
         tradableItemDatabase.update(i2);
         listNames.add(i1.getId());
         listNames.add(i2.getId());
-        Object[] name = tradingInfoManager.similarSearch("andrew", listNames); //tests for ignoring capital case
+        Object[] name = tradingInfoManager.similarSearch(search.getId(), listNames); //tests for ignoring capital case
         assertEquals("ANDREW", name[0]);
         assertEquals(6, name[1]);
 
         TradableItem i3 = new TradableItem("plastic water bottle", "test");
         TradableItem i4 = new TradableItem("bowtle", "test");
+        TradableItem search2 = new TradableItem("bottle", "test");
+        tradableItemDatabase.update(search2);
         tradableItemDatabase.update(i3);
         tradableItemDatabase.update(i4);
         listNames.add(i3.getId());
         listNames.add(i4.getId());
-        Object[] name2 = tradingInfoManager.similarSearch("bottle", listNames); //tests for multiple words case
+        Object[] name2 = tradingInfoManager.similarSearch(search2.getId(), listNames); //tests for multiple words case
         assertEquals("plastic water bottle", name2[0]);
         assertEquals(6, name2[1]);
 
         TradableItem i5 = new TradableItem("123456", "test");
         TradableItem i6 = new TradableItem("1234567", "test");
+        TradableItem search3 = new TradableItem("1234567", "test");
+        tradableItemDatabase.update(search3);
         tradableItemDatabase.update(i5);
         tradableItemDatabase.update(i6);
         listNames.add(i5.getId());
         listNames.add(i6.getId());
-        Object[] name3 = tradingInfoManager.similarSearch("1234567", listNames); //tests for most accurate word with words with diff length
+        Object[] name3 = tradingInfoManager.similarSearch(search3.getId(), listNames); //tests for most accurate word with words with diff length
         assertEquals("1234567", name3[0]);
         assertEquals(7,name3[1]);
 
         TradableItem i7 = new TradableItem("55554", "test");
         TradableItem i8 = new TradableItem("55544", "test");
+        TradableItem search4 = new TradableItem("55555", "test");
+        tradableItemDatabase.update(search4);
         tradableItemDatabase.update(i7);
         tradableItemDatabase.update(i8);
         listNames.add(i7.getId());
         listNames.add(i8.getId());
-        Object[] name4 = tradingInfoManager.similarSearch(("55555"), listNames); //tests for replaced char strings (not the same as strings missing chars which is a problem rn)
+        Object[] name4 = tradingInfoManager.similarSearch(search4.getId(), listNames); //tests for replaced char strings (not the same as strings missing chars which is a problem rn)
         assertEquals("55554", name4[0]);
         assertEquals(4, name4[1]);
 
         TradableItem i9 = new TradableItem("Jan", "test");
         TradableItem i10 = new TradableItem("January", "test");
+        TradableItem search5 = new TradableItem("j", "test");
+        tradableItemDatabase.update(search5);
         tradableItemDatabase.update(i9);
         tradableItemDatabase.update(i10);
         listNames.add(i9.getId());
         listNames.add(i10.getId());
-        Object[] name5 =  tradingInfoManager.similarSearch(("j"), listNames);//tests for most similar length if similarity score is the same
+        Object[] name5 =  tradingInfoManager.similarSearch(search5.getId(), listNames);//tests for most similar length if similarity score is the same
         // (ie if we search for a, with a list of andrew, an, it should return an)
         assertEquals("Jan", name5[0]);
         assertEquals(1, name5[1]);
@@ -448,18 +474,20 @@ public class TestTradingInfo extends TestManager {
         tradableItemDatabase.update(i12);
         listNames.add(i11.getId());
         listNames.add(i12.getId());
-        Object[] name6 =  tradingInfoManager.similarSearch(("computer"), listNames);//tests for missing char or extra chars
+        //Object[] name6 =  tradingInfoManager.similarSearch(("computer"), listNames);//tests for missing char or extra chars
         //assertEquals( "comuter",name6[0]);
         //assertEquals(7, name6[1]);
         //k so not sure how this is supposed to be done
 
         TradableItem i13 = new TradableItem("hat", "test");
         TradableItem i14 = new TradableItem("hwat", "test");
+        TradableItem search7 = new TradableItem("red hat", "test");
+        tradableItemDatabase.update(search7);
         tradableItemDatabase.update(i13);
         tradableItemDatabase.update(i14);
         listNames.add(i13.getId());
         listNames.add(i14.getId());
-        Object[] name7 =  tradingInfoManager.similarSearch(("red hat"), listNames);//tests for when the string we are searching for, is bigger then the name of the item
+        Object[] name7 =  tradingInfoManager.similarSearch(search7.getId(), listNames);//tests for when the string we are searching for, is bigger then the name of the item
         assertEquals( "hat",name7[0]);
         assertEquals(3, name7[1]);
 
