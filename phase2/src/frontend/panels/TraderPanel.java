@@ -21,7 +21,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.metal.MetalButtonUI;
 
+import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
+import backend.tradesystem.managers.UserQuery;
 import frontend.WindowManager;
 import frontend.panels.trader_subpanels.ItemsPanel;
 import frontend.panels.trader_subpanels.NotificationsPanel;
@@ -37,22 +39,24 @@ public class TraderPanel extends JPanel implements ActionListener {
             searchPanelButton, logoutButton, settingsPanelButton;
     private CardLayout cardLayout;
     private GridBagConstraints gbc;
+    private final UserQuery userQuery = new UserQuery();
 
     private Color bg = new Color(214, 214, 214);
     private Color current = new Color(159, 159, 159);
     private Color gray = new Color(75, 75, 75);
     private Color red = new Color(219, 58, 52);
 
-    public TraderPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+
         this.setSize(1600, 900);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
-        tradePanel = new TradePanel(trader, regular, bold, italic, boldItalic);
-        itemsPanel = new ItemsPanel(trader, regular, bold, italic, boldItalic);
-        notificationsPanel = new NotificationsPanel(trader, regular, bold, italic, boldItalic);
-        searchPanel = new SearchPanel(trader, regular, bold, italic, boldItalic);
-        settingsPanel = new SettingsPanel(trader, regular, bold, italic, boldItalic);
+        tradePanel = new TradePanel(traderId, regular, bold, italic, boldItalic);
+        itemsPanel = new ItemsPanel(traderId, regular, bold, italic, boldItalic);
+        notificationsPanel = new NotificationsPanel(traderId, regular, bold, italic, boldItalic);
+        searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic);
+        settingsPanel = new SettingsPanel(traderId, regular, bold, italic, boldItalic);
 
         menuContainer = new JPanel(new GridBagLayout());
         menuContainer.setPreferredSize(new Dimension(250, this.getHeight()));
@@ -67,112 +71,116 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
-        iconText = new JLabel(trader.getUsername().toUpperCase().substring(0, 1));
-        iconText.setBorder(BorderFactory.createEmptyBorder(14, 0, 0, 0));
-        iconText.setFont(boldItalic.deriveFont(55f));
-        iconText.setForeground(Color.BLACK);
-        iconText.setHorizontalAlignment(SwingConstants.CENTER);
-        gbc.gridy = 0;
-        gbc.weighty = 0.16;
-        menuContainer.add(iconText, gbc);
+        try {
+            iconText = new JLabel(userQuery.getUsername(traderId).toUpperCase().substring(0, 1));
 
-        usernameTitle = new JLabel((trader.getUsername().length() > 12 ? trader.getUsername().substring(0, 12) + "..."
-                : trader.getUsername()));
-        usernameTitle.setFont(regular.deriveFont(35f));
-        usernameTitle.setForeground(Color.BLACK);
-        usernameTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
-        usernameTitle.setHorizontalAlignment(JLabel.CENTER);
-        gbc.gridy = 1;
-        gbc.weighty = 0.01;
-        menuContainer.add(usernameTitle, gbc);
+            iconText.setBorder(BorderFactory.createEmptyBorder(14, 0, 0, 0));
+            iconText.setFont(boldItalic.deriveFont(55f));
+            iconText.setForeground(Color.BLACK);
+            iconText.setHorizontalAlignment(SwingConstants.CENTER);
+            gbc.gridy = 0;
+            gbc.weighty = 0.16;
+            menuContainer.add(iconText, gbc);
 
-        userIdTitle = new JLabel("<html><pre>ID: #" + trader.getId().substring(trader.getId().length() - 12) + "</pre></html>");
-        userIdTitle.setFont(regular.deriveFont(20f));
-        userIdTitle.setForeground(gray);
-        userIdTitle.setHorizontalAlignment(JLabel.CENTER);
-        gbc.gridy = 2;
-        gbc.weighty = 0.01;
-        gbc.insets = new Insets(0,0,10,0);
-        menuContainer.add(userIdTitle, gbc);
+            usernameTitle = new JLabel((userQuery.getUsername(traderId).length() > 12 ? userQuery.getUsername(traderId).substring(0, 12) + "..."
+                    : userQuery.getUsername(traderId)));
+            usernameTitle.setFont(regular.deriveFont(35f));
+            usernameTitle.setForeground(Color.BLACK);
+            usernameTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
+            usernameTitle.setHorizontalAlignment(JLabel.CENTER);
+            gbc.gridy = 1;
+            gbc.weighty = 0.01;
+            menuContainer.add(usernameTitle, gbc);
 
-        tradePanelButton = new JButton("Trades");
-        tradePanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-        tradePanelButton.setFont(regular.deriveFont(30f));
-        tradePanelButton.setForeground(Color.BLACK);
-        tradePanelButton.setBackground(current);
-        tradePanelButton.setOpaque(true);
-        tradePanelButton.setBorderPainted(false);
-        tradePanelButton.addActionListener(this);
-        gbc.gridy = 3;
-        gbc.weighty = 0.14;
-        gbc.insets = new Insets(0,0,0,0);
-        menuContainer.add(tradePanelButton, gbc);
+            userIdTitle = new JLabel("<html><pre>ID: #" + traderId.substring(traderId.length() - 12) + "</pre></html>");
+            userIdTitle.setFont(regular.deriveFont(20f));
+            userIdTitle.setForeground(gray);
+            userIdTitle.setHorizontalAlignment(JLabel.CENTER);
+            gbc.gridy = 2;
+            gbc.weighty = 0.01;
+            gbc.insets = new Insets(0, 0, 10, 0);
+            menuContainer.add(userIdTitle, gbc);
 
-        itemsPanelButton = new JButton("Items");
-        itemsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-        itemsPanelButton.setFont(regular.deriveFont(30f));
-        itemsPanelButton.setForeground(Color.BLACK);
-        itemsPanelButton.setBackground(current);
-        itemsPanelButton.setOpaque(false);
-        itemsPanelButton.setBorderPainted(false);
-        itemsPanelButton.addActionListener(this);
-        gbc.gridy = 4;
-        menuContainer.add(itemsPanelButton, gbc);
+            tradePanelButton = new JButton("Trades");
+            tradePanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+            tradePanelButton.setFont(regular.deriveFont(30f));
+            tradePanelButton.setForeground(Color.BLACK);
+            tradePanelButton.setBackground(current);
+            tradePanelButton.setOpaque(true);
+            tradePanelButton.setBorderPainted(false);
+            tradePanelButton.addActionListener(this);
+            gbc.gridy = 3;
+            gbc.weighty = 0.14;
+            gbc.insets = new Insets(0, 0, 0, 0);
+            menuContainer.add(tradePanelButton, gbc);
 
-        notificationsPanelButton = new JButton("Notifications");
-        notificationsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-        notificationsPanelButton.setFont(regular.deriveFont(30f));
-        notificationsPanelButton.setForeground(Color.BLACK);
-        notificationsPanelButton.setBackground(current);
-        notificationsPanelButton.setOpaque(false);
-        notificationsPanelButton.setBorderPainted(false);
-        notificationsPanelButton.addActionListener(this);
-        gbc.gridy = 5;
-        menuContainer.add(notificationsPanelButton, gbc);
+            itemsPanelButton = new JButton("Items");
+            itemsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+            itemsPanelButton.setFont(regular.deriveFont(30f));
+            itemsPanelButton.setForeground(Color.BLACK);
+            itemsPanelButton.setBackground(current);
+            itemsPanelButton.setOpaque(false);
+            itemsPanelButton.setBorderPainted(false);
+            itemsPanelButton.addActionListener(this);
+            gbc.gridy = 4;
+            menuContainer.add(itemsPanelButton, gbc);
 
-        searchPanelButton = new JButton("Search");
-        searchPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-        searchPanelButton.setFont(regular.deriveFont(30f));
-        searchPanelButton.setForeground(Color.BLACK);
-        searchPanelButton.setBackground(current);
-        searchPanelButton.setOpaque(false);
-        searchPanelButton.setBorderPainted(false);
-        searchPanelButton.addActionListener(this);
-        gbc.gridy = 6;
-        menuContainer.add(searchPanelButton, gbc);
+            notificationsPanelButton = new JButton("Notifications");
+            notificationsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+            notificationsPanelButton.setFont(regular.deriveFont(30f));
+            notificationsPanelButton.setForeground(Color.BLACK);
+            notificationsPanelButton.setBackground(current);
+            notificationsPanelButton.setOpaque(false);
+            notificationsPanelButton.setBorderPainted(false);
+            notificationsPanelButton.addActionListener(this);
+            gbc.gridy = 5;
+            menuContainer.add(notificationsPanelButton, gbc);
 
-       settingsPanelButton = new JButton("Settings");
-       settingsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
-       settingsPanelButton.setFont(regular.deriveFont(30f));
-       settingsPanelButton.setForeground(Color.BLACK);
-       settingsPanelButton.setBackground(current);
-       settingsPanelButton.setOpaque(false);
-       settingsPanelButton.setBorderPainted(false);
-       settingsPanelButton.addActionListener(this);
-        gbc.gridy = 7;
-        menuContainer.add(settingsPanelButton, gbc);
+            searchPanelButton = new JButton("Search");
+            searchPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+            searchPanelButton.setFont(regular.deriveFont(30f));
+            searchPanelButton.setForeground(Color.BLACK);
+            searchPanelButton.setBackground(current);
+            searchPanelButton.setOpaque(false);
+            searchPanelButton.setBorderPainted(false);
+            searchPanelButton.addActionListener(this);
+            gbc.gridy = 6;
+            menuContainer.add(searchPanelButton, gbc);
 
-        logoutButton = new JButton("Logout");
-        logoutButton.setFont(boldItalic.deriveFont(25f));
-        logoutButton.setForeground(Color.WHITE);
-        logoutButton.setBackground(red);
-        logoutButton.setOpaque(true);
-        logoutButton.setBorderPainted(false);
-        logoutButton.addActionListener(e -> {
+            settingsPanelButton = new JButton("Settings");
+            settingsPanelButton.setHorizontalAlignment(SwingConstants.LEFT);
+            settingsPanelButton.setFont(regular.deriveFont(30f));
+            settingsPanelButton.setForeground(Color.BLACK);
+            settingsPanelButton.setBackground(current);
+            settingsPanelButton.setOpaque(false);
+            settingsPanelButton.setBorderPainted(false);
+            settingsPanelButton.addActionListener(this);
+            gbc.gridy = 7;
+            menuContainer.add(settingsPanelButton, gbc);
+
+            logoutButton = new JButton("Logout");
+            logoutButton.setFont(boldItalic.deriveFont(25f));
+            logoutButton.setForeground(Color.WHITE);
+            logoutButton.setBackground(red);
+            logoutButton.setOpaque(true);
+            logoutButton.setBorderPainted(false);
+            logoutButton.addActionListener(e -> {
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout();
-        }); 
-        gbc.gridy = 8;
-        menuContainer.add(logoutButton, gbc);
+            });
+            gbc.gridy = 8;
+            menuContainer.add(logoutButton, gbc);
 
-        menuPanelContainer.add(tradePanel, "Trades");
-        menuPanelContainer.add(itemsPanel, "Items");
-        menuPanelContainer.add(notificationsPanel, "Notifications");
-        menuPanelContainer.add(searchPanel, "Search");
-        menuPanelContainer.add(settingsPanel, "Settings");
+            menuPanelContainer.add(tradePanel, "Trades");
+            menuPanelContainer.add(itemsPanel, "Items");
+            menuPanelContainer.add(notificationsPanel, "Notifications");
+            menuPanelContainer.add(searchPanel, "Search");
+            menuPanelContainer.add(settingsPanel, "Settings");
 
-        this.add(menuContainer, BorderLayout.WEST);
-        this.add(menuPanelContainer, BorderLayout.CENTER);
-
+            this.add(menuContainer, BorderLayout.WEST);
+            this.add(menuPanelContainer, BorderLayout.CENTER);
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
