@@ -4,7 +4,6 @@ package backend.tradesystem.trader_managers;
 import backend.exceptions.*;
 import backend.models.Trade;
 import backend.models.users.Trader;
-import backend.tradesystem.TradeBuilder;
 import backend.tradesystem.Manager;
 
 import java.io.IOException;
@@ -86,18 +85,8 @@ public class TradingManager extends Manager {
                 secondTrader.getIncompleteTradeCount() >= secondTrader.getIncompleteTradeLim()) {
             throw new CannotTradeException("One of the two users has too many active trades.");
         }
-
-        TradeBuilder builder = new TradeBuilder();
-        builder.fromUser(traderId1);
-        builder.toUser(traderId2);
-        builder.setMeeting1(meetingTime);
-        builder.setMeeting2(secondMeetingTime);
-        builder.setLocation(location);
-        builder.setAllowedEditsPerUser(allowedEdits);
-        builder.setMessage(message);
-        builder.setFirstUserOffer(firstUserOfferId);
-        builder.setSecondUserOffer(secondUserOfferId);
-        Trade trade = builder.createTrade();
+        Trade trade = new Trade(traderId1, traderId2, meetingTime, secondMeetingTime,
+                location, firstUserOfferId, secondUserOfferId, allowedEdits, message);
 
         // This trade has now been requested, so add it to the requested trades of each trader
         trader.getRequestedTrades().add(trade.getId());
