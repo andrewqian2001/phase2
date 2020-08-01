@@ -25,10 +25,8 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.models.users.User;
-import backend.tradesystem.managers.ItemQuery;
-import backend.tradesystem.managers.MessageManager;
-import backend.tradesystem.managers.TradingInfoManager;
-import backend.tradesystem.managers.UserQuery;
+import backend.tradesystem.UserTypes;
+import backend.tradesystem.managers.*;
 
 public class NotificationsPanel extends JPanel {
 
@@ -39,6 +37,7 @@ public class NotificationsPanel extends JPanel {
     private JButton clearAllmessagesButton, addNewMessageButton;
 
     private MessageManager messageManager;
+    private final LoginManager loginManager = new LoginManager();
     private final ItemQuery itemQuery = new ItemQuery();
     private final UserQuery userQuery = new UserQuery();
 
@@ -109,7 +108,7 @@ public class NotificationsPanel extends JPanel {
                 if (!id.equals(traderId))
                     traders.addItem(new TraderComboBoxItem(id));
             });
-    
+
             JLabel messageBodyTitle = new JLabel("Full Message:");
             messageBodyTitle.setFont(italic.deriveFont(20f));
             messageBodyTitle.setPreferredSize(new Dimension(500, 50));
@@ -133,13 +132,13 @@ public class NotificationsPanel extends JPanel {
             sendMessageButton.setBorder(BorderFactory.createMatteBorder(10, 50, 10, 50, bg));
             sendMessageButton.addActionListener(e1 -> {
                 try {
-                    if(fullMessageBody.getText().trim().length() != 0) {
-                        messageManager.sendMessage(traderId, ((TraderComboBoxItem)traders.getSelectedItem()).getId(), fullMessageBody.getText().trim());
+                    if (fullMessageBody.getText().trim().length() != 0) {
+                        messageManager.sendMessage(traderId, ((TraderComboBoxItem) traders.getSelectedItem()).getId(), fullMessageBody.getText().trim());
                         messageDetailsModal.dispose();
                     }
-				} catch (UserNotFoundException | AuthorizationException e2) {
+                } catch (UserNotFoundException | AuthorizationException e2) {
                     System.out.println(e2.getMessage());
-				}
+                }
             });
 
             messageDetailsPanel.add(userNameTitle);
@@ -233,8 +232,8 @@ public class NotificationsPanel extends JPanel {
 
     private void getMessages() {
         try {
-            HashMap<User, ArrayList<String>> messages = messageManager.getMessages(traderId);
-            if(messages.size() == 0) {
+            HashMap<String, ArrayList<String>> messages = messageManager.getMessages(traderId);
+            if (messages.size() == 0) {
                 messagesListContainer = new JPanel();
                 messagesListContainer.setBackground(gray3);
                 JLabel noMessagesFound = new JLabel("<html><pre>No Messages Found</pre></html>");
@@ -245,20 +244,22 @@ public class NotificationsPanel extends JPanel {
                 noMessagesFound.setForeground(Color.WHITE);
                 messagesListContainer.add(noMessagesFound);
                 return;
-            } int numRows = messages.keySet().size();
+            }
+            int numRows = messages.keySet().size();
             if (numRows < 4)
                 numRows = 4;
             messagesListContainer = new JPanel(new GridLayout(numRows, 1));
             messagesListContainer.setPreferredSize(new Dimension(1200, 400));
             messagesListContainer.setBackground(gray3);
-            messages.keySet().forEach(u -> {
-                    JPanel messagePanel = new JPanel(new GridLayout(1, 5));
-                    messagePanel.setPreferredSize(new Dimension(1000, 75));
-                    messagePanel.setBackground(gray2);
-                    messagePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg));
+            messages.keySet().forEach(fromUserId -> {
+                JPanel messagePanel = new JPanel(new GridLayout(1, 5));
+                messagePanel.setPreferredSize(new Dimension(1000, 75));
+                messagePanel.setBackground(gray2);
+                messagePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg));
 
-                    JLabel userName = new JLabel(u.getUsername());
-                    if(u instanceof Trader)
+                try {
+                    JLabel userName = new JLabel(userQuery.getUsername(fromUserId));
+                    if (loginManager.getType(fromUserId).equals(UserTypes.TRADER))
                         userName.setFont(regular.deriveFont(20f));
                     else
                         userName.setFont(bold.deriveFont(20f));
@@ -292,14 +293,14 @@ public class NotificationsPanel extends JPanel {
 
                         userName.setForeground(Color.WHITE);
 
-                        JLabel messageBodyTitle= new JLabel("Full Message:");
+                        JLabel messageBodyTitle = new JLabel("Full Message:");
                         messageBodyTitle.setFont(italic.deriveFont(20f));
                         messageBodyTitle.setPreferredSize(new Dimension(550, 50));
                         messageBodyTitle.setOpaque(false);
                         messageBodyTitle.setForeground(Color.WHITE);
 
                         StringBuilder fullMessageString = new StringBuilder("");
-                        messages.get(u).forEach(msg -> {
+                        messages.get(fromUserId).forEach(msg -> {
                             fullMessageString.append("-> " + msg + "\n");
                         });
                         JTextArea fullMessageBody = new JTextArea(fullMessageString.toString());
@@ -320,7 +321,8 @@ public class NotificationsPanel extends JPanel {
                         messageDetailsModal.setModal(true);
                         messageDetailsModal.setVisible(true);
 
-                    }); 
+                    });
+
 
                     JButton clearButton = new JButton("Clear");
                     clearButton.setFont(bold.deriveFont(20f));
@@ -330,13 +332,13 @@ public class NotificationsPanel extends JPanel {
                     clearButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
                     clearButton.addActionListener(e -> {
                         try {
-                        messageManager.clearMessagesFromUser(traderId, u.getId());
-                        messagesListContainer.remove(messagePanel);
-                        messagesListContainer.revalidate();
-                        messagesListContainer.repaint();
-                    } catch (UserNotFoundException e1) {
-                        System.out.println(e1.getMessage());
-                    }
+                            messageManager.clearMessagesFromUser(traderId, fromUserId);
+                            messagesListContainer.remove(messagePanel);
+                            messagesListContainer.revalidate();
+                            messagesListContainer.repaint();
+                        } catch (UserNotFoundException e1) {
+                            System.out.println(e1.getMessage());
+                        }
                     });
 
                     JButton replyButton = new JButton("Reply");
@@ -364,7 +366,7 @@ public class NotificationsPanel extends JPanel {
 
                         userName.setForeground(Color.WHITE);
 
-                        JLabel messageBodyTitle= new JLabel("Enter Message:");
+                        JLabel messageBodyTitle = new JLabel("Enter Message:");
                         messageBodyTitle.setFont(italic.deriveFont(20f));
                         messageBodyTitle.setPreferredSize(new Dimension(550, 50));
                         messageBodyTitle.setOpaque(false);
@@ -383,17 +385,17 @@ public class NotificationsPanel extends JPanel {
                         submitButton.setForeground(Color.WHITE);
                         submitButton.setPreferredSize(new Dimension(325, 50));
                         submitButton.addActionListener(e1 -> {
-                            if(fullMessageBody.getText().trim().length() > 0) {
+                            if (fullMessageBody.getText().trim().length() > 0) {
                                 try {
-                                messageManager.sendMessage(trader.getId(), u.getId(), fullMessageBody.getText());
-                                messageManager.clearMessagesFromUser(trader.getId(), u.getId());
-                                messageReplyModal.dispose();
-                                messagesListContainer.remove(messagePanel);
-                                messagesListContainer.revalidate();
-                                messagesListContainer.repaint();
-                            } catch (UserNotFoundException | AuthorizationException e2) {
-                                System.out.println(e2.getMessage());
-                            }
+                                    messageManager.sendMessage(traderId, fromUserId, fullMessageBody.getText());
+                                    messageManager.clearMessagesFromUser(traderId, fromUserId);
+                                    messageReplyModal.dispose();
+                                    messagesListContainer.remove(messagePanel);
+                                    messagesListContainer.revalidate();
+                                    messagesListContainer.repaint();
+                                } catch (UserNotFoundException | AuthorizationException e2) {
+                                    System.out.println(e2.getMessage());
+                                }
                             }
                         });
 
@@ -414,23 +416,26 @@ public class NotificationsPanel extends JPanel {
                     messagePanel.add(clearButton);
                     messagePanel.add(replyButton);
                     messagesListContainer.add(messagePanel);
-                
+
+                } catch (UserNotFoundException e) {
+                    e.printStackTrace();
+                }
             });
         } catch (UserNotFoundException e) {
             System.out.println(e.getMessage());
         }
-    }  
+    }
 
     private void getFreqTraders() {
         try {
-            ArrayList<Trader> freqTraders = infoManager.getFrequentTraders(trader.getId());
+            ArrayList<String> freqTraders = infoManager.getFrequentTraders(traderId);
             int numRows = freqTraders.size();
             if (numRows < 3)
                 numRows = 3;
             freqTradersPanel = new JPanel(new GridLayout(numRows, 1));
             freqTradersPanel.setBackground(gray2);
-            for (Trader t : freqTraders) {
-                JLabel traderName = new JLabel(t.getUsername());
+            for (String freqTraderId : freqTraders) {
+                JLabel traderName = new JLabel(userQuery.getUsername(freqTraderId));
                 traderName.setFont(regular.deriveFont(20f));
                 traderName.setForeground(Color.BLACK);
                 traderName.setBackground(gray2);
@@ -445,14 +450,14 @@ public class NotificationsPanel extends JPanel {
 
     private void getFreqTradableItems() {
         try {
-            ArrayList<TradableItem> items = infoManager.getRecentTradeItems(trader.getId());
+            ArrayList<String> items = infoManager.getRecentTradeItems(traderId);
             int numRows = items.size();
             if (numRows < 3)
                 numRows = 3;
             freqTradableItemsPanel = new JPanel(new GridLayout(numRows, 1));
             freqTradableItemsPanel.setBackground(gray2);
-            for (TradableItem item : items) {
-                JLabel itemName = new JLabel(item.getName());
+            for (String itemId : items) {
+                JLabel itemName = new JLabel(itemQuery.getName(itemId));
                 itemName.setFont(regular.deriveFont(20f));
                 itemName.setForeground(Color.BLACK);
                 itemName.setBackground(gray2);
@@ -466,6 +471,7 @@ public class NotificationsPanel extends JPanel {
         }
 
     }
+
     private class TraderComboBoxItem {
         final String id;
 
