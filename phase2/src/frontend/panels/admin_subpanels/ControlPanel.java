@@ -57,17 +57,17 @@ public class ControlPanel extends JPanel implements ActionListener {
 
         splitContainer = new JPanel(new GridLayout(1,2, 100, 0));
         splitContainer.setOpaque(false);
-        splitContainer.setPreferredSize(new Dimension(1200,400));
+        splitContainer.setPreferredSize(new Dimension(1200,300));
 
             tradeSettings = new JPanel(new GridBagLayout());
             gbc = new GridBagConstraints();
             tradeSettings.setBorder(BorderFactory.createMatteBorder(30, 20, 20, 20, bg));
-            tradeSettings.setPreferredSize(new Dimension(450, 300));
+            tradeSettings.setPreferredSize(new Dimension(450, 250));
             tradeSettings.setBackground(bg);
             splitContainer.add(tradeSettings);
 
-                info = new JPanel(new GridLayout(3,2, 20, 70));
-                info.setBorder(BorderFactory.createMatteBorder(0, 0, 20, 0, bg));
+                info = new JPanel(new GridLayout(3,2, 20, 35));
+                info.setBorder(BorderFactory.createMatteBorder(0, 0, 00, 0, bg));
                 info.setBackground(bg);
                 gbc.fill = GridBagConstraints.BOTH;
                 gbc.gridy = 0;
@@ -86,7 +86,7 @@ public class ControlPanel extends JPanel implements ActionListener {
                     }
                     minLendChoice = new JComboBox<>(minLendChoices);
                     minLendChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW) - 1);
-                    minLendChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
+                    minLendChoice.setBorder(BorderFactory.createMatteBorder(0,75,0,75,bg));
                     info.add(minLendChoice);
 
                     tradeLimit = new JLabel("Default Trade Limit:");
@@ -101,7 +101,7 @@ public class ControlPanel extends JPanel implements ActionListener {
                     }
                     tradeLimitChoice = new JComboBox<>(tradeLimitChoices);
                     tradeLimitChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.TRADE_LIMIT) - 1);
-                    tradeLimitChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
+                    tradeLimitChoice.setBorder(BorderFactory.createMatteBorder(0,75,0,75,bg));
                     info.add(tradeLimitChoice);
 
                     incompleteLimit = new JLabel("Incomplete Trade Limit:");
@@ -116,7 +116,7 @@ public class ControlPanel extends JPanel implements ActionListener {
                     }
                     incompleteLimitChoice = new JComboBox<>(incompleteLimitChoices);
                     incompleteLimitChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.INCOMPLETE_TRADE_LIM) - 1);
-                    incompleteLimitChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
+                    incompleteLimitChoice.setBorder(BorderFactory.createMatteBorder(0,75,0,75,bg));
                     info.add(incompleteLimitChoice);
 
                 submitSettings = new JButton("Submit");
@@ -130,15 +130,17 @@ public class ControlPanel extends JPanel implements ActionListener {
                 tradeSettings.add(submitSettings, gbc);
 
             newAdmin = new JPanel(new GridBagLayout());
-            newAdmin.setPreferredSize(new Dimension(450, 300));
+            newAdmin.setPreferredSize(new Dimension(450, 250));
             gbc = new GridBagConstraints();
-            newAdmin.setBorder(BorderFactory.createMatteBorder(30, 0, 20, 0, bg));
+            newAdmin.setBorder(BorderFactory.createMatteBorder(0, 0, 20, 0, bg));
             newAdmin.setBackground(bg);
             splitContainer.add(newAdmin);
 
-                input = new JPanel(new GridLayout(2,2, 70, 20));
+                input = new JPanel(new GridLayout(2,2, 70, 0));
                 input.setBorder(BorderFactory.createMatteBorder(0, 0, 20, 0, bg));
                 input.setBackground(bg);
+                gbc.weightx = 1.0;
+                gbc.gridx = 0;
                 gbc.fill = GridBagConstraints.BOTH;
                 gbc.gridy = 0;
                 gbc.weighty = 0.6;
@@ -151,7 +153,7 @@ public class ControlPanel extends JPanel implements ActionListener {
                     input.add(username);
 
                     usernameInput = new JTextField();
-                    usernameInput.setBorder(BorderFactory.createMatteBorder(25,0,25,0,bg));
+                    usernameInput.setBorder(BorderFactory.createMatteBorder(25,0,25,30,bg));
                     usernameInput.setFont(regular.deriveFont(25f));
                     input.add(usernameInput);
 
@@ -162,21 +164,25 @@ public class ControlPanel extends JPanel implements ActionListener {
                     input.add(password);
 
                     passwordInput = new JPasswordField();
-                    passwordInput.setBorder(BorderFactory.createMatteBorder(25,0,25,0,bg));
+                    passwordInput.setBorder(BorderFactory.createMatteBorder(25,0,25,30,bg));
                     passwordInput.setFont(regular.deriveFont(25f));
                     input.add(passwordInput);
 
+                JPanel messageWrapper = new JPanel();
+                messageWrapper.setOpaque(false);
+                messageWrapper.setPreferredSize(new Dimension(450, 50));
                 errorMessage = new JLabel();
-                errorMessage.setPreferredSize(new Dimension(450, 80));
                 errorMessage.setForeground(Color.red);
+                errorMessage.setBackground(bg);
                 errorMessage.setFont(regular.deriveFont(15f));
                 errorMessage.setHorizontalAlignment(JLabel.CENTER);
                 gbc.gridy = 1;
                 gbc.weighty = 0.3;
-                newAdmin.add(errorMessage, gbc);
+                messageWrapper.add(errorMessage);
+                newAdmin.add(messageWrapper, gbc);
 
                 submitAdmin = new JButton("Submit");
-                    submitAdmin.setBorder(BorderFactory.createMatteBorder(0,130,10,130, bg));
+                submitAdmin.setBorder(BorderFactory.createMatteBorder(0,180,10,180, bg));
                 submitAdmin.setBackground(Color.green);
                 submitAdmin.setForeground(Color.WHITE);
                 submitAdmin.setFont(bold.deriveFont(25f));
