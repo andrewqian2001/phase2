@@ -326,12 +326,12 @@ public class TradePanel extends JPanel implements ActionListener {
                     tradeDetailsButton.addActionListener(e -> {
                         JDialog tradeDetailsModal = new JDialog();
                         tradeDetailsModal.setTitle("Trade Details");
-                        tradeDetailsModal.setSize(600, 450);
+                        tradeDetailsModal.setSize(600, 600);
                         tradeDetailsModal.setResizable(false);
                         tradeDetailsModal.setLocationRelativeTo(null);
 
                         JPanel tradeDetailsPanel = new JPanel();
-                        tradeDetailsPanel.setPreferredSize(new Dimension(600, 450));
+                        tradeDetailsPanel.setPreferredSize(new Dimension(600, 600));
                         tradeDetailsPanel.setBackground(bg);
 
                         JLabel otherTraderNameTitle = new JLabel("Trader Username:");
@@ -435,6 +435,26 @@ public class TradePanel extends JPanel implements ActionListener {
                             tradeNotFoundException.printStackTrace();
                         }
 
+                        JLabel messageTitle = new JLabel("Optional Attached Messsage:");
+                        messageTitle.setFont(italic.deriveFont(20f));
+                        messageTitle.setPreferredSize(new Dimension(580, 50));
+                        messageTitle.setOpaque(false);
+                        messageTitle.setForeground(Color.WHITE);
+
+                        JLabel messageBody = new JLabel();
+                        messageBody.setFont(regular.deriveFont(20f));
+                        messageBody.setPreferredSize(new Dimension(580, 50));
+                        messageBody.setHorizontalAlignment(JLabel.CENTER);
+                        messageBody.setOpaque(true);
+                        messageBody.setBackground(gray);
+                        messageBody.setForeground(Color.BLACK);
+
+                        try {
+                            messageBody.setText(tradeQuery.getMessage(tradeID) );
+                        } catch (TradeNotFoundException e1) {
+                            e1.printStackTrace();
+                        }
+
                         JLabel availableEditsTitle = new JLabel("Available Edits Left:");
                         availableEditsTitle.setPreferredSize(new Dimension(290, 50));
                         availableEditsTitle.setFont(bold.deriveFont(20f));
@@ -469,6 +489,8 @@ public class TradePanel extends JPanel implements ActionListener {
                         tradeDetailsPanel.add(secondMeetingDate);
                         tradeDetailsPanel.add(availableEditsTitle);
                         tradeDetailsPanel.add(availableEdits);
+                        tradeDetailsPanel.add(messageTitle);
+                        tradeDetailsPanel.add(messageBody);
 
                         tradeDetailsModal.add(tradeDetailsPanel);
                         tradeDetailsModal.setModal(true);
