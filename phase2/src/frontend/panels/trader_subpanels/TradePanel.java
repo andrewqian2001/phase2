@@ -1118,6 +1118,18 @@ public class TradePanel extends JPanel implements ActionListener {
         addNewTradePanel.setPreferredSize(new Dimension(500,1000));
         addNewTradePanel.setBackground(bg);
 
+        JLabel tradeWithinCityTitle = new JLabel("Trade Within City?");
+        tradeWithinCityTitle.setFont(italic.deriveFont(20f));
+        tradeWithinCityTitle.setPreferredSize(new Dimension(425, 50));
+        tradeWithinCityTitle.setOpaque(false);
+        tradeWithinCityTitle.setForeground(Color.WHITE);
+
+        JCheckBox tradeWithinCityButton = new JCheckBox();
+        tradeWithinCityButton.setPreferredSize(new Dimension(25, 25));
+        tradeWithinCityButton.setSelected(false);
+        tradeWithinCityButton.setForeground(Color.WHITE);
+        tradeWithinCityButton.setBackground(bg);
+
         JLabel otherTraderNameTitle = new JLabel("Trader Username:");
         otherTraderNameTitle.setFont(italic.deriveFont(20f));
         otherTraderNameTitle.setPreferredSize(new Dimension(450,50));
@@ -1257,6 +1269,33 @@ public class TradePanel extends JPanel implements ActionListener {
             }
         });
 
+        tradeWithinCityButton.addItemListener(ex -> {
+            traders.setVisible(false);
+            traders.removeAllItems();
+            allTraders.clear();
+            if(tradeWithinCityButton.isSelected()) {
+                try {
+                    allTraders.addAll(infoManager.getAllTradersInCity(userQuery.getCity(trader)));
+                } catch (UserNotFoundException | AuthorizationException e2) {
+                    e2.printStackTrace();
+                }
+            } else {
+                allTraders.addAll(infoManager.getAllTraders());
+            }
+            allTraders.forEach(traderId -> {
+                try {
+                    traders.addItem(userQuery.getUsername(traderId));
+                } catch (UserNotFoundException e2) {
+                    e2.printStackTrace();
+                }
+            });
+            otherTraderItems.removeAllItems();
+            otherTraderItems.setEnabled(false);
+            traders.setVisible(true);
+            traders.revalidate();
+            traders.repaint();
+        });
+
 
         JLabel messageTitle = new JLabel("Attach a message with this trade: (Optional)");
         messageTitle.setFont(italic.deriveFont(20f));
@@ -1343,7 +1382,9 @@ public class TradePanel extends JPanel implements ActionListener {
 				}
             }
         });
-
+        
+        addNewTradePanel.add(tradeWithinCityTitle);
+        addNewTradePanel.add(tradeWithinCityButton);
         addNewTradePanel.add(otherTraderNameTitle);
         addNewTradePanel.add(traders);
         addNewTradePanel.add(traderItemTitle);
