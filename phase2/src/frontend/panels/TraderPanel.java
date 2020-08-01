@@ -24,15 +24,16 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
+import frontend.panels.search_panels.SearchPanel;
 import frontend.panels.trader_subpanels.ItemsPanel;
 import frontend.panels.trader_subpanels.NotificationsPanel;
 import frontend.panels.trader_subpanels.SettingsPanel;
 import frontend.panels.trader_subpanels.TradePanel;
 
+/**
+ * This is used to show what a trader account sees
+ */
 public class TraderPanel extends JPanel implements ActionListener {
-
-
-
     private JButton logoutButton;
     private JPanel menuContainer;
     private final JPanel menuPanelContainer;
@@ -46,8 +47,16 @@ public class TraderPanel extends JPanel implements ActionListener {
     private final Color GRAY = new Color(75, 75, 75);
     private final Color RED = new Color(219, 58, 52);
 
+    /**
+     * Making a new trader panel
+     * @param traderId the trader id
+     * @param regular regular font
+     * @param bold bold font
+     * @param italic italics font
+     * @param boldItalic bold italics font
+     * @throws IOException if accessing database has issues
+     */
     public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
-
         this.setSize(1600, 900);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
@@ -66,23 +75,14 @@ public class TraderPanel extends JPanel implements ActionListener {
 
         try {
             createMenuContainer();
-
             createIcon(traderId, boldItalic);
-
             createUsernameTitle(traderId, regular);
-
             createUserIdTitle(traderId, regular);
-
             createTradePanelButton(regular);
-
             createItemsPanelButton(regular);
-
             createNotificationPanelButton(regular);
-
             createSearchPanelButton(regular);
-
             createSettingsPanelButton(regular);
-
             createLogoutButton(boldItalic);
 
             menuPanelContainer.add(tradePanel, "Trades");
