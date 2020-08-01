@@ -58,7 +58,9 @@ public class TradingManager extends Manager {
         Trader trader = getTrader(traderId1);
         Trader secondTrader = getTrader(traderId2);
         if (traderId2.equals(traderId1)) throw new CannotTradeException("Cannot trade with yourself");
-
+        if (firstUserOfferId.equals("") && secondUserOfferId.equals("")){
+            throw new CannotTradeException("You must add items to the trade");
+        }
         // If neither trader can trade, throw an exception
         if (!trader.canTrade())
             throw new CannotTradeException("This user cannot trade due to trading restrictions");
