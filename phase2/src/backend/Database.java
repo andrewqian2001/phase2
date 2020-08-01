@@ -5,7 +5,8 @@ import backend.exceptions.EntryNotFoundException;
 import backend.models.DatabaseItem;
 
 import java.io.*;
-import java.util.ArrayList;
+
+import java.util.HashMap;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -45,23 +46,10 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @return the old item in the entry, if it doesn't exist then the new item is returned
      */
     public T update(T newItem) {
-        ArrayList<T> allItems;
-        T oldItem = newItem;
+        HashMap<String, T> allItems = getItems();
+        T oldItem = allItems.getOrDefault(newItem.getId(), newItem);
         try {
-            allItems = getItems();
-            if (allItems.size() == 0) {
-                allItems.add(newItem);
-                save(allItems);
-                return oldItem;
-            }
-            for (int i = 0; i < allItems.size(); i++) {
-                T currItem = allItems.get(i);
-                if (currItem.getId().equals(newItem.getId())) {
-                    allItems.set(i, newItem);
-                    oldItem = currItem;
-                    break;
-                } else if (i == allItems.size() - 1) allItems.add(newItem);
-            }
+            allItems.put(newItem.getId(), newItem);
             save(allItems);
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Input could not be read. Failed to update.", e);
@@ -76,19 +64,17 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @param id the entry id
      */
     public void delete(String id) {
-        ArrayList<T> allItems;
-        allItems = getItems();
-        for (T item : allItems) {
-            if (item.getId().equals(id)) {
-                allItems.remove(item);
-                try {
-                    save(allItems);
-                    return;
-                } catch (FileNotFoundException e) {
-                }
+        HashMap<String, T> allItems = getItems();
+        if (allItems.containsKey(id)) {
+            allItems.remove(id);
+            try {
+                save(allItems);
+            } catch (FileNotFoundException e) {
+                logger.log(Level.SEVERE, "Could not save when deleting.", e);
             }
         }
     }
+
 
     /**
      * Returns the object instance equivalent of the id given
@@ -98,11 +84,8 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @throws EntryNotFoundException if the id given does not exist in the list of items
      */
     public T populate(String id) throws EntryNotFoundException {
-        ArrayList<T> allItems = getItems();
-        for (T item : allItems) {
-            if (item.getId().equals(id))
-                return item;
-        }
+        HashMap<String, T> allItems = getItems();
+        if (allItems.containsKey(id)) return allItems.get(id);
         throw new EntryNotFoundException("Could not find item " + id);
     }
 
@@ -126,23 +109,23 @@ public class Database<T extends DatabaseItem> implements Serializable {
      *
      * @return all the items in the file
      */
-    public ArrayList<T> getItems() {
+    public HashMap<String, T> getItems() {
         if (!new File(this.FILE_PATH).exists()) {
             logger.log(Level.SEVERE, "The file " + FILE_PATH + " doesn't exist.");
-            return new ArrayList<T>();
+            return new HashMap<>();
         }
         try {
             InputStream buffer = new BufferedInputStream(new FileInputStream(this.FILE_PATH));
             ObjectInput input = new ObjectInputStream(buffer);
             Object tmp = input.readObject();
             input.close();
-            return (ArrayList<T>) tmp;
+            return (HashMap<String, T>) tmp;
         } catch (IOException e) {
             logger.log(Level.INFO, "Empty file was used.");
         } catch (ClassNotFoundException e) {
             logger.log(Level.SEVERE, "Input could not be read.", e);
         }
-        return new ArrayList<T>();
+        return new HashMap<>();
 
     }
 
@@ -152,7 +135,7 @@ public class Database<T extends DatabaseItem> implements Serializable {
      * @param items the items that are being saved to the file
      * @throws FileNotFoundException if the file doesn't exist
      */
-    public void save(ArrayList<T> items) throws FileNotFoundException {
+    public void save(HashMap<String, T> items) throws FileNotFoundException {
         if (!new File(this.FILE_PATH).exists()) {
             logger.log(Level.SEVERE, "The file " + FILE_PATH + " doesn't exist.");
             throw new FileNotFoundException();

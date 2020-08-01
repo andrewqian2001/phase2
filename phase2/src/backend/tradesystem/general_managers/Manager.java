@@ -10,6 +10,7 @@ import backend.models.users.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This is used to help make accessing and modifying the database files to be easier,
@@ -19,17 +20,16 @@ import java.util.ArrayList;
  */
 public class Manager {
 
-
     private final Database<User> userDatabase;
     private final Database<TradableItem> tradableItemDatabase;
     private final Database<Trade> tradeDatabase;
 
-
     /**
      * Making the database objects with set file paths
-     * @param userFilePath the user database file path
+     *
+     * @param userFilePath         the user database file path
      * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath the trade database file path
+     * @param tradeFilePath        the trade database file path
      * @throws IOException issues with getting the file path
      */
     public Manager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
@@ -170,17 +170,17 @@ public class Manager {
     }
 
     /**
-     * Gets a user by username
+     * Gets a user by username, this runs in *n* time complexity
      *
      * @param username username of the User
      * @return the user id
      * @throws UserNotFoundException cant find username
      */
     public String getUserByUsername(String username) throws UserNotFoundException {
-        ArrayList<User> users = getUserDatabase().getItems();
-        for (User user : users)
-            if (user.getUsername().equals(username))
-                return user.getId();
+        HashMap<String, User> users = getUserDatabase().getItems();
+        for (String userId : users.keySet())
+            if (users.get(userId).getUsername().equals(username))
+                return userId;
         throw new UserNotFoundException();
     }
 }

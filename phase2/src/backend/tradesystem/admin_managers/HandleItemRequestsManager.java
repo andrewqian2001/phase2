@@ -27,9 +27,10 @@ public class HandleItemRequestsManager extends Manager {
 
     /**
      * Making the database objects with set file paths
-     * @param userFilePath the user database file path
+     *
+     * @param userFilePath         the user database file path
      * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath the trade database file path
+     * @param tradeFilePath        the trade database file path
      * @throws IOException issues with getting the file path
      */
     public HandleItemRequestsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
@@ -40,18 +41,21 @@ public class HandleItemRequestsManager extends Manager {
      * Gets a hashmap of trader ids to an arraylist of their requested item ids
      *
      * @return a hashmap of trader ids to an arraylist of their requested item ids
-     * @throws TradableItemNotFoundException if the tradable item doesn't exist in the database
      */
-    public HashMap<String, ArrayList<String>> getAllItemRequests() throws TradableItemNotFoundException {
+    public HashMap<String, ArrayList<String>> getAllItemRequests() {
         HashMap<String, ArrayList<String>> allItems = new HashMap<>();
 
-        for (User user : getUserDatabase().getItems()) {
-            if (user instanceof Trader) {
-                // Get requested item IDs
-                ArrayList<String> requestedItems = ((Trader) user).getRequestedItems();
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Trader) {
+                    // Get requested item IDs
+                    ArrayList<String> requestedItems = ((Trader) getUser(userId)).getRequestedItems();
 
-                // Add the populated list to the result
-                allItems.put(user.getId(), requestedItems);
+                    // Add the populated list to the result
+                    allItems.put(userId, requestedItems);
+                }
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
             }
         }
         return allItems;
@@ -64,10 +68,10 @@ public class HandleItemRequestsManager extends Manager {
      * @param traderID   ID of the trader
      * @param reqItemID  the requested item to be confirmed or rejected
      * @param isAccepted true if item is accepted, false if rejected
-     * @throws TradableItemNotFoundException tradable item id isn't found
-     * @throws AuthorizationException if the user isn't a trader
-     * @throws UserNotFoundException trader isn't found
      * @return the updated trader
+     * @throws TradableItemNotFoundException tradable item id isn't found
+     * @throws AuthorizationException        if the user isn't a trader
+     * @throws UserNotFoundException         trader isn't found
      */
     public void processItemRequest(String traderID, String reqItemID, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         Trader trader = getTrader(traderID);

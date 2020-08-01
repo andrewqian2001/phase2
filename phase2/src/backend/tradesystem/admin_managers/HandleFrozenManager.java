@@ -8,6 +8,7 @@ import backend.tradesystem.general_managers.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Handles anything relating to freezing a user
@@ -61,15 +62,16 @@ public class HandleFrozenManager extends Manager {
     }
 
     /**
-     * Gets a list of all users that requested to be unfrozen
+     * Gets a list of all user ids that requested to be unfrozen
      *
      * @return a list of all user ids that requested to be unfrozen
      */
     public ArrayList<String> getAllUnfreezeRequests() {
         ArrayList<String> result = new ArrayList<>();
-        for (User user : getUserDatabase().getItems())
-            if (user.isUnfrozenRequested())
-                result.add(user.getId());
+        HashMap<String, User> items = getUserDatabase().getItems();
+        for (String userId : items.keySet())
+            if (items.get(userId).isUnfrozenRequested())
+                result.add(userId);
         return result;
     }
 
@@ -80,9 +82,11 @@ public class HandleFrozenManager extends Manager {
      */
     public ArrayList<String> getShouldBeFrozen() {
         ArrayList<String> freezable = new ArrayList<>();
-        for (User user : getUserDatabase().getItems()) {
+        HashMap<String, User> items = getUserDatabase().getItems();
+        for (String userId : items.keySet()) {
+            User user = items.get(userId);
             if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()) {
-                freezable.add(user.getId());
+                freezable.add(userId);
             }
         }
         return freezable;
