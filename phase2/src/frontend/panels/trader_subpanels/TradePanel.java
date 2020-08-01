@@ -1075,12 +1075,12 @@ public class TradePanel extends JPanel implements ActionListener {
 
         JDialog addNewTradeModal = new JDialog();
         addNewTradeModal.setTitle("Add New Trade");
-        addNewTradeModal.setSize(500, 900);
+        addNewTradeModal.setSize(500, 1000);
         addNewTradeModal.setResizable(false);
         addNewTradeModal.setLocationRelativeTo(null);
 
         JPanel addNewTradePanel = new JPanel();
-        addNewTradePanel.setPreferredSize(new Dimension(500,900));
+        addNewTradePanel.setPreferredSize(new Dimension(500,1000));
         addNewTradePanel.setBackground(bg);
 
         JLabel otherTraderNameTitle = new JLabel("Trader Username:");
@@ -1222,6 +1222,20 @@ public class TradePanel extends JPanel implements ActionListener {
             }
         });
 
+
+        JLabel messageTitle = new JLabel("Attach a message with this trade: (Optional)");
+        messageTitle.setFont(italic.deriveFont(20f));
+        messageTitle.setPreferredSize(new Dimension(450, 50));
+        messageTitle.setOpaque(false);
+        messageTitle.setForeground(Color.WHITE);
+
+        JTextField messageInput = new JTextField();
+        messageInput.setFont(regular.deriveFont(20f));
+        messageInput.setBackground(gray2);
+        messageInput.setForeground(Color.BLACK);
+        messageInput.setPreferredSize(new Dimension(450, 50));
+        messageInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
         JLabel error = new JLabel();
         error.setPreferredSize(new Dimension(500, 50));
         error.setForeground(red);
@@ -1283,7 +1297,7 @@ public class TradePanel extends JPanel implements ActionListener {
                     if (otherTraderItems.getSelectedItem() != null) {
                         otherTraderOffer = userQuery.getAvailableItems(userQuery.getUserByUsername((String) traders.getSelectedItem())).get(otherTraderItems.getSelectedIndex());
                     }
-                    String message = "";
+                    String message = messageInput.getText();
 
                     tradeManager.requestTrade(trader, userQuery.getUserByUsername((String) traders.getSelectedItem()), firstMeeting, secondMeeting, meetingLocationInput.getText(),
                             firstTraderOffer, otherTraderOffer, 3, message);
@@ -1309,6 +1323,8 @@ public class TradePanel extends JPanel implements ActionListener {
         addNewTradePanel.add(firstMeetingDate);
         addNewTradePanel.add(secondMeetingDateTitle);
         addNewTradePanel.add(secondMeetingDate);
+        addNewTradePanel.add(messageTitle);
+        addNewTradePanel.add(messageInput);
         addNewTradePanel.add(error);
         
         addNewTradeModal.add(addNewTradePanel);
