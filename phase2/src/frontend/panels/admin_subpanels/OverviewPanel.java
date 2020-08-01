@@ -250,101 +250,97 @@ public class OverviewPanel extends JPanel {
     }
 
     private void getAllItemRequests() {
-        try {
-            HashMap<String, ArrayList<String>> itemRequests = itemRequestManager.getAllItemRequests();
-            if (itemRequests.size() == 0) {
-                itemRequestsContainer = new JPanel();
-                itemRequestsContainer.setBackground(bg);
-                JLabel noItemsFound = new JLabel("<html><pre>No Item Requests Found</pre></html>");
-                noItemsFound.setFont(regular.deriveFont(30f));
-                noItemsFound.setPreferredSize(new Dimension(1000, 275));
-                noItemsFound.setHorizontalAlignment(JLabel.CENTER);
-                noItemsFound.setVerticalAlignment(JLabel.CENTER);
-                noItemsFound.setForeground(gray);
-                itemRequestsContainer.add(noItemsFound);
-                return;
-            }
-            int numRows = 0;
-            for (String t : itemRequests.keySet())
-                numRows += itemRequests.get(t).size();
-            if (numRows < 4)
-                numRows = 4;
-            itemRequestsContainer = new JPanel(new GridLayout(numRows, 1));
+        HashMap<String, ArrayList<String>> itemRequests = itemRequestManager.getAllItemRequests();
+        if (itemRequests.size() == 0) {
+            itemRequestsContainer = new JPanel();
             itemRequestsContainer.setBackground(bg);
-            itemRequests.forEach((t, items) -> {
-                items.forEach(item -> {
-                    try {
-                        JPanel itemRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
-                        itemRequestPanel.setPreferredSize(new Dimension(1000, 75));
-                        itemRequestPanel.setBackground(bg);
-                        itemRequestPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, gray));
-
-                        JLabel traderName = new JLabel(userQuery.getUsername(t));
-                        traderName.setFont(regular.deriveFont(20f));
-                        traderName.setForeground(Color.WHITE);
-                        traderName.setHorizontalAlignment(JLabel.LEFT);
-                        traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
-
-                        JLabel traderItemName = new JLabel(itemQuery.getName(item));
-                        traderItemName.setFont(regular.deriveFont(20f));
-                        traderItemName.setForeground(Color.WHITE);
-                        traderItemName.setHorizontalAlignment(JLabel.LEFT);
-
-                        JLabel traderItemDesc = new JLabel(itemQuery.getName(item));
-                        traderItemDesc.setFont(regular.deriveFont(15f));
-                        traderItemDesc.setForeground(Color.WHITE);
-                        traderItemDesc.setHorizontalAlignment(JLabel.CENTER);
-
-                        JButton acceptItemRequestButton = new JButton("Accept");
-                        acceptItemRequestButton.setFont(bold.deriveFont(20f));
-                        acceptItemRequestButton.setForeground(Color.WHITE);
-                        acceptItemRequestButton.setBackground(confirmButton);
-                        acceptItemRequestButton.setOpaque(true);
-                        acceptItemRequestButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 50, bg));
-
-                        JButton rejectItemRequestButton = new JButton("Reject");
-                        rejectItemRequestButton.setFont(bold.deriveFont(20f));
-                        rejectItemRequestButton.setForeground(Color.WHITE);
-                        rejectItemRequestButton.setBackground(red);
-                        rejectItemRequestButton.setOpaque(true);
-                        rejectItemRequestButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 50, bg));
-
-                        itemRequestPanel.add(traderName);
-                        itemRequestPanel.add(traderItemName);
-                        itemRequestPanel.add(traderItemDesc);
-                        itemRequestPanel.add(acceptItemRequestButton);
-                        itemRequestPanel.add(rejectItemRequestButton);
-                        itemRequestsContainer.add(itemRequestPanel);
-
-                        acceptItemRequestButton.addActionListener(e -> {
-                            try {
-                                itemRequestManager.processItemRequest(t, item, true);
-                                itemRequestsContainer.remove(itemRequestPanel);
-                                itemRequestsContainer.revalidate();
-                                itemRequestsContainer.repaint();
-                            } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
-                                System.out.println(e1.getMessage());
-                            }
-                        });
-
-                        rejectItemRequestButton.addActionListener(e -> {
-                            try {
-                                itemRequestManager.processItemRequest(t, item, false);
-                                itemRequestsContainer.remove(itemRequestPanel);
-                                itemRequestsContainer.revalidate();
-                                itemRequestsContainer.repaint();
-                            } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
-                                System.out.println(e1.getMessage());
-                            }
-                        });
-                    } catch (TradableItemNotFoundException | UserNotFoundException e) {
-                        System.out.println(e.getMessage());
-                    }
-                });
-            });
-        } catch (TradableItemNotFoundException e) {
-            System.out.println(e.getMessage());
+            JLabel noItemsFound = new JLabel("<html><pre>No Item Requests Found</pre></html>");
+            noItemsFound.setFont(regular.deriveFont(30f));
+            noItemsFound.setPreferredSize(new Dimension(1000, 275));
+            noItemsFound.setHorizontalAlignment(JLabel.CENTER);
+            noItemsFound.setVerticalAlignment(JLabel.CENTER);
+            noItemsFound.setForeground(gray);
+            itemRequestsContainer.add(noItemsFound);
+            return;
         }
+        int numRows = 0;
+        for (String t : itemRequests.keySet())
+            numRows += itemRequests.get(t).size();
+        if (numRows < 4)
+            numRows = 4;
+        itemRequestsContainer = new JPanel(new GridLayout(numRows, 1));
+        itemRequestsContainer.setBackground(bg);
+        itemRequests.forEach((t, items) -> {
+            items.forEach(item -> {
+                try {
+                    JPanel itemRequestPanel = new JPanel(new GridLayout(1, 6, 10, 0));
+                    itemRequestPanel.setPreferredSize(new Dimension(1000, 75));
+                    itemRequestPanel.setBackground(bg);
+                    itemRequestPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, gray));
+
+                    JLabel traderName = new JLabel(userQuery.getUsername(t));
+                    traderName.setFont(regular.deriveFont(20f));
+                    traderName.setForeground(Color.WHITE);
+                    traderName.setHorizontalAlignment(JLabel.LEFT);
+                    traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+
+                    JLabel traderItemName = new JLabel(itemQuery.getName(item));
+                    traderItemName.setFont(regular.deriveFont(20f));
+                    traderItemName.setForeground(Color.WHITE);
+                    traderItemName.setHorizontalAlignment(JLabel.LEFT);
+
+                    JLabel traderItemDesc = new JLabel(itemQuery.getName(item));
+                    traderItemDesc.setFont(regular.deriveFont(15f));
+                    traderItemDesc.setForeground(Color.WHITE);
+                    traderItemDesc.setHorizontalAlignment(JLabel.CENTER);
+
+                    JButton acceptItemRequestButton = new JButton("Accept");
+                    acceptItemRequestButton.setFont(bold.deriveFont(20f));
+                    acceptItemRequestButton.setForeground(Color.WHITE);
+                    acceptItemRequestButton.setBackground(confirmButton);
+                    acceptItemRequestButton.setOpaque(true);
+                    acceptItemRequestButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 50, bg));
+
+                    JButton rejectItemRequestButton = new JButton("Reject");
+                    rejectItemRequestButton.setFont(bold.deriveFont(20f));
+                    rejectItemRequestButton.setForeground(Color.WHITE);
+                    rejectItemRequestButton.setBackground(red);
+                    rejectItemRequestButton.setOpaque(true);
+                    rejectItemRequestButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 50, bg));
+
+                    itemRequestPanel.add(traderName);
+                    itemRequestPanel.add(traderItemName);
+                    itemRequestPanel.add(traderItemDesc);
+                    itemRequestPanel.add(acceptItemRequestButton);
+                    itemRequestPanel.add(rejectItemRequestButton);
+                    itemRequestsContainer.add(itemRequestPanel);
+
+                    acceptItemRequestButton.addActionListener(e -> {
+                        try {
+                            itemRequestManager.processItemRequest(t, item, true);
+                            itemRequestsContainer.remove(itemRequestPanel);
+                            itemRequestsContainer.revalidate();
+                            itemRequestsContainer.repaint();
+                        } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
+                            System.out.println(e1.getMessage());
+                        }
+                    });
+
+                    rejectItemRequestButton.addActionListener(e -> {
+                        try {
+                            itemRequestManager.processItemRequest(t, item, false);
+                            itemRequestsContainer.remove(itemRequestPanel);
+                            itemRequestsContainer.revalidate();
+                            itemRequestsContainer.repaint();
+                        } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
+                            System.out.println(e1.getMessage());
+                        }
+                    });
+                } catch (TradableItemNotFoundException | UserNotFoundException e) {
+                    System.out.println(e.getMessage());
+                }
+            });
+        });
     }
 
     private void getAllUnFreezeRequests() {

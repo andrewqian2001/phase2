@@ -54,9 +54,9 @@ public class ReportManager extends Manager {
         Report report = new Report(fromUserId, toUserId, message);
 
         // Add the report to all admins so that they can see the report.
-        for (User user : getUserDatabase().getItems()) {
-            if (user instanceof Admin) {
-                Admin admin = ((Admin) user);
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            if (getUser(userId) instanceof Admin) {
+                Admin admin = ((Admin) getUser(userId));
                 admin.getReports().add(report);
                 updateUserDatabase(admin);
                 successful = true;
@@ -72,15 +72,19 @@ public class ReportManager extends Manager {
      * @return all reports
      */
     public ArrayList<String[]> getReports() {
-        for (User user : getUserDatabase().getItems()) {
-            if (user instanceof Admin) {
-                Admin admin = ((Admin) user);
-                ArrayList<String[]> reports = new ArrayList<>();
-                for (Report report : admin.getReports()) {
-                    String[] item = {report.getFromUserId(), report.getReportOnUserId(), report.getMessage(), report.getId()};
-                    reports.add(item);
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Admin) {
+                    Admin admin = ((Admin) getUser(userId));
+                    ArrayList<String[]> reports = new ArrayList<>();
+                    for (Report report : admin.getReports()) {
+                        String[] item = {report.getFromUserId(), report.getReportOnUserId(), report.getMessage(), report.getId()};
+                        reports.add(item);
+                    }
+                    return reports;
                 }
-                return reports;
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
             }
         }
         return new ArrayList<>();
@@ -92,12 +96,16 @@ public class ReportManager extends Manager {
      * @param reportId the report being removed
      */
     public void clearReports(String reportId) {
-        for (User user : getUserDatabase().getItems()) {
-            if (user instanceof Admin) {
-                Admin admin = ((Admin) user);
-                ArrayList<Report> reports = admin.getReports();
-                reports.removeIf(report -> report.getId().equals(reportId));
-                updateUserDatabase(admin);
+        for (String userId: getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Admin) {
+                    Admin admin = ((Admin) getUser(userId));
+                    ArrayList<Report> reports = admin.getReports();
+                    reports.removeIf(report -> report.getId().equals(reportId));
+                    updateUserDatabase(admin);
+                }
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -106,11 +114,15 @@ public class ReportManager extends Manager {
      * Clears all reports
      */
     public void clearReports() {
-        for (User user : getUserDatabase().getItems()) {
-            if (user instanceof Admin) {
-                Admin admin = ((Admin) user);
-                admin.setReports(new ArrayList<>());
-                updateUserDatabase(admin);
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Admin) {
+                    Admin admin = ((Admin) getUser(userId));
+                    admin.setReports(new ArrayList<>());
+                    updateUserDatabase(admin);
+                }
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
             }
         }
     }

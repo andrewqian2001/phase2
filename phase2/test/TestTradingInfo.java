@@ -124,7 +124,7 @@ public class TestTradingInfo extends TestManager{
             Why is the wishlist empty when i added crack to the wishlist
              */
             for(String ids: tHasInventory2.getWishlist()){
-                System.out.println("?????????????????????????????????????????????");
+                //System.out.println("?????????????????????????????????????????????");
                 //System.out.println("wishlist item : " + tradingInfoManager.getTradableItem(ids).getName());
             }
 
@@ -281,9 +281,9 @@ public class TestTradingInfo extends TestManager{
         }
     }
 
-    /*
-    This is for andrew!
 
+
+/*
 
     @Test
     public void testSuggestLend() {
@@ -307,21 +307,23 @@ public class TestTradingInfo extends TestManager{
             e.printStackTrace();
         }
     }
+
+
     @Test
     public void testSuggestTrade(){
         try {
             for (int i = 1; i < traders.length - 1; i++) {
                 ArrayList<String[]> suggested = tradingInfoManager.suggestTrade(traders[i].getId());
                 assertEquals(suggested.size(), 2);
-                assertEquals(suggested.get(0).getFirstUserId(), traders[i].getId());
-                assertEquals(suggested.get(1).getFirstUserId(), traders[i].getId());
-                assertEquals(suggested.get(0).getSecondUserId(), traders[i - 1].getId());
-                assertEquals(suggested.get(1).getSecondUserId(), traders[i + 1].getId());
+                assertEquals(suggested.get(0), traders[i].getId());
+                assertEquals(suggested.get(1), traders[i].getId());
+                assertEquals(suggested.get(0), traders[i - 1].getId());
+                assertEquals(suggested.get(1), traders[i + 1].getId());
 
-                assertEquals(suggested.get(0).getFirstUserOffer(), traders[i - 1].getWishlist().get(0));
-                assertEquals(suggested.get(0).getSecondUserOffer(), traders[i - 1].getAvailableItems().get(0));
-                assertEquals(suggested.get(1).getFirstUserOffer(), traders[i + 1].getWishlist().get(1));
-                assertEquals(suggested.get(1).getSecondUserOffer(), traders[i + 1].getAvailableItems().get(0));
+                assertEquals(suggested.get(0), traders[i - 1].getWishlist().get(0));
+                assertEquals(suggested.get(0), traders[i - 1].getAvailableItems().get(0));
+                assertEquals(suggested.get(1), traders[i + 1].getWishlist().get(1));
+                assertEquals(suggested.get(1), traders[i + 1].getAvailableItems().get(0));
 
             }
         } catch (Exception e) {
@@ -329,7 +331,7 @@ public class TestTradingInfo extends TestManager{
             e.printStackTrace();
         }
     }
-
+*/
     @Test
     public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
         Date date = new Date();
@@ -376,8 +378,7 @@ public class TestTradingInfo extends TestManager{
 
         ArrayList<String> listNames = new ArrayList<>();
 
-        //similar search rn still needs a way to deal with strings with missing chars and when the item in wishlist is larger then the item in inventory by a lot
-        //apple watch, watch
+        //similar search rn still needs a way to deal with strings with missing chars
 
         TradableItem i1 = new TradableItem("andrer", "test");
         TradableItem i2 = new TradableItem("ANDREW", "test");
@@ -415,7 +416,7 @@ public class TestTradingInfo extends TestManager{
         tradableItemDatabase.update(i8);
         listNames.add(i7.getId());
         listNames.add(i8.getId());
-        Object[] name4 = tradingInfoManager.similarSearch(("55555"), listNames); //tests for misspelled strings (not the same as strings missing chars which is a problem rn)
+        Object[] name4 = tradingInfoManager.similarSearch(("55555"), listNames); //tests for replaced char strings (not the same as strings missing chars which is a problem rn)
         assertEquals("55554", name4[0]);
         assertEquals(4, name4[1]);
 
@@ -436,9 +437,10 @@ public class TestTradingInfo extends TestManager{
         tradableItemDatabase.update(i12);
         listNames.add(i11.getId());
         listNames.add(i12.getId());
-        Object[] name6 =  tradingInfoManager.similarSearch(("computer"), listNames);//tests for missing char
+        Object[] name6 =  tradingInfoManager.similarSearch(("computer"), listNames);//tests for missing char or extra chars
         //assertEquals( "comuter",name6[0]);
         //assertEquals(7, name6[1]);
+        //k so not sure how this is supposed to be done
 
         TradableItem i13 = new TradableItem("hat", "test");
         TradableItem i14 = new TradableItem("hwat", "test");
@@ -453,10 +455,10 @@ public class TestTradingInfo extends TestManager{
 
 
 
-            problem with similarSearch rn is when a string is missing a letter
+
 
     }
-*/
+
         private void update() {
         try {
             for (int i = 0; i < traders.length; i++) {

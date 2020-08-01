@@ -269,7 +269,7 @@ public class TradePanel extends JPanel implements ActionListener {
 
                     JLabel otherTraderName = new JLabel(userQuery.getUsername(tradeQuery.getFirstUserId(tradeID)));
                     JLabel otherTraderItemName = tradeQuery.getFirstUserOffer(tradeID).equals("") ? new JLabel("N/A")
-                            : new JLabel(itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)));
+                            : new JLabel(itemQuery.getName(tradeQuery.getFirstUserOffer(tradeID)));
                     JLabel traderItemName = tradeQuery.getSecondUserOffer(tradeID).equals("") ? new JLabel("N/A")
                             : new JLabel(itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)));
 
@@ -1124,7 +1124,6 @@ public class TradePanel extends JPanel implements ActionListener {
         otherTraderItems.setForeground(Color.BLACK);
         otherTraderItems.setOpaque(true);
         otherTraderItems.setEnabled(false);
-
 
         traders.addItemListener(ev -> {
             try{
