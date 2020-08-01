@@ -37,8 +37,10 @@ public class OverviewPanel extends JPanel {
     private Color confirmButton = new Color(27, 158, 36);
     private Color current = new Color(32, 32, 32);
     private Color red = new Color(219, 58, 52);
+    private String adminId;
 
-    public OverviewPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    public OverviewPanel(String adminId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+        this.adminId = adminId;
         this.regular = regular;
         this.bold = bold;
         this.italic = italic;

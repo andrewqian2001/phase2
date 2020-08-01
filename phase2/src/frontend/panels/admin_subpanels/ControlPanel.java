@@ -9,8 +9,10 @@ import java.awt.*;
 public class ControlPanel extends JPanel {
 
     private Color bg = new Color(51, 51, 51);
+    private String userId;
 
-    public ControlPanel(User user, Font regular, Font bold, Font italic, Font boldItalic) {
+    public ControlPanel(String uesrId, Font regular, Font bold, Font italic, Font boldItalic) {
+        this.userId = userId;
         this.setSize(1200, 900);
         this.setBackground(Color.BLACK);
         this.setBorder(new EmptyBorder(50,50,100,50));
