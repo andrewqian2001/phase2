@@ -330,6 +330,9 @@ public class TradingManager extends Manager {
         if (!trade.isTraderInTrade(traderId)) throw new AuthorizationException("This trader doesn't belong to this trade");
         if (!getTrader(trade.getFirstUserId()).canTrade() || !getTrader(trade.getSecondUserId()).canTrade())
             throw new CannotTradeException("Could not send a counter trade offer, one of the two traders cannot trade");
+        if (thisTraderOffer.equals("") && thatTraderOffer.equals("")){
+            throw new CannotTradeException("You must add items to the trade");
+        }
         if (trade.getNumEdits() >= trade.getMaxAllowedEdits()) {
             throw new CannotTradeException("Too many edits. Trade is cancelled.");
         }
@@ -339,12 +342,12 @@ public class TradingManager extends Manager {
 
         // if the trader sending the request is the first user...
         if (trader1.getId().equals(traderId)){
-            if (!trader1.getAvailableItems().contains(thisTraderOffer) || !trader2.getAvailableItems().contains(thatTraderOffer)){
+            if (!hasItem(trader1, thisTraderOffer)||!hasItem(trader2, thatTraderOffer)) {
                 throw new CannotTradeException("One of the traders does not have the required item!");
             }
         }
         else{
-            if (!trader1.getAvailableItems().contains(thatTraderOffer) || !trader2.getAvailableItems().contains(thisTraderOffer)){
+            if (!hasItem(trader2, thisTraderOffer)||!hasItem(trader1, thatTraderOffer)){
                 throw new CannotTradeException("One of the traders does not have the required item!");
             }
         }
