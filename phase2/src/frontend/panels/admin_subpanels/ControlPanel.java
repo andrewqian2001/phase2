@@ -1,25 +1,36 @@
 package frontend.panels.admin_subpanels;
 
+import backend.exceptions.AuthorizationException;
+import backend.exceptions.BadPasswordException;
+import backend.exceptions.UserAlreadyExistsException;
+import backend.exceptions.UserNotFoundException;
+import backend.models.users.Trader;
+import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.trader_managers.TraderManager;
+import frontend.WindowManager;
 import frontend.controllers.AdminController;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class ControlPanel extends JPanel {
+public class ControlPanel extends JPanel implements ActionListener {
 
     private Color bg = new Color(51, 51, 51);
     private String userId;
     private final LoginManager loginManager = new LoginManager();
-    private final AdminController adminManager = new AdminController();
+    private final TraderManager traderManager = new TraderManager();
     private JPanel titles, splitContainer, tradeSettings, info, newAdmin, input;
     private JLabel tradeSettingsTitle, newAdminTitle, minLend, tradeLimit, incompleteLimit, username, password, errorMessage, ah;
     private JComboBox<Integer> minLendChoice, tradeLimitChoice, incompleteLimitChoice;
     private GridBagConstraints gbc;
     private JButton submitSettings, submitAdmin;
-    private JTextField usernameInput, passwordInput;
+    private JTextField usernameInput;
+    private JPasswordField passwordInput;
 
     public ControlPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.userId = userId;
@@ -138,24 +149,26 @@ public class ControlPanel extends JPanel {
                     password.setHorizontalAlignment(JLabel.CENTER);
                     input.add(password);
 
-                    passwordInput = new JTextField();
+                    passwordInput = new JPasswordField();
                     passwordInput.setBorder(BorderFactory.createMatteBorder(25,0,25,0,bg));
                     passwordInput.setFont(regular.deriveFont(25f));
                     input.add(passwordInput);
 
-                errorMessage = new JLabel("Stuff");
+                errorMessage = new JLabel();
+                errorMessage.setPreferredSize(new Dimension(450, 60));
                 errorMessage.setForeground(Color.red);
-                errorMessage.setFont(regular.deriveFont(25f));
+                errorMessage.setFont(regular.deriveFont(15f));
                 errorMessage.setHorizontalAlignment(JLabel.CENTER);
                 gbc.gridy = 1;
                 gbc.weighty = 0.5;
                 newAdmin.add(errorMessage, gbc);
 
                 submitAdmin = new JButton("Submit");
-                submitAdmin.setBorder(BorderFactory.createMatteBorder(0,100,0,100, bg));
+                submitAdmin.setBorder(BorderFactory.createMatteBorder(0,160,0,160, bg));
                 submitAdmin.setBackground(Color.green);
                 submitAdmin.setForeground(Color.WHITE);
                 submitAdmin.setFont(bold.deriveFont(25f));
+                submitAdmin.addActionListener(this);
                 gbc.gridy = 2;
                 gbc.weighty = 0.1;
                 gbc.insets = new Insets(30,0,0,0);
@@ -171,4 +184,35 @@ public class ControlPanel extends JPanel {
         this.add(splitContainer);
         this.add(ah);
     }
+
+    /**
+     * Used for displaying some message in the login screen
+     * @param msg the message being displayed
+     */
+    public void notifyLogin(String msg) {
+        errorMessage.setText(msg);
+        errorMessage.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == submitAdmin) {
+            try {
+                String loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.ADMIN);
+                if(loginManager.getType(loggedInUser).equals(UserTypes.ADMIN)) {
+                    traderManager.setCity(loggedInUser, "Toronto");
+                }
+                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+            } catch(BadPasswordException ex) {
+                notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
+            } catch(UserAlreadyExistsException ignored) {
+                notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
+            } catch(IOException | UserNotFoundException | AuthorizationException ex) {
+                ex.printStackTrace();
+            }
+        } else if(e.getActionCommand().equals("Register")) {
+
+        }
+    }
 }
+
