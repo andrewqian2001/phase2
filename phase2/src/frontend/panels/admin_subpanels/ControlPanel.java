@@ -120,7 +120,7 @@ public class ControlPanel extends JPanel implements ActionListener {
                     info.add(incompleteLimitChoice);
 
                 submitSettings = new JButton("Submit");
-                submitSettings.setBorder(BorderFactory.createMatteBorder(0,160,0,160, bg));
+                submitSettings.setBorder(BorderFactory.createMatteBorder(10,160,10,160, bg));
                 submitSettings.setBackground(Color.green);
                 submitSettings.setForeground(Color.WHITE);
                 submitSettings.setFont(bold.deriveFont(25f));
@@ -132,17 +132,16 @@ public class ControlPanel extends JPanel implements ActionListener {
             newAdmin = new JPanel(new GridBagLayout());
             newAdmin.setPreferredSize(new Dimension(450, 300));
             gbc = new GridBagConstraints();
-            newAdmin.setBorder(BorderFactory.createMatteBorder(10, 0, 20, 0, bg));
+            newAdmin.setBorder(BorderFactory.createMatteBorder(30, 0, 20, 0, bg));
             newAdmin.setBackground(bg);
             splitContainer.add(newAdmin);
 
-                input = new JPanel(new GridLayout(2,2, 60, 20));
-                input.setPreferredSize(new Dimension(450, 180));
+                input = new JPanel(new GridLayout(2,2, 70, 20));
                 input.setBorder(BorderFactory.createMatteBorder(0, 0, 20, 0, bg));
                 input.setBackground(bg);
                 gbc.fill = GridBagConstraints.BOTH;
                 gbc.gridy = 0;
-                gbc.weighty = 0.4;
+                gbc.weighty = 0.6;
                 newAdmin.add(input, gbc);
 
                     username = new JLabel("Username:");
@@ -168,23 +167,22 @@ public class ControlPanel extends JPanel implements ActionListener {
                     input.add(passwordInput);
 
                 errorMessage = new JLabel();
-                errorMessage.setPreferredSize(new Dimension(450, 60));
+                errorMessage.setPreferredSize(new Dimension(450, 80));
                 errorMessage.setForeground(Color.red);
                 errorMessage.setFont(regular.deriveFont(15f));
                 errorMessage.setHorizontalAlignment(JLabel.CENTER);
                 gbc.gridy = 1;
-                gbc.weighty = 0.5;
+                gbc.weighty = 0.3;
                 newAdmin.add(errorMessage, gbc);
 
                 submitAdmin = new JButton("Submit");
-                submitAdmin.setBorder(BorderFactory.createMatteBorder(0,160,0,160, bg));
+                    submitAdmin.setBorder(BorderFactory.createMatteBorder(0,130,10,130, bg));
                 submitAdmin.setBackground(Color.green);
                 submitAdmin.setForeground(Color.WHITE);
                 submitAdmin.setFont(bold.deriveFont(25f));
                 submitAdmin.addActionListener(this);
                 gbc.gridy = 2;
                 gbc.weighty = 0.1;
-                gbc.insets = new Insets(30,0,0,0);
                 newAdmin.add(submitAdmin, gbc);
 
         ah = new JLabel("<html><b><i>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. <br>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <br>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</i></b></html>");
