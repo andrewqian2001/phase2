@@ -1125,8 +1125,6 @@ public class TradePanel extends JPanel implements ActionListener {
         otherTraderItems.setOpaque(true);
         otherTraderItems.setEnabled(false);
 
-        System.out.println(traders);
-
         traders.addItemListener(ev -> {
             try{
                 if (ev.getStateChange() == ItemEvent.SELECTED) {
