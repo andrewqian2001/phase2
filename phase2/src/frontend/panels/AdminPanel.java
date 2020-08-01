@@ -13,6 +13,7 @@ import frontend.WindowManager;
 
 import frontend.panels.admin_subpanels.ControlPanel;
 import frontend.panels.admin_subpanels.OverviewPanel;
+import frontend.panels.search_panels.SearchPanel;
 
 public class AdminPanel extends JPanel implements ActionListener {
 
