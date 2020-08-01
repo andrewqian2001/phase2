@@ -33,7 +33,6 @@ import backend.exceptions.CannotTradeException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.TradeBuilder;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
@@ -53,7 +52,6 @@ public class TradePanel extends JPanel implements ActionListener {
     private GridBagConstraints gbc;
     private TradingInfoManager infoManager;
 
-    private TradeBuilder tradeBuilder;
 
     private Color bg = new Color(51, 51, 51);
     private Color gray = new Color(196, 196, 196);
@@ -76,7 +74,6 @@ public class TradePanel extends JPanel implements ActionListener {
 
         tradeManager = new TradingManager();
         infoManager = new TradingInfoManager();
-        tradeBuilder = new TradeBuilder();
 
         tradeQuery = new TradeQuery();
         userQuery = new UserQuery();
