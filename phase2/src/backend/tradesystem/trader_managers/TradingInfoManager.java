@@ -43,9 +43,14 @@ public class TradingInfoManager extends Manager {
      */
     public ArrayList<String> getAllTraders() {
         ArrayList<String> allTraders = new ArrayList<>();
-        for (User user : getUserDatabase().getItems())
-            if (user instanceof Trader)
-                allTraders.add(user.getId());
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId)  instanceof Trader)
+                    allTraders.add(userId);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         return allTraders;
     }
 
@@ -57,9 +62,14 @@ public class TradingInfoManager extends Manager {
      */
     public ArrayList<String> searchTrader(String name) {
         ArrayList<String> similarTraders = new ArrayList<>();
-        for (User user : getUserDatabase().getItems())
-            if (user instanceof Trader && user.getUsername().toLowerCase().contains(name.toLowerCase()))
-                similarTraders.add(user.getId());
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Trader && getUser(userId).getUsername().toLowerCase().contains(name.toLowerCase()))
+                    similarTraders.add(userId);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         return similarTraders;
     }
 
@@ -71,9 +81,14 @@ public class TradingInfoManager extends Manager {
      */
     public ArrayList<String> getAllTradersInCity(String city) {
         ArrayList<String> allTraders = getAllTraders();
-        for (User user : getUserDatabase().getItems())
-            if (user instanceof Trader && ((Trader) user).getCity().equalsIgnoreCase(city))
-                allTraders.add(user.getId());
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Trader && ((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
+                    allTraders.add(userId);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         return allTraders;
     }
 
@@ -88,18 +103,23 @@ public class TradingInfoManager extends Manager {
      */
     public ArrayList<String> getTradableItemsWithName(String name) {
         ArrayList<String> items = new ArrayList<>();
-        for (User user : getUserDatabase().getItems())
-            if (user instanceof Trader) {
-                for (String id : ((Trader) user).getAvailableItems()) {
-                    try {
-                        TradableItem item = getTradableItem(id);
-                        if (item.getName().toLowerCase().contains(name.toLowerCase()))
-                            items.add(item.getId());
-                    } catch (TradableItemNotFoundException e) {
-                        e.printStackTrace();
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId)  instanceof Trader) {
+                    for (String id : ((Trader) getUser(userId) ).getAvailableItems()) {
+                        try {
+                            TradableItem item = getTradableItem(id);
+                            if (item.getName().toLowerCase().contains(name.toLowerCase()))
+                                items.add(item.getId());
+                        } catch (TradableItemNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
             }
+        }
         return items;
     }
 
@@ -111,12 +131,17 @@ public class TradingInfoManager extends Manager {
      * @throws TradableItemNotFoundException if the item id is invalid
      */
     public String getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException {
-        for (User user : getUserDatabase().getItems())
-            if (user instanceof Trader) {
-                if (((Trader) user).getAvailableItems().contains(id)) {
-                    return user.getId();
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId)  instanceof Trader) {
+                    if (((Trader) getUser(userId) ).getAvailableItems().contains(id)) {
+                        return userId;
+                    }
                 }
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
             }
+        }
         throw new TradableItemNotFoundException();
     }
 

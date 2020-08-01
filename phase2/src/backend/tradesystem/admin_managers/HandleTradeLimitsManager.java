@@ -9,6 +9,7 @@ import backend.tradesystem.general_managers.Manager;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * This deals with everything relating to trade limits
@@ -22,11 +23,13 @@ public class HandleTradeLimitsManager extends Manager {
     public HandleTradeLimitsManager() throws IOException {
         super();
     }
+
     /**
      * Making the database objects with set file paths
-     * @param userFilePath the user database file path
+     *
+     * @param userFilePath         the user database file path
      * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath the trade database file path
+     * @param tradeFilePath        the trade database file path
      * @throws IOException issues with getting the file path
      */
     public HandleTradeLimitsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
@@ -37,26 +40,26 @@ public class HandleTradeLimitsManager extends Manager {
      * Sets the specified limit for all traders
      *
      * @param traderProperty the property (limit) to change
-     * @param limit the new value of the specified property
+     * @param limit          the new value of the specified property
      * @throws UserNotFoundException couldn't get traders
      */
     public void setLimit(TraderProperties traderProperty, int limit) throws UserNotFoundException {
-        ArrayList<User> allUsers = getUserDatabase().getItems();
-        for (User user : allUsers)
-            if (user instanceof Trader) {
-                Trader t = (Trader) user;
-                switch(traderProperty){
+        HashMap<String, User> allUsers = getUserDatabase().getItems();
+        for (String userId : allUsers.keySet())
+            if (getUser(userId) instanceof Trader) {
+                Trader trader = (Trader) getUser(userId);
+                switch (traderProperty) {
                     case TRADE_LIMIT:
                         //the following line makes it so that if the trader had "x" more trades left this week,
                         // they will still have "x" trades left
-                        t.setTradeCount(t.getTradeCount() + limit - t.getTradeLimit());
-                        t.setTradeLimit(limit);
+                        trader.setTradeCount(trader.getTradeCount() + limit - trader.getTradeLimit());
+                        trader.setTradeLimit(limit);
                         break;
                     case INCOMPLETE_TRADE_LIM:
-                        ((Trader) user).setIncompleteTradeLim(limit);
+                        trader.setIncompleteTradeLim(limit);
                         break;
                     case MINIMUM_AMOUNT_NEEDED_TO_BORROW:
-                        ((Trader) user).setMinimumAmountNeededToBorrow(limit);
+                        trader.setMinimumAmountNeededToBorrow(limit);
                 }
 
             }
@@ -78,7 +81,7 @@ public class HandleTradeLimitsManager extends Manager {
      */
     public void setLimitSpecific(TraderProperties property, String userId, int newLimit) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userId);
-        switch (property){
+        switch (property) {
             case MINIMUM_AMOUNT_NEEDED_TO_BORROW:
                 trader.setMinimumAmountNeededToBorrow(newLimit);
                 break;

@@ -13,6 +13,7 @@ import backend.tradesystem.UserTypes;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Properties;
 
 /**
@@ -87,16 +88,14 @@ public class LoginManager extends Manager {
      * @throws UserNotFoundException could not find the user
      */
     public String login(String username, String password) throws UserNotFoundException {
-        ArrayList<User> users = getUserDatabase().getItems();
-        for (User user : users)
-            if (user.getUsername().equals(username) && (user.getPassword().equals(password))) {
-                if (user instanceof Trader) {
-                    tryToRefreshTradeCount();
-                    removeInvalidRequests(user.getId());
-                }
-                return user.getId();
-            }
-        throw new UserNotFoundException();
+        String userId = getUserByUsername(username);
+        User user = getUser(userId);
+        if (!user.getPassword().equals(password)) throw new UserNotFoundException();
+        if (getType(user.getId()).equals(UserTypes.TRADER)) {
+            tryToRefreshTradeCount();
+            removeInvalidRequests(user.getId());
+        }
+        return user.getId();
     }
 
     /**
@@ -123,10 +122,12 @@ public class LoginManager extends Manager {
      * @return if username is unique
      */
     public boolean isUsernameUnique(String username) {
-        for (User user : getUserDatabase().getItems())
-            if (user.getUsername().equals(username))
-                return false;
-        return true;
+        try {
+            getUserByUsername(username);
+            return false;
+        } catch (UserNotFoundException ignored) {
+            return true;
+        }
     }
 
     /**
@@ -260,17 +261,17 @@ public class LoginManager extends Manager {
      * Refreshes the trade count of all the traders (sets the trade count to 0)
      */
     private void refreshTradeCount() {
-        ArrayList<User> users = getUserDatabase().getItems();
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-            if (user instanceof Trader) {
-                ((Trader) user).setTradeCount(0);
-                users.set(i, user);
-            }
-        }
         try {
+            HashMap<String, User> users = getUserDatabase().getItems();
+            for (String id : users.keySet()) {
+                if (getType(id).equals(UserTypes.TRADER)) {
+                    Trader trader = (Trader) users.get(id);
+                    trader.setTradeCount(0);
+                    users.put(trader.getId(), trader);
+                }
+            }
             getUserDatabase().save(users);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | UserNotFoundException e) {
             e.printStackTrace();
         }
     }
@@ -308,19 +309,17 @@ public class LoginManager extends Manager {
         // Removes invalid items
         try {
             Trader someTrader = getTrader(traderID);
-            for (int i = someTrader.getAvailableItems().size() - 1; i >= 0; i--){
+            for (int i = someTrader.getAvailableItems().size() - 1; i >= 0; i--) {
                 try {
                     getTradableItem(someTrader.getAvailableItems().get(i));
-                }
-                catch (TradableItemNotFoundException ignored){
+                } catch (TradableItemNotFoundException ignored) {
                     someTrader.getAvailableItems().remove(i);
                 }
             }
-            for (int i = someTrader.getWishlist().size() - 1; i >= 0; i--){
+            for (int i = someTrader.getWishlist().size() - 1; i >= 0; i--) {
                 try {
                     getTradableItem(someTrader.getWishlist().get(i));
-                }
-                catch (TradableItemNotFoundException ignored){
+                } catch (TradableItemNotFoundException ignored) {
                     someTrader.getWishlist().remove(i);
                 }
             }
@@ -328,8 +327,5 @@ public class LoginManager extends Manager {
         } catch (UserNotFoundException | AuthorizationException e) {
             e.printStackTrace();
         }
-
-
     }
-
 }
