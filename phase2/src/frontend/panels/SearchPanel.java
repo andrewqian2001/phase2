@@ -19,10 +19,8 @@ import javax.swing.JTextField;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.managers.ItemQuery;
-import backend.tradesystem.managers.TraderManager;
-import backend.tradesystem.managers.TradingInfoManager;
-import backend.tradesystem.managers.UserQuery;
+import backend.tradesystem.UserTypes;
+import backend.tradesystem.managers.*;
 
 public class SearchPanel extends JPanel {
 
@@ -34,6 +32,7 @@ public class SearchPanel extends JPanel {
 
     private TraderManager traderManager;
     private TradingInfoManager infoManager;
+    private LoginManager loginManager;
     private String user;
 
     private UserQuery userQuery;
@@ -58,6 +57,7 @@ public class SearchPanel extends JPanel {
         this.user = user;
         traderManager = new TraderManager();
         infoManager = new TradingInfoManager();
+        loginManager = new LoginManager();
 
         userQuery = new UserQuery();
         itemQuery = new ItemQuery();
@@ -399,7 +399,7 @@ public class SearchPanel extends JPanel {
                 item.add(itemName);
                 item.add(itemDesc);
                 item.add(itemOwnerName);
-                if(userQuery.isTrader(user))
+                if(loginManager.getType(user).equals(UserTypes.TRADER))
                     item.add(addToWishlistButton);
                 tradableItemListContainer.add(item);
             } catch (TradableItemNotFoundException e1) {
