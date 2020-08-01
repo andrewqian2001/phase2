@@ -277,14 +277,6 @@ public class UserQuery extends Manager {
         return getTrader(traderId).getTotalItemsLent();
     }
 
-    private Admin getAdmin(String adminId) throws UserNotFoundException, AuthorizationException {
-        User user = getUser(adminId);
-        if (!(user instanceof Admin)){
-            throw new AuthorizationException("This user is not an admin");
-        }
-        return (Admin) getUser(adminId);
-    }
-
 
 
 
