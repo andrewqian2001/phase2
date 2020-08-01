@@ -226,7 +226,7 @@ public class LoginManager extends Manager {
      * @param propertyType the type of property
      * @return the value of the specified trader property
      */
-    private int getProperty(TraderProperties propertyType) {
+    public int getProperty(TraderProperties propertyType) {
         try {
             // get the file
             File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
@@ -252,7 +252,7 @@ public class LoginManager extends Manager {
      * @param propertyName  the property to change
      * @param propertyValue the new value of that property
      */
-    private void setProperty(TraderProperties propertyName, int propertyValue) {
+    public void setProperty(TraderProperties propertyName, int propertyValue) {
         try {
             // get the file
             File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
