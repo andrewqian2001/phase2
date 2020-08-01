@@ -7,7 +7,6 @@
 - Panel for Idle Users  
 - Panel for Demo  
 - Button to load demo account in LoginPanel  
-- Add reviews and reports to all trades/(messages ?)  
 - Admin undo abilities  
 - ~~User should be able to trade based on city~~  
 - ~~Add a settings menu for Trader to allow them to enter 'idle mode'~~  
@@ -55,6 +54,7 @@ SearchPanel:
   
 **TODO: adminPanel**  
   
+- Add reports to admin
 - ~~Fix the logo circle icon~~   
 - ~~Fix menuContainer width just like traderPanel~~  
   

@@ -65,7 +65,6 @@ public class LoginManager extends Manager {
 
         validatePassword(password);
 
-
         if (!isUsernameUnique(username))
             throw new UserAlreadyExistsException();
         switch (type) {
@@ -76,6 +75,24 @@ public class LoginManager extends Manager {
             default:
                 return updateUserDatabase(new Trader(username, password, "", defaultTradeLimit, defaultIncompleteTradeLim,
                         defaultMinimumAmountNeededToBorrow)).getId();
+        }
+    }
+
+    private void updateAllTraderDefaults() {
+
+        int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
+        int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
+        int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
+        HashMap<String, User> users = getUserDatabase().getItems();
+
+        for (String user : users.keySet()){
+            User populatedUser = users.get(user);
+            if (populatedUser instanceof Trader){
+                Trader t = (Trader) populatedUser;
+                t.setTradeLimit(defaultTradeLimit);
+                t.setIncompleteTradeLim(defaultIncompleteTradeLim);
+                t.setMinimumAmountNeededToBorrow(defaultMinimumAmountNeededToBorrow);
+            }
         }
     }
 
@@ -95,6 +112,7 @@ public class LoginManager extends Manager {
             tryToRefreshTradeCount();
             removeInvalidRequests(user.getId());
         }
+        updateAllTraderDefaults();
         return user.getId();
     }
 

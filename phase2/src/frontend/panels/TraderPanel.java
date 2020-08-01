@@ -30,10 +30,10 @@ import frontend.panels.trader_subpanels.NotificationsPanel;
 import frontend.panels.trader_subpanels.SettingsPanel;
 import frontend.panels.trader_subpanels.TradePanel;
 
+/**
+ * This is used to show what a trader account sees
+ */
 public class TraderPanel extends JPanel implements ActionListener {
-
-
-
     private JButton logoutButton;
     private JPanel menuContainer;
     private final JPanel menuPanelContainer;
@@ -47,8 +47,18 @@ public class TraderPanel extends JPanel implements ActionListener {
     private final Color GRAY = new Color(75, 75, 75);
     private final Color RED = new Color(219, 58, 52);
 
-    public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
-
+    /**
+     * Making a new trader panel
+     *
+     * @param traderId   the trader id
+     * @param regular    regular font
+     * @param bold       bold font
+     * @param italic     italics font
+     * @param boldItalic bold italics font
+     * @throws IOException if accessing database has issues
+     * @throws UserNotFoundException if the user id is bad
+     */
+    public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException {
         this.setSize(1600, 900);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
@@ -65,39 +75,26 @@ public class TraderPanel extends JPanel implements ActionListener {
         Color bg = new Color(214, 214, 214);
         menuPanelContainer.setBackground(bg);
 
-        try {
-            createMenuContainer();
+        createMenuContainer();
+        createIcon(traderId, boldItalic);
+        createUsernameTitle(traderId, regular);
+        createUserIdTitle(traderId, regular);
+        createTradePanelButton(regular);
+        createItemsPanelButton(regular);
+        createNotificationPanelButton(regular);
+        createSearchPanelButton(regular);
+        createSettingsPanelButton(regular);
+        createLogoutButton(boldItalic);
 
-            createIcon(traderId, boldItalic);
+        menuPanelContainer.add(tradePanel, "Trades");
+        menuPanelContainer.add(itemsPanel, "Items");
+        menuPanelContainer.add(notificationsPanel, "Notifications");
+        menuPanelContainer.add(searchPanel, "Search");
+        menuPanelContainer.add(settingsPanel, "Settings");
 
-            createUsernameTitle(traderId, regular);
+        this.add(menuContainer, BorderLayout.WEST);
+        this.add(menuPanelContainer, BorderLayout.CENTER);
 
-            createUserIdTitle(traderId, regular);
-
-            createTradePanelButton(regular);
-
-            createItemsPanelButton(regular);
-
-            createNotificationPanelButton(regular);
-
-            createSearchPanelButton(regular);
-
-            createSettingsPanelButton(regular);
-
-            createLogoutButton(boldItalic);
-
-            menuPanelContainer.add(tradePanel, "Trades");
-            menuPanelContainer.add(itemsPanel, "Items");
-            menuPanelContainer.add(notificationsPanel, "Notifications");
-            menuPanelContainer.add(searchPanel, "Search");
-            menuPanelContainer.add(settingsPanel, "Settings");
-
-            this.add(menuContainer, BorderLayout.WEST);
-            this.add(menuPanelContainer, BorderLayout.CENTER);
-
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     private void createMenuContainer() {
@@ -225,6 +222,7 @@ public class TraderPanel extends JPanel implements ActionListener {
 
     /**
      * Runs when an action was performed
+     *
      * @param e The event object
      */
     @Override
