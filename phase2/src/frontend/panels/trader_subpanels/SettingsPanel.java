@@ -12,16 +12,18 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
 import backend.tradesystem.managers.LoginManager;
 import backend.tradesystem.managers.TraderManager;
+import backend.tradesystem.managers.UserQuery;
 
 public class SettingsPanel extends JPanel {
     private Font regular, bold, italic, boldItalic;
-    private Trader trader;
+    private String userId;
 
     private JLabel settingsTitleLabel;
     private JPanel changePasswordPanel, changeCityPanel, changeUsernamePanel, goIdlePanel;
 
     private TraderManager traderManager;
     private LoginManager loginManager;
+    private final UserQuery userQuery = new UserQuery();
 
     private Color bg = new Color(51, 51, 51);
     private Color gray = new Color(196, 196, 196);
@@ -29,12 +31,12 @@ public class SettingsPanel extends JPanel {
     private Color green = new Color(27, 158, 36);
     private Color red = new Color(219, 58, 52);
 
-    public SettingsPanel(Trader trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    public SettingsPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
         this.setBackground(bg);
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
 
-        this.trader = trader;
+        this.userId = userId;
         this.regular = regular;
         this.bold = bold;
         this.italic = italic;
@@ -49,19 +51,23 @@ public class SettingsPanel extends JPanel {
         settingsTitleLabel.setForeground(Color.WHITE);
         settingsTitleLabel.setOpaque(false);
 
-        changeUsernamePanel = getChangeUsernamePanel();
-        changePasswordPanel = getChangePasswordPanel();
-        changeCityPanel = getChangeCityPanel();
-        goIdlePanel = getGoIdlePanel();
+        try {
+            changeUsernamePanel = getChangeUsernamePanel();
+            changePasswordPanel = getChangePasswordPanel();
+            changeCityPanel = getChangeCityPanel();
+            goIdlePanel = getGoIdlePanel();
 
-        this.add(settingsTitleLabel);
-        this.add(changeUsernamePanel);
-        this.add(changePasswordPanel);
-        this.add(changeCityPanel);
-        this.add(goIdlePanel);
+            this.add(settingsTitleLabel);
+            this.add(changeUsernamePanel);
+            this.add(changePasswordPanel);
+            this.add(changeCityPanel);
+            this.add(goIdlePanel);
+        } catch (UserNotFoundException | AuthorizationException e) {
+            e.printStackTrace();
+        }
     }
 
-    private JPanel getChangeUsernamePanel() {
+    private JPanel getChangeUsernamePanel() throws UserNotFoundException {
         JPanel changeNamePanel = new JPanel(new GridLayout(1, 4));
         changeNamePanel.setPreferredSize(new Dimension(1200, 100));
         changeNamePanel.setBackground(gray2);
@@ -72,7 +78,7 @@ public class SettingsPanel extends JPanel {
         changeUsernameLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         changeUsernameLabel.setOpaque(false);
 
-        JTextField changeUsername = new JTextField(trader.getUsername());
+        JTextField changeUsername = new JTextField(userQuery.getUsername(userId));
         changeUsername.setFont(regular.deriveFont(25f));
         changeUsername.setForeground(Color.BLACK);
         changeUsername.setBackground(gray);
@@ -87,7 +93,7 @@ public class SettingsPanel extends JPanel {
         changeUsernameButton.addActionListener(e -> {
             if (changeUsername.getText().trim().length() != 0) {
                 try {
-                    loginManager.changeUsername(trader.getId(), changeUsername.getText());
+                    loginManager.changeUsername(userId, changeUsername.getText());
                     changeUsernameLabel.setFont(regular.deriveFont(25f));
                     changeUsernameLabel.setText("Username Changed!");
                     changeUsername.setText("");
@@ -106,7 +112,7 @@ public class SettingsPanel extends JPanel {
 
     }
 
-    private JPanel getChangePasswordPanel() {
+    private JPanel getChangePasswordPanel() throws UserNotFoundException {
         JPanel changePassPanel = new JPanel(new GridLayout(1, 4));
         changePassPanel.setPreferredSize(new Dimension(1200, 100));
         changePassPanel.setBackground(gray2);
@@ -117,7 +123,7 @@ public class SettingsPanel extends JPanel {
         changePasswordLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         changePasswordLabel.setOpaque(false);
 
-        JPasswordField changePassword = new JPasswordField(trader.getPassword());
+        JPasswordField changePassword = new JPasswordField(userQuery.getPassword(userId));
         changePassword.setFont(regular.deriveFont(25f));
         changePassword.setForeground(Color.BLACK);
         changePassword.setBackground(gray);
@@ -131,7 +137,7 @@ public class SettingsPanel extends JPanel {
         changePasswordButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
         changePasswordButton.addActionListener(e -> {
             try {
-                loginManager.changePassword(trader.getId(), String.valueOf(changePassword.getPassword()));
+                loginManager.changePassword(userId, String.valueOf(changePassword.getPassword()));
                 changePasswordLabel.setFont(regular.deriveFont(25f));
                 changePasswordLabel.setText("Password Changed!");
                 changePassword.setText("");
@@ -149,7 +155,7 @@ public class SettingsPanel extends JPanel {
 
     }
 
-    private JPanel getChangeCityPanel() {
+    private JPanel getChangeCityPanel() throws UserNotFoundException, AuthorizationException {
         JPanel cityPanel = new JPanel(new GridLayout(1, 3));
         cityPanel.setPreferredSize(new Dimension(1200, 100));
         cityPanel.setBackground(gray2);
@@ -160,7 +166,7 @@ public class SettingsPanel extends JPanel {
         changeCityLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         changeCityLabel.setOpaque(false);
 
-        JTextField changeCity = new JTextField(trader.getCity());
+        JTextField changeCity = new JTextField(userQuery.getCity(userId));
         changeCity.setFont(regular.deriveFont(25f));
         changeCity.setForeground(Color.BLACK);
         changeCity.setBackground(gray);
@@ -175,7 +181,7 @@ public class SettingsPanel extends JPanel {
         changeCityButton.addActionListener(e -> {
             if (changeCity.getText().trim().length() != 0) {
                 try {
-                    traderManager.setCity(trader.getId(), changeCity.getText());
+                    traderManager.setCity(userId, changeCity.getText());
                     changeCityLabel.setText("City Changed!");
                     changeCity.setText("");
                 } catch (UserNotFoundException | AuthorizationException e1) {
@@ -215,7 +221,7 @@ public class SettingsPanel extends JPanel {
         goIdleButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
         goIdleButton.addActionListener(e -> {
             try {
-                traderManager.setIdle(trader.getId(), !trader.isIdle());
+                traderManager.setIdle(userId, !userQuery.isIdle(userId));
                 goIdleButton.setBackground(bg);
                 goIdleButton.setFont(boldItalic.deriveFont(20f));
                 goIdleButton.setText("Activated");
