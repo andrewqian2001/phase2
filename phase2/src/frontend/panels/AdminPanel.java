@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 
+import backend.exceptions.UserNotFoundException;
+import backend.tradesystem.managers.UserQuery;
 import frontend.WindowManager;
 
 import backend.models.users.Admin;
@@ -27,7 +29,9 @@ public class AdminPanel extends JPanel implements ActionListener {
     private Color gray = new Color(184, 184, 184);
     private Color red = new Color(219, 58, 52);
 
-    public AdminPanel(Admin admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    private UserQuery userQuery = new UserQuery();
+
+    public AdminPanel(String admin, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.setSize(1600, 900);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
@@ -51,7 +55,11 @@ public class AdminPanel extends JPanel implements ActionListener {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
 
-        iconText = new JLabel(admin.getUsername().toUpperCase().substring(0, 1));
+        try {
+            iconText = new JLabel(userQuery.getUsername(admin).toUpperCase().substring(0, 1));
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        }
         iconText.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         iconText.setFont(boldItalic.deriveFont(55f));
         iconText.setForeground(Color.WHITE);
@@ -60,8 +68,12 @@ public class AdminPanel extends JPanel implements ActionListener {
         gbc.weighty = 0.16;
         menuContainer.add(iconText, gbc);
 
-        usernameTitle = new JLabel((admin.getUsername().length() > 12 ? admin.getUsername().substring(0, 12) + "..."
-                : admin.getUsername()));
+        try {
+            usernameTitle = new JLabel((userQuery.getUsername(admin).length() > 12 ? userQuery.getUsername(admin).substring(0, 12) + "..."
+                    : userQuery.getUsername(admin)));
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        }
         usernameTitle.setFont(regular.deriveFont(35f));
         usernameTitle.setForeground(Color.WHITE);
         usernameTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
@@ -70,7 +82,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         gbc.gridy = 1;
         menuContainer.add(usernameTitle, gbc);
 
-        userIdTitle = new JLabel("<html><pre>ID: #" + admin.getId().substring(admin.getId().length() - 12) + "</pre></html>");
+        userIdTitle = new JLabel("<html><pre>ID: #" + admin.substring(admin.length() - 12) + "</pre></html>");
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(gray);
         userIdTitle.setHorizontalAlignment(JLabel.CENTER);
