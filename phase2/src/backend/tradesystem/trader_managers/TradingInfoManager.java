@@ -80,7 +80,7 @@ public class TradingInfoManager extends Manager {
      * @return list of all traders within the same city
      */
     public ArrayList<String> getAllTradersInCity(String city) {
-        ArrayList<String> allTraders = getAllTraders();
+        ArrayList<String> allTraders = new ArrayList<>();
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Trader && ((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
@@ -247,6 +247,7 @@ public class TradingInfoManager extends Manager {
                 }
             }
         }
+
         return result;
     }
 
