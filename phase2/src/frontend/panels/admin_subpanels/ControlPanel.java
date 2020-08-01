@@ -5,6 +5,7 @@ import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
+import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.trader_managers.TraderManager;
@@ -79,8 +80,12 @@ public class ControlPanel extends JPanel implements ActionListener {
                     minLend.setHorizontalAlignment(JLabel.RIGHT);
                     info.add(minLend);
 
-                    Integer[] minLendChoices = {1, 2, 3, 4, 5};
+                    Integer[] minLendChoices = new Integer[100];
+                    for(int i = 1; i < 101; i++) {
+                        minLendChoices[i-1] = i;
+                    }
                     minLendChoice = new JComboBox<>(minLendChoices);
+                    minLendChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW) - 1);
                     minLendChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
                     info.add(minLendChoice);
 
@@ -90,8 +95,12 @@ public class ControlPanel extends JPanel implements ActionListener {
                     tradeLimit.setHorizontalAlignment(JLabel.RIGHT);
                     info.add(tradeLimit);
 
-                    Integer[] tradeLimitChoices = {1, 2, 3, 4, 5};
+                    Integer[] tradeLimitChoices = new Integer[100];
+                    for(int i = 1; i < 101; i++) {
+                        tradeLimitChoices[i-1] = i;
+                    }
                     tradeLimitChoice = new JComboBox<>(tradeLimitChoices);
+                    tradeLimitChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.TRADE_LIMIT) - 1);
                     tradeLimitChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
                     info.add(tradeLimitChoice);
 
@@ -101,8 +110,12 @@ public class ControlPanel extends JPanel implements ActionListener {
                     incompleteLimit.setHorizontalAlignment(JLabel.RIGHT);
                     info.add(incompleteLimit);
 
-                    Integer[] incompleteLimitChoices = {1, 2, 3, 4, 5};
+                    Integer[] incompleteLimitChoices = new Integer[100];
+                    for(int i = 1; i < 101; i++) {
+                        incompleteLimitChoices[i-1] = i;
+                    }
                     incompleteLimitChoice = new JComboBox<>(incompleteLimitChoices);
+                    incompleteLimitChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.INCOMPLETE_TRADE_LIM) - 1);
                     incompleteLimitChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
                     info.add(incompleteLimitChoice);
 
@@ -210,8 +223,10 @@ public class ControlPanel extends JPanel implements ActionListener {
             } catch(IOException | UserNotFoundException | AuthorizationException ex) {
                 ex.printStackTrace();
             }
-        } else if(e.getActionCommand().equals("Register")) {
-
+        } else if(e.getSource() == submitSettings) {
+            loginManager.setProperty(TraderProperties.INCOMPLETE_TRADE_LIM, incompleteLimitChoice.getItemAt(incompleteLimitChoice.getSelectedIndex()));
+            loginManager.setProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW, minLendChoice.getItemAt(minLendChoice.getSelectedIndex()));
+            loginManager.setProperty(TraderProperties.TRADE_LIMIT, tradeLimitChoice.getItemAt(tradeLimitChoice.getSelectedIndex()));
         }
     }
 }
