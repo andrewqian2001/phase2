@@ -18,6 +18,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
@@ -25,6 +26,7 @@ import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.LoginManager;
+import backend.tradesystem.managers.TraderManager;
 
 /**
  * This represents the login screen
@@ -35,6 +37,7 @@ public class LoginPanel extends JPanel implements ActionListener {
     protected JPasswordField passwordInput;
     protected JButton loginButton, registerButton;
     private final LoginManager loginManager = new LoginManager();
+    private final TraderManager traderManager = new TraderManager();
 
     /**
      * New login panel
@@ -98,7 +101,7 @@ public class LoginPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getActionCommand().equals("Login")) {
             try {
-                User loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                String loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
                 ((WindowManager)SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch (UserNotFoundException ignored) {
                 notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
@@ -107,9 +110,9 @@ public class LoginPanel extends JPanel implements ActionListener {
             }
         } else if(e.getActionCommand().equals("Register")) {
             try {
-                User loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
-                if(loggedInUser instanceof Trader) {
-                    ((Trader) loggedInUser).setCity("Toronto");
+                String loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                if(loginManager.getType(loggedInUser).equals(UserTypes.TRADER)) {
+                    traderManager.setCity(loggedInUser, "Toronto");
                 }
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch(BadPasswordException ex) {
@@ -118,6 +121,10 @@ public class LoginPanel extends JPanel implements ActionListener {
                 notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
             } catch(IOException ex) {
                 ex.printStackTrace();
+            } catch (UserNotFoundException userNotFoundException) {
+                userNotFoundException.printStackTrace();
+            } catch (AuthorizationException authorizationException) {
+                authorizationException.printStackTrace();
             }
         }
     }
