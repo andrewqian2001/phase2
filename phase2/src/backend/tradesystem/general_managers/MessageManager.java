@@ -38,10 +38,11 @@ public class MessageManager extends Manager {
 
     /**
      * Send a message
-     * @param userId the user sending the message
+     *
+     * @param userId   the user sending the message
      * @param toUserId the user receiving the message
-     * @param message the message
-     * @throws UserNotFoundException if one of the users don't exist
+     * @param message  the message
+     * @throws UserNotFoundException  if one of the users don't exist
      * @throws AuthorizationException if not allowed to send the message
      */
     public void sendMessage(String userId, String toUserId, String message) throws UserNotFoundException, AuthorizationException {
@@ -55,6 +56,7 @@ public class MessageManager extends Manager {
 
     /**
      * Empty out messages that were received
+     *
      * @param userId the user being checked
      * @throws UserNotFoundException if the user isn't found
      */
@@ -63,9 +65,11 @@ public class MessageManager extends Manager {
         user.clearMessages();
         updateUserDatabase(user);
     }
+
     /**
      * Empty out messages that were received from a single user
-     * @param userId the user being checked
+     *
+     * @param userId      the user being checked
      * @param clearUserId the messages received from this user that will get cleared
      * @throws UserNotFoundException if the user isn't found
      */
@@ -77,6 +81,7 @@ public class MessageManager extends Manager {
 
     /**
      * Get all messages received by a user
+     *
      * @param userId the user being checked for
      * @return user to messages
      * @throws UserNotFoundException if the user isn't found

@@ -44,7 +44,7 @@ public class TradingInfoManager extends Manager {
         ArrayList<String> allTraders = new ArrayList<>();
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
-                if (getUser(userId)  instanceof Trader)
+                if (getUser(userId) instanceof Trader)
                     allTraders.add(userId);
             } catch (UserNotFoundException e) {
                 e.printStackTrace();
@@ -104,8 +104,8 @@ public class TradingInfoManager extends Manager {
         ArrayList<String> items = new ArrayList<>();
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
-                if (getUser(userId)  instanceof Trader) {
-                    for (String id : ((Trader) getUser(userId) ).getAvailableItems()) {
+                if (getUser(userId) instanceof Trader) {
+                    for (String id : ((Trader) getUser(userId)).getAvailableItems()) {
                         try {
                             TradableItem item = getTradableItem(id);
                             if (item.getName().toLowerCase().contains(name.toLowerCase()))
@@ -132,8 +132,8 @@ public class TradingInfoManager extends Manager {
     public String getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException {
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
-                if (getUser(userId)  instanceof Trader) {
-                    if (((Trader) getUser(userId) ).getAvailableItems().contains(id)) {
+                if (getUser(userId) instanceof Trader) {
+                    if (((Trader) getUser(userId)).getAvailableItems().contains(id)) {
                         return userId;
                     }
                 }
@@ -238,7 +238,7 @@ public class TradingInfoManager extends Manager {
             if (traderId.equals(thisTraderId)) {
                 continue;
             }
-            Trader trader =  getTrader(traderId);
+            Trader trader = getTrader(traderId);
             for (String item : trader.getWishlist()) {
                 if (thisTraderItems.contains(item)) {
                     String[] items = {thisTraderId, traderId, item};
@@ -282,7 +282,6 @@ public class TradingInfoManager extends Manager {
     }
 
 
-
     /**
      * The user types in a item that is wanted, the function finds the most similar item and then returns a trade
      *
@@ -299,7 +298,7 @@ public class TradingInfoManager extends Manager {
      * @throws AuthorizationException
      * @throws TradableItemNotFoundException
      */
-     public Trade automatedTradeSuggestion(String thisTraderId, String itemToBorrow, String itemToLend, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+    public Trade automatedTradeSuggestion(String thisTraderId, String itemToBorrow, String itemToLend, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
         //Note that the item this trader will lend is for sure going to be itemToLend, however
         //the item you borrow is the one most similar to itemToBorrow

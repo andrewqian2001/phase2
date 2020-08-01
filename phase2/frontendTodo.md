@@ -8,8 +8,8 @@
 - Panel for Demo  
 - Button to load demo account in LoginPanel  
 - Add reviews and reports to all trades/(messages ?)  
-- User should be able to trade based on city  
 - Admin undo abilities  
+- ~~User should be able to trade based on city~~  
 - ~~Add a settings menu for Trader to allow them to enter 'idle mode'~~  
 - ~~Add ability for user to enter city on registration (and change city in settings)~~ 
 
@@ -26,7 +26,7 @@
 **TODO: traderPanel**
 
 TradePanel:  
-  - Add message to editTradeModal
+  - ~~Add message to editTradeModal~~
   - ~~Show message in tradeRequestDetails~~
   - ~~In the editTradeRequest modal, get the current meeting dates and automatically set the JComboBoxes to the date~~
   - ~~Finish Add New Trade Window + Submit Button~~ 
