@@ -8,8 +8,8 @@
 - Panel for Demo  
 - Button to load demo account in LoginPanel  
 - Add reviews and reports to all trades/(messages ?)  
-- User should be able to trade based on city  
 - Admin undo abilities  
+- ~~User should be able to trade based on city~~  
 - ~~Add a settings menu for Trader to allow them to enter 'idle mode'~~  
 - ~~Add ability for user to enter city on registration (and change city in settings)~~ 
 
