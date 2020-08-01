@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
@@ -65,7 +66,7 @@ public class WindowManager extends JFrame {
             this.add(userPanel, BorderLayout.CENTER);
             this.setSize(userPanel.getSize());
             this.setResizable(false);
-        } catch (UserNotFoundException e) {
+        } catch (UserNotFoundException | AuthorizationException e) {
             e.printStackTrace();
         }
         this.remove(loginPanel);

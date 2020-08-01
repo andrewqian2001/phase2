@@ -39,6 +39,9 @@ import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 
+/**
+ * Represents the panel where trading occurs
+ */
 public class TradePanel extends JPanel implements ActionListener {
 
     private JPanel ongoingTradesContainer, tradeRequestsContainer;
@@ -56,11 +59,19 @@ public class TradePanel extends JPanel implements ActionListener {
     private final ItemQuery itemQuery = new ItemQuery();
     private final TradingManager tradeManager = new TradingManager();
     private final TradingInfoManager infoManager = new TradingInfoManager();
-
-
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
-    public TradePanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    /**
+     * Makes a trade panel
+     *
+     * @param trader     the trader id
+     * @param regular    the regular font
+     * @param bold       the bold font
+     * @param italic     the italics font
+     * @param boldItalic the bold italics font
+     * @throws IOException issues with getting database files
+     */
+    public TradePanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
         this.trader = trader;
         this.regular = regular;
         this.bold = bold;
@@ -215,15 +226,9 @@ public class TradePanel extends JPanel implements ActionListener {
         tradeRequestsHeader.add(empty3);
     }
 
-    private void getTradeRequestPanels() {
+    private void getTradeRequestPanels() throws UserNotFoundException, AuthorizationException {
         ArrayList<String> requestedTrades = null;
-        try {
-            requestedTrades = userQuery.getRequestedTrades(trader);
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        } catch (AuthorizationException e) {
-            e.printStackTrace();
-        }
+        requestedTrades = userQuery.getRequestedTrades(trader);
 
         // tradeRequestsContainer = new JPanel(new GridLayout(10, 1));
         if (requestedTrades.size() == 0) {
@@ -1086,6 +1091,10 @@ public class TradePanel extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Used to respond to any events that occur
+     * @param e the event
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         ArrayList<String> allTraders = infoManager.getAllTraders();
