@@ -288,17 +288,6 @@ public class UserQuery extends Manager {
         return getAdmin(adminId).getReports();
     }
 
-    /**
-     * Return whether the user is a trader
-     *
-     * @param userId The id of the user being checked
-     * @return true if the user is a trader
-     * @throws UserNotFoundException if the user does not exist
-     */
-    public boolean isTrader(String userId) throws UserNotFoundException {
-        return getUser(userId) instanceof Trader;
-    }
-
     private Admin getAdmin(String adminId) throws UserNotFoundException, AuthorizationException {
         User user = getUser(adminId);
         if (!(user instanceof Admin)){
