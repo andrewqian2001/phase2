@@ -48,13 +48,4 @@ public class Admin extends User implements Serializable{
     public boolean isFrozen() {
         return false;
     }
-
-    /**
-     * An admin's frozen status is always false
-     * @param frozen regardless of input, frozen status is always false
-     */
-    @Override
-    public void setFrozen(boolean frozen){
-        this.setFrozen(false);
-    }
 }
