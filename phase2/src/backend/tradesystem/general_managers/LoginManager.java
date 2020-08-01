@@ -7,11 +7,11 @@ import backend.models.Trade;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
+import backend.tradesystem.Manager;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;

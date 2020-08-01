@@ -1,6 +1,6 @@
 # FRONT END TODO (not back end)
 
-**TODO: GENERAL** 
+**TODO: IMPORTANT GENERAL** 
 
 - !IMPORTANT: refresh button/method to refresh the user data
 - Panel for frozen users  
@@ -8,22 +8,34 @@
 - Panel for Demo  
 - Button to load demo account in LoginPanel  
 - Add reviews and reports to all trades/(messages ?)  
-- User should be able to trade based on city  
 - Admin undo abilities  
-- javadoc? maybe?
+- ~~User should be able to trade based on city~~  
 - ~~Add a settings menu for Trader to allow them to enter 'idle mode'~~  
 - ~~Add ability for user to enter city on registration (and change city in settings)~~ 
+
+
+**TODO: Better Design/Formatting**  
+
+- Refactor and Reformat class files (super messy rn)  
+- javadoc? maybe? (leave for James 👁👅👁)  
+- Add ScrollPanelFactory with ScrollPanelItemBuiler classes  
+- Add ColorConstants Class with fixed colors instead of keeping them in the panels files  
+- Create a components folder with styled components (JButtons, JLabels, textInputs)  
+- (Maybe) seperate controllers/actionlisteners from panel classes  
 
 **TODO: traderPanel**
 
 TradePanel:  
+  - ~~Add message to editTradeModal~~
+  - ~~Show message in tradeRequestDetails~~
   - ~~In the editTradeRequest modal, get the current meeting dates and automatically set the JComboBoxes to the date~~
   - ~~Finish Add New Trade Window + Submit Button~~ 
   - ~~Fix scrollpane top header alignment~~
+  - ~~Add message to addNewTradeModal~~
   
 ItemsPanel:  
   - scrollpane top headers for both invent. + wishlist  
-  - ~~'Add Item to wishlist' button with modal JDialog and   buttons finished ~~
+  - ~~Add Item to wishlist' button with modal JDialog and buttons finished~~
   
 NotificationsPanel:  
   - ScrollPane header for messages   

@@ -1,4 +1,4 @@
-package backend.tradesystem.general_managers;
+package backend.tradesystem;
 
 import backend.Database;
 import backend.DatabaseFilePaths;
@@ -9,8 +9,6 @@ import backend.models.users.Trader;
 import backend.models.users.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * This is used to help make accessing and modifying the database files to be easier,
@@ -45,8 +43,6 @@ public class Manager {
      * @throws IOException if something goes wrong with getting database
      */
     public Manager() throws IOException {
-
-
         this(DatabaseFilePaths.USER.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(), DatabaseFilePaths.TRADE.getFilePath());
     }
 

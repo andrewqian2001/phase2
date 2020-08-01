@@ -5,8 +5,4 @@ LoginManager - when registering for a new user, the type of user is specified wh
 Dependency injection pattern:
 Admin - contains a list of Report objects without instancing them
 Trader - contains a list of Review objects without instancing them
-TradingManager - request trade doesn't instance a new Trade object, it takes in a Trade object
 
-Builder Design Pattern:
-Inside of TradingInfoManager.java - suggestTrade and suggestLend creates a trade object based on wishlist items and inventory items
-TradeBuilder - allows for the creation of a trade object in a step-by-step process.

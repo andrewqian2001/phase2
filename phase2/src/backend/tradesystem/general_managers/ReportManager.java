@@ -4,7 +4,7 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.Report;
 import backend.models.users.Admin;
-import backend.models.users.User;
+import backend.tradesystem.Manager;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -96,7 +96,7 @@ public class ReportManager extends Manager {
      * @param reportId the report being removed
      */
     public void clearReports(String reportId) {
-        for (String userId: getUserDatabase().getItems().keySet()) {
+        for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Admin) {
                     Admin admin = ((Admin) getUser(userId));
