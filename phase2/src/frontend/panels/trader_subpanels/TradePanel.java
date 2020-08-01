@@ -1280,10 +1280,12 @@ public class TradePanel extends JPanel implements ActionListener {
                 allTraders.addAll(infoManager.getAllTraders());
             }
             allTraders.forEach(traderId -> {
-                try {
-                    traders.addItem(userQuery.getUsername(traderId));
-                } catch (UserNotFoundException e2) {
-                    e2.printStackTrace();
+                if (!traderId.equals(trader)) {
+                    try {
+                        traders.addItem(userQuery.getUsername(traderId));
+                    } catch (UserNotFoundException e2) {
+                        e2.printStackTrace();
+                    }
                 }
             });
             otherTraderItems.removeAllItems();
