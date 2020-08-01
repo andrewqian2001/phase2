@@ -277,17 +277,6 @@ public class UserQuery extends Manager {
         return getTrader(traderId).getTotalItemsLent();
     }
 
-    /**
-     * Getting the reports sent to an admin
-     * @param adminId The id of the admin
-     * @return the reports sent to this admin
-     * @throws UserNotFoundException if the admin does not exist
-     * @throws AuthorizationException if the user isn't an admin
-     */
-    public ArrayList<Report> getReports(String adminId) throws UserNotFoundException, AuthorizationException {
-        return getAdmin(adminId).getReports();
-    }
-
     private Admin getAdmin(String adminId) throws UserNotFoundException, AuthorizationException {
         User user = getUser(adminId);
         if (!(user instanceof Admin)){
