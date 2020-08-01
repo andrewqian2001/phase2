@@ -268,7 +268,6 @@ public class NotificationsPanel extends JPanel {
                     userName.setHorizontalAlignment(JLabel.LEFT);
                     userName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-
                     JButton detailsButton = new JButton("View Conversation");
                     detailsButton.setFont(bold.deriveFont(20f));
                     detailsButton.setForeground(Color.WHITE);
@@ -292,7 +291,23 @@ public class NotificationsPanel extends JPanel {
                         userNameTitle.setOpaque(false);
                         userNameTitle.setForeground(Color.WHITE);
 
-                        userName.setForeground(Color.WHITE);
+                        JLabel userNameCopy = null;
+                        try {
+                            userNameCopy = new JLabel(userQuery.getUsername(fromUserId));
+                        } catch (UserNotFoundException userNotFoundException) {
+                            userNotFoundException.printStackTrace();
+                        }
+                        try {
+                            if (loginManager.getType(fromUserId).equals(UserTypes.TRADER))
+                                userNameCopy.setFont(regular.deriveFont(20f));
+                            else
+                                userNameCopy.setFont(bold.deriveFont(20f));
+                        } catch (UserNotFoundException userNotFoundException) {
+                            userNotFoundException.printStackTrace();
+                        }
+                        userNameCopy.setForeground(Color.WHITE);
+                        userNameCopy.setHorizontalAlignment(JLabel.LEFT);
+                        userNameCopy.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
                         JLabel messageBodyTitle = new JLabel("Full Message:");
                         messageBodyTitle.setFont(italic.deriveFont(20f));
@@ -314,7 +329,7 @@ public class NotificationsPanel extends JPanel {
                         fullMessageBody.setEditable(false);
 
                         messageDetailsPanel.add(userNameTitle);
-                        messageDetailsPanel.add(userName);
+                        messageDetailsPanel.add(userNameCopy);
                         messageDetailsPanel.add(messageBodyTitle);
                         messageDetailsPanel.add(fullMessageBody);
 
@@ -365,7 +380,23 @@ public class NotificationsPanel extends JPanel {
                         userNameTitle.setOpaque(false);
                         userNameTitle.setForeground(Color.WHITE);
 
-                        userName.setForeground(Color.WHITE);
+                        JLabel userNameCopy = null;
+                        try {
+                            userNameCopy = new JLabel(userQuery.getUsername(fromUserId));
+                        } catch (UserNotFoundException userNotFoundException) {
+                            userNotFoundException.printStackTrace();
+                        }
+                        try {
+                            if (loginManager.getType(fromUserId).equals(UserTypes.TRADER))
+                                userNameCopy.setFont(regular.deriveFont(20f));
+                            else
+                                userNameCopy.setFont(bold.deriveFont(20f));
+                        } catch (UserNotFoundException userNotFoundException) {
+                            userNotFoundException.printStackTrace();
+                        }
+                        userNameCopy.setForeground(Color.WHITE);
+                        userNameCopy.setHorizontalAlignment(JLabel.LEFT);
+                        userNameCopy.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
                         JLabel messageBodyTitle = new JLabel("Enter Message:");
                         messageBodyTitle.setFont(italic.deriveFont(20f));
@@ -401,7 +432,7 @@ public class NotificationsPanel extends JPanel {
                         });
 
                         messageReplyPanel.add(userNameTitle);
-                        messageReplyPanel.add(userName);
+                        messageReplyPanel.add(userNameCopy);
                         messageReplyPanel.add(messageBodyTitle);
                         messageReplyPanel.add(fullMessageBody);
 
