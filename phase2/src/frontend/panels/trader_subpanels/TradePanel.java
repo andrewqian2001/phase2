@@ -1072,8 +1072,13 @@ public class TradePanel extends JPanel implements ActionListener {
         traders.setForeground(Color.BLACK);
         traders.setOpaque(true);
         allTraders.forEach(t -> {
-            if (!t.equals(trader))
-                traders.addItem(t);
+            if (!t.equals(trader)) {
+                try {
+                    traders.addItem(userQuery.getUsername(t));
+                } catch (UserNotFoundException userNotFoundException) {
+                    userNotFoundException.printStackTrace();
+                }
+            }
         });
 
         JButton tradeSubmitButton = new JButton("Submit");
@@ -1120,15 +1125,13 @@ public class TradePanel extends JPanel implements ActionListener {
         otherTraderItems.setOpaque(true);
         otherTraderItems.setEnabled(false);
 
-        String otherTraderId = allTraders.get(traders.getSelectedIndex());
-
         traders.addItemListener(ev -> {
             try{
                 if (ev.getStateChange() == ItemEvent.SELECTED) {
                     otherTraderItems.setEnabled(false);
                     otherTraderItems.setVisible(false);
                     otherTraderItems.removeAllItems();
-                    for (String itemId : userQuery.getAvailableItems(otherTraderId))
+                    for (String itemId : userQuery.getAvailableItems(allTraders.get(traders.getSelectedIndex())))
                     {
                         otherTraderItems.addItem(itemQuery.getName(itemId));
                     }
@@ -1254,12 +1257,12 @@ public class TradePanel extends JPanel implements ActionListener {
                     }
 
                     if (otherTraderItems.getSelectedItem() != null) {
-                        otherTraderOffer = userQuery.getAvailableItems(otherTraderId).get(otherTraderItems.getSelectedIndex());
+                        otherTraderOffer = userQuery.getAvailableItems(allTraders.get(traders.getSelectedIndex())).get(otherTraderItems.getSelectedIndex());
                     }
                     //TODO: message?
                     String message = "";
 
-                    tradeManager.requestTrade(trader, otherTraderId, firstMeeting, secondMeeting, meetingLocationInput.getText(),
+                    tradeManager.requestTrade(trader, allTraders.get(traders.getSelectedIndex()), firstMeeting, secondMeeting, meetingLocationInput.getText(),
                             firstTraderOffer, otherTraderOffer, 3, message);
                     addNewTradeModal.dispose();
 				} catch (ParseException | UserNotFoundException | AuthorizationException | CannotTradeException e2) {
