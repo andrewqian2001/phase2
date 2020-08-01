@@ -24,7 +24,6 @@ import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TraderManager;
 import backend.tradesystem.trader_managers.TradingInfoManager;
-import frontend.panels.search_panels.SearchPanelTraderDetails;
 
 public class SearchPanel extends JPanel {
 

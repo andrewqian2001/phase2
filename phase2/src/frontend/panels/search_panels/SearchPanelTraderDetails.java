@@ -22,12 +22,23 @@ public class SearchPanelTraderDetails implements ActionListener {
     private final Color gray = new Color(75, 75, 75);
     private final Color gray2 = new Color(196, 196, 196);
 
+    /**
+     * Constructs an object of this class
+     * @param t The id of the trader whose details need to be shown
+     * @param regular Regular font
+     * @param italic Italic font
+     * @throws IOException if the database files could not be found
+     */
     public SearchPanelTraderDetails(String t, Font regular,Font italic) throws IOException {
         this.t = t;
         this.regular = regular;
         this.italic = italic;
     }
 
+    /**
+     * Creates a trader detail screen for use in the search panel
+     * @param e the ActionEvent object
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
 

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 /**
- * Used for logging in and registering, as well as any setup that has be done
+ * Used for logging in and registering, as well as any setup like changing global settings
  */
 public class LoginManager extends Manager {
 
@@ -57,11 +57,8 @@ public class LoginManager extends Manager {
      * @throws UserAlreadyExistsException username is not unique
      * @throws BadPasswordException       password isn't valid
      */
-    public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException {
-        // Get current default limits
-        int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
-        int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
-        int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
+    public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException, IOException {
+
 
         validatePassword(password);
 
@@ -73,21 +70,25 @@ public class LoginManager extends Manager {
             case TRADER:
                 tryToRefreshTradeCount();
             default:
+                // Get current default limits
+                int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
+                int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
+                int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
                 return updateUserDatabase(new Trader(username, password, "", defaultTradeLimit, defaultIncompleteTradeLim,
                         defaultMinimumAmountNeededToBorrow)).getId();
         }
     }
 
-    private void updateAllTraderDefaults() {
+    private void updateAllTraderDefaults() throws IOException {
 
         int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
         int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
         int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
         HashMap<String, User> users = getUserDatabase().getItems();
 
-        for (String user : users.keySet()){
+        for (String user : users.keySet()) {
             User populatedUser = users.get(user);
-            if (populatedUser instanceof Trader){
+            if (populatedUser instanceof Trader) {
                 Trader t = (Trader) populatedUser;
                 t.setTradeLimit(defaultTradeLimit);
                 t.setIncompleteTradeLim(defaultIncompleteTradeLim);
@@ -104,12 +105,16 @@ public class LoginManager extends Manager {
      * @return the user id of the logged in user
      * @throws UserNotFoundException could not find the user
      */
-    public String login(String username, String password) throws UserNotFoundException {
+    public String login(String username, String password) throws UserNotFoundException, IOException {
         String userId = getUserByUsername(username);
         User user = getUser(userId);
         if (!user.getPassword().equals(password)) throw new UserNotFoundException();
         if (getType(user.getId()).equals(UserTypes.TRADER)) {
-            tryToRefreshTradeCount();
+            try {
+                tryToRefreshTradeCount();
+            } catch (IOException ex) {
+                System.out.println("Couldn't reset trade limits");
+            }
             removeInvalidRequests(user.getId());
         }
         updateAllTraderDefaults();
@@ -201,7 +206,7 @@ public class LoginManager extends Manager {
     /**
      * Tries to refresh the trade count of all traders (this only happens every week).
      */
-    private void tryToRefreshTradeCount() {
+    private void tryToRefreshTradeCount() throws IOException {
         Date date = new Date();
 
         // Gets the current time in weeks since 1970.
@@ -225,25 +230,21 @@ public class LoginManager extends Manager {
      *
      * @param propertyType the type of property
      * @return the value of the specified trader property
+     * @throw IOException if the input file doesn't exist
      */
-    private int getProperty(TraderProperties propertyType) {
-        try {
-            // get the file
-            File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
-            // initialize the reader of this file
-            FileReader reader = new FileReader(propertyFile);
-            // initialize properties object
-            Properties properties = new Properties();
-            // associate properties object with this file.
-            properties.load(reader);
-            // we're not going to use reader anymore, so close it
-            reader.close();
-            // return the integer value of that property
-            return Integer.parseInt(properties.getProperty(propertyType.getProperty()));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return -1;
+    public int getProperty(TraderProperties propertyType) throws IOException {
+        // get the file
+        File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
+        // initialize the reader of this file
+        FileReader reader = new FileReader(propertyFile);
+        // initialize properties object
+        Properties properties = new Properties();
+        // associate properties object with this file.
+        properties.load(reader);
+        // we're not going to use reader anymore, so close it
+        reader.close();
+        // return the integer value of that property
+        return Integer.parseInt(properties.getProperty(propertyType.getProperty()));
     }
 
     /**
@@ -251,28 +252,25 @@ public class LoginManager extends Manager {
      *
      * @param propertyName  the property to change
      * @param propertyValue the new value of that property
+     * @throw IOException if the file doesn't exist
      */
-    private void setProperty(TraderProperties propertyName, int propertyValue) {
-        try {
-            // get the file
-            File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
-            // initialize reader
-            FileReader reader = new FileReader(propertyFile);
-            // initialize properties object (to set data)
-            Properties properties = new Properties();
-            // associate this properties object with the file
-            properties.load(reader);
-            // set the property
-            properties.setProperty(propertyName.getProperty(), "" + propertyValue);
+    public void setProperty(TraderProperties propertyName, int propertyValue) throws IOException {
+        // get the file
+        File propertyFile = new File(TRADER_PROPERTY_FILE_PATH);
+        // initialize reader
+        FileReader reader = new FileReader(propertyFile);
+        // initialize properties object (to set data)
+        Properties properties = new Properties();
+        // associate this properties object with the file
+        properties.load(reader);
+        // set the property
+        properties.setProperty(propertyName.getProperty(), "" + propertyValue);
 
-            //update the file
-            FileWriter writer = new FileWriter(propertyFile);
-            properties.store(writer, "");
-            reader.close();
-            writer.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        //update the file
+        FileWriter writer = new FileWriter(propertyFile);
+        properties.store(writer, "");
+        reader.close();
+        writer.close();
     }
 
     /**

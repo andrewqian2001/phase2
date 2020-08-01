@@ -1,48 +1,72 @@
 package frontend.panels.admin_subpanels;
 
+import backend.exceptions.AuthorizationException;
+import backend.exceptions.BadPasswordException;
+import backend.exceptions.UserAlreadyExistsException;
+import backend.exceptions.UserNotFoundException;
+import backend.models.users.Trader;
+import backend.tradesystem.TraderProperties;
+import backend.tradesystem.UserTypes;
+import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.trader_managers.TraderManager;
+import frontend.WindowManager;
+import frontend.controllers.AdminController;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
-public class ControlPanel extends JPanel {
+public class ControlPanel extends JPanel implements ActionListener {
 
-    private final String userId;
+    private Color bg = new Color(51, 51, 51);
+    private String userId;
+    private final LoginManager loginManager = new LoginManager();
+    private final TraderManager traderManager = new TraderManager();
+    private JPanel titles, splitContainer, tradeSettings, info, newAdmin, input;
+    private JLabel tradeSettingsTitle, newAdminTitle, minLend, tradeLimit, incompleteLimit, username, password, errorMessage, ah;
+    private JComboBox<Integer> minLendChoice, tradeLimitChoice, incompleteLimitChoice;
+    private GridBagConstraints gbc;
+    private JButton submitSettings, submitAdmin;
+    private JTextField usernameInput;
+    private JPasswordField passwordInput;
 
-    public ControlPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) {
-        Color bg = new Color(51, 51, 51);
+    public ControlPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.userId = userId;
         this.setSize(1200, 900);
         this.setBackground(Color.BLACK);
         this.setBorder(new EmptyBorder(50,50,100,50));
 
-        JPanel titles = new JPanel( new GridLayout(1,2, 100, 0));
+        titles = new JPanel( new GridLayout(1,2, 100, 0));
         titles.setOpaque(false);
         titles.setPreferredSize(new Dimension(1200,50));
 
-            JLabel tradeSettingsTitle = new JLabel("Trade Settings");
+            tradeSettingsTitle = new JLabel("Trade Settings");
             tradeSettingsTitle.setForeground(Color.white);
             tradeSettingsTitle.setFont(boldItalic.deriveFont(30f));
             tradeSettingsTitle.setHorizontalAlignment(JLabel.LEFT);
             titles.add(tradeSettingsTitle);
 
-            JLabel newAdminTitle = new JLabel("Create New Admin");
+            newAdminTitle = new JLabel("Create New Admin");
             newAdminTitle.setForeground(Color.white);
             newAdminTitle.setFont(boldItalic.deriveFont(30f));
             newAdminTitle.setHorizontalAlignment(JLabel.LEFT);
             titles.add(newAdminTitle);
 
-        JPanel splitContainer = new JPanel(new GridLayout(1,2, 100, 0));
+        splitContainer = new JPanel(new GridLayout(1,2, 100, 0));
         splitContainer.setOpaque(false);
         splitContainer.setPreferredSize(new Dimension(1200,400));
 
-            JPanel tradeSettings = new JPanel(new GridBagLayout());
-            GridBagConstraints gbc = new GridBagConstraints();
+            tradeSettings = new JPanel(new GridBagLayout());
+            gbc = new GridBagConstraints();
             tradeSettings.setBorder(BorderFactory.createMatteBorder(30, 20, 20, 20, bg));
             tradeSettings.setPreferredSize(new Dimension(450, 300));
             tradeSettings.setBackground(bg);
             splitContainer.add(tradeSettings);
 
-                JPanel info = new JPanel(new GridLayout(3,2, 20, 70));
+                info = new JPanel(new GridLayout(3,2, 20, 70));
                 info.setBorder(BorderFactory.createMatteBorder(0, 0, 20, 0, bg));
                 info.setBackground(bg);
                 gbc.fill = GridBagConstraints.BOTH;
@@ -50,41 +74,53 @@ public class ControlPanel extends JPanel {
                 gbc.weighty = 0.9;
                 tradeSettings.add(info, gbc);
 
-                    JLabel minLend = new JLabel("Minimum to Borrow:");
+                    minLend = new JLabel("Minimum to Borrow:");
                     minLend.setForeground(Color.white);
                     minLend.setFont(boldItalic.deriveFont(22f));
                     minLend.setHorizontalAlignment(JLabel.RIGHT);
                     info.add(minLend);
 
-                    Integer[] minLendChoices = {1, 2, 3, 4, 5};
-                    JComboBox<Integer> minLendChoice = new JComboBox<>(minLendChoices);
+                    Integer[] minLendChoices = new Integer[100];
+                    for(int i = 1; i < 101; i++) {
+                        minLendChoices[i-1] = i;
+                    }
+                    minLendChoice = new JComboBox<>(minLendChoices);
+                    minLendChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW) - 1);
                     minLendChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
                     info.add(minLendChoice);
 
-                    JLabel tradeLimit = new JLabel("Default Trade Limit:");
+                    tradeLimit = new JLabel("Default Trade Limit:");
                     tradeLimit.setForeground(Color.white);
                     tradeLimit.setFont(boldItalic.deriveFont(22f));
                     tradeLimit.setHorizontalAlignment(JLabel.RIGHT);
                     info.add(tradeLimit);
 
-                    Integer[] tradeLimitChoices = {1, 2, 3, 4, 5};
-                    JComboBox<Integer> tradeLimitChoice = new JComboBox<>(tradeLimitChoices);
+                    Integer[] tradeLimitChoices = new Integer[100];
+                    for(int i = 1; i < 101; i++) {
+                        tradeLimitChoices[i-1] = i;
+                    }
+                    tradeLimitChoice = new JComboBox<>(tradeLimitChoices);
+                    tradeLimitChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.TRADE_LIMIT) - 1);
                     tradeLimitChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
                     info.add(tradeLimitChoice);
 
-                    JLabel incompleteLimit = new JLabel("Incomplete Trade Limit:");
+                    incompleteLimit = new JLabel("Incomplete Trade Limit:");
                     incompleteLimit.setForeground(Color.white);
                     incompleteLimit.setFont(boldItalic.deriveFont(22f));
                     incompleteLimit.setHorizontalAlignment(JLabel.RIGHT);
                     info.add(incompleteLimit);
 
-                    Integer[] incompleteLimitChoices = {1, 2, 3, 4, 5};
-                    JComboBox<Integer> incompleteLimitChoice = new JComboBox<>(incompleteLimitChoices);
+                    Integer[] incompleteLimitChoices = new Integer[100];
+                    for(int i = 1; i < 101; i++) {
+                        incompleteLimitChoices[i-1] = i;
+                    }
+                    incompleteLimitChoice = new JComboBox<>(incompleteLimitChoices);
+                    incompleteLimitChoice.setSelectedIndex(loginManager.getProperty(TraderProperties.INCOMPLETE_TRADE_LIM) - 1);
                     incompleteLimitChoice.setBorder(BorderFactory.createMatteBorder(5,75,5,75,bg));
                     info.add(incompleteLimitChoice);
 
-                JButton submitSettings = new JButton("Submit");
-                submitSettings.setBorder(BorderFactory.createMatteBorder(0,150,0,150, bg));
+                submitSettings = new JButton("Submit");
+                submitSettings.setBorder(BorderFactory.createMatteBorder(10,160,10,160, bg));
                 submitSettings.setBackground(Color.green);
                 submitSettings.setForeground(Color.WHITE);
                 submitSettings.setFont(bold.deriveFont(25f));
@@ -93,44 +129,63 @@ public class ControlPanel extends JPanel {
                 gbc.insets = new Insets(30,0,0,0);
                 tradeSettings.add(submitSettings, gbc);
 
-            JPanel newAdmin = new JPanel(new GridLayout(4,2,20,70));
+            newAdmin = new JPanel(new GridBagLayout());
             newAdmin.setPreferredSize(new Dimension(450, 300));
-            newAdmin.setBorder(new EmptyBorder(30,0,20,20));
+            gbc = new GridBagConstraints();
+            newAdmin.setBorder(BorderFactory.createMatteBorder(30, 0, 20, 0, bg));
             newAdmin.setBackground(bg);
             splitContainer.add(newAdmin);
 
-                JLabel username = new JLabel("Username:");
-                username.setForeground(Color.white);
-                username.setFont(boldItalic.deriveFont(25f));
-                username.setHorizontalAlignment(JLabel.RIGHT);
-                newAdmin.add(username);
+                input = new JPanel(new GridLayout(2,2, 70, 20));
+                input.setBorder(BorderFactory.createMatteBorder(0, 0, 20, 0, bg));
+                input.setBackground(bg);
+                gbc.fill = GridBagConstraints.BOTH;
+                gbc.gridy = 0;
+                gbc.weighty = 0.6;
+                newAdmin.add(input, gbc);
 
-                JTextField usernameInput = new JTextField();
-                newAdmin.add(usernameInput);
+                    username = new JLabel("Username:");
+                    username.setForeground(Color.white);
+                    username.setFont(boldItalic.deriveFont(25f));
+                    username.setHorizontalAlignment(JLabel.CENTER);
+                    input.add(username);
 
-                JLabel password = new JLabel("Password:");
-                password.setForeground(Color.white);
-                password.setFont(boldItalic.deriveFont(25f));
-                password.setHorizontalAlignment(JLabel.RIGHT);
-                newAdmin.add(password);
+                    usernameInput = new JTextField();
+                    usernameInput.setBorder(BorderFactory.createMatteBorder(25,0,25,0,bg));
+                    usernameInput.setFont(regular.deriveFont(25f));
+                    input.add(usernameInput);
 
-                JTextField passwordInput = new JTextField();
-                newAdmin.add(passwordInput);
+                    password = new JLabel("Password:");
+                    password.setForeground(Color.white);
+                    password.setFont(boldItalic.deriveFont(25f));
+                    password.setHorizontalAlignment(JLabel.CENTER);
+                    input.add(password);
 
-                JLabel errorMessage = new JLabel("Stuff");
+                    passwordInput = new JPasswordField();
+                    passwordInput.setBorder(BorderFactory.createMatteBorder(25,0,25,0,bg));
+                    passwordInput.setFont(regular.deriveFont(25f));
+                    input.add(passwordInput);
+
+                errorMessage = new JLabel();
+                errorMessage.setPreferredSize(new Dimension(450, 80));
                 errorMessage.setForeground(Color.red);
-                errorMessage.setFont(regular.deriveFont(25f));
-                errorMessage.setHorizontalAlignment(JLabel.RIGHT);
-                newAdmin.add(errorMessage);
+                errorMessage.setFont(regular.deriveFont(15f));
+                errorMessage.setHorizontalAlignment(JLabel.CENTER);
+                gbc.gridy = 1;
+                gbc.weighty = 0.3;
+                newAdmin.add(errorMessage, gbc);
 
-                JButton submitAdmin = new JButton("Submit");
-                submitAdmin.setBorder(BorderFactory.createMatteBorder(0,50,0,50, bg));
+                submitAdmin = new JButton("Submit");
+                    submitAdmin.setBorder(BorderFactory.createMatteBorder(0,130,10,130, bg));
                 submitAdmin.setBackground(Color.green);
                 submitAdmin.setForeground(Color.WHITE);
                 submitAdmin.setFont(bold.deriveFont(25f));
-                newAdmin.add(submitAdmin);
+                submitAdmin.addActionListener(this);
+                gbc.gridy = 2;
+                gbc.weighty = 0.1;
+                newAdmin.add(submitAdmin, gbc);
 
-        JLabel ah = new JLabel("<html><b><i>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. <br>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <br>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</i></b></html>");
+        ah = new JLabel("<html><b><i>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. <br>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <br>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</i></b></html>");
         ah.setBackground(Color.black);
         ah.setForeground(Color.white);
         ah.setFont(ah.getFont().deriveFont(20f));
@@ -140,4 +195,41 @@ public class ControlPanel extends JPanel {
         this.add(splitContainer);
         this.add(ah);
     }
+
+    /**
+     * Used for displaying some message in the login screen
+     * @param msg the message being displayed
+     */
+    public void notifyLogin(String msg) {
+        errorMessage.setText(msg);
+        errorMessage.setVisible(true);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == submitAdmin) {
+            try {
+                String loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.ADMIN);
+                if(loginManager.getType(loggedInUser).equals(UserTypes.ADMIN)) {
+                    traderManager.setCity(loggedInUser, "Toronto");
+                }
+                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+            } catch(BadPasswordException ex) {
+                notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
+            } catch(UserAlreadyExistsException ignored) {
+                notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
+            } catch(IOException | UserNotFoundException | AuthorizationException ex) {
+                ex.printStackTrace();
+            }
+        } else if(e.getSource() == submitSettings) {
+            try {
+                loginManager.setProperty(TraderProperties.INCOMPLETE_TRADE_LIM, incompleteLimitChoice.getItemAt(incompleteLimitChoice.getSelectedIndex()));
+                loginManager.setProperty(TraderProperties.TRADE_LIMIT, tradeLimitChoice.getItemAt(tradeLimitChoice.getSelectedIndex()));
+                loginManager.setProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW, minLendChoice.getItemAt(minLendChoice.getSelectedIndex()));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
 }
+
