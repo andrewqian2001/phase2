@@ -96,7 +96,7 @@ public class ReportManager extends Manager {
      * @param reportId the report being removed
      */
     public void clearReports(String reportId) {
-        for (String userId: getUserDatabase().getItems().keySet()) {
+        for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Admin) {
                     Admin admin = ((Admin) getUser(userId));
