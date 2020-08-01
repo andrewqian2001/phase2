@@ -451,12 +451,15 @@ public class NotificationsPanel extends JPanel {
 
     private void getFreqTradableItems() {
         try {
+            freqTradableItemsPanel = new JPanel(new GridLayout(0, 1));
+            freqTradableItemsPanel.setBackground(gray2);
             ArrayList<String> items = infoManager.getRecentTradeItems(traderId);
             int numRows = items.size();
             if (numRows < 3)
                 numRows = 3;
             freqTradableItemsPanel = new JPanel(new GridLayout(numRows, 1));
             freqTradableItemsPanel.setBackground(gray2);
+
             for (String itemId : items) {
                 JLabel itemName = new JLabel(itemQuery.getName(itemId));
                 itemName.setFont(regular.deriveFont(20f));
@@ -466,6 +469,7 @@ public class NotificationsPanel extends JPanel {
                         BorderFactory.createEmptyBorder(0, 25, 0, 0)));
                 freqTradableItemsPanel.add(itemName);
             }
+
         } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException
                 | TradableItemNotFoundException e) {
             System.out.println(e.getMessage());
