@@ -367,7 +367,7 @@ public class TestTrade extends TestManager{
 
             try {
                 tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), goodDate, null, "...",
-                        item3, item4);
+                        item3, item4, "");
                 fail("This user should not be able to send an edited trade offer");
             } catch (CannotTradeException e) {
                 assertEquals("A previous trade offer has already been sent", e.getMessage());
@@ -375,14 +375,14 @@ public class TestTrade extends TestManager{
 
             try {
                 tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), goodDate, null, "...",
-                        item3, item4);
+                        item3, item4, "");
                 fail("This user is giving items they don't have");
             } catch (CannotTradeException e) {
                 assertEquals("One of the traders does not have the required item!", e.getMessage());
             }
 
             tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), goodDate, goodDate2, "Home",
-                    item4, item3);
+                    item4, item3, "");
             //Trade should have same ID and location in trades
             update();
             assertEquals(trader1.getRequestedTrades().get(0), trader2.getRequestedTrades().get(0));
@@ -401,7 +401,7 @@ public class TestTrade extends TestManager{
 
             try {
                 tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), goodDate, null, "...",
-                        item2, item1);
+                        item2, item1, "");
                 fail("You cant send an offer for an item you dont have");
             } catch (CannotTradeException e) {
                 assertEquals("One of the traders does not have the required item!", e.getMessage());
@@ -409,14 +409,14 @@ public class TestTrade extends TestManager{
 
             try {
                 tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), goodDate, null, "...",
-                        item2, item1);
+                        item2, item1, "");
                 fail("This trader already sent an offer.");
             } catch (CannotTradeException e) {
                 assertEquals("A previous trade offer has already been sent", e.getMessage());
             }
 
             tradingManager.counterTradeOffer(trader1.getId(), trade1.getId(), goodDate, null, "...",
-                    item1, item2);
+                    item1, item2, "");
 
             //Trade should have same ID and location in trades
             update();
@@ -433,7 +433,7 @@ public class TestTrade extends TestManager{
 
             try{
                 tradingManager.counterTradeOffer(trader2.getId(), trade1.getId(), goodDate, null, "...",
-                        item4, item3);
+                        item4, item3, "");
                 fail("Trade limit should be exceeded");
             }
             catch(CannotTradeException e){
