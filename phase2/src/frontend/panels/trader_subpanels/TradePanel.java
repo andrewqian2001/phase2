@@ -740,7 +740,7 @@ public class TradePanel extends JPanel implements ActionListener {
                                                 .get(otherTraderItems.getSelectedIndex());
                                     }
                                     System.out.println(traderItems.getSelectedItem());
-                                    tradeManager.counterTradeOffer(trader, tradeID, firstMeeting, secondMeeting, finalMeetingLocationInput.getText(), thisTraderOffer, thatTraderOffer);
+                                    tradeManager.counterTradeOffer(trader, tradeID, firstMeeting, secondMeeting, finalMeetingLocationInput.getText(), thisTraderOffer, thatTraderOffer, "");
                                     tradeEditsModal.dispose();
                                 } catch (ParseException | TradeNotFoundException | UserNotFoundException | CannotTradeException | AuthorizationException e2) {
                                     error.setText(e2.getMessage());
