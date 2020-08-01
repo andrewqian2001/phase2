@@ -4,7 +4,11 @@ import backend.DatabaseFilePaths;
 import backend.exceptions.*;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.managers.*;
+import backend.tradesystem.admin_managers.HandleFrozenManager;
+import backend.tradesystem.admin_managers.HandleItemRequestsManager;
+import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.general_managers.MessageManager;
+import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.queries.UserQuery;
 
 import java.io.*;

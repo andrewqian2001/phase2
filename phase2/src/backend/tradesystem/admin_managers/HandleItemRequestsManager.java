@@ -1,11 +1,11 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.admin_managers;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.TradableItem;
 import backend.models.users.Trader;
 import backend.models.users.User;
+import backend.tradesystem.general_managers.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.HashMap;
  * For handling new TradableItem + purchasable items requests
  */
 
-public class HandleItemRequestsManager extends  Manager{
+public class HandleItemRequestsManager extends Manager {
     /**
      * Initialize the objects to get items from databases
      *

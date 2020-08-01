@@ -1,14 +1,9 @@
 package backend.tradesystem.queries;
 
-import backend.DatabaseFilePaths;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.Report;
 import backend.models.Review;
-import backend.models.users.Admin;
-import backend.models.users.Trader;
-import backend.models.users.User;
-import backend.tradesystem.managers.Manager;
+import backend.tradesystem.general_managers.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;

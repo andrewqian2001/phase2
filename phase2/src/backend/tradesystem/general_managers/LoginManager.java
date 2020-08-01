@@ -1,9 +1,8 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.general_managers;
 
 
 import backend.DatabaseFilePaths;
 import backend.exceptions.*;
-import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Admin;
 import backend.models.users.Trader;

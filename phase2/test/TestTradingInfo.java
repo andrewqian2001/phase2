@@ -6,11 +6,15 @@ import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.managers.*;
+import backend.tradesystem.admin_managers.HandleItemRequestsManager;
+import backend.tradesystem.general_managers.LoginManager;
 import backend.Database;
 
 import java.util.Date;
 
+import backend.tradesystem.trader_managers.TraderManager;
+import backend.tradesystem.trader_managers.TradingInfoManager;
+import backend.tradesystem.trader_managers.TradingManager;
 import org.junit.*;
 
 import java.io.*;

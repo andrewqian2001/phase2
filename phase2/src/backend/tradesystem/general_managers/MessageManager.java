@@ -1,9 +1,7 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.general_managers;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.Report;
-import backend.models.users.Admin;
 import backend.models.users.User;
 
 import java.io.*;

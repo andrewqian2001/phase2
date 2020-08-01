@@ -9,8 +9,8 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.managers.LoginManager;
-import backend.tradesystem.managers.TraderManager;
+import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.trader_managers.TraderManager;
 import backend.tradesystem.queries.UserQuery;
 
 public class SettingsPanel extends JPanel {

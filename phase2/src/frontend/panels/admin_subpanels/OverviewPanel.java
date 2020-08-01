@@ -3,8 +3,8 @@ package frontend.panels.admin_subpanels;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.managers.HandleFrozenManager;
-import backend.tradesystem.managers.HandleItemRequestsManager;
+import backend.tradesystem.admin_managers.HandleFrozenManager;
+import backend.tradesystem.admin_managers.HandleItemRequestsManager;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 

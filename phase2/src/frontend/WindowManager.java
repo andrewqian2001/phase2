@@ -1,11 +1,8 @@
 package frontend;
 
 import backend.exceptions.UserNotFoundException;
-import backend.models.users.Trader;
-import backend.models.users.Admin;
-import backend.models.users.User;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.managers.LoginManager;
+import backend.tradesystem.general_managers.LoginManager;
 import frontend.panels.AdminPanel;
 import frontend.panels.TraderPanel;
 import frontend.panels.ImagePanel;

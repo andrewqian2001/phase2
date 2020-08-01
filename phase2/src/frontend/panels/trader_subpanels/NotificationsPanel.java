@@ -23,9 +23,11 @@ import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.managers.*;
+import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.general_managers.MessageManager;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
+import backend.tradesystem.trader_managers.TradingInfoManager;
 
 public class NotificationsPanel extends JPanel {
 

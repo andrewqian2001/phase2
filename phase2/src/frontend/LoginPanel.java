@@ -23,8 +23,8 @@ import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.managers.LoginManager;
-import backend.tradesystem.managers.TraderManager;
+import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.trader_managers.TraderManager;
 
 /**
  * This represents the login screen

@@ -5,9 +5,11 @@ import javax.swing.*;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.managers.*;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
+import backend.tradesystem.trader_managers.TraderManager;
+import backend.tradesystem.trader_managers.TradingInfoManager;
+import backend.tradesystem.trader_managers.TradingManager;
 
 import java.awt.*;
 import java.awt.event.ItemEvent;

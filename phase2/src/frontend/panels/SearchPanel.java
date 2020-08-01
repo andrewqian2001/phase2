@@ -20,9 +20,11 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.managers.*;
+import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
+import backend.tradesystem.trader_managers.TraderManager;
+import backend.tradesystem.trader_managers.TradingInfoManager;
 
 public class SearchPanel extends JPanel {
 

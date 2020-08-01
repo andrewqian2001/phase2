@@ -1,4 +1,4 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.general_managers;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
@@ -8,7 +8,6 @@ import backend.models.users.User;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Used for managing reports

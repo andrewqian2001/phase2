@@ -1,10 +1,11 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.admin_managers;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
 import backend.models.users.User;
 import backend.tradesystem.TraderProperties;
+import backend.tradesystem.general_managers.Manager;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 /**
  * This deals with everything relating to trade limits
  */
-public class HandleTradeLimitsManager extends Manager{
+public class HandleTradeLimitsManager extends Manager {
     /**
      * Initialize the objects to get items from databases
      *

@@ -1,4 +1,4 @@
-package backend.tradesystem.managers;
+package backend.tradesystem.trader_managers;
 
 
 import backend.exceptions.AuthorizationException;
@@ -7,6 +7,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.models.Review;
 import backend.models.TradableItem;
 import backend.models.users.Trader;
+import backend.tradesystem.general_managers.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;

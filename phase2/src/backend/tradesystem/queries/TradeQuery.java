@@ -1,7 +1,7 @@
 package backend.tradesystem.queries;
 
 import backend.exceptions.TradeNotFoundException;
-import backend.tradesystem.managers.Manager;
+import backend.tradesystem.general_managers.Manager;
 
 import java.io.IOException;
 import java.util.Date;
