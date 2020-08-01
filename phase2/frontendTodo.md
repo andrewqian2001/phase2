@@ -10,7 +10,8 @@
 - Add reviews and reports to all trades/(messages ?)  
 - User should be able to trade based on city  
 - Admin undo abilities  
-- javadoc? maybe?
+- Refactor and Reformat class files (super messy rn)
+- javadoc? maybe? (leave for James 👁👅👁)
 - ~~Add a settings menu for Trader to allow them to enter 'idle mode'~~  
 - ~~Add ability for user to enter city on registration (and change city in settings)~~ 
 
@@ -20,6 +21,9 @@ TradePanel:
   - ~~In the editTradeRequest modal, get the current meeting dates and automatically set the JComboBoxes to the date~~
   - ~~Finish Add New Trade Window + Submit Button~~ 
   - ~~Fix scrollpane top header alignment~~
+  - ~~Add message to addNewTradeModal~~
+  - Show message in tradeRequestDetails
+  - Add message to editTradeModal
   
 ItemsPanel:  
   - scrollpane top headers for both invent. + wishlist  
