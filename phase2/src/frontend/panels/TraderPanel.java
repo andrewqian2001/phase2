@@ -24,6 +24,7 @@ import javax.swing.plaf.metal.MetalButtonUI;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
+import frontend.panels.search_panels.SearchPanel;
 import frontend.panels.trader_subpanels.ItemsPanel;
 import frontend.panels.trader_subpanels.NotificationsPanel;
 import frontend.panels.trader_subpanels.SettingsPanel;
