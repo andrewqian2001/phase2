@@ -182,4 +182,20 @@ public class Manager {
                 return userId;
         throw new UserNotFoundException();
     }
+
+    /**
+     * Gets a tradableItem by name
+     *
+     * @param itemName username of the User
+     * @return the items id
+     * @throws
+     */
+    public String getTradableItemByName(String itemName) throws TradableItemNotFoundException {
+        for(String itemId: getTradableItemDatabase().getItems().keySet()){
+            if(getTradableItem(itemId).getName().equals(itemName)){
+                return itemId;
+            }
+        }
+        throw new TradableItemNotFoundException();
+    }
 }
