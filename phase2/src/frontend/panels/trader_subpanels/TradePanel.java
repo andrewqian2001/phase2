@@ -1080,8 +1080,7 @@ public class TradePanel extends JPanel implements ActionListener {
                             tradeConfirmButton.setFont(boldItalic.deriveFont(20f));
                             ongoingTradesContainer.revalidate();
                             ongoingTradesContainer.repaint();
-                        } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException
-                                | CannotTradeException e1) {
+                        } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException e1) {
                             System.out.println(e1.getMessage());
                         }
                     });
