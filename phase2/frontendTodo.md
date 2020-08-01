@@ -26,7 +26,7 @@
 **TODO: traderPanel**
 
 TradePanel:  
-  - Add message to editTradeModal
+  - ~~Add message to editTradeModal~~
   - ~~Show message in tradeRequestDetails~~
   - ~~In the editTradeRequest modal, get the current meeting dates and automatically set the JComboBoxes to the date~~
   - ~~Finish Add New Trade Window + Submit Button~~ 

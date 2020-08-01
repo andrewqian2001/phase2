@@ -506,12 +506,12 @@ public class TradePanel extends JPanel implements ActionListener {
                     editTradeButton.addActionListener(e -> {
                         JDialog tradeEditsModal = new JDialog();
                         tradeEditsModal.setTitle("Trade Edit");
-                        tradeEditsModal.setSize(700, 600);
+                        tradeEditsModal.setSize(700, 700);
                         tradeEditsModal.setResizable(false);
                         tradeEditsModal.setLocationRelativeTo(null);
 
                         JPanel tradeEditsPanel = new JPanel();
-                        tradeEditsPanel.setPreferredSize(new Dimension(700, 600));
+                        tradeEditsPanel.setPreferredSize(new Dimension(700, 700));
                         tradeEditsPanel.setBackground(bg);
 
                         JLabel traderItemTitle = new JLabel("Item from your Inventory:");
@@ -620,10 +620,9 @@ public class TradePanel extends JPanel implements ActionListener {
 
                         JLabel availableEdits = null;
                         try {
-                            System.out.println();
                             availableEdits = new JLabel(
                                     "<html><pre>" + (tradeQuery.getMaxAllowedEdits(tradeID)+1) / 2
-                                            + " Edits Remaining</pre></html>");
+                                            + " Edit(s) Remaining</pre></html>");
                         } catch (TradeNotFoundException tradeNotFoundException) {
                             tradeNotFoundException.printStackTrace();
                         }
@@ -655,6 +654,19 @@ public class TradePanel extends JPanel implements ActionListener {
                             }
                         });
 
+                        JLabel messageTitle = new JLabel("Attach a counter-message: (Optional)");
+                        messageTitle.setFont(italic.deriveFont(20f));
+                        messageTitle.setPreferredSize(new Dimension(650, 50));
+                        messageTitle.setOpaque(false);
+                        messageTitle.setForeground(Color.WHITE);
+
+                        JTextField messageInput = new JTextField();
+                        messageInput.setFont(regular.deriveFont(20f));
+                        messageInput.setBackground(gray2);
+                        messageInput.setForeground(Color.BLACK);
+                        messageInput.setPreferredSize(new Dimension(650, 50));
+                        messageInput.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
                         JButton submitButton = new JButton("Submit");
                         submitButton.setFont(bold.deriveFont(20f));
                         submitButton.setBackground(green);
@@ -680,6 +692,8 @@ public class TradePanel extends JPanel implements ActionListener {
                         tradeEditsPanel.add(firstMeetingDate);
                         tradeEditsPanel.add(secondMeetingDateTitle);
                         tradeEditsPanel.add(secondMeetingDate);
+                        tradeEditsPanel.add(messageTitle);
+                        tradeEditsPanel.add(messageInput);
                         tradeEditsPanel.add(availableEditsTitle);
                         tradeEditsPanel.add(availableEdits);
                         tradeEditsPanel.add(error);
@@ -739,8 +753,7 @@ public class TradePanel extends JPanel implements ActionListener {
                                         thatTraderOffer = userQuery.getAvailableItems(tradeQuery.getFirstUserId(tradeID))
                                                 .get(otherTraderItems.getSelectedIndex());
                                     }
-                                    System.out.println(traderItems.getSelectedItem());
-                                    tradeManager.counterTradeOffer(trader, tradeID, firstMeeting, secondMeeting, finalMeetingLocationInput.getText(), thisTraderOffer, thatTraderOffer, "");
+                                    tradeManager.counterTradeOffer(trader, tradeID, firstMeeting, secondMeeting, finalMeetingLocationInput.getText(), thisTraderOffer, thatTraderOffer, messageInput.getText());
                                     tradeEditsModal.dispose();
                                 } catch (ParseException | TradeNotFoundException | UserNotFoundException | CannotTradeException | AuthorizationException e2) {
                                     error.setText(e2.getMessage());
