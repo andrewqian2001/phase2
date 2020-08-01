@@ -269,7 +269,7 @@ public class TradePanel extends JPanel implements ActionListener {
 
                     JLabel otherTraderName = new JLabel(userQuery.getUsername(tradeQuery.getFirstUserId(tradeID)));
                     JLabel otherTraderItemName = tradeQuery.getFirstUserOffer(tradeID).equals("") ? new JLabel("N/A")
-                            : new JLabel(itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)));
+                            : new JLabel(itemQuery.getName(tradeQuery.getFirstUserOffer(tradeID)));
                     JLabel traderItemName = tradeQuery.getSecondUserOffer(tradeID).equals("") ? new JLabel("N/A")
                             : new JLabel(itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)));
 
@@ -1131,7 +1131,7 @@ public class TradePanel extends JPanel implements ActionListener {
                     otherTraderItems.setEnabled(false);
                     otherTraderItems.setVisible(false);
                     otherTraderItems.removeAllItems();
-                    for (String itemId : userQuery.getAvailableItems(allTraders.get(traders.getSelectedIndex())))
+                    for (String itemId : userQuery.getAvailableItems(infoManager.getUserByUsername((String)traders.getSelectedItem())))
                     {
                         otherTraderItems.addItem(itemQuery.getName(itemId));
                     }
@@ -1257,12 +1257,12 @@ public class TradePanel extends JPanel implements ActionListener {
                     }
 
                     if (otherTraderItems.getSelectedItem() != null) {
-                        otherTraderOffer = userQuery.getAvailableItems(allTraders.get(traders.getSelectedIndex())).get(otherTraderItems.getSelectedIndex());
+                        otherTraderOffer = userQuery.getAvailableItems(infoManager.getUserByUsername((String)traders.getSelectedItem())).get(otherTraderItems.getSelectedIndex());
                     }
                     //TODO: message?
                     String message = "";
 
-                    tradeManager.requestTrade(trader, allTraders.get(traders.getSelectedIndex()), firstMeeting, secondMeeting, meetingLocationInput.getText(),
+                    tradeManager.requestTrade(trader, infoManager.getUserByUsername((String)traders.getSelectedItem()), firstMeeting, secondMeeting, meetingLocationInput.getText(),
                             firstTraderOffer, otherTraderOffer, 3, message);
                     addNewTradeModal.dispose();
 				} catch (ParseException | UserNotFoundException | AuthorizationException | CannotTradeException e2) {
