@@ -22,8 +22,6 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.users.Trader;
-import backend.models.users.User;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.managers.LoginManager;
 import backend.tradesystem.managers.TraderManager;
@@ -119,12 +117,8 @@ public class LoginPanel extends JPanel implements ActionListener {
                 notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
             } catch(UserAlreadyExistsException ignored) {
                 notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
-            } catch(IOException ex) {
+            } catch(IOException | UserNotFoundException | AuthorizationException ex) {
                 ex.printStackTrace();
-            } catch (UserNotFoundException userNotFoundException) {
-                userNotFoundException.printStackTrace();
-            } catch (AuthorizationException authorizationException) {
-                authorizationException.printStackTrace();
             }
         }
     }

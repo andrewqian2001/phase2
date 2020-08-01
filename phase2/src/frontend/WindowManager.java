@@ -1,8 +1,11 @@
 package frontend;
 
+import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
 import backend.models.users.Admin;
 import backend.models.users.User;
+import backend.tradesystem.UserTypes;
+import backend.tradesystem.managers.LoginManager;
 import frontend.panels.AdminPanel;
 import frontend.panels.TraderPanel;
 import frontend.panels.ImagePanel;
@@ -24,10 +27,12 @@ public class WindowManager extends JFrame {
     private final BufferedImage loginBg = ImageIO.read(new File("./src/frontend/images/LoginPanelBg.jpg")),
             adminBg = ImageIO.read(new File("./src/frontend/images/IconAdmin.jpg")),
             traderBg = ImageIO.read(new File("./src/frontend/images/IconTrader.jpg"));
+    private final LoginManager loginManager = new LoginManager();
 
     /**
      * This is where initial settings that affects the entire window is at
-     * @throws IOException if logging causes issues
+     *
+     * @throws IOException         if logging causes issues
      * @throws FontFormatException if the font is bad
      */
     public WindowManager() throws IOException, FontFormatException {
@@ -47,21 +52,26 @@ public class WindowManager extends JFrame {
 
     /**
      * Changes from login screen to the actual dashboard
-     * @param loggedInUser the user that is logged in
+     *
+     * @param loggedInUserId the user id that is logged in
      * @throws IOException if login causes issues
      */
-    public void login(User loggedInUser) throws IOException {
-        if (loggedInUser instanceof Trader) {
-            userPanel = new TraderPanel((Trader) loggedInUser, regular, bold, italic, boldItalic);
-            this.setContentPane(new ImagePanel(traderBg));
-        } else {
-            userPanel = new AdminPanel((Admin) loggedInUser, regular, bold, italic, boldItalic);
-            this.setContentPane(new ImagePanel(adminBg));
+    public void login(String loggedInUserId) throws IOException {
+        try {
+            if (loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
+                userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic);
+                this.setContentPane(new ImagePanel(traderBg));
+            } else {
+                userPanel = new AdminPanel(loggedInUserId, regular, bold, italic, boldItalic);
+                this.setContentPane(new ImagePanel(adminBg));
+            }
+            this.add(userPanel, BorderLayout.CENTER);
+            this.setSize(userPanel.getSize());
+            this.setResizable(false);
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
         }
         this.remove(loginPanel);
-        this.add(userPanel, BorderLayout.CENTER);
-        this.setSize(userPanel.getSize());
-        this.setResizable(false);
     }
 
     /**
