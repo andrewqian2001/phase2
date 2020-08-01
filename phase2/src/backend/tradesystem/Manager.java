@@ -1,4 +1,4 @@
-package backend.tradesystem.general_managers;
+package backend.tradesystem;
 
 import backend.Database;
 import backend.DatabaseFilePaths;
