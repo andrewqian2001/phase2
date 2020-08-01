@@ -3,6 +3,7 @@ package backend.tradesystem.general_managers;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.User;
+import backend.tradesystem.Manager;
 
 import java.io.*;
 import java.util.ArrayList;

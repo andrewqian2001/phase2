@@ -1,7 +1,7 @@
 package backend.tradesystem.queries;
 
 import backend.exceptions.TradableItemNotFoundException;
-import backend.tradesystem.general_managers.Manager;
+import backend.tradesystem.Manager;
 
 import java.io.IOException;
 
