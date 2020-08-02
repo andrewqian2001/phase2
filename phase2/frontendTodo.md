@@ -6,8 +6,8 @@ DEMO ACCOUNT USERNAME: demo
 DEMO ACCOUNT PASSWORD: userPassword1
 
 - !IMPORTANT: refresh button/method to refresh the user data
-- Button to load demo account in LoginPanel  
 - Admin undo abilities  
+- ~~Button to load demo account in LoginPanel~~  
 - ~~Panel for Demo~~ 
 - ~~Panel for Idle Users~~  
 - ~~Panel for frozen users~~  
