@@ -285,27 +285,21 @@ public class TradingInfoManager extends Manager {
 
 
     /**
-     * traverses through the users wishlist, finds the most similar item in the database and for each item, the function then returns a trade
+     * traverses through the users wishlist, finds the most similar item by name
      *
-     * @param thisTraderId      is the id of this trader
-     * @param itemToLendId      is the id of item from the users inventory that is going to be given
-     * @param meetingTime       is the meeting time
-     * @param secondMeetingTime is the second meeting time
-     * @param location          ois the location of the meeting
-     * @param allowedEdits      is the max number of edits the traders can make
-     * @param message
-     * @return the most reasonable trade for every item in the users wishlist
-     * @throws UserNotFoundException
-     * @throws AuthorizationException
-     * @throws TradableItemNotFoundException
+     * @param thisTraderId      id of this trader
+     * @return a arraylist of 2 cell arrays containing the other traders id and the other traders item id [otherTraderId, otherTraderItemId]
+     * @throws UserNotFoundException if thisTraderId is a bad id
+     * @throws AuthorizationException if thisTraderId isn't a trader
+     * @throws TradableItemNotFoundException if the tradable item wasn't found
      */
-     public ArrayList<Trade> automatedTradeSuggestion(String thisTraderId, String itemToLendId, Date meetingTime, Date secondMeetingTime, String location, int allowedEdits, String message) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+     public ArrayList<String[]> automatedTradeSuggestion(String thisTraderId) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
         ArrayList<String> allTraders = getAllTraders();
         allTraders.remove(thisTraderId);
-        ArrayList<Trade> wishlistTrades = new ArrayList<>();
-        //Creates the most reasonable trade object for every item in this users wishlist
-        //Every item on the users wishlist is excluded from being considered similar
+        ArrayList<String[]> wishlistTrades = new ArrayList<>();
+
+        // Every item on the users wishlist is excluded from being considered similar
 
         for(String wishlistItemId: getTrader(thisTraderId).getWishlist()){
             int max = 0;
@@ -314,16 +308,15 @@ public class TradingInfoManager extends Manager {
             for (String otherTraderId : allTraders) {
                 Trader otherTrader = getTrader(otherTraderId);
                 Object[] similarGetItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
-                Object[] similarGiveItem = similarSearch(itemToLendId, otherTrader.getWishlist());
-                if (((int) similarGetItem[1] + (int) similarGiveItem[1]) > max) {
-                    max = ((int) similarGetItem[1] + (int) similarGiveItem[1]);
+
+                if (((int) similarGetItem[1]) > max) {
+                    max = ((int) similarGetItem[1]);
                     mostSimItem = (String) similarGetItem[0];
                     mostSimTraderId = otherTrader.getId();
                 }
             }
-            String itemToLendName = getTradableItem(itemToLendId).getName();
-            Trade trade = new Trade(thisTraderId, mostSimTraderId, meetingTime, secondMeetingTime, location, itemToLendName, mostSimItem, allowedEdits, message);
-            wishlistTrades.add(trade);
+
+            wishlistTrades.add(new String[]{mostSimTraderId, mostSimItem});
         }
 
 
@@ -338,7 +331,7 @@ public class TradingInfoManager extends Manager {
      * @param list is the list of strings that we are traversing through
      * @return an array with two cells containing the items name and the score of how similar it is
      */
-    public Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+    private Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
         if (list.size() == 0) {
             return new Object[]{"", 0};
@@ -431,12 +424,13 @@ public class TradingInfoManager extends Manager {
                         }
                     }
                 }
-                similarNames.add(new Object[]{otherNames, maxSim});
+                similarNames.add(new Object[]{otherNames,  maxSim, otherNamesId});
             }
         }
         //finds the max similarity score in similarNames
         int max = 0;
         String mostSimilarName = "";
+        String mostSimilarNameId = "";
         for(Object[] simNameArr : similarNames) {
             int x = (int) simNameArr[1]; //x is similarity score
             String similarName = (String) simNameArr[0];
@@ -446,9 +440,10 @@ public class TradingInfoManager extends Manager {
             if (x > max || x == max && (Math.abs(similarName.length() - name.length()) < (Math.abs(mostSimilarName.length() - name.length())))) {
                 max = x;
                 mostSimilarName = similarName;
+                mostSimilarNameId = (String) simNameArr[2];
             }
         }
-        Object[] arr = {mostSimilarName, max};
+        Object[] arr = {mostSimilarNameId, max};
         return arr;
     }
 
