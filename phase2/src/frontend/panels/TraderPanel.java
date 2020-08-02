@@ -61,10 +61,14 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
+        boolean isFrozen = checkFrozenTrader(traderId);
+        boolean isIdle = checkIdleTrader(traderId);
+        boolean isDemo = checkDemo(traderId);
+
         JPanel tradePanel = new TradePanel(traderId, regular, bold, italic, boldItalic);
         JPanel itemsPanel = new ItemsPanel(traderId, regular, bold, italic, boldItalic);
         JPanel notificationsPanel = new NotificationsPanel(traderId, regular, bold, italic, boldItalic);
-        JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic, false);
+        JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic, isDemo);
         JPanel settingsPanel = new SettingsPanel(traderId, regular, bold, italic, boldItalic);
         JPanel frozenSettingsPanel = new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic);
 
@@ -78,9 +82,6 @@ public class TraderPanel extends JPanel implements ActionListener {
         createIcon(traderId, boldItalic);
         createUsernameTitle(traderId, regular);
         createUserIdTitle(traderId, regular);
-
-        boolean isFrozen = checkFrozenTrader(traderId);
-        boolean isIdle = checkIdleTrader(traderId);
 
         String[] menuTitles = getMenuTitles(traderId, isFrozen, isIdle);
 
@@ -101,6 +102,14 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
 
+    }
+
+    private boolean checkDemo(String traderId) {
+        try {
+            return userQuery.getUsername(traderId).equals("demo");
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        } return false;
     }
 
     private String[] getMenuTitles(String traderId, boolean isFrozen, boolean isIdle) {
