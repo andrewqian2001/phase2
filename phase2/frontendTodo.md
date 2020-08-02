@@ -3,10 +3,10 @@
 **TODO: IMPORTANT GENERAL** 
 
 - !IMPORTANT: refresh button/method to refresh the user data
-- Panel for Idle Users  
 - Panel for Demo  
 - Button to load demo account in LoginPanel  
 - Admin undo abilities  
+- ~~Panel for Idle Users~~  
 - ~~Panel for frozen users~~  
 - ~~User should be able to trade based on city~~  
 - ~~Add a settings menu for Trader to allow them to enter 'idle mode'~~  
@@ -54,7 +54,7 @@ SearchPanel:
 FrozenSettingsPanel:  
   - Fix logo circle text
   
-  
+
 **TODO: adminPanel**  
   
 - Add reports to admin
