@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * Deals with displaying the search results
+ */
 public class SearchPanelTraderDetails implements ActionListener {
 
     private final UserQuery userQuery = new UserQuery();
@@ -23,13 +26,14 @@ public class SearchPanelTraderDetails implements ActionListener {
     private final Color gray2 = new Color(196, 196, 196);
 
     /**
-     * Constructs an object of this class
+     * Deals with displaying search results
+     *
      * @param traderId The id of the trader whose details need to be shown
-     * @param regular Regular font
-     * @param italic Italic font
+     * @param regular  Regular font
+     * @param italic   Italic font
      * @throws IOException if the database files could not be found
      */
-    public SearchPanelTraderDetails(String traderId, Font regular,Font italic) throws IOException {
+    public SearchPanelTraderDetails(String traderId, Font regular, Font italic) throws IOException {
         this.traderId = traderId;
         this.regular = regular;
         this.italic = italic;
@@ -37,6 +41,7 @@ public class SearchPanelTraderDetails implements ActionListener {
 
     /**
      * Creates a trader detail screen for use in the search panel
+     *
      * @param e the ActionEvent object
      */
     @Override
@@ -133,7 +138,7 @@ public class SearchPanelTraderDetails implements ActionListener {
             e1.printStackTrace();
         }
         int numberOfRows = reviews.size();
-        if(numberOfRows < 4) numberOfRows = 4;
+        if (numberOfRows < 4) numberOfRows = 4;
 
         JPanel traderReviews = new JPanel(new GridLayout(numberOfRows, 1));
         traderReviews.setBackground(gray2);
@@ -145,15 +150,15 @@ public class SearchPanelTraderDetails implements ActionListener {
 
     private void createTraderReviewRowPanel(JPanel traderReviews, String[] review) {
 
-        JPanel traderReview = new JPanel(new GridLayout(1,1));
+        JPanel traderReview = new JPanel(new GridLayout(1, 1));
         traderReview.setBackground(gray2);
         traderReview.setPreferredSize(new Dimension(500, 50));
-        traderReview.setBorder(BorderFactory.createMatteBorder(0, 0 , 2, 0 , bg));
+        traderReview.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, bg));
 
         JLabel text = new JLabel("DUMMY TEXT");
         try {
             text.setText(userQuery.getUsername(review[0]) + ": " + (review[3] + "   ->  ") + review[2]);
-        } catch(UserNotFoundException ex) {
+        } catch (UserNotFoundException ex) {
             System.out.println(ex.getMessage());
         }
         text.setFont(regular.deriveFont(20f));
@@ -166,7 +171,7 @@ public class SearchPanelTraderDetails implements ActionListener {
         traderReviews.add(traderReview);
     }
 
-    private JLabel createBasicLabel(String display, Font font){
+    private JLabel createBasicLabel(String display, Font font) {
         JLabel newLabel = new JLabel(display);
         newLabel.setFont(font.deriveFont(20f));
         newLabel.setPreferredSize(new Dimension(290, 50));
@@ -176,7 +181,7 @@ public class SearchPanelTraderDetails implements ActionListener {
     }
 
 
-    private JLabel createReviewsByOtherTradersLabel(){
+    private JLabel createReviewsByOtherTradersLabel() {
         JLabel newLabel = new JLabel("Reviews by other Traders:");
         newLabel.setFont(italic.deriveFont(20f));
         newLabel.setPreferredSize(new Dimension(580, 50));
