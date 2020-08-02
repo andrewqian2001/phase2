@@ -231,7 +231,7 @@ public class TradingInfoManager extends Manager {
             UserNotFoundException, AuthorizationException {
         ArrayList<String[]> lends = suggestLendList(thisTraderId, inCity);
         if (lends.size() == 0){
-            return new String[]{"", "", ""};
+            return new String[0];
         }
         return lends.get(0);
     }
@@ -302,7 +302,7 @@ public class TradingInfoManager extends Manager {
                 }
             }
         }
-        return new String[]{"", "", "", ""};
+        return new String[]{};
     }
 
 
