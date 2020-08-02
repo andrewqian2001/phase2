@@ -498,7 +498,7 @@ public class NotificationsPanel extends JPanel {
         }
     }
 
-    private void getFreqTradableItems() throws AuthorizationException, UserNotFoundException {
+    private void getFreqTradableItems() throws UserNotFoundException {
         freqTradableItemsPanel = new JPanel(new GridLayout(0, 1));
         freqTradableItemsPanel.setBackground(gray2);
         ArrayList<String> items = new ArrayList<>();
@@ -507,6 +507,8 @@ public class NotificationsPanel extends JPanel {
                 items = infoManager.getRecentTradeItems(traderId);
             } catch (TradeNotFoundException e) {
                 e.printStackTrace();
+            } catch (AuthorizationException ignored){
+
             }
 
         }

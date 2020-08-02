@@ -85,20 +85,41 @@ public class TradePanel extends JPanel implements ActionListener {
         JPanel ongoingTrades = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JPanel ongoingTradesTitleContainer = new JPanel(new GridLayout(1, 2));
+        JPanel ongoingTradesTitleContainer = new JPanel(new GridLayout(1, 4));
         ongoingTradesTitleContainer.setOpaque(false);
         ongoingTradesTitleContainer.setPreferredSize(new Dimension(1200, 50));
 
         JLabel ongoingTradesTitle = new JLabel("Ongoing Trades");
-        ongoingTradesTitle.setFont(this.regular.deriveFont(30f));
+        ongoingTradesTitle.setFont(regular.deriveFont(30f));
         ongoingTradesTitle.setForeground(Color.WHITE);
         ongoingTradesTitle.setBackground(bg);
         ongoingTradesTitle.setHorizontalAlignment(JLabel.LEFT);
         ongoingTradesTitle.setOpaque(true);
         ongoingTradesTitleContainer.add(ongoingTradesTitle);
 
-        JButton addTradeButton = new JButton("<html><b><i><u>Add new trade</u></i></b></html>");
-        addTradeButton.setFont(addTradeButton.getFont().deriveFont(20f));
+        JButton suggestLendButton = new JButton("<html><b><i><u>Suggest Lend</u></i></b></html>");
+        suggestLendButton.setFont(regular.deriveFont(20f));
+        suggestLendButton.setHorizontalAlignment(JButton.RIGHT);
+        suggestLendButton.setForeground(Color.cyan);
+        suggestLendButton.setBackground(bg);
+        suggestLendButton.setOpaque(true);
+        suggestLendButton.setBorderPainted(false);
+        suggestLendButton.addActionListener(this);
+        ongoingTradesTitleContainer.add(suggestLendButton);
+
+
+        JButton suggestTradeButton = new JButton("<html><b><i><u>Suggest Trade</u></i></b></html>");
+        suggestTradeButton.setFont(regular.deriveFont(20f));
+        suggestTradeButton.setHorizontalAlignment(JButton.RIGHT);
+        suggestTradeButton.setForeground(Color.cyan);
+        suggestTradeButton.setBackground(bg);
+        suggestTradeButton.setOpaque(true);
+        suggestTradeButton.setBorderPainted(false);
+        suggestTradeButton.addActionListener(this);
+        ongoingTradesTitleContainer.add(suggestTradeButton);
+
+        JButton addTradeButton = new JButton("<html><b><i><u>Add New Trade</u></i></b></html>");
+        addTradeButton.setFont(regular.deriveFont(20f));
         addTradeButton.setHorizontalAlignment(JButton.RIGHT);
         addTradeButton.setForeground(Color.cyan);
         addTradeButton.setBackground(bg);

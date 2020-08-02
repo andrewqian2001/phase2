@@ -102,7 +102,7 @@ public class TraderPanel extends JPanel implements ActionListener {
             menuPanelContainer.add(tradePanel, "Trades");
             menuPanelContainer.add(itemsPanel, "Items");
             menuPanelContainer.add(notificationsPanel, "Notifications");
-        menuPanelContainer.add(searchPanel, "Search");
+            menuPanelContainer.add(searchPanel, "Search");
             menuPanelContainer.add(settingsPanel, "Settings");
         }
 
