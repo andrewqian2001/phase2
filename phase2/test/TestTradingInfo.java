@@ -367,7 +367,7 @@ public class TestTradingInfo extends TestManager {
     @Test
     public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
-        ArrayList<String[]> automatedTrades = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId());
+        ArrayList<String[]> automatedTrades = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(), "Toronto", false);
         assertEquals(watch1.getId(), automatedTrades.get(0)[1]);
         assertEquals(tHasInventory1.getId(),automatedTrades.get(0)[0]);
         assertEquals(phone2.getId(), automatedTrades.get(1)[1]);
@@ -391,107 +391,72 @@ public class TestTradingInfo extends TestManager {
 
 
         //change similar search to public to test
+
         /*
-        TradableItem i1 = new TradableItem("andrer", "test");
-        TradableItem i2 = new TradableItem("ANDREW", "test");
+        LIST OF CASES TESTED FOR:
+        - capitals are not considered
+        - when the name we are searching for has multiple words,
+        - the item in the list has multiple words
+        - when the word we are searching for has multiple words
+        - words with different lengths
+        - words with replaced chars
+        - most similar length if similarity score is the same
+        - words with missing char
+        - words with extra char
+
+         */
+
+        //TODO test cases for empty strings, empty lists, add a threshold, more tests
+
+        //tests for capitals
+        listNames = addToItemList(listNames, "andrer", "test");
+        listNames = addToItemList(listNames, "ANDREW", "test");
         TradableItem search = new TradableItem("andrew", "test");
         tradableItemDatabase.update(search);
-        tradableItemDatabase.update(i1);
-        tradableItemDatabase.update(i2);
-        listNames.add(i1.getId());
-        listNames.add(i2.getId());
-        Object[] name = tradingInfoManager.similarSearch(search.getId(), listNames); //tests for ignoring capital case
-        assertEquals(i2.getId(), name[0]);
-        assertEquals(6, name[1]);
-
-        TradableItem i3 = new TradableItem("plastic water bottle", "test");
-        TradableItem i4 = new TradableItem("bowtle", "test");
+        assertEquals(true, confirmSimilarSearch(search.getId(), "ANDREW", 6, listNames));
+        //tests for multiple words
+        listNames = addToItemList(listNames, "plastic water bottle", "test");
+        listNames = addToItemList(listNames, "bowtle", "test");
         TradableItem search2 = new TradableItem("bottle", "test");
         tradableItemDatabase.update(search2);
-        tradableItemDatabase.update(i3);
-        tradableItemDatabase.update(i4);
-        listNames.add(i3.getId());
-        listNames.add(i4.getId());
-        Object[] name2 = tradingInfoManager.similarSearch(search2.getId(), listNames); //tests for multiple words case
-        assertEquals(i3.getId(), name2[0]);
-        assertEquals(6, name2[1]);
-
-        TradableItem i5 = new TradableItem("123456", "test");
-        TradableItem i6 = new TradableItem("1234567", "test");
-        TradableItem search3 = new TradableItem("1234567", "test");
+        assertEquals(true, confirmSimilarSearch(search2.getId(), "plastic water bottle", 6, listNames));
+        //basic test
+        listNames = addToItemList(listNames, "123456", "test");
+        listNames = addToItemList(listNames, "1234567", "test");
+        TradableItem search3 = new TradableItem("51234567899", "test");
         tradableItemDatabase.update(search3);
-        tradableItemDatabase.update(i5);
-        tradableItemDatabase.update(i6);
-        listNames.add(i5.getId());
-        listNames.add(i6.getId());
-        Object[] name3 = tradingInfoManager.similarSearch(search3.getId(), listNames); //tests for most accurate word with words with diff length
-        assertEquals(i6.getId(), name3[0]);
-        assertEquals(7,name3[1]);
-
-        TradableItem i7 = new TradableItem("55554", "test");
-        TradableItem i8 = new TradableItem("55544", "test");
-        TradableItem search4 = new TradableItem("55555", "test");
+        assertEquals(true, confirmSimilarSearch(search3.getId(), "1234567", 7, listNames));
+        //tests for replaced chars
+        listNames = addToItemList(listNames, "55554", "test");
+        listNames = addToItemList(listNames, "55555", "test");
+        TradableItem search4 = new TradableItem("45555", "test");
         tradableItemDatabase.update(search4);
-        tradableItemDatabase.update(i7);
-        tradableItemDatabase.update(i8);
-        listNames.add(i7.getId());
-        listNames.add(i8.getId());
-        Object[] name4 = tradingInfoManager.similarSearch(search4.getId(), listNames); //tests for replaced char strings (not the same as strings missing chars which is a problem rn)
-        assertEquals(i7.getId(), name4[0]);
-        assertEquals(4, name4[1]);
-
-        TradableItem i9 = new TradableItem("Jan", "test");
-        TradableItem i10 = new TradableItem("January", "test");
+        assertEquals(true, confirmSimilarSearch(search4.getId(), "55555", 4, listNames));
+        //tests for most similar length, if sim score is the same
+        listNames = addToItemList(listNames, "Jan", "test");
+        listNames = addToItemList(listNames, "January", "test");
         TradableItem search5 = new TradableItem("j", "test");
         tradableItemDatabase.update(search5);
-        tradableItemDatabase.update(i9);
-        tradableItemDatabase.update(i10);
-        listNames.add(i9.getId());
-        listNames.add(i10.getId());
-        Object[] name5 =  tradingInfoManager.similarSearch(search5.getId(), listNames);//tests for most similar length if similarity score is the same
-        // (ie if we search for a, with a list of andrew, an, it should return an)
-        assertEquals(i9.getId(), name5[0]);
-        assertEquals(1, name5[1]);
-
-
-
-        TradableItem i11 = new TradableItem("comuter", "test");
-        TradableItem i12 = new TradableItem("compuwww", "test");
+        assertEquals(true, confirmSimilarSearch(search5.getId(), "Jan", 1, listNames));
+        //tests for missing chars
+        listNames = addToItemList(listNames, "comuter", "test");
+        listNames = addToItemList(listNames, "compuww", "test");
         TradableItem search6 = new TradableItem("computer", "test");
         tradableItemDatabase.update(search6);
-        tradableItemDatabase.update(i11);
-        tradableItemDatabase.update(i12);
-        listNames.add(i11.getId());
-        listNames.add(i12.getId());
-        Object[] name6 =  tradingInfoManager.similarSearch(search6.getId(), listNames);//tests for missing char
-        assertEquals( i11.getId(),name6[0]);
-        assertEquals(6, name6[1]);
-
-        TradableItem i13 = new TradableItem("Chrisstmas", "test");
-        TradableItem i14 = new TradableItem("Christwww", "test");
+        assertEquals(true, confirmSimilarSearch(search6.getId(), "comuter", 6, listNames));
+        //tests for extra char
+        listNames = addToItemList(listNames, "Chrisstmas", "test");
+        listNames = addToItemList(listNames, "Christwww", "test");
         TradableItem search7 = new TradableItem("Christmas", "test");
         tradableItemDatabase.update(search7);
-        tradableItemDatabase.update(i13);
-        tradableItemDatabase.update(i14);
-        listNames.add(i13.getId());
-        listNames.add(i14.getId());
-        Object[] name7 =  tradingInfoManager.similarSearch(search7.getId(), listNames);//tests for extra char
-        assertEquals( i13.getId(),name7[0]);
-        assertEquals(8, name7[1]);
-
-
-        TradableItem i15 = new TradableItem("hat", "test");
-        TradableItem i16 = new TradableItem("hwat", "test");
+        assertEquals(true, confirmSimilarSearch(search7.getId(), "Chrisstmas", 8, listNames));
+        //multiple words case 2
+        listNames = addToItemList(listNames, "big blue hat", "test");
+        listNames = addToItemList(listNames, "purple hwat", "test");
         TradableItem search8 = new TradableItem("red hat", "test");
         tradableItemDatabase.update(search8);
-        tradableItemDatabase.update(i15);
-        tradableItemDatabase.update(i16);
-        listNames.add(i15.getId());
-        listNames.add(i16.getId());
-        Object[] name8 =  tradingInfoManager.similarSearch(search8.getId(), listNames);//tests for when the string we are searching for, is bigger then the name of the item
-        assertEquals( i15.getId(),name8[0]);
-        assertEquals(3, name8[1]);
-        */
+        assertEquals(true, confirmSimilarSearch(search8.getId(), "big blue hat", 3, listNames));
+
 
     }
 
@@ -541,6 +506,29 @@ public class TestTradingInfo extends TestManager {
     private Trade trade(String id1, String id2, Date date1, Date date2, String location, String item1, String item2, int edits, String message) {
         return new Trade(id1, id2, date1, date2, location,
                 item1, item2, edits, message);
+    }
+
+
+    private ArrayList<String> addToItemList(ArrayList<String> list, String itemName, String itemDesc){
+        TradableItem item = new TradableItem(itemName, itemDesc);
+        tradableItemDatabase.update(item);
+        list.add(item.getId());
+        return list;
+    }
+
+    private boolean confirmSimilarSearch(String itemToSearchId, String expectedItemName, int expectedSimilarityScore, ArrayList<String> list) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
+        Object[] similarItem =  tradingInfoManager.similarSearch(itemToSearchId, list);//tests for missing char
+        String expectedItemId = null;
+        for(String itemIds: list){
+            String itemName = getTradableItem(itemIds).getName();
+            if(itemName.equals(expectedItemName)){
+                expectedItemId = itemIds;
+            }
+        }
+        if(similarItem[0].equals(expectedItemId) && (int)similarItem[1] == expectedSimilarityScore){
+            return true;
+        }
+        return false;
     }
 
 }

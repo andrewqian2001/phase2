@@ -1,4 +1,4 @@
-package frontend;
+package frontend.panels.login_panel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,6 +25,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.trader_managers.TraderManager;
+import frontend.WindowManager;
 
 /**
  * This represents the login screen

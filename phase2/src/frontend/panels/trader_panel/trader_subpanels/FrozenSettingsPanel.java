@@ -1,4 +1,4 @@
-package frontend.panels.trader_subpanels;
+package frontend.panels.trader_panel.trader_subpanels;
 
 import java.awt.*;
 import java.io.IOException;
@@ -9,12 +9,27 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.admin_managers.HandleFrozenManager;
 
+/**
+ * This panel represents the settings a frozen trader can interact with
+ */
 public class FrozenSettingsPanel extends SettingsPanel {
 
-    private HandleFrozenManager frozenManager = new HandleFrozenManager();
+    private final HandleFrozenManager frozenManager = new HandleFrozenManager();
 
-    private String traderId;
-    
+    private final String traderId;
+
+    /**
+     * Makes new a frozen settings panel
+     *
+     * @param traderId   the trader that is frozen
+     * @param regular    regular font
+     * @param bold       bold font
+     * @param italic     italics font
+     * @param boldItalic bold italics font
+     * @throws IOException            if issues with getting database file
+     * @throws UserNotFoundException  if the trader id is bad
+     * @throws AuthorizationException if the user isn't a trader
+     */
     public FrozenSettingsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
         super(traderId, regular, bold, italic, boldItalic);
         this.traderId = traderId;
@@ -40,7 +55,8 @@ public class FrozenSettingsPanel extends SettingsPanel {
             return super.userQuery.isUnfrozenRequested(traderId);
         } catch (UserNotFoundException e) {
             e.printStackTrace();
-        } return false;
+        }
+        return false;
     }
 
     private JPanel getRequestUnFreezePanel() {

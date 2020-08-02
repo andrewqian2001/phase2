@@ -1,4 +1,4 @@
-package frontend.panels;
+package frontend.panels.admin_panel;
 
 import javax.swing.*;
 import javax.swing.plaf.metal.MetalButtonUI;
@@ -11,9 +11,9 @@ import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
 
-import frontend.panels.admin_subpanels.ControlPanel;
-import frontend.panels.admin_subpanels.OverviewPanel;
-import frontend.panels.search_panels.SearchPanel;
+import frontend.panels.admin_panel.admin_subpanels.ControlPanel;
+import frontend.panels.admin_panel.admin_subpanels.OverviewPanel;
+import frontend.panels.general_panels.search_panels.SearchPanel;
 
 /**
  * This is used to represent what an admin account sees
@@ -45,7 +45,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         Color red = new Color(219, 58, 52);
         UserQuery userQuery = new UserQuery();
         JPanel overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
-        JPanel searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
+        JPanel searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic, false);
         JPanel controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
 
         searchPanel.setBackground(Color.BLACK);

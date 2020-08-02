@@ -298,7 +298,7 @@ public class TradingInfoManager extends Manager {
      * @throws AuthorizationException if thisTraderId isn't a trader
      * @throws TradableItemNotFoundException if the tradable item wasn't found
      */
-     public ArrayList<String[]> automatedTradeSuggestion(String thisTraderId) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+     public ArrayList<String[]> automatedTradeSuggestion(String thisTraderId, String city, Boolean filterCity) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
         ArrayList<String> allTraders = getAllTraders();
         allTraders.remove(thisTraderId);
@@ -308,20 +308,22 @@ public class TradingInfoManager extends Manager {
 
         for(String wishlistItemId: getTrader(thisTraderId).getWishlist()){
             int max = 0;
-            String mostSimItem = null;
+            String mostSimItemId = null;
             String mostSimTraderId = null;
             for (String otherTraderId : allTraders) {
                 Trader otherTrader = getTrader(otherTraderId);
-                Object[] similarGetItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
-
-                if (((int) similarGetItem[1]) > max) {
-                    max = ((int) similarGetItem[1]);
-                    mostSimItem = (String) similarGetItem[0];
-                    mostSimTraderId = otherTrader.getId();
+                if(otherTrader.getCity().equals(city) || !filterCity){
+                    Object[] similarGetItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
+                    if (((int) similarGetItem[1]) > max) {
+                        max = ((int) similarGetItem[1]);
+                        mostSimItemId = (String) similarGetItem[0];
+                        mostSimTraderId = otherTrader.getId();
+                    }
                 }
+
             }
 
-            wishlistTrades.add(new String[]{mostSimTraderId, mostSimItem});
+            wishlistTrades.add(new String[]{mostSimTraderId, mostSimItemId});
         }
 
 
@@ -336,7 +338,7 @@ public class TradingInfoManager extends Manager {
      * @param list is the list of strings that we are traversing through
      * @return an array with two cells containing the items name and the score of how similar it is
      */
-    private Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+    public Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
         if (list.size() == 0) {
             return new Object[]{"", 0};
@@ -373,10 +375,16 @@ public class TradingInfoManager extends Manager {
                 int maxSim = 0;
                 String[] otherNameWords = otherNames.split("\\s+");
                 String[] thisNameWords = name.split("\\s+");
-                for(int i = 0; i < otherNameWords.length; i++){
+
+
+                for(int i = 0; i < otherNameWords.length; i++){//compares every single word in otherWord to every single word in the string we are searching for
                     for(int j = 0; j < thisNameWords.length; j++){
+
+
                         String longerName;
                         String shorterName;
+
+
                         if(otherNameWords[i].length() < thisNameWords[j].length()){
                             longerName = thisNameWords[j];
                             shorterName = otherNameWords[i];
@@ -384,6 +392,7 @@ public class TradingInfoManager extends Manager {
                             shorterName = thisNameWords[j];
                             longerName = otherNameWords[i];
                         }
+
                         for(int k = 0; k <= longerName.length() - shorterName.length(); k++) {//Finds the maximum similarity score for each word in list then adds it to similarNames
                             int similarities = 0;
                             int k2 = k;
