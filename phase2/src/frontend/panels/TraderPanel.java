@@ -79,31 +79,33 @@ public class TraderPanel extends JPanel implements ActionListener {
         createUsernameTitle(traderId, regular);
         createUserIdTitle(traderId, regular);
 
-        String[] menuTitles = getMenuTitles(traderId);
+        boolean isFrozen = checkFrozenTrader(traderId);
+        boolean isIdle = checkIdleTrader(traderId);
+
+        String[] menuTitles = getMenuTitles(traderId, isFrozen, isIdle);
 
         for(int i = 0; i < menuTitles.length; i++)
             createPanelButton(menuTitles[i], i + 3, regular);
         
         createLogoutButton(boldItalic);
 
+        if(isFrozen)
+            menuPanelContainer.add(frozenSettingsPanel, "Frozen Settings");
+
         menuPanelContainer.add(tradePanel, "Trades");
         menuPanelContainer.add(itemsPanel, "Items");
         menuPanelContainer.add(notificationsPanel, "Notifications");
         menuPanelContainer.add(searchPanel, "Search");
         menuPanelContainer.add(settingsPanel, "Settings");
-        menuPanelContainer.add(frozenSettingsPanel, "Frozen Settings");
         
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
 
     }
 
-    private String[] getMenuTitles(String traderId) {
-        boolean isFrozen = checkFrozenTrader(traderId);
-        boolean isIdle = checkIdleTrader(traderId);
-
+    private String[] getMenuTitles(String traderId, boolean isFrozen, boolean isIdle) {
         if(isFrozen)
-            return new String[] { "Notifications", "Search", "Frozen Settings", "", ""};
+            return new String[] {"Frozen Settings", "", "", "", ""};
         if(isIdle)
             return new String[] {"Items", "Notifications", "Search", "Settings", ""};
         else
@@ -154,7 +156,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         panelButton.setFont(regular.deriveFont(30f));
         panelButton.setForeground(Color.BLACK);
         panelButton.setBackground(CURRENT);
-        panelButton.setOpaque(title.equals("Trades"));
+        panelButton.setOpaque(title.equals("Trades") || title.equals("Frozen Settings"));
         panelButton.setEnabled(!title.equals(""));
         panelButton.setBorderPainted(false);
         panelButton.addActionListener(this);

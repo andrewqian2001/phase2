@@ -24,7 +24,7 @@ public class SettingsPanel extends JPanel {
     
     private LoginManager loginManager = new LoginManager();
     
-    private UserQuery userQuery = new UserQuery();
+    protected UserQuery userQuery = new UserQuery();
 
     protected final Color bg = new Color(51, 51, 51);
     protected final Color gray = new Color(196, 196, 196);
@@ -232,7 +232,7 @@ public class SettingsPanel extends JPanel {
                 goIdleButton.setBackground(bg);
                 goIdleButton.setFont(boldItalic.deriveFont(20f));
                 goIdleButton.setText("Activated");
-                goIdleButton.setSelected(true);
+                goIdleButton.setEnabled(false);
             } catch (UserNotFoundException | AuthorizationException e1) {
                 errMsg.setFont(boldItalic.deriveFont(20f));
                 errMsg.setText(e1.getMessage());

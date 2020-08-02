@@ -3,11 +3,11 @@
 **TODO: IMPORTANT GENERAL** 
 
 - !IMPORTANT: refresh button/method to refresh the user data
-- Panel for frozen users  
 - Panel for Idle Users  
 - Panel for Demo  
 - Button to load demo account in LoginPanel  
 - Admin undo abilities  
+- ~~Panel for frozen users~~  
 - ~~User should be able to trade based on city~~  
 - ~~Add a settings menu for Trader to allow them to enter 'idle mode'~~  
 - ~~Add ability for user to enter city on registration (and change city in settings)~~ 
@@ -50,6 +50,9 @@ SearchPanel:
   - ~~Finalize tradable item search scroll pane items (can only   be done after backend is done)~~
   - ~~Change details button to 'Add to wishlist' in tradable   item search~~  
   - ~~Finish AddToWishlist Button~~
+
+FrozenSettingsPanel:  
+  - Fix logo circle text
   
   
 **TODO: adminPanel**  

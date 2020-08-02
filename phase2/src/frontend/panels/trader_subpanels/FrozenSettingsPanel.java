@@ -1,22 +1,23 @@
 package frontend.panels.trader_subpanels;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.io.IOException;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
+import backend.tradesystem.admin_managers.HandleFrozenManager;
 
 public class FrozenSettingsPanel extends SettingsPanel {
+
+    private HandleFrozenManager frozenManager = new HandleFrozenManager();
+
+    private String traderId;
     
     public FrozenSettingsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
         super(traderId, regular, bold, italic, boldItalic);
+        this.traderId = traderId;
         super.remove(0);
         super.remove(3);
 
@@ -26,7 +27,6 @@ public class FrozenSettingsPanel extends SettingsPanel {
         settingsTitleLabel.setForeground(Color.WHITE);
         settingsTitleLabel.setOpaque(false);
 
-
         JTextArea prefaceText = getPrefaceText();
         JPanel requestUnfreezePanel = getRequestUnFreezePanel();
 
@@ -35,8 +35,58 @@ public class FrozenSettingsPanel extends SettingsPanel {
         this.add(requestUnfreezePanel, 2);
     }
 
+    private boolean checkUnfreezeRequested() {
+        try {
+            return super.userQuery.isUnfrozenRequested(traderId);
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        } return false;
+    }
+
     private JPanel getRequestUnFreezePanel() {
-        return new JPanel();
+
+        boolean isUnfreezeRequested = checkUnfreezeRequested();
+
+        JPanel unFreezePanel = new JPanel(new GridLayout(1, 3));
+        unFreezePanel.setPreferredSize(new Dimension(1200, 150));
+        unFreezePanel.setBackground(gray2);
+        unFreezePanel.setBorder(BorderFactory.createMatteBorder(0, 0, 50, 0, bg));
+
+        JLabel unFreezeLabel = new JLabel("Request Un-Freeze");
+        unFreezeLabel.setFont(bold.deriveFont(25f));
+        unFreezeLabel.setForeground(Color.BLACK);
+        unFreezeLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        unFreezeLabel.setOpaque(false);
+
+        JLabel pad = new JLabel("");
+        pad.setFont(italic.deriveFont(25f));
+        pad.setForeground(Color.BLACK);
+        pad.setOpaque(false);
+
+        JButton unFreezeButton = new JButton(isUnfreezeRequested ? "Requested" : "Request");
+        unFreezeButton.setFont((isUnfreezeRequested ? boldItalic : bold).deriveFont(20f));
+        unFreezeButton.setBackground(isUnfreezeRequested ? bg : red);
+        unFreezeButton.setForeground(isUnfreezeRequested ? gray : Color.WHITE);
+        unFreezeButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
+        unFreezeButton.setEnabled(!isUnfreezeRequested);
+        unFreezeButton.addActionListener(e -> {
+            try {
+                frozenManager.requestUnfreeze(traderId, true);
+                unFreezeButton.setText("Requested");
+                unFreezeButton.setFont(boldItalic.deriveFont(20f));
+                unFreezeButton.setBackground(bg);
+                unFreezeButton.setForeground(gray);
+                unFreezeButton.setEnabled(false);
+
+            } catch (UserNotFoundException e1) {
+                e1.printStackTrace();
+            }
+        });
+
+        unFreezePanel.add(unFreezeLabel);
+        unFreezePanel.add(pad);
+        unFreezePanel.add(unFreezeButton);
+        return unFreezePanel;
     }
 
     private JTextArea getPrefaceText() {
