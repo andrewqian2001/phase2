@@ -403,6 +403,7 @@ public class TestTradingInfo extends TestManager {
         - most similar length if similarity score is the same
         - words with missing char
         - words with extra char
+        - words that should not pass threshold
 
          */
 
@@ -413,49 +414,67 @@ public class TestTradingInfo extends TestManager {
         listNames = addToItemList(listNames, "ANDREW", "test");
         TradableItem search = new TradableItem("andrew", "test");
         tradableItemDatabase.update(search);
-        assertEquals(true, confirmSimilarSearch(search.getId(), "ANDREW", 6, listNames));
+        confirmSimilarSearch(search.getId(), "ANDREW", 6, listNames);
         //tests for multiple words
         listNames = addToItemList(listNames, "plastic water bottle", "test");
         listNames = addToItemList(listNames, "bowtle", "test");
         TradableItem search2 = new TradableItem("bottle", "test");
         tradableItemDatabase.update(search2);
-        assertEquals(true, confirmSimilarSearch(search2.getId(), "plastic water bottle", 6, listNames));
+        confirmSimilarSearch(search2.getId(), "plastic water bottle", 6, listNames);
         //basic test
         listNames = addToItemList(listNames, "123456", "test");
         listNames = addToItemList(listNames, "1234567", "test");
         TradableItem search3 = new TradableItem("51234567899", "test");
         tradableItemDatabase.update(search3);
-        assertEquals(true, confirmSimilarSearch(search3.getId(), "1234567", 7, listNames));
+        confirmSimilarSearch(search3.getId(), "1234567", 7, listNames);
         //tests for replaced chars
         listNames = addToItemList(listNames, "55554", "test");
         listNames = addToItemList(listNames, "55555", "test");
         TradableItem search4 = new TradableItem("45555", "test");
         tradableItemDatabase.update(search4);
-        assertEquals(true, confirmSimilarSearch(search4.getId(), "55555", 4, listNames));
+        confirmSimilarSearch(search4.getId(), "55555", 4, listNames);
         //tests for most similar length, if sim score is the same
         listNames = addToItemList(listNames, "Jan", "test");
         listNames = addToItemList(listNames, "January", "test");
         TradableItem search5 = new TradableItem("j", "test");
         tradableItemDatabase.update(search5);
-        assertEquals(true, confirmSimilarSearch(search5.getId(), "Jan", 1, listNames));
+        confirmSimilarSearch(search5.getId(), "Jan", 1, listNames);
         //tests for missing chars
         listNames = addToItemList(listNames, "comuter", "test");
         listNames = addToItemList(listNames, "compuww", "test");
         TradableItem search6 = new TradableItem("computer", "test");
         tradableItemDatabase.update(search6);
-        assertEquals(true, confirmSimilarSearch(search6.getId(), "comuter", 6, listNames));
+        confirmSimilarSearch(search6.getId(), "comuter", 6, listNames);
         //tests for extra char
         listNames = addToItemList(listNames, "Chrisstmas", "test");
         listNames = addToItemList(listNames, "Christwww", "test");
         TradableItem search7 = new TradableItem("Christmas", "test");
         tradableItemDatabase.update(search7);
-        assertEquals(true, confirmSimilarSearch(search7.getId(), "Chrisstmas", 8, listNames));
+       confirmSimilarSearch(search7.getId(), "Chrisstmas", 8, listNames);
         //multiple words case 2
         listNames = addToItemList(listNames, "big blue hat", "test");
         listNames = addToItemList(listNames, "purple hwat", "test");
         TradableItem search8 = new TradableItem("red hat", "test");
         tradableItemDatabase.update(search8);
-        assertEquals(true, confirmSimilarSearch(search8.getId(), "big blue hat", 3, listNames));
+        confirmSimilarSearch(search8.getId(), "big blue hat", 3, listNames);
+        //test threshold
+        TradableItem search9 = new TradableItem("johncena", "test");
+        tradableItemDatabase.update(search9);
+        confirmSimilarSearch(search9.getId(), "", 0, listNames);
+
+
+
+        //------------------------------FOR JAMES--------------------------------------------------------
+        ArrayList<Object[]> objectList = new ArrayList<>();
+        //[name of new item, similarity score]
+        objectList.add(new Object[]{"hello", 4});
+        objectList.add(new Object[]{"im stuck in hell", 4});
+
+
+        // first parameter is the item name that will be searched for
+        confirmSimilarSearchWithList("hell", objectList);
+
+
 
 
     }
@@ -516,7 +535,7 @@ public class TestTradingInfo extends TestManager {
         return list;
     }
 
-    private boolean confirmSimilarSearch(String itemToSearchId, String expectedItemName, int expectedSimilarityScore, ArrayList<String> list) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
+    private void confirmSimilarSearch(String itemToSearchId, String expectedItemName, int expectedSimilarityScore, ArrayList<String> list) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         Object[] similarItem =  tradingInfoManager.similarSearch(itemToSearchId, list);//tests for missing char
         String expectedItemId = null;
         for(String itemIds: list){
@@ -525,10 +544,27 @@ public class TestTradingInfo extends TestManager {
                 expectedItemId = itemIds;
             }
         }
-        if(similarItem[0].equals(expectedItemId) && (int)similarItem[1] == expectedSimilarityScore){
-            return true;
+
+        if(similarItem == (null) && expectedItemId == (null)){//threshold
+            return;
         }
-        return false;
+        assertEquals(expectedItemId, similarItem[0]);
+        assertEquals(expectedSimilarityScore, similarItem[1]);
+
     }
+
+    private void confirmSimilarSearchWithList(String itemToSearchName, ArrayList<Object[]> itemNameAndScore) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+
+        TradableItem item = new TradableItem(itemToSearchName, "desc");
+        tradableItemDatabase.update(item);
+        for(Object[] items: itemNameAndScore){
+            ArrayList<String> list = new ArrayList<>();
+            list = addToItemList(list, (String)items[0], "desc");
+            confirmSimilarSearch(item.getId(), (String)items[0], (int)items[1], list);
+        }
+
+    }
+
+
 
 }

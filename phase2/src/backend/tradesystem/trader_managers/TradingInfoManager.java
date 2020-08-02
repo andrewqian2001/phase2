@@ -309,15 +309,18 @@ public class TradingInfoManager extends Manager {
                 Trader otherTrader = getTrader(otherTraderId);
                 if(otherTrader.getCity().equals(city) || !filterCity){
                     Object[] similarGetItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
-                    if (((int) similarGetItem[1]) > max) {
-                        max = ((int) similarGetItem[1]);
-                        mostSimItemId = (String) similarGetItem[0];
-                        mostSimTraderId = otherTrader.getId();
+                    if(!(similarGetItem == null)){
+                        if (((int) similarGetItem[1]) > max) {
+                            max = ((int) similarGetItem[1]);
+                            mostSimItemId = (String) similarGetItem[0];
+                            mostSimTraderId = otherTrader.getId();
+                        }
                     }
+
                 }
 
             }
-
+            if(mostSimItemId != null && mostSimTraderId != null)
             wishlistTrades.add(new String[]{mostSimTraderId, mostSimItemId});
         }
 
@@ -336,7 +339,7 @@ public class TradingInfoManager extends Manager {
     public Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
         if (list.size() == 0) {
-            return new Object[]{"", 0};
+            return new Object[]{null, 0};
         }
         ArrayList<Object[]> similarNames = new ArrayList<>();
 
@@ -358,6 +361,7 @@ public class TradingInfoManager extends Manager {
         } else {
             name = getTradableItem(nameId).getName();
         }
+
         for (String otherNamesId : list) {
             String otherNames;
             if (isListOfTraders) {
@@ -430,12 +434,14 @@ public class TradingInfoManager extends Manager {
 
                         if (similarities2 > maxSim) {
                             maxSim = similarities2;
+
                         }
                     }
                 }
                 similarNames.add(new Object[]{otherNames,  maxSim, otherNamesId});
             }
         }
+
         //finds the max similarity score in similarNames
         int max = 0;
         String mostSimilarName = "";
@@ -449,11 +455,16 @@ public class TradingInfoManager extends Manager {
             if (x > max || x == max && (Math.abs(similarName.length() - name.length()) < (Math.abs(mostSimilarName.length() - name.length())))) {
                 max = x;
                 mostSimilarName = similarName;
+
                 mostSimilarNameId = (String) simNameArr[2];
             }
         }
-        Object[] arr = {mostSimilarNameId, max};
-        return arr;
+
+        if(max >= name.length()/2 || max > 4){
+            return new Object[] {mostSimilarNameId, max};
+        }
+
+        return null;
     }
 
 
