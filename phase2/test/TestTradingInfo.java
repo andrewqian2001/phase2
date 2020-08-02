@@ -236,13 +236,20 @@ public class TestTradingInfo extends TestManager {
     @Test
     public void testSimilarSearch() throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         ArrayList<Object[]> objectList = new ArrayList<>();
-        objectList.add(new Object[]{"This", 4});
-        objectList.add(new Object[]{"this", 4});
-        objectList.add(new Object[]{"is", 2});
-        objectList.add(new Object[]{"is ", 3});
-        objectList.add(new Object[]{"emample", 5});
-        confirmSimilarSearchWithList("This is an example item", objectList);
+        objectList.add(new Object[]{"This", 0});
+        objectList.add(new Object[]{"this", 0});
+        objectList.add(new Object[]{"is", 0});
+        objectList.add(new Object[]{"is ", 0});
+        objectList.add(new Object[]{"emample", 6});
+        confirmSimilarSearchWithList("example", objectList);
 
+        /*
+        Say we are searching for example
+        in the list we have emample, exawmple, examle
+        if i replace a char with a diff char(emample), sim score should 6/7
+        if i add a extra char(exawmple), sim score should be 6/7
+        if i remove a char (examle), sim score should be 5/7
+         */
 
     }
 
@@ -302,7 +309,7 @@ public class TestTradingInfo extends TestManager {
             }
         }
 
-        if (similarItem == (null) && expectedItemId == (null)) {//threshold
+        if (expectedSimilarityScore == 0) {//threshold
             return;
         }
         assertEquals(expectedItemId, similarItem[0]);
