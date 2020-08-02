@@ -1138,7 +1138,8 @@ public class TradePanel extends JPanel implements ActionListener {
             e3.printStackTrace();
         }
 
-        if(suggested.length == 0) {
+        if (suggested.length == 0) {
+            System.out.println("HUH");
             isSuggestedTrade = false;
             isSuggestedLend = false;
         }
@@ -1250,9 +1251,22 @@ public class TradePanel extends JPanel implements ActionListener {
             }
         });
 
-        if(isSuggestedLend || isSuggestedTrade) {
-            traders.setSelectedItem(userQuery.getUsername(suggested[0]));
-            
+        if (isSuggestedLend || isSuggestedTrade) {
+            try {
+                traders.setSelectedItem(userQuery.getUsername(suggested[1]));
+                traderItems.setSelectedItem(itemQuery.getName(suggested[2]));
+                if (isSuggestedTrade) {
+                    for (String itemId : userQuery.getAvailableItems(userQuery.getUserByUsername((String) traders.getSelectedItem()))) {
+                        otherTraderItems.addItem(itemQuery.getName(itemId));
+                    }
+                    otherTraderItems.addItem(null);
+                    otherTraderItems.setSelectedItem(itemQuery.getName(suggested[3]));
+                    otherTraderItems.setEnabled(true);
+                }
+            } catch (UserNotFoundException | TradableItemNotFoundException | AuthorizationException e1) {
+                e1.printStackTrace();
+            }
+
         }
 
         JLabel meetingLocationTitle = new JLabel("Meeting Location");
@@ -1427,7 +1441,7 @@ public class TradePanel extends JPanel implements ActionListener {
             }
         });
 
-        if(!isSuggestedLend && !isSuggestedTrade) {
+        if (!isSuggestedLend && !isSuggestedTrade) {
             addNewTradePanel.add(tradeWithinCityTitle);
             addNewTradePanel.add(tradeWithinCityButton);
         }
