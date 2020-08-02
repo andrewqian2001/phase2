@@ -199,6 +199,10 @@ public class NotificationsPanel extends JPanel {
         getMessages();
         messagesScrollPane.setViewportView(messagesListContainer);
 
+        JPanel messagesScrollHeaderPane = new JPanel(new GridLayout(1, 2, 25, 0));
+        messagesScrollHeaderPane.setPreferredSize(new Dimension(1200, 75));
+        messagesScrollHeaderPane.setBackground(bg);
+
         JPanel bottomTitleHeaderContainer = new JPanel(new GridLayout(1, 2, 25, 0));
         bottomTitleHeaderContainer.setPreferredSize(new Dimension(1200, 75));
         bottomTitleHeaderContainer.setBackground(bg);
@@ -220,6 +224,8 @@ public class NotificationsPanel extends JPanel {
 
         bottomTitleHeaderContainer.add(freqTradersTitle);
         bottomTitleHeaderContainer.add(freqTradableItemsTitle);
+
+        messagesScrollHeaderPane.add(messagesScrollPane);
 
         JPanel bottomSplitContainer = new JPanel(new GridLayout(1, 2, 25, 0));
         bottomSplitContainer.setBackground(bg);
