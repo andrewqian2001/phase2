@@ -29,33 +29,41 @@ import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 
+/**
+ * Used to send and show messages
+ */
 public class NotificationsPanel extends JPanel {
 
-    private JPanel messagesListContainer, freqTradersPanel, freqTradableItemsPanel, bottomTitleHeaderContainer,
-            bottomSplitContainer, topTitleHeaderContainer;
-    private JLabel messagesTitle, freqTradersTitle, freqTradableItemsTitle;
+    private JPanel messagesListContainer, freqTradersPanel, freqTradableItemsPanel;
     private JScrollPane messagesScrollPane;
-    private JButton clearAllmessagesButton, addNewMessageButton;
 
-    private MessageManager messageManager;
+    private final MessageManager messageManager = new MessageManager();
     private final LoginManager loginManager = new LoginManager();
     private final ItemQuery itemQuery = new ItemQuery();
     private final UserQuery userQuery = new UserQuery();
 
-    private Color bg = new Color(51, 51, 51);
-    private Color current = new Color(159, 159, 159);
-    private Color gray = new Color(75, 75, 75);
-    private Color gray2 = new Color(196, 196, 196);
-    private Color red = new Color(219, 58, 52);
-    private Color gray3 = new Color(142, 142, 142);
-    private Color green = new Color(27, 158, 36);
+    private final Color bg = new Color(51, 51, 51);
+    private final Color gray = new Color(75, 75, 75);
+    private final Color gray2 = new Color(196, 196, 196);
+    private final Color red = new Color(219, 58, 52);
+    private final Color gray3 = new Color(142, 142, 142);
+    private final Color green = new Color(27, 158, 36);
 
-    private Font regular, bold, italic, boldItalic;
+    private final Font regular, bold, italic, boldItalic;
 
-    private String traderId;
+    private final String traderId;
 
-    private TradingInfoManager infoManager;
+    private final TradingInfoManager infoManager = new TradingInfoManager();
 
+    /**
+     * Used to create a new panel to send and show messages
+     * @param traderId the trader id
+     * @param regular the regular font
+     * @param bold bold font
+     * @param italic italics font
+     * @param boldItalic bold italics font
+     * @throws IOException issues with getting database files
+     */
     public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
         this.traderId = traderId;
@@ -68,13 +76,11 @@ public class NotificationsPanel extends JPanel {
         this.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         this.setBackground(bg);
 
-        infoManager = new TradingInfoManager();
-        messageManager = new MessageManager();
 
-        topTitleHeaderContainer = new JPanel(new GridLayout(1, 3));
+        JPanel topTitleHeaderContainer = new JPanel(new GridLayout(1, 3));
         topTitleHeaderContainer.setPreferredSize(new Dimension(1200, 75));
 
-        addNewMessageButton = new JButton("New Message");
+        JButton addNewMessageButton = new JButton("New Message");
         addNewMessageButton.setBackground(bg);
         addNewMessageButton.setForeground(Color.CYAN);
         addNewMessageButton.setFont(boldItalic.deriveFont(25f));
@@ -152,14 +158,14 @@ public class NotificationsPanel extends JPanel {
             messageDetailsModal.setVisible(true);
         });
 
-        messagesTitle = new JLabel("Messages");
+        JLabel messagesTitle = new JLabel("Messages");
         messagesTitle.setBackground(bg);
         messagesTitle.setForeground(Color.WHITE);
         messagesTitle.setOpaque(true);
         messagesTitle.setFont(regular.deriveFont(30f));
         messagesTitle.setHorizontalAlignment(JButton.CENTER);
 
-        clearAllmessagesButton = new JButton("Clear All Messages");
+        JButton clearAllmessagesButton = new JButton("Clear All Messages");
         clearAllmessagesButton.setBackground(bg);
         clearAllmessagesButton.setForeground(Color.CYAN);
         clearAllmessagesButton.setFont(boldItalic.deriveFont(25f));
@@ -193,16 +199,20 @@ public class NotificationsPanel extends JPanel {
         getMessages();
         messagesScrollPane.setViewportView(messagesListContainer);
 
-        bottomTitleHeaderContainer = new JPanel(new GridLayout(1, 2, 25, 0));
+        JPanel messagesScrollHeaderPane = new JPanel(new GridLayout(1, 2, 25, 0));
+        messagesScrollHeaderPane.setPreferredSize(new Dimension(1200, 75));
+        messagesScrollHeaderPane.setBackground(bg);
+
+        JPanel bottomTitleHeaderContainer = new JPanel(new GridLayout(1, 2, 25, 0));
         bottomTitleHeaderContainer.setPreferredSize(new Dimension(1200, 75));
         bottomTitleHeaderContainer.setBackground(bg);
 
-        freqTradersTitle = new JLabel("Frequent Traders");
+        JLabel freqTradersTitle = new JLabel("Frequent Traders");
         freqTradersTitle.setFont(regular.deriveFont(30f));
         freqTradersTitle.setForeground(Color.WHITE);
         freqTradersTitle.setOpaque(false);
 
-        freqTradableItemsTitle = new JLabel("Recently Traded Items");
+        JLabel freqTradableItemsTitle = new JLabel("Recently Traded Items");
         freqTradableItemsTitle.setFont(regular.deriveFont(30f));
         freqTradableItemsTitle.setForeground(Color.WHITE);
         freqTradableItemsTitle.setOpaque(false);
@@ -215,7 +225,9 @@ public class NotificationsPanel extends JPanel {
         bottomTitleHeaderContainer.add(freqTradersTitle);
         bottomTitleHeaderContainer.add(freqTradableItemsTitle);
 
-        bottomSplitContainer = new JPanel(new GridLayout(1, 2, 25, 0));
+        messagesScrollHeaderPane.add(messagesScrollPane);
+
+        JPanel bottomSplitContainer = new JPanel(new GridLayout(1, 2, 25, 0));
         bottomSplitContainer.setBackground(bg);
         bottomSplitContainer.setPreferredSize(new Dimension(1200, 250));
 
