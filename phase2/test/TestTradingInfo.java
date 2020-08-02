@@ -313,7 +313,7 @@ public class TestTradingInfo extends TestManager {
     public void testSuggestLend() {
         try {
             for (int i = 2; i < traders.length - 2; i++) {
-                ArrayList<String[]> suggested = tradingInfoManager.suggestLend(traders[i].getId());
+                ArrayList<String[]> suggested = tradingInfoManager.suggestLend(traders[i].getId(), true);
                 assertEquals(suggested.size(), 1);
                 assertEquals(suggested.get(0)[0], traders[i].getId());
                 assertEquals(suggested.get(0)[1], traders[i - 1].getId());
@@ -335,7 +335,7 @@ public class TestTradingInfo extends TestManager {
             traders[i] = getTrader(traders[i].getId());
             }
             for (int i = 2; i < traders.length - 2; i++) {
-                ArrayList<String[]> suggested = tradingInfoManager.suggestTrade(traders[i].getId());
+                ArrayList<String[]> suggested = tradingInfoManager.suggestTrade(traders[i].getId(), true);
                 assertEquals(suggested.size(), 2);
                 //[thisTraderId, toTraderId, itemIdToGive, itemIdToReceive]
                 assertEquals(suggested.get(0)[0], traders[i].getId());
