@@ -61,10 +61,14 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
+        boolean isFrozen = checkFrozenTrader(traderId);
+        boolean isIdle = checkIdleTrader(traderId);
+        boolean isDemo = checkDemo(traderId);
+
         JPanel tradePanel = new TradePanel(traderId, regular, bold, italic, boldItalic);
         JPanel itemsPanel = new ItemsPanel(traderId, regular, bold, italic, boldItalic);
         JPanel notificationsPanel = new NotificationsPanel(traderId, regular, bold, italic, boldItalic);
-        JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic, false);
+        JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic, isDemo);
         JPanel settingsPanel = new SettingsPanel(traderId, regular, bold, italic, boldItalic);
         JPanel frozenSettingsPanel = new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic);
 
@@ -79,35 +83,46 @@ public class TraderPanel extends JPanel implements ActionListener {
         createUsernameTitle(traderId, regular);
         createUserIdTitle(traderId, regular);
 
-        boolean isFrozen = checkFrozenTrader(traderId);
-        boolean isIdle = checkIdleTrader(traderId);
-
-        String[] menuTitles = getMenuTitles(traderId, isFrozen, isIdle);
+        String[] menuTitles = getMenuTitles(traderId, isFrozen, isIdle, isDemo);
 
         for(int i = 0; i < menuTitles.length; i++)
             createPanelButton(menuTitles[i], i + 3, regular);
         
         createLogoutButton(boldItalic);
 
-        if(isFrozen)
+        if(isDemo)
+            menuPanelContainer.add(searchPanel, "Search");
+        if(isFrozen && !isDemo)
             menuPanelContainer.add(frozenSettingsPanel, "Frozen Settings");
-        if(!isIdle)
+        if(!isIdle && !isDemo)
             menuPanelContainer.add(tradePanel, "Trades");
-        menuPanelContainer.add(itemsPanel, "Items");
-        menuPanelContainer.add(notificationsPanel, "Notifications");
-        menuPanelContainer.add(searchPanel, "Search");
-        menuPanelContainer.add(settingsPanel, "Settings");
+        if(!isDemo) {
+            menuPanelContainer.add(itemsPanel, "Items");
+            menuPanelContainer.add(notificationsPanel, "Notifications");
+            menuPanelContainer.add(searchPanel, "Search");
+            menuPanelContainer.add(settingsPanel, "Settings");
+        }
         
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
 
     }
 
-    private String[] getMenuTitles(String traderId, boolean isFrozen, boolean isIdle) {
+    private boolean checkDemo(String traderId) {
+        try {
+            return userQuery.getUsername(traderId).equals("demo");
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        } return false;
+    }
+
+    private String[] getMenuTitles(String traderId, boolean isFrozen, boolean isIdle, boolean isDemo) {
         if(isFrozen)
             return new String[] {"Frozen Settings", "", "", "", ""};
         if(isIdle)
             return new String[] {"Items", "Notifications", "Search", "Settings", ""};
+        if(isDemo)
+            return new String[] {"Search", "", "", "", ""};
         else
             return new String[] {"Trades", "Items", "Notifications", "Search", "Settings"};
     }
