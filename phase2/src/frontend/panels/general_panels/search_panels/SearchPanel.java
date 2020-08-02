@@ -345,7 +345,7 @@ public class SearchPanel extends JPanel {
         item.add(itemName);
         item.add(itemDesc);
         item.add(itemOwnerName);
-        if(loginManager.getType(user).equals(UserTypes.TRADER) || this.isDemo)
+        if(loginManager.getType(user).equals(UserTypes.TRADER) && !this.isDemo)
             item.add(addToWishlistButton);
         tradableItemListContainer.add(item);
     }
