@@ -285,14 +285,14 @@ public class TradingInfoManager extends Manager {
 
 
     /**
-     * traverses through the users wishlist, finds the most similar item in the database and for each item, the function then necessary info for a trade to be made
+     * traverses through the users wishlist, finds the most similar item by name
      *
-     * @param thisTraderId      is the id of this trader
-     * @param itemToLendId      is the id of item from the users inventory that is going to be given
+     * @param thisTraderId      id of this trader
+     * @param itemToLendId      id of item from the users inventory that is going to be given
      * @return a arraylist of 2 cell arrays containing the other traders id and the other traders item id [otherTraderId, otherTraderItemId]
-     * @throws UserNotFoundException
-     * @throws AuthorizationException
-     * @throws TradableItemNotFoundException
+     * @throws UserNotFoundException if thisTraderId is a bad id
+     * @throws AuthorizationException if thisTraderId isn't a trader
+     * @throws TradableItemNotFoundException if the tradable item wasn't found
      */
      public ArrayList<String[]> automatedTradeSuggestion(String thisTraderId, String itemToLendId) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
