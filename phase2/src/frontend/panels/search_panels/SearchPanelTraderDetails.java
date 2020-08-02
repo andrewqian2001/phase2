@@ -44,7 +44,7 @@ public class SearchPanelTraderDetails implements ActionListener {
 
         JDialog traderDetailsModal = createTraderDetailsModal();
 
-        JPanel traderDetailsPanel = createTraderDetialsPanel();
+        JPanel traderDetailsPanel = createTraderDetailsPanel();
 
         JLabel traderNameTitle = createBasicLabel("Trader Username:", italic);
 
@@ -78,7 +78,7 @@ public class SearchPanelTraderDetails implements ActionListener {
             e1.printStackTrace();
         }
 
-        JLabel traderReviewsTitle = createReviewsByOhterTradersLabel(italic);
+        JLabel traderReviewsTitle = createReviewsByOtherTradersLabel();
 
         JScrollPane traderReviewScrollPane = createTraderReviewScrollPane();
 
@@ -109,7 +109,7 @@ public class SearchPanelTraderDetails implements ActionListener {
         return traderReviewScrollPane;
     }
 
-    private JPanel createTraderDetialsPanel() {
+    private JPanel createTraderDetailsPanel() {
         JPanel traderDetailsPanel = new JPanel();
         traderDetailsPanel.setPreferredSize(new Dimension(600, 600));
         traderDetailsPanel.setBackground(bg);
@@ -174,9 +174,11 @@ public class SearchPanelTraderDetails implements ActionListener {
         newLabel.setForeground(Color.WHITE);
         return newLabel;
     }
-    private JLabel createReviewsByOhterTradersLabel(Font font){
+
+    
+    private JLabel createReviewsByOtherTradersLabel(){
         JLabel newLabel = new JLabel("Reviews by other Traders:");
-        newLabel.setFont(font.deriveFont(20f));
+        newLabel.setFont(italic.deriveFont(20f));
         newLabel.setPreferredSize(new Dimension(580, 50));
         newLabel.setOpaque(false);
         newLabel.setForeground(Color.WHITE);
