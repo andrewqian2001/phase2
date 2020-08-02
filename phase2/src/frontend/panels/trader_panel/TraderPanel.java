@@ -1,4 +1,4 @@
-package frontend.panels;
+package frontend.panels.trader_panel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -25,8 +25,8 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
-import frontend.panels.search_panels.SearchPanel;
-import frontend.panels.trader_subpanels.*;
+import frontend.panels.general_panels.search_panels.SearchPanel;
+import frontend.panels.trader_panel.trader_subpanels.*;
 
 /**
  * This is used to show what a trader account sees

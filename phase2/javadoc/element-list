@@ -8,5 +8,5 @@ backend.tradesystem.managers
 frontend
 frontend.controllers
 frontend.panels
-frontend.panels.admin_subpanels
-frontend.panels.trader_subpanels
+frontend.panels.admin_panel.admin_subpanels
+frontend.panels.trader_panel.trader_subpanels

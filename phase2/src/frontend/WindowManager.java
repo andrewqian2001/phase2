@@ -4,9 +4,9 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
-import frontend.panels.AdminPanel;
-import frontend.panels.TraderPanel;
-import frontend.panels.ImagePanel;
+import frontend.panels.admin_panel.AdminPanel;
+import frontend.panels.trader_panel.TraderPanel;
+import frontend.panels.login_panel.LoginPanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -88,5 +88,21 @@ public class WindowManager extends JFrame {
      */
     public void run() {
         this.setVisible(true);
+    }
+
+
+    private static class ImagePanel extends JComponent {
+        private final Image image;
+
+        public ImagePanel(Image image) {
+            this.image = image;
+        }
+
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(image, 0, 0, this);
+        }
     }
 }

@@ -1,4 +1,4 @@
-package frontend.panels.trader_subpanels;
+package frontend.panels.trader_panel.trader_subpanels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
