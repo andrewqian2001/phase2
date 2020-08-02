@@ -313,11 +313,10 @@ public class TestTradingInfo extends TestManager {
     public void testSuggestLend() {
         try {
             for (int i = 2; i < traders.length - 2; i++) {
-                ArrayList<String[]> suggested = tradingInfoManager.suggestLend(traders[i].getId(), true);
-                assertEquals(suggested.size(), 1);
-                assertEquals(suggested.get(0)[0], traders[i].getId());
-                assertEquals(suggested.get(0)[1], traders[i - 1].getId());
-                assertEquals(suggested.get(0)[2], traders[i - 1].getWishlist().get(0));
+                String[] suggested = tradingInfoManager.suggestLend(traders[i].getId(), true);
+                assertEquals(suggested[0], traders[i].getId());
+                assertEquals(suggested[1], traders[i - 1].getId());
+                assertEquals(suggested[2], traders[i - 1].getWishlist().get(0));
 
             }
         } catch (Exception e) {
@@ -335,22 +334,16 @@ public class TestTradingInfo extends TestManager {
             traders[i] = getTrader(traders[i].getId());
             }
             for (int i = 2; i < traders.length - 2; i++) {
-                ArrayList<String[]> suggested = tradingInfoManager.suggestTrade(traders[i].getId(), true);
-                assertEquals(suggested.size(), 2);
+                String[] suggested = tradingInfoManager.suggestTrade(traders[i].getId(), true);
                 //[thisTraderId, toTraderId, itemIdToGive, itemIdToReceive]
-                assertEquals(suggested.get(0)[0], traders[i].getId());
-                assertEquals(suggested.get(0)[0], traders[i].getId());
-                if (suggested.get(0)[1].equals(traders[i+1].getId())){
-                    assertEquals(suggested.get(0)[2], traders[i].getAvailableItems().get(0));
-                    assertEquals(suggested.get(0)[3], traders[i+1].getAvailableItems().get(0));
-                    assertEquals(suggested.get(1)[2], traders[i].getAvailableItems().get(0));
-                    assertEquals(suggested.get(1)[3], traders[i-1].getAvailableItems().get(0));
+                assertEquals(suggested[0], traders[i].getId());
+                if (suggested[1].equals(traders[i+1].getId())){
+                    assertEquals(suggested[2], traders[i].getAvailableItems().get(0));
+                    assertEquals(suggested[3], traders[i+1].getAvailableItems().get(0));
                 }
-                else if (suggested.get(0)[1].equals(traders[i-1].getId())){
-                    assertEquals(suggested.get(1)[2], traders[i].getAvailableItems().get(0));
-                    assertEquals(suggested.get(1)[3], traders[i+1].getAvailableItems().get(0));
-                    assertEquals(suggested.get(0)[2], traders[i].getAvailableItems().get(0));
-                    assertEquals(suggested.get(0)[3], traders[i-1].getAvailableItems().get(0));
+                else if (suggested[1].equals(traders[i-1].getId())){
+                    assertEquals(suggested[2], traders[i].getAvailableItems().get(0));
+                    assertEquals(suggested[3], traders[i-1].getAvailableItems().get(0));
                 }
                 else{
                     fail();
