@@ -43,6 +43,7 @@ public class TemporarySetup {
             // Each trader has some items that are confirmed and not confirmed
             // Username is trader{index here from 0 to 9 inclusive}
             // Password is 'userPassword1'
+            loginManager.registerUser("demo", "userPassword1", UserTypes.TRADER);
             for (int i = 0; i < traders.length; i++) {
                 traders[i] = loginManager.registerUser("trader" + i, "userPassword1", UserTypes.TRADER);
                 traderManager.addRequestItem(traders[i], "apple" + i, "sweet" + i);
