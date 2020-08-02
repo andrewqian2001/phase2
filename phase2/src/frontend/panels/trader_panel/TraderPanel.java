@@ -83,21 +83,25 @@ public class TraderPanel extends JPanel implements ActionListener {
         createUsernameTitle(traderId, regular);
         createUserIdTitle(traderId, regular);
 
-        String[] menuTitles = getMenuTitles(traderId, isFrozen, isIdle);
+        String[] menuTitles = getMenuTitles(traderId, isFrozen, isIdle, isDemo);
 
         for(int i = 0; i < menuTitles.length; i++)
             createPanelButton(menuTitles[i], i + 3, regular);
         
         createLogoutButton(boldItalic);
 
-        if(isFrozen)
+        if(isDemo)
+            menuPanelContainer.add(searchPanel, "Search");
+        if(isFrozen && !isDemo)
             menuPanelContainer.add(frozenSettingsPanel, "Frozen Settings");
-        if(!isIdle)
+        if(!isIdle && !isDemo)
             menuPanelContainer.add(tradePanel, "Trades");
-        menuPanelContainer.add(itemsPanel, "Items");
-        menuPanelContainer.add(notificationsPanel, "Notifications");
-        menuPanelContainer.add(searchPanel, "Search");
-        menuPanelContainer.add(settingsPanel, "Settings");
+        if(!isDemo) {
+            menuPanelContainer.add(itemsPanel, "Items");
+            menuPanelContainer.add(notificationsPanel, "Notifications");
+            menuPanelContainer.add(searchPanel, "Search");
+            menuPanelContainer.add(settingsPanel, "Settings");
+        }
         
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
@@ -112,11 +116,13 @@ public class TraderPanel extends JPanel implements ActionListener {
         } return false;
     }
 
-    private String[] getMenuTitles(String traderId, boolean isFrozen, boolean isIdle) {
+    private String[] getMenuTitles(String traderId, boolean isFrozen, boolean isIdle, boolean isDemo) {
         if(isFrozen)
             return new String[] {"Frozen Settings", "", "", "", ""};
         if(isIdle)
             return new String[] {"Items", "Notifications", "Search", "Settings", ""};
+        if(isDemo)
+            return new String[] {"Search", "", "", "", ""};
         else
             return new String[] {"Trades", "Items", "Notifications", "Search", "Settings"};
     }
