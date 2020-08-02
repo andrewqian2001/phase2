@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class SearchPanelTraderDetails implements ActionListener {
 
     private final UserQuery userQuery = new UserQuery();
-    private final String t;
+    private final String traderId;
     private final Font regular;
     private final Font italic;
 
@@ -24,13 +24,13 @@ public class SearchPanelTraderDetails implements ActionListener {
 
     /**
      * Constructs an object of this class
-     * @param t The id of the trader whose details need to be shown
+     * @param traderId The id of the trader whose details need to be shown
      * @param regular Regular font
      * @param italic Italic font
      * @throws IOException if the database files could not be found
      */
-    public SearchPanelTraderDetails(String t, Font regular,Font italic) throws IOException {
-        this.t = t;
+    public SearchPanelTraderDetails(String traderId, Font regular,Font italic) throws IOException {
+        this.traderId = traderId;
         this.regular = regular;
         this.italic = italic;
     }
@@ -50,20 +50,20 @@ public class SearchPanelTraderDetails implements ActionListener {
 
         JLabel traderNameLabel = createBasicLabel("", regular);
         try {
-            traderNameLabel.setText("<html><pre>" + userQuery.getUsername(t) + "</pre></html>");
+            traderNameLabel.setText("<html><pre>" + userQuery.getUsername(traderId) + "</pre></html>");
         } catch (UserNotFoundException userNotFoundException) {
             userNotFoundException.printStackTrace();
         }
 
         JLabel traderIdTitle = createBasicLabel("Trader ID:", italic);
 
-        JLabel traderIdLabel = createBasicLabel("<html><pre>#" + t.substring(t.length() - 12) + "</pre></html>", regular);
+        JLabel traderIdLabel = createBasicLabel("<html><pre>#" + traderId.substring(traderId.length() - 12) + "</pre></html>", regular);
 
         JLabel traderCityTitle = createBasicLabel("City:", italic);
 
         JLabel traderCityLabel = createBasicLabel("", regular);
         try {
-            traderCityLabel.setText("<html><pre>" + userQuery.getCity(t) + "</pre></html>");
+            traderCityLabel.setText("<html><pre>" + userQuery.getCity(traderId) + "</pre></html>");
         } catch (UserNotFoundException | AuthorizationException e1) {
             e1.printStackTrace();
         }
@@ -72,8 +72,8 @@ public class SearchPanelTraderDetails implements ActionListener {
 
         JLabel traderNumTradesLabel = createBasicLabel("", regular);
         try {
-            traderNumTradesLabel.setText("<html><pre>" + userQuery.getTotalItemsBorrowed(t) +
-                    " borrowed / " + userQuery.getTotalItemsLent(t) + " lent </pre></html>");
+            traderNumTradesLabel.setText("<html><pre>" + userQuery.getTotalItemsBorrowed(traderId) +
+                    " borrowed / " + userQuery.getTotalItemsLent(traderId) + " lent </pre></html>");
         } catch (UserNotFoundException | AuthorizationException e1) {
             e1.printStackTrace();
         }
@@ -128,7 +128,7 @@ public class SearchPanelTraderDetails implements ActionListener {
     private void createTraderReviewsPanel(JScrollPane traderReviewScrollPane) {
         ArrayList<String[]> reviews = new ArrayList<>();
         try {
-            reviews = userQuery.getReviews(t);
+            reviews = userQuery.getReviews(traderId);
         } catch (UserNotFoundException | AuthorizationException e1) {
             e1.printStackTrace();
         }
@@ -175,7 +175,7 @@ public class SearchPanelTraderDetails implements ActionListener {
         return newLabel;
     }
 
-    
+
     private JLabel createReviewsByOtherTradersLabel(){
         JLabel newLabel = new JLabel("Reviews by other Traders:");
         newLabel.setFont(italic.deriveFont(20f));
