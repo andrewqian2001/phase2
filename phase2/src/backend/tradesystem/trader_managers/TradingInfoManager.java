@@ -294,7 +294,7 @@ public class TradingInfoManager extends Manager {
      * @throws AuthorizationException
      * @throws TradableItemNotFoundException
      */
-     public ArrayList<String[]> automatedTradeSuggestion(String thisTraderId, String itemToLendId) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+     public ArrayList<String[]> automatedTradeSuggestion(String thisTraderId) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
         ArrayList<String> allTraders = getAllTraders();
         allTraders.remove(thisTraderId);
@@ -309,9 +309,9 @@ public class TradingInfoManager extends Manager {
             for (String otherTraderId : allTraders) {
                 Trader otherTrader = getTrader(otherTraderId);
                 Object[] similarGetItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
-                Object[] similarGiveItem = similarSearch(itemToLendId, otherTrader.getWishlist());
-                if (((int) similarGetItem[1] + (int) similarGiveItem[1]) > max) {
-                    max = ((int) similarGetItem[1] + (int) similarGiveItem[1]);
+
+                if (((int) similarGetItem[1]) > max) {
+                    max = ((int) similarGetItem[1]);
                     mostSimItem = (String) similarGetItem[0];
                     mostSimTraderId = otherTrader.getId();
                 }

@@ -367,7 +367,7 @@ public class TestTradingInfo extends TestManager {
     @Test
     public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
-        ArrayList<String[]> automatedTrades = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId(),crack.getId());
+        ArrayList<String[]> automatedTrades = tradingInfoManager.automatedTradeSuggestion(tHasWishlist.getId());
         assertEquals(watch1.getId(), automatedTrades.get(0)[1]);
         assertEquals(tHasInventory1.getId(),automatedTrades.get(0)[0]);
         assertEquals(phone2.getId(), automatedTrades.get(1)[1]);
