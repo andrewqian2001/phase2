@@ -95,6 +95,7 @@ public class LoginManager extends Manager {
                 t.setMinimumAmountNeededToBorrow(defaultMinimumAmountNeededToBorrow);
             }
         }
+        getUserDatabase().save(users);
     }
 
     /**
