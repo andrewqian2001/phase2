@@ -468,32 +468,44 @@ public class TestTradingInfo extends TestManager {
         assertEquals("Jan", name5[0]);
         assertEquals(1, name5[1]);
 
+
+
         TradableItem i11 = new TradableItem("comuter", "test");
-        TradableItem i12 = new TradableItem("computww", "test");
+        TradableItem i12 = new TradableItem("compuwww", "test");
+        TradableItem search6 = new TradableItem("computer", "test");
+        tradableItemDatabase.update(search6);
         tradableItemDatabase.update(i11);
         tradableItemDatabase.update(i12);
         listNames.add(i11.getId());
         listNames.add(i12.getId());
-        //Object[] name6 =  tradingInfoManager.similarSearch(("computer"), listNames);//tests for missing char or extra chars
-        //assertEquals( "comuter",name6[0]);
-        //assertEquals(7, name6[1]);
-        //k so not sure how this is supposed to be done
+        Object[] name6 =  tradingInfoManager.similarSearch(search6.getId(), listNames);//tests for missing char
+        assertEquals( "comuter",name6[0]);
+        assertEquals(6, name6[1]);
 
-        TradableItem i13 = new TradableItem("hat", "test");
-        TradableItem i14 = new TradableItem("hwat", "test");
-        TradableItem search7 = new TradableItem("red hat", "test");
+        TradableItem i13 = new TradableItem("Chrisstmas", "test");
+        TradableItem i14 = new TradableItem("Christwww", "test");
+        TradableItem search7 = new TradableItem("Christmas", "test");
         tradableItemDatabase.update(search7);
         tradableItemDatabase.update(i13);
         tradableItemDatabase.update(i14);
         listNames.add(i13.getId());
         listNames.add(i14.getId());
-        Object[] name7 =  tradingInfoManager.similarSearch(search7.getId(), listNames);//tests for when the string we are searching for, is bigger then the name of the item
-        assertEquals( "hat",name7[0]);
-        assertEquals(3, name7[1]);
+        Object[] name7 =  tradingInfoManager.similarSearch(search7.getId(), listNames);//tests for extra char
+        assertEquals( "Chrisstmas",name7[0]);
+        assertEquals(8, name7[1]);
 
 
-
-
+        TradableItem i15 = new TradableItem("hat", "test");
+        TradableItem i16 = new TradableItem("hwat", "test");
+        TradableItem search8 = new TradableItem("red hat", "test");
+        tradableItemDatabase.update(search8);
+        tradableItemDatabase.update(i15);
+        tradableItemDatabase.update(i16);
+        listNames.add(i15.getId());
+        listNames.add(i16.getId());
+        Object[] name8 =  tradingInfoManager.similarSearch(search8.getId(), listNames);//tests for when the string we are searching for, is bigger then the name of the item
+        assertEquals( "hat",name8[0]);
+        assertEquals(3, name8[1]);
 
 
     }

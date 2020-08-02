@@ -351,16 +351,11 @@ public class TradingInfoManager extends Manager {
         for (String traderIds : getAllTraders()) {
             if (traderIds.equals(list.get(0))) isListOfTraders = true;
         }
-
         /*
         Goes through all items in list and finds similarity score
         The score is calculated like this, for every char in otherNames, we traverse name.length() more chars
         and find how many match, then store the max number of char matches so that we have the max matches for every otherName
         in the list. We put that into an array and find the otherName with the highest number of matches which is the most similar string
-
-        Current problems with this algorithm:
-        1. (solved) when length of name > length of otherNames (e.g name = red hat, otherName = hat)
-        2. when a char is added or a char is missing to the strings
          */
         String name;
         if (isListOfTraders) { //this is here to allow similarSearch to work with traders and tradableItems
@@ -368,60 +363,81 @@ public class TradingInfoManager extends Manager {
         } else {
             name = getTradableItem(nameId).getName();
         }
-
         for (String otherNamesId : list) {
-
             String otherNames;
-            if (isListOfTraders) { //this is here to allow similarSearch to work with traders and tradableItems
+            if (isListOfTraders) {
                 otherNames = getTrader(otherNamesId).getUsername();
             } else {
                 otherNames = getTradableItem(otherNamesId).getName();
             }
-
             //we don't want the exact item in the wishlist, b/c that would always be the most similar so if its the same item it skips over it
-            if(!otherNamesId.equals(nameId)){
-
-                //the solution for problem 1.
-                String longerName = otherNames;
-                String shorterName = name;
-                if (otherNames.length() < name.length()) {
-                    longerName = name;
-                    shorterName = otherNames;
-                }
-
+            if(!otherNamesId.equals(nameId)) {
                 int maxSim = 0;
+                String[] otherNameWords = otherNames.split("\\s+");
+                String[] thisNameWords = name.split("\\s+");
+                for(int i = 0; i < otherNameWords.length; i++){
+                    for(int j = 0; j < thisNameWords.length; j++){
+                        String longerName;
+                        String shorterName;
+                        if(otherNameWords[i].length() < thisNameWords[j].length()){
+                            longerName = thisNameWords[j];
+                            shorterName = otherNameWords[i];
+                        }else{
+                            shorterName = thisNameWords[j];
+                            longerName = otherNameWords[i];
+                        }
+                        for(int k = 0; k <= longerName.length() - shorterName.length(); k++) {//Finds the maximum similarity score for each word in list then adds it to similarNames
+                            int similarities = 0;
+                            int k2 = k;
+                            int l = 0;
+                            while (l < shorterName.length()) {
+                                if (Character.toLowerCase(shorterName.charAt(l)) == Character.toLowerCase(longerName.charAt(k2)))
+                                    similarities++;
+                                l++;
+                                k2++;
+                            }
+                            if (similarities > maxSim) {
+                                maxSim = similarities;
+                            }
+                        }
+                        //when you add an extra char(name = apple, otherName = appxle) or subtract an extra char, the above algorithm
+                        // does not work properly so we need another algorithm below
+                        //ideally if name = apple and otherName = appxle then the similarity score should be 4
+                        //if name = apple and other otherName = appe then the similarity score should be 4
 
-                //Finds the maximum similarity score for each word in list then adds it to similarNames
-                for (int i = 0; i < longerName.length(); i++) {
+                        //EVERYTHING IN THE LOOP BELOW IS JUST FOR TWO TEST CASES, IF YOU HAVE A BETTER WAY OF DOING THIS THAT WOULD BE GREAT
+                        int similarities2 = 0;
+                        int endOfShortWord = shorterName.length() - 1;
+                        int endOfLongWord = longerName.length() - 1;
+                        int k = 0;
+                        while((k < shorterName.length()) && Character.toLowerCase(shorterName.charAt(k)) == Character.toLowerCase((longerName.charAt(k)))){
+                            similarities2++;
+                            k++;
 
-                    int similarities = 0;
-                    int i2 = i;
-                    int j = 0;
-                    while (j < shorterName.length() && i2 < longerName.length()) {
-                        if (Character.toLowerCase(shorterName.charAt(j)) == Character.toLowerCase(longerName.charAt(i2)))
-                            similarities++;
-                        j++;
-                        i2++;
-                    }
+                        }
+                        while(Character.toLowerCase(shorterName.charAt(endOfShortWord)) == Character.toLowerCase((longerName.charAt(endOfLongWord)))){
+                            similarities2++;
+                            endOfShortWord--;
+                            endOfLongWord--;
+                            if(endOfShortWord == 0){
+                                break;
+                            }
+                        }
+                        similarities2 = Math.min(shorterName.length(), similarities2); //deals with when both words are the same
+                        similarities2 = similarities2 - (longerName.length() - shorterName.length());
 
-                    if (similarities > maxSim) {
-                        maxSim = similarities;
+                        if (similarities2 > maxSim) {
+                            maxSim = similarities2;
+                        }
                     }
                 }
-
-
-                //Note similarNames contains the max similarity score for each String in list, not
-                //then we need to find the max of those similarity scores and return it
                 similarNames.add(new Object[]{otherNames, maxSim});
-
             }
         }
-
-
         //finds the max similarity score in similarNames
         int max = 0;
         String mostSimilarName = "";
-        for (Object[] simNameArr : similarNames) {
+        for(Object[] simNameArr : similarNames) {
             int x = (int) simNameArr[1]; //x is similarity score
             String similarName = (String) simNameArr[0];
             //The reason for the || x== max && .... is b/c
@@ -429,15 +445,13 @@ public class TradingInfoManager extends Manager {
             // both a and andrew would have the same similarity score but an is obviously more similar
             if (x > max || x == max && (Math.abs(similarName.length() - name.length()) < (Math.abs(mostSimilarName.length() - name.length())))) {
                 max = x;
-                //.println("max : " + max);
                 mostSimilarName = similarName;
-
             }
         }
-
         Object[] arr = {mostSimilarName, max};
         return arr;
     }
+
 
 
 }
