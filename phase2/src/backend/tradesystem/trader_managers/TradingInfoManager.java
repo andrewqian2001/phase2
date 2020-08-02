@@ -177,7 +177,7 @@ public class TradingInfoManager extends Manager {
                 if (possibleHigh > highest) {
                     if (frequentTraders.size() >= i)
                         frequentTraders.add(null);
-                    frequentTraders.set(i, getTrader(traderID).getId());
+                    frequentTraders.set(i, traderID);
                     highest = possibleHigh;
                 }
             }
