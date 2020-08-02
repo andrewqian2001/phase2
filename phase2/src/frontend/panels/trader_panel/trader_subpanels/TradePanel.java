@@ -69,8 +69,8 @@ public class TradePanel extends JPanel implements ActionListener {
      * @param bold       the bold font
      * @param italic     the italics font
      * @param boldItalic the bold italics font
-     * @throws IOException issues with getting database files
-     * @throws UserNotFoundException trader is is bad
+     * @throws IOException            issues with getting database files
+     * @throws UserNotFoundException  trader is is bad
      * @throws AuthorizationException user id isn't a trader
      */
     public TradePanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
@@ -85,20 +85,41 @@ public class TradePanel extends JPanel implements ActionListener {
         JPanel ongoingTrades = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        JPanel ongoingTradesTitleContainer = new JPanel(new GridLayout(1, 2));
+        JPanel ongoingTradesTitleContainer = new JPanel(new GridLayout(1, 4));
         ongoingTradesTitleContainer.setOpaque(false);
         ongoingTradesTitleContainer.setPreferredSize(new Dimension(1200, 50));
 
         JLabel ongoingTradesTitle = new JLabel("Ongoing Trades");
-        ongoingTradesTitle.setFont(this.regular.deriveFont(30f));
+        ongoingTradesTitle.setFont(regular.deriveFont(30f));
         ongoingTradesTitle.setForeground(Color.WHITE);
         ongoingTradesTitle.setBackground(bg);
         ongoingTradesTitle.setHorizontalAlignment(JLabel.LEFT);
         ongoingTradesTitle.setOpaque(true);
         ongoingTradesTitleContainer.add(ongoingTradesTitle);
 
-        JButton addTradeButton = new JButton("<html><b><i><u>Add new trade</u></i></b></html>");
-        addTradeButton.setFont(addTradeButton.getFont().deriveFont(20f));
+        JButton suggestLendButton = new JButton("<html><b><i><u>Suggest Lend</u></i></b></html>");
+        suggestLendButton.setFont(regular.deriveFont(20f));
+        suggestLendButton.setHorizontalAlignment(JButton.RIGHT);
+        suggestLendButton.setForeground(Color.cyan);
+        suggestLendButton.setBackground(bg);
+        suggestLendButton.setOpaque(true);
+        suggestLendButton.setBorderPainted(false);
+        suggestLendButton.addActionListener(this);
+        ongoingTradesTitleContainer.add(suggestLendButton);
+
+
+        JButton suggestTradeButton = new JButton("<html><b><i><u>Suggest Trade</u></i></b></html>");
+        suggestTradeButton.setFont(regular.deriveFont(20f));
+        suggestTradeButton.setHorizontalAlignment(JButton.RIGHT);
+        suggestTradeButton.setForeground(Color.cyan);
+        suggestTradeButton.setBackground(bg);
+        suggestTradeButton.setOpaque(true);
+        suggestTradeButton.setBorderPainted(false);
+        suggestTradeButton.addActionListener(this);
+        ongoingTradesTitleContainer.add(suggestTradeButton);
+
+        JButton addTradeButton = new JButton("<html><b><i><u>Add New Trade</u></i></b></html>");
+        addTradeButton.setFont(regular.deriveFont(20f));
         addTradeButton.setHorizontalAlignment(JButton.RIGHT);
         addTradeButton.setForeground(Color.cyan);
         addTradeButton.setBackground(bg);
@@ -229,8 +250,7 @@ public class TradePanel extends JPanel implements ActionListener {
     }
 
     private void getTradeRequestPanels() throws UserNotFoundException, AuthorizationException {
-        ArrayList<String> requestedTrades = null;
-        requestedTrades = userQuery.getRequestedTrades(trader);
+        ArrayList<String> requestedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getRequestedTrades(trader);
 
         // tradeRequestsContainer = new JPanel(new GridLayout(10, 1));
         if (requestedTrades.size() == 0) {
@@ -824,16 +844,9 @@ public class TradePanel extends JPanel implements ActionListener {
 
     }
 
-    private void getOngoingTradesPanel() {
+    private void getOngoingTradesPanel() throws UserNotFoundException, AuthorizationException {
         // ongoingTradesContainer = new JPanel(new GridLayout(10, 1));
-        ArrayList<String> acceptedTrades = null;
-        try {
-            acceptedTrades = userQuery.getAcceptedTrades(trader);
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        } catch (AuthorizationException e) {
-            e.printStackTrace();
-        }
+        ArrayList<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
 
         if (acceptedTrades.size() == 0) {
             ongoingTradesContainer = new JPanel();
@@ -1095,10 +1108,12 @@ public class TradePanel extends JPanel implements ActionListener {
 
     /**
      * Used to respond to any events that occur
+     *
      * @param e the event
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (trader.equals("")) return;
         ArrayList<String> allTraders = infoManager.getAllTraders();
 
 

@@ -2,13 +2,12 @@
 
 **TODO: IMPORTANT GENERAL** 
 
-DEMO ACCOUNT USERNAME: demo
-DEMO ACCOUNT PASSWORD: userPassword1
-
 - !IMPORTANT: refresh button/method to refresh the user data
-- Panel for Demo  
-- Button to load demo account in LoginPanel  
-- Admin undo abilities  
+- Admin undo abilities
+- suggestLend, suggestTrade
+- automatedTradeSuggestion
+- ~~Button to load demo account in LoginPanel~~  
+- ~~Panel for Demo~~ 
 - ~~Panel for Idle Users~~  
 - ~~Panel for frozen users~~  
 - ~~User should be able to trade based on city~~  

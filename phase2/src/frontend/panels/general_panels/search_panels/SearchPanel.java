@@ -52,8 +52,6 @@ public class SearchPanel extends JPanel {
     private final Color gray2 = new Color(196, 196, 196);
     private final Color detailsButton = new Color(142, 142, 142);
 
-    private boolean isDemo;
-
     /**
      * Creates a new search panel
      * @param user the user id
@@ -63,12 +61,11 @@ public class SearchPanel extends JPanel {
      * @param boldItalic bold italics font
      * @throws IOException issues with getting the database files
      */
-    public SearchPanel(String user, Font regular, Font bold, Font italic, Font boldItalic, boolean isDemo) throws IOException {
+    public SearchPanel(String user, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
         this.regular = regular;
         this.bold = bold;
         this.italic = italic;
-        this.isDemo = isDemo;
 
         this.user = user;
         traderManager = new TraderManager();
@@ -345,7 +342,7 @@ public class SearchPanel extends JPanel {
         item.add(itemName);
         item.add(itemDesc);
         item.add(itemOwnerName);
-        if(loginManager.getType(user).equals(UserTypes.TRADER) || this.isDemo)
+        if(!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER))
             item.add(addToWishlistButton);
         tradableItemListContainer.add(item);
     }

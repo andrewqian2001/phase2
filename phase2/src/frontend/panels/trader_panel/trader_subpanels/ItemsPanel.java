@@ -14,6 +14,7 @@ import backend.tradesystem.trader_managers.TradingManager;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ItemsPanel extends JPanel {
 
@@ -68,6 +69,7 @@ public class ItemsPanel extends JPanel {
         addInventoryItemButton.setOpaque(true);
         addInventoryItemButton.setBorderPainted(false);
         addInventoryItemButton.addActionListener(e -> {
+            if (traderId.equals("")) return;
             JDialog addNewItemModal = new JDialog();
             addNewItemModal.setTitle("Add New Item");
             addNewItemModal.setSize(500, 500);
@@ -162,6 +164,7 @@ public class ItemsPanel extends JPanel {
         addWishlistItemButton.setOpaque(true);
         addWishlistItemButton.setBorderPainted(false);
         addWishlistItemButton.addActionListener(event -> {
+            if (traderId.equals("")) return;
             JDialog addNewItemModal = new JDialog();
             addNewItemModal.setTitle("Add Item to Wishlist");
             addNewItemModal.setSize(500, 500);
@@ -279,13 +282,14 @@ public class ItemsPanel extends JPanel {
     }
 
     private void getInventory() throws UserNotFoundException, AuthorizationException {
-        int numRows = userQuery.getAvailableItems(traderId).size();
+        ArrayList<String> availableItems = traderId.equals("") ? new ArrayList<>(): userQuery.getAvailableItems(traderId);
+        int numRows = availableItems.size();
         if (numRows < 4) numRows = 4;
         inventoryItemsContainer = new JPanel(new GridLayout(numRows, 1));
         inventoryItemsContainer.setBackground(gray2);
         inventoryItemsContainer.setBorder(null);
 
-        for (String itemId : userQuery.getAvailableItems(traderId)) {
+        for (String itemId : availableItems) {
             try {
                 JPanel itemPanel = new JPanel(new GridLayout(1, 4, 10, 0));
                 itemPanel.setPreferredSize(new Dimension(1000, 75));
@@ -339,13 +343,14 @@ public class ItemsPanel extends JPanel {
     }
 
     private void getWishlist() throws UserNotFoundException, AuthorizationException {
-        int numRows = userQuery.getWishlist(traderId).size();
+        ArrayList<String> wishlist = traderId.equals("") ? new ArrayList<>(): userQuery.getWishlist(traderId);
+        int numRows = wishlist.size();
         if (numRows < 4) numRows = 4;
         wishlistItemsContainer = new JPanel(new GridLayout(numRows, 1));
         wishlistItemsContainer.setBackground(gray2);
         wishlistItemsContainer.setBorder(null);
 
-        for (String itemId : userQuery.getWishlist(traderId)) {
+        for (String itemId : wishlist) {
             try {
                 JPanel itemPanel = new JPanel(new GridLayout(1, 5, 10, 0));
                 itemPanel.setPreferredSize(new Dimension(1000, 75));

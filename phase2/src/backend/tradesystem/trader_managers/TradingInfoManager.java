@@ -4,7 +4,6 @@ import backend.exceptions.*;
 import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
-import backend.models.users.User;
 import backend.tradesystem.Manager;
 
 import java.io.IOException;
@@ -195,10 +194,9 @@ public class TradingInfoManager extends Manager {
      * @throws AuthorizationException        trader not allowed to get recently traded items
      * @throws TradeNotFoundException        trade not found
      * @throws UserNotFoundException         trader id is bad
-     * @throws TradableItemNotFoundException tradable item is not found
      */
     public ArrayList<String> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
-            UserNotFoundException, TradableItemNotFoundException {
+            UserNotFoundException {
         Trader trader = getTrader(traderId);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         ArrayList<String> completedTrades = trader.getCompletedTrades();
@@ -213,10 +211,29 @@ public class TradingInfoManager extends Manager {
                 if (!secondItemId.equals(""))
                     recentTradeItems.add(getTradableItem(secondItemId).getId());
             } catch (EntryNotFoundException e) {
-                throw new TradableItemNotFoundException();
+                e.printStackTrace();
             }
         }
         return recentTradeItems;
+    }
+
+    /**
+     * Returns one of the best lends that trader thisTraderId can preform
+     * The elements in the list is in the format of [thisTraderId, toTraderId, itemId]
+     *
+     * @param thisTraderId The id of the trader that will be lending the item
+     * @param inCity Whether to only search for possible trades within the trader's city
+     * @return a list of the best lends that trader thisTraderId can preform
+     * @throws UserNotFoundException  if the user can not be found
+     * @throws AuthorizationException if the user is frozen
+     */
+    public String[] suggestLend(String thisTraderId, boolean inCity) throws
+            UserNotFoundException, AuthorizationException {
+        ArrayList<String[]> lends = suggestLendList(thisTraderId, inCity);
+        if (lends.size() == 0){
+            return new String[]{"", "", ""};
+        }
+        return lends.get(0);
     }
 
     /**
@@ -224,18 +241,22 @@ public class TradingInfoManager extends Manager {
      * The elements in the list is in the format of [thisTraderId, toTraderId, itemId]
      *
      * @param thisTraderId The id of the trader that will be lending the item
+     * @param inCity Whether to only search for possible trades within the trader's city
      * @return a list of the best lends that trader thisTraderId can preform
      * @throws UserNotFoundException  if the user can not be found
      * @throws AuthorizationException if the user is frozen
      */
-    public ArrayList<String[]> suggestLend(String thisTraderId) throws
+    private ArrayList<String[]> suggestLendList(String thisTraderId, boolean inCity) throws
             UserNotFoundException, AuthorizationException {
         Trader thisTrader = getTrader(thisTraderId);
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
         ArrayList<String[]> result = new ArrayList<>();
         HashSet<String> thisTraderItems = new HashSet<>(thisTrader.getAvailableItems());
+
+        ArrayList<String> allTraders = inCity ? getAllTradersInCity(thisTrader.getCity()) : getAllTraders();
+
         // Get suggested items for all traders
-        for (String traderId : getAllTradersInCity(thisTrader.getCity())) {
+        for (String traderId : allTraders) {
             if (traderId.equals(thisTraderId)) {
                 continue;
             }
@@ -252,21 +273,23 @@ public class TradingInfoManager extends Manager {
     }
 
     /**
-     * Returns a list of the best lends that trader thisTraderId can preform
+     * Returns one of the best trades this trader can perform
      * The elements in the list is in the format of [thisTraderId, toTraderId, itemIdToGive, itemIdToReceive]
      *
      * @param thisTraderId is the id of this trader
+     * @param inCity Whether or not to suggest trades only within the trader's city.
      * @return a list of all possible suggested trades (trades where each trader gives an item from the other trader's wishlist)
      * @throws UserNotFoundException  bad trader ids
      * @throws AuthorizationException can't suggest because user is not a trader or is frozen
      */
-    public ArrayList<String[]> suggestTrade(String thisTraderId) throws
+    public String[] suggestTrade(String thisTraderId, boolean inCity) throws
             UserNotFoundException, AuthorizationException {
         Trader thisTrader = getTrader(thisTraderId);
-        ArrayList<String[]> suggestedTrades = new ArrayList<>();
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
 
-        ArrayList<String[]> toLend = suggestLend(thisTraderId);
+
+
+        ArrayList<String[]> toLend = suggestLendList(thisTraderId, inCity);
 
         HashSet<String> thisTraderWishlist = new HashSet<>(thisTrader.getWishlist());
 
@@ -274,12 +297,12 @@ public class TradingInfoManager extends Manager {
         for (String[] lendInfo : toLend) {
             for (String candidateItem : getTrader(lendInfo[1]).getAvailableItems()) {
                 if (thisTraderWishlist.contains(candidateItem)) {
-                    String[] items = {lendInfo[0], lendInfo[1], lendInfo[2], candidateItem};
-                    suggestedTrades.add(items);
+
+                    return new String[]{lendInfo[0], lendInfo[1], lendInfo[2], candidateItem};
                 }
             }
         }
-        return suggestedTrades;
+        return new String[]{"", "", "", ""};
     }
 
 

@@ -53,7 +53,7 @@ public class TraderPanel extends JPanel implements ActionListener {
      * @param bold       bold font
      * @param italic     italics font
      * @param boldItalic bold italics font
-     * @throws IOException if accessing database has issues
+     * @throws IOException           if accessing database has issues
      * @throws UserNotFoundException if the user id is bad
      */
     public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
@@ -61,16 +61,12 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
-        boolean isFrozen = checkFrozenTrader(traderId);
-        boolean isIdle = checkIdleTrader(traderId);
-        boolean isDemo = checkDemo(traderId);
 
+        JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic);
         JPanel tradePanel = new TradePanel(traderId, regular, bold, italic, boldItalic);
         JPanel itemsPanel = new ItemsPanel(traderId, regular, bold, italic, boldItalic);
         JPanel notificationsPanel = new NotificationsPanel(traderId, regular, bold, italic, boldItalic);
-        JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic, isDemo);
         JPanel settingsPanel = new SettingsPanel(traderId, regular, bold, italic, boldItalic);
-        JPanel frozenSettingsPanel = new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic);
 
         menuPanelContainer = new JPanel();
         cardLayout = new CardLayout();
@@ -83,26 +79,33 @@ public class TraderPanel extends JPanel implements ActionListener {
         createUsernameTitle(traderId, regular);
         createUserIdTitle(traderId, regular);
 
-        String[] menuTitles = getMenuTitles(traderId, isFrozen, isIdle, isDemo);
+        boolean isDemo = traderId.equals("");
+        boolean isFrozen = !isDemo && checkFrozenTrader(traderId);
+        boolean isIdle = !isDemo && checkIdleTrader(traderId);
+        String[] menuTitles = getMenuTitles(isFrozen, isIdle);
 
-        for(int i = 0; i < menuTitles.length; i++)
+        for (int i = 0; i < menuTitles.length; i++)
             createPanelButton(menuTitles[i], i + 3, regular);
-        
+
         createLogoutButton(boldItalic);
 
-        if(isDemo)
-            menuPanelContainer.add(searchPanel, "Search");
-        if(isFrozen && !isDemo)
-            menuPanelContainer.add(frozenSettingsPanel, "Frozen Settings");
-        if(!isIdle && !isDemo)
+        if(isFrozen)
+            menuPanelContainer.add(new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic), "Frozen Settings");
+        else if(isIdle)
+        {
             menuPanelContainer.add(tradePanel, "Trades");
-        if(!isDemo) {
+            menuPanelContainer.add(itemsPanel, "Items");
+            menuPanelContainer.add(notificationsPanel, "Notifications");
+            menuPanelContainer.add(searchPanel, "Search");
+        }
+        else {
+            menuPanelContainer.add(tradePanel, "Trades");
             menuPanelContainer.add(itemsPanel, "Items");
             menuPanelContainer.add(notificationsPanel, "Notifications");
             menuPanelContainer.add(searchPanel, "Search");
             menuPanelContainer.add(settingsPanel, "Settings");
         }
-        
+
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
 
@@ -113,18 +116,16 @@ public class TraderPanel extends JPanel implements ActionListener {
             return userQuery.getUsername(traderId).equals("demo");
         } catch (UserNotFoundException e) {
             e.printStackTrace();
-        } return false;
+        }
+        return false;
     }
 
-    private String[] getMenuTitles(String traderId, boolean isFrozen, boolean isIdle, boolean isDemo) {
-        if(isFrozen)
-            return new String[] {"Frozen Settings", "", "", "", ""};
-        if(isIdle)
-            return new String[] {"Items", "Notifications", "Search", "Settings", ""};
-        if(isDemo)
-            return new String[] {"Search", "", "", "", ""};
-        else
-            return new String[] {"Trades", "Items", "Notifications", "Search", "Settings"};
+    private String[] getMenuTitles(boolean isFrozen, boolean isIdle) {
+        if (isFrozen)
+            return new String[]{"Frozen Settings", "", "", "", ""};
+        if (isIdle)
+            return new String[]{"Items", "Notifications", "Search", "Settings", ""};
+        return new String[]{"Trades", "Items", "Notifications", "Search", "Settings"};
     }
 
     private boolean checkIdleTrader(String traderId) {
@@ -132,7 +133,8 @@ public class TraderPanel extends JPanel implements ActionListener {
             return userQuery.isIdle(traderId);
         } catch (UserNotFoundException | AuthorizationException e) {
             e.printStackTrace();
-        } return false;
+        }
+        return false;
     }
 
     private boolean checkFrozenTrader(String traderId) {
@@ -140,7 +142,8 @@ public class TraderPanel extends JPanel implements ActionListener {
             return userQuery.isFrozen(traderId);
         } catch (UserNotFoundException e) {
             e.printStackTrace();
-        } return false;
+        }
+        return false;
     }
 
     private void createMenuContainer() {
@@ -183,7 +186,7 @@ public class TraderPanel extends JPanel implements ActionListener {
     }
 
     private void createUserIdTitle(String traderId, Font regular) {
-        JLabel userIdTitle = new JLabel("<html><pre>ID: #" + traderId.substring(traderId.length() - 12) + "</pre></html>");
+        JLabel userIdTitle = new JLabel("<html><pre>ID: #" + (traderId.equals("") ? "DemoID" : traderId.substring(traderId.length() - 12)) + "</pre></html>");
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(GRAY);
         userIdTitle.setHorizontalAlignment(JLabel.CENTER);
@@ -194,8 +197,9 @@ public class TraderPanel extends JPanel implements ActionListener {
     }
 
     private void createUsernameTitle(String traderId, Font regular) throws UserNotFoundException {
-        JLabel usernameTitle = new JLabel((userQuery.getUsername(traderId).length() > 12 ? userQuery.getUsername(traderId).substring(0, 12) + "..."
-                : userQuery.getUsername(traderId)));
+        String text = traderId.equals("") ? "Demo" : (userQuery.getUsername(traderId).length() > 12 ? userQuery.getUsername(traderId).substring(0, 12) + "..."
+                : userQuery.getUsername(traderId));
+        JLabel usernameTitle = new JLabel(text);
         usernameTitle.setFont(regular.deriveFont(35f));
         usernameTitle.setForeground(Color.BLACK);
         usernameTitle.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 0));
@@ -206,7 +210,8 @@ public class TraderPanel extends JPanel implements ActionListener {
     }
 
     private void createIcon(String traderId, Font boldItalic) throws UserNotFoundException {
-        JLabel iconText = new JLabel(userQuery.getUsername(traderId).toUpperCase().substring(0, 1));
+        String text = traderId.equals("") ? "D" : userQuery.getUsername(traderId).toUpperCase().substring(0, 1);
+        JLabel iconText = new JLabel(text);
         iconText.setBorder(BorderFactory.createEmptyBorder(14, 0, 0, 0));
         iconText.setFont(boldItalic.deriveFont(55f));
         iconText.setForeground(Color.BLACK);

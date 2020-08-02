@@ -30,7 +30,7 @@ import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 
 /**
- * Used to send and show messages
+ * Used for messages and any notifications
  */
 public class NotificationsPanel extends JPanel {
 
@@ -56,15 +56,16 @@ public class NotificationsPanel extends JPanel {
     private final TradingInfoManager infoManager = new TradingInfoManager();
 
     /**
-     * Used to create a new panel to send and show messages
-     * @param traderId the trader id
-     * @param regular the regular font
-     * @param bold bold font
-     * @param italic italics font
+     * Used to create a new panel for messaging and notifications
+     *
+     * @param traderId   the trader id
+     * @param regular    the regular font
+     * @param bold       bold font
+     * @param italic     italics font
      * @param boldItalic bold italics font
      * @throws IOException issues with getting database files
      */
-    public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
 
         this.traderId = traderId;
         this.regular = regular;
@@ -88,6 +89,7 @@ public class NotificationsPanel extends JPanel {
         addNewMessageButton.setBorderPainted(false);
         addNewMessageButton.setHorizontalAlignment(JButton.LEFT);
         addNewMessageButton.addActionListener(e -> {
+            if (traderId.equals("")) return;
             JDialog messageDetailsModal = new JDialog();
             messageDetailsModal.setTitle("Compose New Message");
             messageDetailsModal.setSize(600, 500);
@@ -144,7 +146,7 @@ public class NotificationsPanel extends JPanel {
                         messageDetailsModal.dispose();
                     }
                 } catch (UserNotFoundException | AuthorizationException e2) {
-                    System.out.println(e2.getMessage());
+                    e2.printStackTrace();
                 }
             });
 
@@ -174,6 +176,7 @@ public class NotificationsPanel extends JPanel {
         clearAllmessagesButton.setHorizontalAlignment(JButton.RIGHT);
         clearAllmessagesButton.addActionListener(e -> {
             try {
+                if (traderId.equals("")) return;
                 messageManager.clearMessages(traderId);
                 messagesListContainer.removeAll();
                 messagesListContainer.setLayout(new BorderLayout());
@@ -188,7 +191,7 @@ public class NotificationsPanel extends JPanel {
                 messagesScrollPane.revalidate();
                 messagesScrollPane.repaint();
             } catch (UserNotFoundException e1) {
-                System.out.println(e1.getMessage());
+                e1.printStackTrace();
             }
         });
 
@@ -245,7 +248,7 @@ public class NotificationsPanel extends JPanel {
 
     private void getMessages() {
         try {
-            HashMap<String, ArrayList<String>> messages = messageManager.getMessages(traderId);
+            HashMap<String, ArrayList<String>> messages = traderId.equals("") ? new HashMap<>() : messageManager.getMessages(traderId);
             if (messages.size() == 0) {
                 messagesListContainer = new JPanel();
                 messagesListContainer.setBackground(gray3);
@@ -470,40 +473,53 @@ public class NotificationsPanel extends JPanel {
         }
     }
 
-    private void getFreqTraders() {
-        try {
-            ArrayList<String> freqTraders = infoManager.getFrequentTraders(traderId);
-            int numRows = freqTraders.size();
-            if (numRows < 3)
-                numRows = 3;
-            freqTradersPanel = new JPanel(new GridLayout(numRows, 1));
-            freqTradersPanel.setBackground(gray2);
-            for (String freqTraderId : freqTraders) {
-                JLabel traderName = new JLabel(userQuery.getUsername(freqTraderId));
-                traderName.setFont(regular.deriveFont(20f));
-                traderName.setForeground(Color.BLACK);
-                traderName.setBackground(gray2);
-                traderName.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg),
-                        BorderFactory.createEmptyBorder(0, 25, 0, 0)));
-                freqTradersPanel.add(traderName);
+    private void getFreqTraders() throws AuthorizationException, UserNotFoundException {
+        ArrayList<String> freqTraders = new ArrayList<>();
+        if (!traderId.equals("")) {
+            try {
+                freqTraders = infoManager.getFrequentTraders(traderId);
+            } catch (TradeNotFoundException e) {
+                e.printStackTrace();
             }
-        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException e) {
-            System.out.println(e.getMessage());
+        }
+        int numRows = freqTraders.size();
+        if (numRows < 3)
+            numRows = 3;
+        freqTradersPanel = new JPanel(new GridLayout(numRows, 1));
+        freqTradersPanel.setBackground(gray2);
+        for (String freqTraderId : freqTraders) {
+            JLabel traderName = new JLabel(userQuery.getUsername(freqTraderId));
+            traderName.setFont(regular.deriveFont(20f));
+            traderName.setForeground(Color.BLACK);
+            traderName.setBackground(gray2);
+            traderName.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg),
+                    BorderFactory.createEmptyBorder(0, 25, 0, 0)));
+            freqTradersPanel.add(traderName);
         }
     }
 
-    private void getFreqTradableItems() {
-        try {
-            freqTradableItemsPanel = new JPanel(new GridLayout(0, 1));
-            freqTradableItemsPanel.setBackground(gray2);
-            ArrayList<String> items = infoManager.getRecentTradeItems(traderId);
-            int numRows = items.size();
-            if (numRows < 3)
-                numRows = 3;
-            freqTradableItemsPanel = new JPanel(new GridLayout(numRows, 1));
-            freqTradableItemsPanel.setBackground(gray2);
+    private void getFreqTradableItems() throws UserNotFoundException {
+        freqTradableItemsPanel = new JPanel(new GridLayout(0, 1));
+        freqTradableItemsPanel.setBackground(gray2);
+        ArrayList<String> items = new ArrayList<>();
+        if (!traderId.equals("")) {
+            try {
+                items = infoManager.getRecentTradeItems(traderId);
+            } catch (TradeNotFoundException e) {
+                e.printStackTrace();
+            } catch (AuthorizationException ignored){
 
-            for (String itemId : items) {
+            }
+
+        }
+        int numRows = items.size();
+        if (numRows < 3)
+            numRows = 3;
+        freqTradableItemsPanel = new JPanel(new GridLayout(numRows, 1));
+        freqTradableItemsPanel.setBackground(gray2);
+
+        for (String itemId : items) {
+            try {
                 JLabel itemName = new JLabel(itemQuery.getName(itemId));
                 itemName.setFont(regular.deriveFont(20f));
                 itemName.setForeground(Color.BLACK);
@@ -511,12 +527,11 @@ public class NotificationsPanel extends JPanel {
                 itemName.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg),
                         BorderFactory.createEmptyBorder(0, 25, 0, 0)));
                 freqTradableItemsPanel.add(itemName);
+            } catch (TradableItemNotFoundException e) {
+                e.printStackTrace();
             }
-
-        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException
-                | TradableItemNotFoundException e) {
-            System.out.println(e.getMessage());
         }
+
 
     }
 

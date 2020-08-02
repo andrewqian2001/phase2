@@ -56,7 +56,7 @@ public class WindowManager extends JFrame {
      */
     public void login(String loggedInUserId) throws IOException {
         try {
-            if (loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
+            if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
                 userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic);
                 this.setContentPane(new ImagePanel(traderBg));
             } else {
