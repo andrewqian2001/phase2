@@ -17,21 +17,20 @@ import backend.tradesystem.queries.UserQuery;
  * Represents the panel where the user can adjust the settings
  */
 public class SettingsPanel extends JPanel {
-    private final Font regular, bold, italic, boldItalic;
-    private final String userId;
+    protected Font regular, bold, italic, boldItalic;
+    private String userId;
 
+    private TraderManager traderManager = new TraderManager();
+    
+    private LoginManager loginManager = new LoginManager();
+    
+    protected UserQuery userQuery = new UserQuery();
 
-    private final TraderManager traderManager = new TraderManager();
-    ;
-    private final LoginManager loginManager = new LoginManager();
-    ;
-    private final UserQuery userQuery = new UserQuery();
-
-    private final Color bg = new Color(51, 51, 51);
-    private final Color gray = new Color(196, 196, 196);
-    private final Color gray2 = new Color(142, 142, 142);
-    private final Color green = new Color(27, 158, 36);
-    private final Color red = new Color(219, 58, 52);
+    protected final Color bg = new Color(51, 51, 51);
+    protected final Color gray = new Color(196, 196, 196);
+    protected final Color gray2 = new Color(142, 142, 142);
+    protected final Color green = new Color(27, 158, 36);
+    protected final Color red = new Color(219, 58, 52);
 
     /**
      * Makes a settings panel
@@ -68,11 +67,11 @@ public class SettingsPanel extends JPanel {
         JPanel changeCityPanel = getChangeCityPanel();
         JPanel goIdlePanel = getGoIdlePanel();
 
-        this.add(settingsTitleLabel);
-        this.add(changeUsernamePanel);
-        this.add(changePasswordPanel);
-        this.add(changeCityPanel);
-        this.add(goIdlePanel);
+        this.add(settingsTitleLabel, 0);
+        this.add(changeUsernamePanel, 1);
+        this.add(changePasswordPanel, 2);
+        this.add(changeCityPanel, 3);
+        this.add(goIdlePanel, 4);
     }
 
     private JPanel getChangeUsernamePanel() throws UserNotFoundException {
@@ -233,7 +232,7 @@ public class SettingsPanel extends JPanel {
                 goIdleButton.setBackground(bg);
                 goIdleButton.setFont(boldItalic.deriveFont(20f));
                 goIdleButton.setText("Activated");
-                goIdleButton.setSelected(true);
+                goIdleButton.setEnabled(false);
             } catch (UserNotFoundException | AuthorizationException e1) {
                 errMsg.setFont(boldItalic.deriveFont(20f));
                 errMsg.setText(e1.getMessage());

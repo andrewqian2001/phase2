@@ -144,7 +144,7 @@ public class ItemsPanel extends JPanel {
         inventoryItemsScrollPane.setViewportView(inventoryItemsContainer);
 
         JPanel topInventoryItemsScrollHeaderPane = new JPanel(new GridLayout(1, 3));
-        topInventoryItemsScrollHeaderPane.setPreferredSize(new Dimension(1200, 325));
+        topInventoryItemsScrollHeaderPane.setPreferredSize(new Dimension(1200, 50));
 
         wishlistTitleContainer = new JPanel(new GridLayout(1, 2));
         wishlistTitleContainer.setPreferredSize(new Dimension(1200, 75));
@@ -267,15 +267,15 @@ public class ItemsPanel extends JPanel {
         wishlistTitleContainer.add(wishlistTitle);
         wishlistTitleContainer.add(addWishlistItemButton);
 
-        topInventoryItemsScrollHeaderPane.add(inventoryItemsScrollPane);
-        topWishlistItemsScrollHeaderPane.add(wishlistItemsScrollPane);
+        // topInventoryItemsScrollHeaderPane.add(inventoryItemsScrollPane);
+        // topWishlistItemsScrollHeaderPane.add(wishlistItemsScrollPane);
 
         this.add(inventoryTitleContainer);
         this.add(inventoryItemsScrollPane);
-        this.add(topInventoryItemsScrollHeaderPane);
-        //this.add(wishlistTitleContainer);
-        this.add(topWishlistItemsScrollHeaderPane);
-        //this.add(wishlistItemsScrollPane);
+        // this.add(topInventoryItemsScrollHeaderPane);
+        this.add(wishlistTitleContainer);
+        // this.add(topWishlistItemsScrollHeaderPane);
+        this.add(wishlistItemsScrollPane);
     }
 
     private void getInventory() throws UserNotFoundException, AuthorizationException {

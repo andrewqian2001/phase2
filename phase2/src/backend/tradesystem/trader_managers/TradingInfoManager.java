@@ -177,7 +177,7 @@ public class TradingInfoManager extends Manager {
                 if (possibleHigh > highest) {
                     if (frequentTraders.size() >= i)
                         frequentTraders.add(null);
-                    frequentTraders.set(i, getTrader(traderID).getId());
+                    frequentTraders.set(i, traderID);
                     highest = possibleHigh;
                 }
             }
@@ -299,7 +299,7 @@ public class TradingInfoManager extends Manager {
         allTraders.remove(thisTraderId);
         ArrayList<String[]> wishlistTrades = new ArrayList<>();
 
-        //Every item on the users wishlist is excluded from being considered similar
+        // Every item on the users wishlist is excluded from being considered similar
 
         for(String wishlistItemId: getTrader(thisTraderId).getWishlist()){
             int max = 0;
