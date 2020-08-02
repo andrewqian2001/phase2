@@ -25,6 +25,9 @@ import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TraderManager;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 
+/**
+ * Represents the search panel
+ */
 public class SearchPanel extends JPanel {
 
     private JLabel userSearchTitle, tradableItemSearchTitle;
@@ -49,6 +52,15 @@ public class SearchPanel extends JPanel {
     private final Color gray2 = new Color(196, 196, 196);
     private final Color detailsButton = new Color(142, 142, 142);
 
+    /**
+     * Creates a new search panel
+     * @param user the user id
+     * @param regular the regular font
+     * @param bold the bold font
+     * @param italic italics font
+     * @param boldItalic bold italics font
+     * @throws IOException issues with getting the database files
+     */
     public SearchPanel(String user, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
         this.regular = regular;
