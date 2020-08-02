@@ -195,10 +195,9 @@ public class TradingInfoManager extends Manager {
      * @throws AuthorizationException        trader not allowed to get recently traded items
      * @throws TradeNotFoundException        trade not found
      * @throws UserNotFoundException         trader id is bad
-     * @throws TradableItemNotFoundException tradable item is not found
      */
     public ArrayList<String> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
-            UserNotFoundException, TradableItemNotFoundException {
+            UserNotFoundException {
         Trader trader = getTrader(traderId);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         ArrayList<String> completedTrades = trader.getCompletedTrades();
@@ -213,7 +212,7 @@ public class TradingInfoManager extends Manager {
                 if (!secondItemId.equals(""))
                     recentTradeItems.add(getTradableItem(secondItemId).getId());
             } catch (EntryNotFoundException e) {
-                throw new TradableItemNotFoundException();
+                e.printStackTrace();
             }
         }
         return recentTradeItems;

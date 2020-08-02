@@ -85,7 +85,7 @@ public class SettingsPanel extends JPanel {
         changeUsernameLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         changeUsernameLabel.setOpaque(false);
 
-        JTextField changeUsername = new JTextField(userQuery.getUsername(userId));
+        JTextField changeUsername = new JTextField(userId.equals("") ? "Demo" : userQuery.getUsername(userId));
         changeUsername.setFont(regular.deriveFont(25f));
         changeUsername.setForeground(Color.BLACK);
         changeUsername.setBackground(gray);
@@ -98,6 +98,7 @@ public class SettingsPanel extends JPanel {
         changeUsernameButton.setForeground(Color.WHITE);
         changeUsernameButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
         changeUsernameButton.addActionListener(e -> {
+            if (userId.equals("")) return;
             if (changeUsername.getText().trim().length() != 0) {
                 try {
                     loginManager.changeUsername(userId, changeUsername.getText());
@@ -130,7 +131,7 @@ public class SettingsPanel extends JPanel {
         changePasswordLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         changePasswordLabel.setOpaque(false);
 
-        JPasswordField changePassword = new JPasswordField(userQuery.getPassword(userId));
+        JPasswordField changePassword = new JPasswordField(userId.equals("") ? "SomeBadPassword123???" : userQuery.getPassword(userId));
         changePassword.setFont(regular.deriveFont(25f));
         changePassword.setForeground(Color.BLACK);
         changePassword.setBackground(gray);
@@ -143,6 +144,7 @@ public class SettingsPanel extends JPanel {
         changePasswordButton.setForeground(Color.WHITE);
         changePasswordButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
         changePasswordButton.addActionListener(e -> {
+            if (userId.equals("")) return;
             try {
                 loginManager.changePassword(userId, String.valueOf(changePassword.getPassword()));
                 changePasswordLabel.setFont(regular.deriveFont(25f));
@@ -173,7 +175,7 @@ public class SettingsPanel extends JPanel {
         changeCityLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         changeCityLabel.setOpaque(false);
 
-        JTextField changeCity = new JTextField(userQuery.getCity(userId));
+        JTextField changeCity = new JTextField(userId.equals("") ? "City name here" : userQuery.getCity(userId));
         changeCity.setFont(regular.deriveFont(25f));
         changeCity.setForeground(Color.BLACK);
         changeCity.setBackground(gray);
@@ -186,13 +188,14 @@ public class SettingsPanel extends JPanel {
         changeCityButton.setForeground(Color.WHITE);
         changeCityButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
         changeCityButton.addActionListener(e -> {
+            if (userId.equals("")) return;
             if (changeCity.getText().trim().length() != 0) {
                 try {
                     traderManager.setCity(userId, changeCity.getText());
                     changeCityLabel.setText("City Changed!");
                     changeCity.setText("");
                 } catch (UserNotFoundException | AuthorizationException e1) {
-                    System.out.println(e1.getMessage());
+                    e1.printStackTrace();
                 }
             }
         });
@@ -227,6 +230,7 @@ public class SettingsPanel extends JPanel {
         goIdleButton.setForeground(Color.WHITE);
         goIdleButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
         goIdleButton.addActionListener(e -> {
+            if (userId.equals("")) return;
             try {
                 traderManager.setIdle(userId, !userQuery.isIdle(userId));
                 goIdleButton.setBackground(bg);
@@ -237,7 +241,6 @@ public class SettingsPanel extends JPanel {
                 errMsg.setFont(boldItalic.deriveFont(20f));
                 errMsg.setText(e1.getMessage());
             }
-            ;
         });
 
         idlePanel.add(idleLabel);
