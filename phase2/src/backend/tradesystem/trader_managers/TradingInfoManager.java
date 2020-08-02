@@ -385,6 +385,9 @@ public class TradingInfoManager extends Manager {
             name = getTradableItem(nameId).getName();
         }
 
+        String partOfSimWord = ""; //this is here to work with the threshold
+
+
         for (String otherNamesId : list) {
             String otherNames;
             if (isListOfTraders) {
@@ -402,10 +405,8 @@ public class TradingInfoManager extends Manager {
                 for(int i = 0; i < otherNameWords.length; i++){//compares every single word in otherWord to every single word in the string we are searching for
                     for(int j = 0; j < thisNameWords.length; j++){
 
-
                         String longerName;
                         String shorterName;
-
 
                         if(otherNameWords[i].length() < thisNameWords[j].length()){
                             longerName = thisNameWords[j];
@@ -415,11 +416,11 @@ public class TradingInfoManager extends Manager {
                             longerName = otherNameWords[i];
                         }
 
-                        for(int k = 0; k <= longerName.length() - shorterName.length(); k++) {//Finds the maximum similarity score for each word in list then adds it to similarNames
+                        for(int k = 0; k < longerName.length(); k++) {//Finds the maximum similarity score for each word in list then adds it to similarNames
                             int similarities = 0;
                             int k2 = k;
                             int l = 0;
-                            while (l < shorterName.length()) {
+                            while (l < shorterName.length() && k2 < longerName.length()) {
                                 if (Character.toLowerCase(shorterName.charAt(l)) == Character.toLowerCase(longerName.charAt(k2)))
                                     similarities++;
                                 l++;
@@ -478,12 +479,11 @@ public class TradingInfoManager extends Manager {
             if (x > max || x == max && (Math.abs(similarName.length() - name.length()) < (Math.abs(mostSimilarName.length() - name.length())))) {
                 max = x;
                 mostSimilarName = similarName;
-
                 mostSimilarNameId = (String) simNameArr[2];
             }
         }
 
-        if(max >= name.length()/2 || max > 4){
+        if(max >= ((int)(name.length()*0.8))){
             return new Object[] {mostSimilarNameId, max};
         }
 
