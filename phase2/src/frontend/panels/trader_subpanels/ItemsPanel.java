@@ -267,8 +267,8 @@ public class ItemsPanel extends JPanel {
         wishlistTitleContainer.add(wishlistTitle);
         wishlistTitleContainer.add(addWishlistItemButton);
 
-        topInventoryItemsScrollHeaderPane.add(inventoryItemsScrollPane);
-        topWishlistItemsScrollHeaderPane.add(wishlistItemsScrollPane);
+        // topInventoryItemsScrollHeaderPane.add(inventoryItemsScrollPane);
+        // topWishlistItemsScrollHeaderPane.add(wishlistItemsScrollPane);
 
         this.add(inventoryTitleContainer);
         this.add(inventoryItemsScrollPane);
