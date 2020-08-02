@@ -30,7 +30,7 @@ import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 
 /**
- * Used to send and show messages
+ * Used for messages and any notifications
  */
 public class NotificationsPanel extends JPanel {
 
@@ -56,7 +56,7 @@ public class NotificationsPanel extends JPanel {
     private final TradingInfoManager infoManager = new TradingInfoManager();
 
     /**
-     * Used to create a new panel to send and show messages
+     * Used to create a new panel for messaging and notifications
      * @param traderId the trader id
      * @param regular the regular font
      * @param bold bold font
