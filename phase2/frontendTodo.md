@@ -2,6 +2,9 @@
 
 **TODO: IMPORTANT GENERAL** 
 
+DEMO ACCOUNT USERNAME: demo
+DEMO ACCOUNT PASSWORD: userPassword1
+
 - !IMPORTANT: refresh button/method to refresh the user data
 - Panel for Demo  
 - Button to load demo account in LoginPanel  

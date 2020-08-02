@@ -64,7 +64,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         JPanel tradePanel = new TradePanel(traderId, regular, bold, italic, boldItalic);
         JPanel itemsPanel = new ItemsPanel(traderId, regular, bold, italic, boldItalic);
         JPanel notificationsPanel = new NotificationsPanel(traderId, regular, bold, italic, boldItalic);
-        JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic);
+        JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic, false);
         JPanel settingsPanel = new SettingsPanel(traderId, regular, bold, italic, boldItalic);
         JPanel frozenSettingsPanel = new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic);
 
