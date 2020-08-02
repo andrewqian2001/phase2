@@ -45,7 +45,7 @@ public class AdminPanel extends JPanel implements ActionListener {
         Color red = new Color(219, 58, 52);
         UserQuery userQuery = new UserQuery();
         JPanel overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
-        JPanel searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
+        JPanel searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic, false);
         JPanel controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
 
         searchPanel.setBackground(Color.BLACK);
