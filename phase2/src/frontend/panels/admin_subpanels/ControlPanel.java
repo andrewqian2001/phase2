@@ -216,15 +216,12 @@ public class ControlPanel extends JPanel implements ActionListener {
         if(e.getSource() == submitAdmin) {
             try {
                 String loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.ADMIN);
-                if(loginManager.getType(loggedInUser).equals(UserTypes.ADMIN)) {
-                    traderManager.setCity(loggedInUser, "Toronto");
-                }
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch(BadPasswordException ex) {
                 notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
             } catch(UserAlreadyExistsException ignored) {
                 notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
-            } catch(IOException | UserNotFoundException | AuthorizationException ex) {
+            } catch(IOException ex) {
                 ex.printStackTrace();
             }
         } else if(e.getSource() == submitSettings) {
