@@ -6,9 +6,9 @@ DEMO ACCOUNT USERNAME: demo
 DEMO ACCOUNT PASSWORD: userPassword1
 
 - !IMPORTANT: refresh button/method to refresh the user data
-- Panel for Demo  
 - Button to load demo account in LoginPanel  
 - Admin undo abilities  
+- ~~Panel for Demo~~ 
 - ~~Panel for Idle Users~~  
 - ~~Panel for frozen users~~  
 - ~~User should be able to trade based on city~~  

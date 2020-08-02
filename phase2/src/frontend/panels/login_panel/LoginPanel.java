@@ -34,7 +34,7 @@ public class LoginPanel extends JPanel implements ActionListener {
     private final JLabel loginNotification  = new JLabel();
     protected JTextField usernameInput;
     protected JPasswordField passwordInput;
-    protected JButton loginButton, registerButton;
+    protected JButton loginButton, registerButton, demoButton;
     private final LoginManager loginManager = new LoginManager();
     private final TraderManager traderManager = new TraderManager();
 
@@ -69,13 +69,14 @@ public class LoginPanel extends JPanel implements ActionListener {
         managePasswordField(regular, input, gbc, inputs);
         
         //TODO: REMOVE BELOW FOR DEPLOYMENT (only for testing)
-        usernameInput = new JTextField("demo");
+        usernameInput = new JTextField("trader7");
         passwordInput = new JPasswordField("userPassword1");
 //        usernameInput = new JTextField("admin1");
 //        passwordInput = new JPasswordField("userPassword1");
 
         JPanel buttonContainer = manageButtonPanel(bold, gbc);
         manageRegisterButton(bold, gbc, buttonContainer);
+        manageDemoButton(bold, gbc, buttonContainer);
         JPanel info = manageInfoPanel();
         manageLoginNotification(boldItalic, red, info);
         manageCopyrightLabel(regular, info);
@@ -85,8 +86,10 @@ public class LoginPanel extends JPanel implements ActionListener {
         this.add(info);
 
     }
+
     /**
      * Used for displaying some message in the login screen
+     * 
      * @param msg the message being displayed
      */
     public void notifyLogin(String msg) {
@@ -123,6 +126,15 @@ public class LoginPanel extends JPanel implements ActionListener {
             } catch(IOException | UserNotFoundException | AuthorizationException ex) {
                 ex.printStackTrace();
             }
+        } else if(e.getActionCommand().equals("Demo")) {
+            try {
+                String loggedInUser = loginManager.login("demo", "userPassword1");
+                ((WindowManager)SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+            } catch (UserNotFoundException ignored) {
+                notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -147,6 +159,18 @@ public class LoginPanel extends JPanel implements ActionListener {
         info.setLayout(new GridLayout(2,0));
         info.setOpaque(false);
         return info;
+    }
+
+    private void manageDemoButton(Font bold, GridBagConstraints gbc, JPanel buttonContainer) {
+        demoButton = new JButton("Demo");
+        demoButton.setFont(bold.deriveFont(20f));
+        demoButton.setForeground(Color.WHITE);
+        demoButton.setOpaque(false);
+        demoButton.setContentAreaFilled(false);
+        demoButton.setBorderPainted(false);
+        demoButton.addActionListener(this);
+        gbc.gridy = 2;
+        buttonContainer.add(demoButton, gbc);
     }
 
     private void manageRegisterButton(Font bold, GridBagConstraints gbc, JPanel buttonContainer) {
