@@ -288,7 +288,6 @@ public class TradingInfoManager extends Manager {
      * traverses through the users wishlist, finds the most similar item by name
      *
      * @param thisTraderId      id of this trader
-     * @param itemToLendId      id of item from the users inventory that is going to be given
      * @return a arraylist of 2 cell arrays containing the other traders id and the other traders item id [otherTraderId, otherTraderItemId]
      * @throws UserNotFoundException if thisTraderId is a bad id
      * @throws AuthorizationException if thisTraderId isn't a trader
@@ -300,7 +299,7 @@ public class TradingInfoManager extends Manager {
         allTraders.remove(thisTraderId);
         ArrayList<String[]> wishlistTrades = new ArrayList<>();
 
-        //Every item on the users wishlist is excluded from being considered similar
+        // Every item on the users wishlist is excluded from being considered similar
 
         for(String wishlistItemId: getTrader(thisTraderId).getWishlist()){
             int max = 0;
