@@ -11,9 +11,9 @@ import backend.tradesystem.admin_managers.HandleFrozenManager;
 
 public class FrozenSettingsPanel extends SettingsPanel {
 
-    private HandleFrozenManager frozenManager = new HandleFrozenManager();
+    private final HandleFrozenManager frozenManager = new HandleFrozenManager();
 
-    private String traderId;
+    private final String traderId;
     
     public FrozenSettingsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
         super(traderId, regular, bold, italic, boldItalic);

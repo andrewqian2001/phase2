@@ -307,7 +307,7 @@ public class TradingInfoManager extends Manager {
             String mostSimTraderId = null;
             for (String otherTraderId : allTraders) {
                 Trader otherTrader = getTrader(otherTraderId);
-                if(otherTrader.getCity().equals(city) || filterCity == false){
+                if(otherTrader.getCity().equals(city) || !filterCity){
                     Object[] similarGetItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
                     if (((int) similarGetItem[1]) > max) {
                         max = ((int) similarGetItem[1]);
@@ -333,7 +333,7 @@ public class TradingInfoManager extends Manager {
      * @param list is the list of strings that we are traversing through
      * @return an array with two cells containing the items name and the score of how similar it is
      */
-    private Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+    public Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
         if (list.size() == 0) {
             return new Object[]{"", 0};
