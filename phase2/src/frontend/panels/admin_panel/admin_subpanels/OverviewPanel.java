@@ -1,4 +1,4 @@
-package frontend.panels.admin_subpanels;
+package frontend.panels.admin_panel.admin_subpanels;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;

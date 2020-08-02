@@ -1,4 +1,4 @@
-package frontend;
+package frontend.panels.login_panel;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -25,6 +25,7 @@ import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.trader_managers.TraderManager;
+import frontend.WindowManager;
 
 /**
  * This represents the login screen
@@ -68,7 +69,7 @@ public class LoginPanel extends JPanel implements ActionListener {
         managePasswordField(regular, input, gbc, inputs);
         
         //TODO: REMOVE BELOW FOR DEPLOYMENT (only for testing)
-        usernameInput = new JTextField("trader8");
+        usernameInput = new JTextField("trader7");
         passwordInput = new JPasswordField("userPassword1");
 //        usernameInput = new JTextField("admin1");
 //        passwordInput = new JPasswordField("userPassword1");

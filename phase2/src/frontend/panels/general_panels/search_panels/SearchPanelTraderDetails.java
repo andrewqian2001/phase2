@@ -1,4 +1,4 @@
-package frontend.panels.search_panels;
+package frontend.panels.general_panels.search_panels;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
