@@ -229,28 +229,25 @@ public class TestTradingInfo extends TestManager {
         }
     }
 
-//    @Test
+    //    @Test
     public void testAutomatedTradeSuggestion() {
     }
 
     @Test
     public void testSimilarSearch() throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
+        // Wishlist is example
+        // emample would return 6/7 (replaced char)
+        // exawmple would return 6/7 (extra char)
+        // examle would return 5/7 (removing a char)
+        // If the similarity score isn't at least 80% of the wishlist string, then the similarity should be 0
         ArrayList<Object[]> objectList = new ArrayList<>();
-        objectList.add(new Object[]{"This", 0});
+        objectList.add(new Object[]{"exampleexample", 14});
         objectList.add(new Object[]{"this", 0});
-        objectList.add(new Object[]{"is", 0});
-        objectList.add(new Object[]{"is ", 0});
-        objectList.add(new Object[]{"emample", 6});
-        confirmSimilarSearchWithList("example", objectList);
-
-        /*
-        Say we are searching for example
-        in the list we have emample, exawmple, examle
-        if i replace a char with a diff char(emample), sim score should 6/7
-        if i add a extra char(exawmple), sim score should be 6/7
-        if i remove a char (examle), sim score should be 5/7
-         */
-
+        objectList.add(new Object[]{"examplexample", 12});
+        objectList.add(new Object[]{"axampleaxample", 12});
+        objectList.add(new Object[]{"exampleeexample", 13});
+        objectList.add(new Object[]{"xampleexamp", 11});
+        confirmSimilarSearchWithList("exampleexample", objectList);
     }
 
     private void update() {
@@ -297,8 +294,6 @@ public class TestTradingInfo extends TestManager {
     }
 
 
-
-
     private void confirmSimilarSearch(String itemToSearchId, String expectedItemName, int expectedSimilarityScore, ArrayList<String> list) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         Object[] similarItem = tradingInfoManager.similarSearch(itemToSearchId, list);//tests for missing char
         String expectedItemId = null;
@@ -308,12 +303,12 @@ public class TestTradingInfo extends TestManager {
                 expectedItemId = itemIds;
             }
         }
-
-        if (expectedSimilarityScore == 0) {//threshold
-            return;
+        if ((similarItem == null || expectedItemId == null)) { // Threshold test
+            assertEquals("Below threshold " + expectedItemName, expectedSimilarityScore, 0);
+        } else {
+            assertEquals(expectedItemName, expectedItemId, similarItem[0]);
+            assertEquals(expectedItemName, expectedSimilarityScore, similarItem[1]);
         }
-        assertEquals(expectedItemId, similarItem[0]);
-        assertEquals(expectedSimilarityScore, similarItem[1]);
 
     }
 
@@ -327,6 +322,7 @@ public class TestTradingInfo extends TestManager {
         }
 
     }
+
     private ArrayList<String> addToItemList(ArrayList<String> list, String itemName, String itemDesc) {
         TradableItem item = new TradableItem(itemName, itemDesc);
         tradableItemDatabase.update(item);
