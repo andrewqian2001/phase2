@@ -223,7 +223,7 @@ public class TradingInfoManager extends Manager {
      *
      * @param thisTraderId The id of the trader that will be lending the item
      * @param inCity Whether to only search for possible trades within the trader's city
-     * @return a one of the best lends that trader thisTraderId can preform
+     * @return one of the best lends that trader thisTraderId can preform
      * @throws UserNotFoundException  if the user can not be found
      * @throws AuthorizationException if the user is frozen
      */
