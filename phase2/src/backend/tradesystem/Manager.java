@@ -9,6 +9,7 @@ import backend.models.users.Trader;
 import backend.models.users.User;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * This is used to help make accessing and modifying the database files to be easier,
@@ -177,6 +178,15 @@ public class Manager {
             if (getUser(userId).getUsername().equals(username))
                 return userId;
         throw new UserNotFoundException();
+    }
+
+    /**
+     * Returns all user ids
+     *
+     * @return all user ids
+     */
+    public Set<String> getAllUsers() {
+        return getUserDatabase().getItems().keySet();
     }
 
 

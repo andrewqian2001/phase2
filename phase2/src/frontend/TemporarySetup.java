@@ -107,6 +107,7 @@ public class TemporarySetup {
             messageManager.sendMessage(traders[5], traders[7], "Ik its a lot to ask but like yeehaw");
             messageManager.sendMessage(traders[5], traders[7], "Dplease i got covid19 come to new yorkkk");
             messageManager.sendMessage(traders[5], traders[7], "uk what fine, i never liked you anyway");
+            messageManager.sendMessage(traders[4], traders[7], "uk what fine, i never liked you anyway");
             messageManager.sendMessage(traders[0], traders[1], "Can I buy your Ryerson hat for my pokemon cards");
             // List of admins
             for (int i = 0; i < admins.length; i++) {
