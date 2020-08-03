@@ -58,15 +58,14 @@ public class NotificationsPanel extends JPanel {
 
     /**
      * Used to create a new panel for messaging and notifications
-     *
-     * @param traderId   the trader id
-     * @param regular    the regular font
-     * @param bold       bold font
-     * @param italic     italics font
+     * @param traderId the trader id
+     * @param regular the regular font
+     * @param bold bold font
+     * @param italic italics font
      * @param boldItalic bold italics font
      * @throws IOException issues with getting database files
      */
-    public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
+    public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
 
         this.traderId = traderId;
         this.regular = regular;
@@ -120,45 +119,23 @@ public class NotificationsPanel extends JPanel {
             } catch (TradeNotFoundException e) {
                 e.printStackTrace();
             }
-        }
-        int numRows = freqTraders.size();
-        if (numRows < 3)
-            numRows = 3;
-        freqTradersPanel = new JPanel(new GridLayout(numRows, 1));
-        freqTradersPanel.setBackground(gray2);
-        for (String freqTraderId : freqTraders) {
-            JLabel traderName = new JLabel(userQuery.getUsername(freqTraderId));
-            traderName.setFont(regular.deriveFont(20f));
-            traderName.setForeground(Color.BLACK);
-            traderName.setBackground(gray2);
-            traderName.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg),
-                    BorderFactory.createEmptyBorder(0, 25, 0, 0)));
-            freqTradersPanel.add(traderName);
+        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    private void getFreqTradableItems() throws UserNotFoundException {
-        freqTradableItemsPanel = new JPanel(new GridLayout(0, 1));
-        freqTradableItemsPanel.setBackground(gray2);
-        ArrayList<String> items = new ArrayList<>();
-        if (!traderId.equals("")) {
-            try {
-                items = infoManager.getRecentTradeItems(traderId);
-            } catch (TradeNotFoundException e) {
-                e.printStackTrace();
-            } catch (AuthorizationException ignored){
+    private void getFreqTradableItems() {
+        try {
+            freqTradableItemsPanel = new JPanel(new GridLayout(0, 1));
+            freqTradableItemsPanel.setBackground(gray2);
+            ArrayList<String> items = infoManager.getRecentTradeItems(traderId);
+            int numRows = items.size();
+            if (numRows < 3)
+                numRows = 3;
+            freqTradableItemsPanel = new JPanel(new GridLayout(numRows, 1));
+            freqTradableItemsPanel.setBackground(gray2);
 
-            }
-
-        }
-        int numRows = items.size();
-        if (numRows < 3)
-            numRows = 3;
-        freqTradableItemsPanel = new JPanel(new GridLayout(numRows, 1));
-        freqTradableItemsPanel.setBackground(gray2);
-
-        for (String itemId : items) {
-            try {
+            for (String itemId : items) {
                 JLabel itemName = new JLabel(itemQuery.getName(itemId));
                 itemName.setFont(regular.deriveFont(20f));
                 itemName.setForeground(Color.BLACK);
@@ -166,11 +143,12 @@ public class NotificationsPanel extends JPanel {
                 itemName.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg),
                         BorderFactory.createEmptyBorder(0, 25, 0, 0)));
                 freqTradableItemsPanel.add(itemName);
-            } catch (TradableItemNotFoundException e) {
-                e.printStackTrace();
             }
-        }
 
+        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException
+                | TradableItemNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
 
     }
 }
