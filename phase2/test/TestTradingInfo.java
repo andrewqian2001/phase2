@@ -247,6 +247,11 @@ public class TestTradingInfo extends TestManager {
         objectList.add(new Object[]{"axampleaxample", 12});
         objectList.add(new Object[]{"exampleeexample", 13});
         objectList.add(new Object[]{"xampleexamp", 11});
+        objectList.add(new Object[]{"eyampleexayple", 12});
+        objectList.add(new Object[]{"eyampleyxayple", 11});
+        objectList.add(new Object[]{"eyampleyxayples", 11});
+        objectList.add(new Object[]{"aaaaeyampleyxayplesaaaaa", 11});
+        objectList.add(new Object[]{"examplZZexample", 11});
         confirmSimilarSearchWithList("exampleexample", objectList);
     }
 
