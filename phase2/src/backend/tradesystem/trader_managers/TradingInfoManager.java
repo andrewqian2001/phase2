@@ -223,7 +223,7 @@ public class TradingInfoManager extends Manager {
      *
      * @param thisTraderId The id of the trader that will be lending the item
      * @param inCity Whether to only search for possible trades within the trader's city
-     * @return a list of the best lends that trader thisTraderId can preform
+     * @return a one of the best lends that trader thisTraderId can preform
      * @throws UserNotFoundException  if the user can not be found
      * @throws AuthorizationException if the user is frozen
      */
@@ -278,7 +278,7 @@ public class TradingInfoManager extends Manager {
      *
      * @param thisTraderId is the id of this trader
      * @param inCity Whether or not to suggest trades only within the trader's city.
-     * @return a list of all possible suggested trades (trades where each trader gives an item from the other trader's wishlist)
+     * @return a single possible suggested trade (a trade where each trader gives an item from the other trader's wishlist)
      * @throws UserNotFoundException  bad trader ids
      * @throws AuthorizationException can't suggest because user is not a trader or is frozen
      */
@@ -286,8 +286,6 @@ public class TradingInfoManager extends Manager {
             UserNotFoundException, AuthorizationException {
         Trader thisTrader = getTrader(thisTraderId);
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
-
-
 
         ArrayList<String[]> toLend = suggestLendList(thisTraderId, inCity);
 
@@ -297,7 +295,6 @@ public class TradingInfoManager extends Manager {
         for (String[] lendInfo : toLend) {
             for (String candidateItem : getTrader(lendInfo[1]).getAvailableItems()) {
                 if (thisTraderWishlist.contains(candidateItem)) {
-
                     return new String[]{lendInfo[0], lendInfo[1], lendInfo[2], candidateItem};
                 }
             }
