@@ -58,14 +58,16 @@ public class NotificationsPanel extends JPanel {
 
     /**
      * Used to create a new panel for messaging and notifications
-     * @param traderId the trader id
-     * @param regular the regular font
-     * @param bold bold font
-     * @param italic italics font
+     * 
+     * @param traderId   the trader id
+     * @param regular    the regular font
+     * @param bold       bold font
+     * @param italic     italics font
      * @param boldItalic bold italics font
      * @throws IOException issues with getting database files
      */
-    public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
+    public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic)
+            throws IOException, UserNotFoundException, AuthorizationException {
 
         this.traderId = traderId;
         this.regular = regular;
@@ -76,7 +78,6 @@ public class NotificationsPanel extends JPanel {
         this.setSize(1000, 900);
         this.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         this.setBackground(bg);
-
 
         JPanel bottomTitleHeaderContainer = new JPanel(new GridLayout(1, 2, 25, 0));
         bottomTitleHeaderContainer.setPreferredSize(new Dimension(1200, 75));
@@ -91,7 +92,6 @@ public class NotificationsPanel extends JPanel {
         freqTradableItemsTitle.setFont(regular.deriveFont(30f));
         freqTradableItemsTitle.setForeground(Color.WHITE);
         freqTradableItemsTitle.setOpaque(false);
-
 
         bottomTitleHeaderContainer.add(freqTradersTitle);
         bottomTitleHeaderContainer.add(freqTradableItemsTitle);
@@ -119,8 +119,20 @@ public class NotificationsPanel extends JPanel {
             } catch (TradeNotFoundException e) {
                 e.printStackTrace();
             }
-        } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException e) {
-            System.out.println(e.getMessage());
+        }
+        int numRows = freqTraders.size();
+        if (numRows < 3)
+            numRows = 3;
+        freqTradersPanel = new JPanel(new GridLayout(numRows, 1));
+        freqTradersPanel.setBackground(gray2);
+        for (String freqTraderId : freqTraders) {
+            JLabel traderName = new JLabel(userQuery.getUsername(freqTraderId));
+            traderName.setFont(regular.deriveFont(20f));
+            traderName.setForeground(Color.BLACK);
+            traderName.setBackground(gray2);
+            traderName.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg),
+                    BorderFactory.createEmptyBorder(0, 25, 0, 0)));
+            freqTradersPanel.add(traderName);
         }
     }
 
