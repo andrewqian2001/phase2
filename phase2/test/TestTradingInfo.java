@@ -239,7 +239,7 @@ public class TestTradingInfo extends TestManager {
         // emample would return 6/7 (replaced char)
         // exawmple would return 6/7 (extra char)
         // examle would return 5/7 (removing a char)
-        // If the similarity score isn't at least 80% of the wishlist string, then the similarity should be 0
+        // If the similarity score isn't at least 80% of the wishlist string length, then the similarity should be 0
         ArrayList<Object[]> objectList = new ArrayList<>();
         objectList.add(new Object[]{"exampleexample", 14});
         objectList.add(new Object[]{"this", 0});
