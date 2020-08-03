@@ -1131,9 +1131,9 @@ public class TradePanel extends JPanel implements ActionListener {
         String[] suggested = new String[0];
         try {
             if (isSuggestedLend)
-                suggested = infoManager.suggestLend(trader, false);
+                suggested = infoManager.suggestLend(trader, true);
             else if (isSuggestedTrade)
-                suggested = infoManager.suggestTrade(trader, false);
+                suggested = infoManager.suggestTrade(trader, true);
         } catch (UserNotFoundException | AuthorizationException e3) {
             e3.printStackTrace();
         }
