@@ -93,7 +93,6 @@ public class TraderPanel extends JPanel implements ActionListener {
             menuPanelContainer.add(new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic), "Frozen Settings");
         else if(isIdle)
         {
-            menuPanelContainer.add(tradePanel, "Trades");
             menuPanelContainer.add(itemsPanel, "Items");
             menuPanelContainer.add(notificationsPanel, "Notifications");
             menuPanelContainer.add(searchPanel, "Search");

@@ -1,30 +1,20 @@
 package frontend.panels.trader_panel.trader_subpanels;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.UserTypes;
-import backend.tradesystem.general_managers.LoginManager;
-import backend.tradesystem.general_managers.MessageManager;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
@@ -35,20 +25,13 @@ import frontend.panels.general_panels.MessagePanel;
  */
 public class NotificationsPanel extends JPanel {
 
-    private JPanel messagesListContainer, freqTradersPanel, freqTradableItemsPanel;
-    private JScrollPane messagesScrollPane;
+    private JPanel freqTradersPanel, freqTradableItemsPanel;
 
-    private final MessageManager messageManager = new MessageManager();
-    private final LoginManager loginManager = new LoginManager();
     private final ItemQuery itemQuery = new ItemQuery();
     private final UserQuery userQuery = new UserQuery();
 
     private final Color bg = new Color(51, 51, 51);
-    private final Color gray = new Color(75, 75, 75);
     private final Color gray2 = new Color(196, 196, 196);
-    private final Color red = new Color(219, 58, 52);
-    private final Color gray3 = new Color(142, 142, 142);
-    private final Color green = new Color(27, 158, 36);
 
     private final Font regular, bold, italic, boldItalic;
 
