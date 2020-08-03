@@ -305,48 +305,81 @@ public class TradingInfoManager extends Manager {
 
 
     /**
-     * traverses through the users wishlist, finds the most similar item by name
+     * returns string array in this format [thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId]
      *
-     * @param thisTraderId      id of this trader
-     * @return a arraylist of 2 cell arrays containing the other traders id and the other traders item id [otherTraderId, otherTraderItemId]
+     * @param thisTraderId id of this trader
+     * @return an array with this traders id, the other traders id, the item this trader will give, the item this trader will get
      * @throws UserNotFoundException if thisTraderId is a bad id
      * @throws AuthorizationException if thisTraderId isn't a trader
      * @throws TradableItemNotFoundException if the tradable item wasn't found
      */
-     public ArrayList<String[]> automatedTradeSuggestion(String thisTraderId, String city, Boolean filterCity) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+     public String[] automatedTradeSuggestion(String thisTraderId, String city, Boolean filterCity) throws UserNotFoundException, AuthorizationException{
+
+         //Finds the most similar trade, most similar is calculated through similarSearch
 
         ArrayList<String> allTraders = getAllTraders();
         allTraders.remove(thisTraderId);
-        ArrayList<String[]> wishlistTrades = new ArrayList<>();
+        Trader thisTrader = getTrader(thisTraderId);
 
-        // Every item on the users wishlist is excluded from being considered similar
+        int maxTotalSim = 0;
+        String mostSimGetItemId = null;
+        String mostSimGiveItemId = null;
+        String mostSimTraderId = null;
 
-        for(String wishlistItemId: getTrader(thisTraderId).getWishlist()){
-            int max = 0;
-            String mostSimItemId = null;
-            String mostSimTraderId = null;
-            for (String otherTraderId : allTraders) {
-                Trader otherTrader = getTrader(otherTraderId);
-                if(otherTrader.getCity().equals(city) || !filterCity){
-                    Object[] similarGetItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
-                    if(!(similarGetItem == null)){
-                        if (((int) similarGetItem[1]) > max) {
-                            max = ((int) similarGetItem[1]);
-                            mostSimItemId = (String) similarGetItem[0];
-                            mostSimTraderId = otherTrader.getId();
+        for(String otherTraderId : allTraders){
+            Trader otherTrader = getTrader(otherTraderId);
+            if(filterCity && !(otherTrader.getCity().equals(city))){
+                continue;
+            }
+            String simGetItemId = null;
+            int maxGetSim = 0;
+            String simGiveItemId = null;
+            int maxGiveSim = 0;
+
+            //finds the item that thisTrader wants the most from otherTrader
+            for(String wishlistItemId: thisTrader.getWishlist()){
+                Object[] getItem = null;
+                try {
+                    getItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
+                } catch (TradableItemNotFoundException e) {
+                    getItem = null;
+                }finally {
+                    if(!(getItem == null)){
+                        if (((int) getItem[1]) > maxGetSim) {
+                            simGetItemId = (String) getItem[0];
+                            maxGetSim = ((int) getItem[1]);
                         }
                     }
-
                 }
-
             }
-            if(mostSimItemId != null && mostSimTraderId != null)
-            wishlistTrades.add(new String[]{mostSimTraderId, mostSimItemId});
+
+            //finds the item that otherTrader wants the most from thisTrader
+            for(String inventoryItemId: thisTrader.getAvailableItems()){
+                Object[] giveItem = null;
+                try {
+                    giveItem = similarSearch(inventoryItemId, otherTrader.getWishlist());
+                } catch (TradableItemNotFoundException e) {
+                    giveItem = null;
+                }finally {
+                    if(!(giveItem == null)){
+                        if (((int) giveItem[1]) > maxGiveSim) {
+                            simGiveItemId = (String) giveItem[0];
+                            maxGiveSim = ((int) giveItem[1]);
+                        }
+                    }
+                }
+            }
+            if(maxGetSim + maxGiveSim > maxTotalSim){
+                maxTotalSim = maxGetSim + maxGiveSim;
+                mostSimGetItemId = simGetItemId;
+                mostSimGiveItemId = simGiveItemId;
+                mostSimTraderId = otherTraderId;
+            }
         }
+        if(mostSimTraderId != null)
+        return new String[] {thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId};
 
-
-        return wishlistTrades;
-
+        return new String[]{};
     }
 
     /**
@@ -382,9 +415,6 @@ public class TradingInfoManager extends Manager {
             name = getTradableItem(nameId).getName();
         }
 
-        String partOfSimWord = ""; //this is here to work with the threshold
-
-
         for (String otherNamesId : list) {
             String otherNames;
             if (isListOfTraders) {
@@ -392,17 +422,17 @@ public class TradingInfoManager extends Manager {
             } else {
                 otherNames = getTradableItem(otherNamesId).getName();
             }
+
             //we don't want the exact item in the wishlist, b/c that would always be the most similar so if its the same item it skips over it
             if(!otherNamesId.equals(nameId)) {
                 int maxSim = 0;
                 String[] otherNameWords = otherNames.split("\\s+");
                 String[] thisNameWords = name.split("\\s+");
 
-
                 for(int i = 0; i < otherNameWords.length; i++){//compares every single word in otherWord to every single word in the string we are searching for
                     for(int j = 0; j < thisNameWords.length; j++){
 
-                        String longerName;
+                        String longerName; //these are needed to fix bug when comparing strings with different sizes
                         String shorterName;
 
                         if(otherNameWords[i].length() < thisNameWords[j].length()){
@@ -413,7 +443,7 @@ public class TradingInfoManager extends Manager {
                             longerName = otherNameWords[i];
                         }
 
-                        for(int k = 0; k < longerName.length(); k++) {//Finds the maximum similarity score for each word in list then adds it to similarNames
+                        for(int k = 0; k < longerName.length(); k++) {//Finds the maximum similarity score for each word in list
                             int similarities = 0;
                             int k2 = k;
                             int l = 0;
@@ -432,7 +462,7 @@ public class TradingInfoManager extends Manager {
                         //ideally if name = apple and otherName = appxle then the similarity score should be 4
                         //if name = apple and other otherName = appe then the similarity score should be 4
 
-                        //EVERYTHING IN THE LOOP BELOW IS JUST FOR TWO TEST CASES, IF YOU HAVE A BETTER WAY OF DOING THIS THAT WOULD BE GREAT
+                        //THE ENTIRE SECTION BELOW IS FOR THE ABOVE TWO TEST CASES...
                         int similarities2 = 0;
                         int endOfShortWord = shorterName.length() - 1;
                         int endOfLongWord = longerName.length() - 1;
@@ -440,7 +470,6 @@ public class TradingInfoManager extends Manager {
                         while((k < shorterName.length()) && Character.toLowerCase(shorterName.charAt(k)) == Character.toLowerCase((longerName.charAt(k)))){
                             similarities2++;
                             k++;
-
                         }
                         while(Character.toLowerCase(shorterName.charAt(endOfShortWord)) == Character.toLowerCase((longerName.charAt(endOfLongWord)))){
                             similarities2++;
@@ -455,7 +484,6 @@ public class TradingInfoManager extends Manager {
 
                         if (similarities2 > maxSim) {
                             maxSim = similarities2;
-
                         }
                     }
                 }
@@ -468,11 +496,8 @@ public class TradingInfoManager extends Manager {
         String mostSimilarName = "";
         String mostSimilarNameId = "";
         for(Object[] simNameArr : similarNames) {
-            int x = (int) simNameArr[1]; //x is similarity score
+            int x = (int) simNameArr[1];
             String similarName = (String) simNameArr[0];
-            //The reason for the || x== max && .... is b/c
-            //say we have name = a, one of the strings in list is an, however another name is andrew
-            // both a and andrew would have the same similarity score but an is obviously more similar
             if (x > max || x == max && (Math.abs(similarName.length() - name.length()) < (Math.abs(mostSimilarName.length() - name.length())))) {
                 max = x;
                 mostSimilarName = similarName;
@@ -480,6 +505,7 @@ public class TradingInfoManager extends Manager {
             }
         }
 
+        //adds a threshold, so that items we consider not simialr dont get added, even if there is nothing else
         if(max >= ((int)(name.length()*0.8))){
             return new Object[] {mostSimilarNameId, max};
         }

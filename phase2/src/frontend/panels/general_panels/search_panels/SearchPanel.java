@@ -1,19 +1,10 @@
 package frontend.panels.general_panels.search_panels;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
@@ -24,6 +15,7 @@ import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TraderManager;
 import backend.tradesystem.trader_managers.TradingInfoManager;
+import frontend.WindowManager;
 
 /**
  * Represents the search panel
@@ -222,7 +214,7 @@ public class SearchPanel extends JPanel {
         userSearchTitle.setFont(regular.deriveFont(30f));
     }
 
-    private void findUsers(String username) {
+    private void findUsers(String username)     {
         ArrayList<String> matches = infoManager.searchTrader(username);
         int numRows = matches.size();
         if (numRows < 3)
@@ -237,7 +229,7 @@ public class SearchPanel extends JPanel {
     }
 
     private void createTraderDetailRow(String t) {
-        // for(String userId : matches) {
+        // for(String userId : userQuery) {
         JPanel trader = new JPanel(new GridLayout(1, 3));
         trader.setPreferredSize(new Dimension(1000, 75));
         trader.setBackground(gray2);
@@ -267,8 +259,26 @@ public class SearchPanel extends JPanel {
         traderDetailsButton.setOpaque(true);
         traderDetailsButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
         try {
-            traderDetailsButton.addActionListener(new SearchPanelTraderDetails(t, regular, italic));
-        } catch (IOException e) {
+            if(!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER)) {
+                traderDetailsButton.addActionListener(new SearchPanelTraderDetails(t, regular, italic));
+            } else if (!user.equals("")) {
+                traderDetailsButton.setText("Infiltrate");
+                traderDetailsButton.setForeground(Color.red);
+                traderDetailsButton.setFont(regular.deriveFont(20f));
+                traderDetailsButton.addActionListener(e -> {
+                    try {
+                        ((WindowManager) SwingUtilities.getWindowAncestor(this)).setVisible(false);
+                        WindowManager traderFrame = new WindowManager();
+                        traderFrame.run();
+                        traderFrame.login(t);
+                        traderFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                        traderFrame.addWindowListener(new TraderDetailsWindowAdapter(((WindowManager) SwingUtilities.getWindowAncestor(this))));
+                    } catch (IOException | FontFormatException ioException) {
+                        ioException.printStackTrace();
+                    }
+                });
+            }
+        } catch (IOException | UserNotFoundException e) {
             e.printStackTrace();
         }
 
