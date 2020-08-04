@@ -66,7 +66,19 @@ public class LoginManager extends Manager {
             throw new UserAlreadyExistsException();
         switch (type) {
             case ADMIN:
-                return updateUserDatabase(new Admin(username, password)).getId();
+                Admin admin = new Admin(username, password);
+                for (String userId: getAllUsers()){
+                    try {
+                        if (getUser(userId) instanceof Admin) {
+                            admin.setReports(((Admin) getUser(userId)).getReports());
+                            break;
+                        }
+                    }
+                    catch(UserNotFoundException e){
+                        e.printStackTrace();
+                    }
+                }
+                return updateUserDatabase(admin).getId();
             case TRADER:
                 tryToRefreshTradeCount();
             default:
