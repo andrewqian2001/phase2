@@ -379,7 +379,7 @@ public class TestTradingInfo extends TestManager {
 
     private void testAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
-        String[] test = tradingInfoManager.automatedTradeSuggestion(t1.getId(), t1.getCity(), filter);
+        String[] test = tradingInfoManager.automatedTradeSuggestion(t1.getId(), filter);
         String itemT1Id = null;
         String itemT2Id = null;
         for(String ids: getTradableItemDatabase().getItems().keySet()){
@@ -392,12 +392,12 @@ public class TestTradingInfo extends TestManager {
         }
         t1 = getTrader(t1.getId());
         t2 = getTrader(t2.getId());
-        System.out.println("item name expected: " + itemT1Name + "--- item id expected: " + itemT1Id);
-        System.out.println("item name actual: " + getTradableItem(test[2]).getName() + "--- item id expected: " + test[2]);
+//        System.out.println("item name expected: " + itemT1Name + "--- item id expected: " + itemT1Id);
+//        System.out.println("item name actual: " + getTradableItem(test[2]).getName() + "--- item id expected: " + test[2]);
         assertEquals(t1.getId(), test[0]);
         assertEquals(t2.getId(), test[1]);
-        System.out.println("second user item expected: " + itemT2Name +  "--- item id expected: " + itemT2Id);
-        System.out.println("second user item actual: " + getTradableItem(test[3]).getName() + "--- item id expected: " + test[3]);
+//        System.out.println("second user item expected: " + itemT2Name +  "--- item id expected: " + itemT2Id);
+//        System.out.println("second user item actual: " + getTradableItem(test[3]).getName() + "--- item id expected: " + test[3]);
         assertEquals(itemT1Id, test[2]);
         assertEquals(itemT2Id, test[3]);
 
@@ -426,16 +426,6 @@ public class TestTradingInfo extends TestManager {
             listIdsWishlist = addToItemList(listIdsWishlist , itemNamesWishlist, "desc");
         }
         trader.getWishlist().addAll(listIdsWishlist);
-
-//        for(String ids: trader.getAvailableItems()){
-//            System.out.println("id : " + ids);
-//            System.out.println("name : " + getTradableItem(ids).getName());
-//        }
-//        for(String ids: trader.getWishlist()){
-//            System.out.println("ids : " + ids);
-//            System.out.println("name : " + getTradableItem(ids).getName());
-//        }
-//        System.out.println("?????????????????????????????????????????????????");
 
 
         updateUserDatabase(trader);

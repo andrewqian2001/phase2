@@ -308,21 +308,20 @@ public class TradingInfoManager extends Manager {
      * returns string array in this format [thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId]
      *
      * @param thisTraderId id of this trader
-     * @param city is the city of the trader
      * @param filterCity is if the trader wants to filter for city
      * @return an array with this traders id, the other traders id, the item this trader will give, the item this trader will get
      * @throws UserNotFoundException if thisTraderId is a bad id
      * @throws AuthorizationException if thisTraderId isn't a trader
      * @throws TradableItemNotFoundException if the tradable item wasn't found
      */
-     public String[] automatedTradeSuggestion(String thisTraderId, String city, Boolean filterCity) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+     public String[] automatedTradeSuggestion(String thisTraderId,  Boolean filterCity) throws UserNotFoundException, AuthorizationException{
 
          //Finds the most similar trade, most similar is calculated through similarSearch
 
         ArrayList<String> allTraders = getAllTraders();
         allTraders.remove(thisTraderId);
         Trader thisTrader = getTrader(thisTraderId);
-
+        String city = thisTrader.getCity();
         int maxTotalSim = 0;
         String mostSimGetItemId = null;
         String mostSimGiveItemId = null;
