@@ -22,7 +22,7 @@ public class ItemsPanel extends JPanel {
 
     private final String traderId;
     private final Font regular, bold;
-
+    private JPanel inventoryHeader;
     private JPanel inventoryItemsContainer, wishlistItemsContainer;
 
     private final Color bg = new Color(51, 51, 51);
@@ -31,13 +31,15 @@ public class ItemsPanel extends JPanel {
     private final Color green = new Color(27, 158, 36);
     private final Color red = new Color(219, 58, 52);
 
+    private GridBagConstraints gbc;
 
     private final TraderManager traderManager = new TraderManager();
-    ;
+
     private final TradingInfoManager infoManager = new TradingInfoManager();
-    ;
+
     private final ItemQuery itemQuery = new ItemQuery();
     private final UserQuery userQuery = new UserQuery();
+    private JPanel wishListHeader;
 
     /**
      * Makes a new panel that shows list of items and wishlist items
@@ -60,6 +62,11 @@ public class ItemsPanel extends JPanel {
         this.setSize(1000, 900);
         this.setBackground(bg);
 
+        JPanel inventoryItems = new JPanel(new GridBagLayout());
+        JPanel wishListItems = new JPanel(new GridBagLayout());
+        gbc = new GridBagConstraints();
+
+        JButton addInventoryItemButton = addInventoryItemButton(traderId, regular, bold, italic, boldItalic);
 
         JPanel inventoryTitleContainer = new JPanel(new GridLayout(1, 2));
         inventoryTitleContainer.setPreferredSize(new Dimension(1200, 75));
@@ -69,13 +76,11 @@ public class ItemsPanel extends JPanel {
         inventoryTitle.setForeground(Color.WHITE);
         inventoryTitle.setFont(regular.deriveFont(30f));
 
-        JButton addInventoryItemButton = addInventoryItemButton(traderId, regular, bold, italic, boldItalic);
 
         JScrollPane inventoryItemsScrollPane = new JScrollPane();
         inventoryItemsScrollPane.setBorder(null);
         inventoryItemsScrollPane.setPreferredSize(new Dimension(1200, 325));
         getInventory();
-
         inventoryItemsScrollPane.setViewportView(inventoryItemsContainer);
 
         JPanel topInventoryItemsScrollHeaderPane = new JPanel(new GridLayout(1, 3));
@@ -106,18 +111,108 @@ public class ItemsPanel extends JPanel {
         inventoryTitleContainer.add(inventoryTitle);
         inventoryTitleContainer.add(addInventoryItemButton);
 
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 0;
+        gbc.weighty = 0.1;
+        inventoryItems.add(inventoryTitleContainer, gbc);
+
+        gbc.gridy = 1;
+        gbc.weighty = 0.1;
+        createInventoryHeader();
+        inventoryItems.add(inventoryHeader, gbc);
+
+        gbc.gridy = 2;
+        gbc.weighty = 0.8;
+        inventoryItems.add(inventoryItemsScrollPane, gbc);
+
         wishlistTitleContainer.add(wishlistTitle);
         wishlistTitleContainer.add(addWishlistItemButton);
+
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.gridy = 0;
+        gbc.weighty = 0.1;
+        wishListItems.add(wishlistTitleContainer, gbc);
+
+        gbc.gridy = 1;
+        gbc.weighty = 0.1;
+        createWishListHeader();
+        wishListItems.add(wishListHeader, gbc);
+
+        gbc.gridy = 2;
+        gbc.weighty = 0.8;
+        wishListItems.add(wishlistItemsScrollPane, gbc);
 
         // topInventoryItemsScrollHeaderPane.add(inventoryItemsScrollPane);
         // topWishlistItemsScrollHeaderPane.add(wishlistItemsScrollPane);
 
-        this.add(inventoryTitleContainer);
-        this.add(inventoryItemsScrollPane);
-        // this.add(topInventoryItemsScrollHeaderPane);
-        this.add(wishlistTitleContainer);
-        // this.add(topWishlistItemsScrollHeaderPane);
-        this.add(wishlistItemsScrollPane);
+        this.add(inventoryItems);
+        this.add(wishListItems);
+
+    }
+
+    private void createInventoryHeader() {
+        inventoryHeader = new JPanel(new GridLayout(1, 4));
+        inventoryHeader.setPreferredSize(new Dimension(1200, 25));
+        inventoryHeader.setBorder(BorderFactory.createEmptyBorder(0,0,0,120));
+        inventoryHeader.setBackground(gray);
+
+        JLabel itemName = new JLabel("Item Name");
+        itemName.setFont(this.regular.deriveFont(20f));
+        itemName.setForeground(Color.BLACK);
+        itemName.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel description = new JLabel("Description");
+        description.setFont(this.regular.deriveFont(20f));
+        description.setForeground(Color.BLACK);
+        description.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel itemId = new JLabel("Item ID");
+        itemId.setFont(this.regular.deriveFont(20f));
+        itemId.setForeground(Color.BLACK);
+        itemId.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel empty = new JLabel("");
+
+        inventoryHeader.add(itemName);
+        inventoryHeader.add(description);
+        inventoryHeader.add(itemId);
+        inventoryHeader.add(empty);
+
+    }
+
+    private void createWishListHeader(){
+        wishListHeader = new JPanel(new GridLayout(1, 5));
+        wishListHeader.setPreferredSize(new Dimension(1200, 25));
+        wishListHeader.setBorder(BorderFactory.createEmptyBorder(0,0,0,120));
+        wishListHeader.setBackground(gray);
+
+        JLabel itemName = new JLabel("Item Name");
+        itemName.setFont(this.regular.deriveFont(20f));
+        itemName.setForeground(Color.BLACK);
+        itemName.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel description = new JLabel("Description");
+        description.setFont(this.regular.deriveFont(20f));
+        description.setForeground(Color.BLACK);
+        description.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel itemId = new JLabel("Item ID");
+        itemId.setFont(this.regular.deriveFont(20f));
+        itemId.setForeground(Color.BLACK);
+        itemId.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel itemOwner = new JLabel("Item Owner");
+        itemOwner.setFont(this.regular.deriveFont(20f));
+        itemOwner.setForeground(Color.BLACK);
+        itemOwner.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel empty = new JLabel("");
+
+        wishListHeader.add(itemName);
+        wishListHeader.add(description);
+        wishListHeader.add(itemId);
+        wishListHeader.add(itemOwner);
+        wishListHeader.add(empty);
     }
 
     private JButton addWishlistItemButton(String traderId, Font regular, Font bold, Font italic, Font boldItalic) {
