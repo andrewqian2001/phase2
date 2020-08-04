@@ -12,11 +12,13 @@ import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.general_managers.MessageManager;
+import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 
 public class MessagePanel extends JPanel {
 
+    private final ReportManager reportManager = new ReportManager();
     private final LoginManager loginManager = new LoginManager();
     private final TradingInfoManager infoManager = new TradingInfoManager();
     private final MessageManager messageManager = new MessageManager();
@@ -32,17 +34,16 @@ public class MessagePanel extends JPanel {
     private final Dimension titleBarDimension = new Dimension(1200, 75);
     private final Dimension messagesDimension = new Dimension(1200, 400);
     private final Dimension preferredSize = new Dimension(1200, 475);
-    
 
     private JPanel messageTitleContainer, messagesListContainer;
     private JScrollPane messagesScrollPane;
 
     private Font regular, bold, italic, boldItalic;
-    
 
     private final String userId;
 
-    public MessagePanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException {
+    public MessagePanel(String userId, Font regular, Font bold, Font italic, Font boldItalic)
+            throws IOException, UserNotFoundException {
 
         this.userId = userId;
         this.regular = regular;
@@ -63,28 +64,34 @@ public class MessagePanel extends JPanel {
 
     public void changeToAdminColorScheme() {
         this.setBackground(Color.BLACK);
-        for(Component c : messageTitleContainer.getComponents()) {
+        for (Component c : messageTitleContainer.getComponents()) {
             c.setBackground(Color.BLACK);
-        } messagesListContainer.setBackground(bg);
+        }
+        messagesListContainer.setBackground(bg);
 
-        this.setBorder(BorderFactory.createEmptyBorder(25,0,0,0));
+        this.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 0));
 
         messagesScrollPane.setPreferredSize(new Dimension(1200, 700));
-        int numRows = ((GridLayout) messagesListContainer.getLayout()).getRows();
-        if(numRows < 7) numRows = 7;
-        messagesListContainer.setLayout(new GridLayout(numRows, 1));
-        for(Component c : messagesListContainer.getComponents()) {
-            c.setPreferredSize(new Dimension(1200, 75));
+        if(messagesListContainer.getLayout() instanceof GridLayout) {
+            int numRows = ((GridLayout) messagesListContainer.getLayout()).getRows();
+            if (numRows < 7)
+                numRows = 7;
+            messagesListContainer.setLayout(new GridLayout(numRows, 1));
+            for (Component c : messagesListContainer.getComponents()) {
+                c.setPreferredSize(new Dimension(1200, 75));
+            }
         }
     }
 
-    private void setMessagesScrollPane() {
+    private void setMessagesScrollPane() throws UserNotFoundException {
         messagesScrollPane = new JScrollPane();
         messagesListContainer = new JPanel();
         messagesScrollPane.setPreferredSize(messagesDimension);
         messagesScrollPane.setBorder(null);
         messagesScrollPane.setBackground(gray3);
         getMessages();
+        if (loginManager.getType(userId).equals(UserTypes.ADMIN))
+            getReports();
         messagesScrollPane.setViewportView(messagesListContainer);
     }
 
@@ -93,6 +100,8 @@ public class MessagePanel extends JPanel {
         messageTitleContainer.setPreferredSize(titleBarDimension);
 
         JLabel messagesTitle = new JLabel("Messages");
+        if (loginManager.getType(userId).equals(UserTypes.ADMIN))
+            messagesTitle.setText("Messages and Reports");
         messagesTitle.setBackground(bg);
         messagesTitle.setForeground(Color.WHITE);
         messagesTitle.setOpaque(true);
@@ -117,24 +126,30 @@ public class MessagePanel extends JPanel {
                 return;
             try {
                 messageManager.clearMessages(userId);
+                if (loginManager.getType(userId).equals(UserTypes.ADMIN))
+                    reportManager.clearReports();
             } catch (UserNotFoundException e1) {
                 e1.printStackTrace();
             }
-            messagesListContainer.removeAll();
-            messagesListContainer.setLayout(new BorderLayout());
-            messagesListContainer.setBackground(gray3);
-            JLabel noMessagesFound = new JLabel("<html><pre>No Messages Found</pre></html>");
-            noMessagesFound.setFont(regular.deriveFont(30f));
-            noMessagesFound.setPreferredSize(new Dimension(1000, 375));
-            noMessagesFound.setHorizontalAlignment(JLabel.CENTER);
-            noMessagesFound.setVerticalAlignment(JLabel.CENTER);
-            noMessagesFound.setForeground(Color.WHITE);
-            messagesListContainer.add(noMessagesFound);
-            messagesScrollPane.revalidate();
-            messagesScrollPane.repaint();
+            setNoMessagesFound();
         });
 
         return clearAllmessagesButton;
+    }
+
+    private void setNoMessagesFound() {
+        messagesListContainer.removeAll();
+        messagesListContainer.setLayout(new BorderLayout());
+        messagesListContainer.setBackground(gray3);
+        JLabel noMessagesFound = new JLabel("<html><pre>No Messages Found</pre></html>");
+        noMessagesFound.setFont(regular.deriveFont(30f));
+        noMessagesFound.setPreferredSize(new Dimension(1000, 375));
+        noMessagesFound.setHorizontalAlignment(JLabel.CENTER);
+        noMessagesFound.setVerticalAlignment(JLabel.CENTER);
+        noMessagesFound.setForeground(Color.WHITE);
+        messagesListContainer.add(noMessagesFound);
+        messagesScrollPane.revalidate();
+        messagesScrollPane.repaint();
     }
 
     private JButton getNewMessageButton() {
@@ -170,7 +185,7 @@ public class MessagePanel extends JPanel {
             users.setBackground(gray2);
             users.setForeground(Color.BLACK);
             users.setOpaque(true);
-            //TODO: FIX TO GET ALL USERS
+            // TODO: FIX TO GET ALL USERS
             infoManager.getAllUsers().forEach(id -> {
                 if (!id.equals(userId))
                     users.addItem(new TraderComboBoxItem(id));
@@ -200,7 +215,8 @@ public class MessagePanel extends JPanel {
             sendMessageButton.addActionListener(e1 -> {
                 try {
                     if (fullMessageBody.getText().trim().length() != 0) {
-                        messageManager.sendMessage(userId, ((TraderComboBoxItem) users.getSelectedItem()).getId(),fullMessageBody.getText().trim());
+                        messageManager.sendMessage(userId, ((TraderComboBoxItem) users.getSelectedItem()).getId(),
+                                fullMessageBody.getText().trim());
                         messageDetailsModal.dispose();
                     }
                 } catch (UserNotFoundException | AuthorizationException e2) {
@@ -226,14 +242,7 @@ public class MessagePanel extends JPanel {
                     : messageManager.getMessages(userId);
             if (messages.size() == 0) {
                 messagesListContainer = new JPanel();
-                messagesListContainer.setBackground(gray3);
-                JLabel noMessagesFound = new JLabel("<html><pre>No Messages Found</pre></html>");
-                noMessagesFound.setFont(regular.deriveFont(30f));
-                noMessagesFound.setPreferredSize(new Dimension(1000, 375)); // fix
-                noMessagesFound.setHorizontalAlignment(JLabel.CENTER);
-                noMessagesFound.setVerticalAlignment(JLabel.CENTER);
-                noMessagesFound.setForeground(Color.WHITE);
-                messagesListContainer.add(noMessagesFound);
+                setNoMessagesFound();
                 return;
             }
             int numRows = messages.keySet().size();
@@ -443,6 +452,62 @@ public class MessagePanel extends JPanel {
             });
         } catch (UserNotFoundException e) {
             System.out.println(e.getMessage());
+        }
+    }
+
+    private void getReports() throws UserNotFoundException {
+
+        ArrayList<String[]> reports = reportManager.getReports();
+        if (reports.size() == 0) {
+            System.out.println("RUH ROH");
+            return;
+        }
+        int numRows = ((GridLayout) messagesListContainer.getLayout()).getRows() + reports.size();
+        if (numRows < 7)
+            numRows = 7;
+        for (String[] report : reports) {
+            JPanel reportPanel = new JPanel(new GridLayout(1, 4));
+            reportPanel.setPreferredSize(new Dimension(1000, 75));
+            reportPanel.setBackground(gray2);
+            reportPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg));
+
+            JLabel fromUsername = new JLabel("FROM: " + userQuery.getUsername(report[0]));
+            fromUsername.setForeground(Color.BLACK);
+            fromUsername.setHorizontalAlignment(JLabel.LEFT);
+            fromUsername.setFont(regular.deriveFont(20f));
+
+            JLabel toUsername = new JLabel("TO: " + userQuery.getUsername(report[1]));
+            toUsername.setForeground(Color.BLACK);
+            toUsername.setHorizontalAlignment(JLabel.LEFT);
+            toUsername.setFont(regular.deriveFont(20f));
+
+            JButton detailsButton = new JButton("View Full Report");
+            detailsButton.setFont(bold.deriveFont(20f));
+            detailsButton.setForeground(Color.WHITE);
+            detailsButton.setBackground(gray3);
+            detailsButton.setOpaque(true);
+            detailsButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+            detailsButton.addActionListener(e -> {
+            }); // TODO: FINISH ACTION LISTENER
+
+            JButton clearButton = new JButton("Clear");
+            clearButton.setFont(bold.deriveFont(20f));
+            clearButton.setForeground(Color.WHITE);
+            clearButton.setBackground(red);
+            clearButton.setOpaque(true);
+            clearButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+            clearButton.addActionListener(e -> {
+                reportManager.clearReport(report[3]);
+                messagesListContainer.remove(reportPanel);
+                messagesListContainer.revalidate();
+                messagesListContainer.repaint();
+            });
+
+            reportPanel.add(fromUsername);
+            reportPanel.add(toUsername);
+            reportPanel.add(detailsButton);
+            reportPanel.add(clearButton);
+            messagesListContainer.add(reportPanel);
         }
     }
 
