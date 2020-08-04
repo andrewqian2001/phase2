@@ -122,7 +122,7 @@ public class MessagePanel extends JPanel {
         clearAllmessagesButton.setBorderPainted(false);
         clearAllmessagesButton.setHorizontalAlignment(JButton.RIGHT);
         clearAllmessagesButton.addActionListener(e -> {
-            if (userId.equals(""))
+            if (userId.equals("") || messagesListContainer.getLayout() instanceof BorderLayout)
                 return;
             try {
                 messageManager.clearMessages(userId);
