@@ -2,10 +2,10 @@
 
 **TODO: IMPORTANT GENERAL** 
 
-- !IMPORTANT: refresh button/method to refresh the user data
+- refresh button/method to refresh the user data (dw about that)
 - Admin undo abilities
-- suggestLend, suggestTrade
-- automatedTradeSuggestion
+- ~~suggestLend, suggestTrade~~
+- ~~automatedTradeSuggestion~~
 - ~~Button to load demo account in LoginPanel~~  
 - ~~Panel for Demo~~ 
 - ~~Panel for Idle Users~~  
@@ -35,7 +35,7 @@ TradePanel:
   - ~~Add message to addNewTradeModal~~
   
 ItemsPanel:  
-  - scrollpane top headers for both invent. + wishlist  
+  - ~~scrollpane top headers for both invent. + wishlist~~  
   - ~~Add Item to wishlist' button with modal JDialog and buttons finished~~
   
 NotificationsPanel:  
@@ -59,7 +59,7 @@ FrozenSettingsPanel:
 
 **TODO: adminPanel**  
   
-- Add reports to admin
+- ~~Add reports to admin~~
 - ~~Fix the logo circle icon~~   
 - ~~Fix menuContainer width just like traderPanel~~  
   
