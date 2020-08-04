@@ -458,11 +458,17 @@ public class MessagePanel extends JPanel {
     private void getReports() throws UserNotFoundException {
 
         ArrayList<String[]> reports = reportManager.getReports();
+        // System.out.println(((Admin)messageManager.getUser(userId)).getReports().size());
         if (reports.size() == 0) {
             System.out.println("RUH ROH");
             return;
         }
         int numRows = ((GridLayout) messagesListContainer.getLayout()).getRows() + reports.size();
+        if(numRows == 0) {
+            messagesListContainer = new JPanel();
+            setNoMessagesFound();
+            return;
+        }
         if (numRows < 7)
             numRows = 7;
         for (String[] report : reports) {
@@ -471,12 +477,12 @@ public class MessagePanel extends JPanel {
             reportPanel.setBackground(gray2);
             reportPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg));
 
-            JLabel fromUsername = new JLabel("FROM: " + userQuery.getUsername(report[0]));
+            JLabel fromUsername = new JLabel(userQuery.getUsername(report[0]));
             fromUsername.setForeground(Color.BLACK);
             fromUsername.setHorizontalAlignment(JLabel.LEFT);
             fromUsername.setFont(regular.deriveFont(20f));
 
-            JLabel toUsername = new JLabel("TO: " + userQuery.getUsername(report[1]));
+            JLabel toUsername = new JLabel(userQuery.getUsername(report[1]));
             toUsername.setForeground(Color.BLACK);
             toUsername.setHorizontalAlignment(JLabel.LEFT);
             toUsername.setFont(regular.deriveFont(20f));
@@ -488,7 +494,64 @@ public class MessagePanel extends JPanel {
             detailsButton.setOpaque(true);
             detailsButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
             detailsButton.addActionListener(e -> {
-            }); // TODO: FINISH ACTION LISTENER
+                JDialog reportDetailsModal = new JDialog();
+                reportDetailsModal.setTitle("Report Details");
+                reportDetailsModal.setSize(600, 400);
+                reportDetailsModal.setResizable(false);
+                reportDetailsModal.setLocationRelativeTo(null);
+
+                JPanel reportDetailsPanel = new JPanel();
+                reportDetailsPanel.setPreferredSize(new Dimension(600, 400));
+                reportDetailsPanel.setBackground(bg);
+
+                JLabel fromUsernametitle = new JLabel("Report Sender:");
+                fromUsernametitle.setFont(italic.deriveFont(20f));
+                fromUsernametitle.setPreferredSize(new Dimension(250, 50));
+                fromUsernametitle.setOpaque(false);
+                fromUsernametitle.setForeground(Color.WHITE);
+
+                JLabel fromUsernameLabel = fromUsername;
+                fromUsernameLabel.setForeground(Color.WHITE);
+                fromUsernameLabel.setPreferredSize(new Dimension(250, 50));
+                
+                JLabel toUsernametitle = new JLabel("Report Reciever:");
+                toUsernametitle.setFont(italic.deriveFont(20f));
+                toUsernametitle.setPreferredSize(new Dimension(250, 50));
+                toUsernametitle.setOpaque(false);
+                toUsernametitle.setForeground(Color.WHITE);
+
+                JLabel toUsernameLabel = toUsername;
+                toUsernameLabel.setForeground(Color.WHITE);
+                toUsernameLabel.setPreferredSize(new Dimension(250, 50));
+
+                JLabel messageBodyTitle = new JLabel("Report Message:");
+                messageBodyTitle.setFont(italic.deriveFont(20f));
+                messageBodyTitle.setPreferredSize(new Dimension(550, 50));
+                messageBodyTitle.setOpaque(false);
+                messageBodyTitle.setForeground(Color.WHITE);
+
+                JTextArea fullMessageBody = new JTextArea(report[2]);
+                fullMessageBody.setFont(regular.deriveFont(20f));
+                fullMessageBody.setBackground(gray);
+                fullMessageBody.setForeground(Color.WHITE);
+                fullMessageBody.setPreferredSize(new Dimension(550, 200));
+                fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+                fullMessageBody.setLineWrap(true);
+                fullMessageBody.setEditable(false);
+
+
+                reportDetailsPanel.add(fromUsernametitle);
+                reportDetailsPanel.add(fromUsernameLabel);
+                reportDetailsPanel.add(toUsernametitle);
+                reportDetailsPanel.add(toUsernameLabel);
+                reportDetailsPanel.add(messageBodyTitle);
+                reportDetailsPanel.add(fullMessageBody);
+
+                reportDetailsModal.add(reportDetailsPanel);
+                reportDetailsModal.setModal(true);
+                reportDetailsModal.setVisible(true);
+
+            }); 
 
             JButton clearButton = new JButton("Clear");
             clearButton.setFont(bold.deriveFont(20f));
