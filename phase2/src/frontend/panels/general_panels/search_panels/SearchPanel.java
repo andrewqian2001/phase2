@@ -36,13 +36,14 @@ public class SearchPanel extends JPanel {
     private final UserQuery userQuery;
     private final ItemQuery itemQuery;
 
-    private final Font regular, bold, italic;
+    private final Font regular, bold, italic, boldItalic;
 
     private final Color bg = new Color(51, 51, 51);
     private final Color current = new Color(159, 159, 159);
     private final Color gray = new Color(75, 75, 75);
     private final Color gray2 = new Color(196, 196, 196);
     private final Color detailsButton = new Color(142, 142, 142);
+    private final Color red = new Color(219, 58, 52);
 
     /**
      * Creates a new search panel
@@ -58,6 +59,7 @@ public class SearchPanel extends JPanel {
         this.regular = regular;
         this.bold = bold;
         this.italic = italic;
+        this.boldItalic = boldItalic;
 
         this.user = user;
         traderManager = new TraderManager();
@@ -268,9 +270,10 @@ public class SearchPanel extends JPanel {
             if(!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER)) {
                 traderDetailsButton.addActionListener(new SearchPanelTraderDetails(t, regular, italic));
             } else if (!user.equals("")) {
-                traderDetailsButton.setText("Infiltrate");
-                traderDetailsButton.setForeground(Color.red);
-                traderDetailsButton.setFont(regular.deriveFont(20f));
+                traderDetailsButton.setText("Infiltrade");
+                traderDetailsButton.setForeground(Color.WHITE);
+                traderDetailsButton.setBackground(red);
+                traderDetailsButton.setFont(boldItalic.deriveFont(20f));
                 traderDetailsButton.addActionListener(e -> {
                     try {
                         ((WindowManager) SwingUtilities.getWindowAncestor(this)).setVisible(false);

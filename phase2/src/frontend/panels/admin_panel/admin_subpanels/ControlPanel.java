@@ -26,6 +26,12 @@ public class ControlPanel extends JPanel implements ActionListener {
     private final JTextField usernameInput = new JTextField();
     private final JPasswordField passwordInput = new JPasswordField();
 
+    private final Color bg = new Color(51, 51, 51);
+    private final Color gray = new Color(196, 196, 196);
+    private final Color gray2 = new Color(142, 142, 142);
+    private final Color green = new Color(27, 158, 36);
+    private final Color red = new Color(219, 58, 52);
+
     /**
      * Makes a new control panel
      *
@@ -37,7 +43,6 @@ public class ControlPanel extends JPanel implements ActionListener {
      * @throws IOException issues with accessing database
      */
     public ControlPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
-        Color bg = new Color(51, 51, 51);
         this.setSize(1200, 900);
         this.setBackground(Color.BLACK);
         this.setBorder(new EmptyBorder(50, 50, 100, 50));
@@ -46,8 +51,8 @@ public class ControlPanel extends JPanel implements ActionListener {
         titles.setOpaque(false);
         titles.setPreferredSize(new Dimension(1200, 50));
 
-        createLabel(boldItalic, titles, "Trade Settings", 30f, JLabel.LEFT);
-        createLabel(boldItalic, titles, "Create New Admin", 30f, JLabel.LEFT);
+        createLabel(regular, titles, "Trade Settings", 30f, JLabel.LEFT);
+        createLabel(regular, titles, "Create New Admin", 30f, JLabel.LEFT);
 
         JPanel splitContainer = new JPanel(new GridLayout(1, 2, 100, 0));
         splitContainer.setOpaque(false);
@@ -58,7 +63,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 
         JPanel info = createInfoPanel(bg, gbc, tradeSettings);
 
-        createLabel(boldItalic, info, "Minimum to Borrow:", 22f, JLabel.RIGHT);
+        createLabel(regular, info, "Minimum to Borrow:", 22f, JLabel.RIGHT);
 
         Integer[] minLendChoices = new Integer[100];
         for (int i = 1; i < 101; i++) {
@@ -68,7 +73,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 
         handleInfoSubpanel(bg, info, minLendChoice, TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
 
-        createLabel(boldItalic, info, "Default Trade Limit:", 22f, JLabel.RIGHT);
+        createLabel(regular, info, "Default Trade Limit:", 22f, JLabel.RIGHT);
 
         Integer[] tradeLimitChoices = new Integer[100];
         for (int i = 1; i < 101; i++) {
@@ -77,7 +82,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         tradeLimitChoice = new JComboBox<>(tradeLimitChoices);
         handleInfoSubpanel(bg, info, tradeLimitChoice, TraderProperties.TRADE_LIMIT);
 
-        createLabel(boldItalic, info, "Incomplete Trade Limit:", 22f, JLabel.RIGHT);
+        createLabel(regular, info, "Incomplete Trade Limit:", 22f, JLabel.RIGHT);
 
         Integer[] incompleteLimitChoices = new Integer[100];
         for (int i = 1; i < 101; i++) {
@@ -89,8 +94,8 @@ public class ControlPanel extends JPanel implements ActionListener {
         JPanel newAdmin = createNewAdmin(bg, splitContainer);
         gbc = new GridBagConstraints();
         JPanel input = createNewInputForAdmin(bg, gbc, newAdmin);
-        createLabel(boldItalic, input, "Username:", 25f, JLabel.CENTER);
-        createAccountInputs(regular, boldItalic, bg, input);
+        createLabel(regular, input, "Username:", 25f, JLabel.CENTER);
+        createAccountInputs(regular, regular, bg, input);
         createMessageWrapper(regular, bg, gbc, newAdmin);
         handleSubmitAdmin(bold, bg, gbc, newAdmin);
 
@@ -107,7 +112,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 
     private void handleSubmitAdmin(Font bold, Color bg, GridBagConstraints gbc, JPanel newAdmin) {
         submitAdmin.setBorder(BorderFactory.createMatteBorder(0, 180, 10, 180, bg));
-        submitAdmin.setBackground(Color.green);
+        submitAdmin.setBackground(green);
         submitAdmin.setForeground(Color.WHITE);
         submitAdmin.setFont(bold.deriveFont(25f));
         submitAdmin.addActionListener(this);
@@ -166,7 +171,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 
     private void createSubmitSettings(Font bold, Color bg, GridBagConstraints gbc, JPanel tradeSettings) {
         submitSettings.setBorder(BorderFactory.createMatteBorder(10, 160, 10, 160, bg));
-        submitSettings.setBackground(Color.green);
+        submitSettings.setBackground(green);
         submitSettings.setForeground(Color.WHITE);
         submitSettings.setFont(bold.deriveFont(25f));
         gbc.gridy = 1;
