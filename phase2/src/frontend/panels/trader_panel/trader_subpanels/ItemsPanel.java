@@ -292,7 +292,7 @@ public class ItemsPanel extends JPanel {
 
             traders.addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
-                    traders.removeItemAt(0);
+                    if(traders.getItemAt(0) == null) traders.removeItemAt(0);
                     inventoryItems.setVisible(false);
                     inventoryItems.removeAllItems();
                     inventoryItems.setEnabled(true);

@@ -1140,7 +1140,7 @@ public class TradePanel extends JPanel implements ActionListener {
             e3.printStackTrace();
         }
 
-        if (suggested.length == 0) {
+        if (suggested.length == 0 && (isSuggestedLend || isSuggestedTrade)) {
             isSuggestedTrade = false;
             isSuggestedLend = false;
 
@@ -1200,6 +1200,7 @@ public class TradePanel extends JPanel implements ActionListener {
         traders.setBackground(gray2);
         traders.setForeground(Color.BLACK);
         traders.setOpaque(true);
+        traders.addItem(null);
         allTraders.forEach(traderId -> {
             if (!traderId.equals(trader)) {
                 try {
@@ -1257,6 +1258,7 @@ public class TradePanel extends JPanel implements ActionListener {
         traders.addItemListener(ev -> {
             try {
                 if (ev.getStateChange() == ItemEvent.SELECTED) {
+                    if(traders.getItemAt(0) == null) traders.removeItemAt(0);
                     otherTraderItems.setEnabled(false);
                     otherTraderItems.setVisible(false);
                     otherTraderItems.removeAllItems();
@@ -1355,6 +1357,7 @@ public class TradePanel extends JPanel implements ActionListener {
             } else {
                 allTraders.addAll(infoManager.getAllTraders());
             }
+            traders.addItem(null);
             allTraders.forEach(traderId -> {
                 if (!traderId.equals(trader)) {
                     try {
