@@ -10,6 +10,7 @@ import backend.tradesystem.admin_managers.HandleItemRequestsManager;
 import backend.tradesystem.general_managers.LoginManager;
 import backend.Database;
 
+import java.lang.reflect.Array;
 import java.util.Date;
 
 import backend.tradesystem.trader_managers.TraderManager;
@@ -32,6 +33,10 @@ public class TestTradingInfo extends TestManager {
     private Database<TradableItem> tradableItemDatabase;
 
     private Trader[] traders;
+
+    //Variables for testAutomatedTrade below
+    Trader t1;
+    Trader t2;
 
     private Admin admin;
     private final String USER_PATH = "./test/testUsers.ser";
@@ -73,6 +78,33 @@ public class TestTradingInfo extends TestManager {
             }
             admin = (Admin) getUser(loginManager.registerUser("admin", "PASDASDFDSAFpadsf1", UserTypes.ADMIN));
 
+            //-------------Tests for automatedTradeSuggestion below----------------------------------------
+
+            /*
+                        - info for createNewTrader helper function
+                 createNewTrader(String name, String city, ArrayList<String> listOfNamesInventory, ArrayList<String> listOfNamesWishlist)
+                 * @param name is the name of the trader
+                 * @param city is the city of the trader
+                 * @param listOfNamesInventory is a list of the names of the items that will be added to this traders inventory
+                 * @param listOfNamesWishlist is a list of the names of the items that will be added to this traders wishlist
+                 * @return the updated trader
+             */
+
+            ArrayList<String> t1Inventory = new ArrayList<>();
+            t1Inventory.add("ball");
+            t1Inventory.add("rocketz");
+            ArrayList<String> t1Wishlist = new ArrayList<>();
+            t1Wishlist.add("johns dad");
+            t1Wishlist.add("nice iphone");
+            t1 = createNewTrader("john", "toronto", t1Inventory, t1Wishlist);
+            ArrayList<String> t2Inventory = new ArrayList<>();
+            t2Inventory.add("nice iphone7");
+            t2Inventory.add("sandwich");
+            t2Inventory.add("mouse");
+            ArrayList<String> t2Wishlist = new ArrayList<>();
+            t2Wishlist.add("ballz");
+            t2Wishlist.add("rocket");
+            t2 = createNewTrader("johns dad", "toronto", t2Inventory, t2Wishlist);
 
         } catch (IOException ignored) {
             fail("ERRORS WITH SETTING UP DATABASE FILES");
@@ -229,11 +261,16 @@ public class TestTradingInfo extends TestManager {
         }
     }
 
-    //    @Test
-    public void testAutomatedTradeSuggestion() {
+    @Test
+    public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+
+        //testAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter)
+
+
+        testAutomatedTradeSuggestion(t1, t2 ,"rocketz", "nice iphone7", false);
     }
 
-    @Test
+    //@Test !make sim search public
     public void testSimilarSearch() throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         // Wishlist is example
         // emample would return 6/7 (replaced char)
@@ -241,18 +278,19 @@ public class TestTradingInfo extends TestManager {
         // examle would return 5/7 (removing a char)
         // If the similarity score isn't at least 80% of the wishlist string length, then the similarity should be 0
         ArrayList<Object[]> objectList = new ArrayList<>();
-        objectList.add(new Object[]{"exampleexample", 14});
-        objectList.add(new Object[]{"this", 0});
-        objectList.add(new Object[]{"examplexample", 12});
-        objectList.add(new Object[]{"axampleaxample", 12});
-        objectList.add(new Object[]{"exampleeexample", 13});
-        objectList.add(new Object[]{"xampleexamp", 11});
-        objectList.add(new Object[]{"eyampleexayple", 12});
-        objectList.add(new Object[]{"eyampleyxayple", 11});
-        objectList.add(new Object[]{"eyampleyxayples", 11});
-        objectList.add(new Object[]{"aaaaeyampleyxayplesaaaaa", 11});
+//        objectList.add(new Object[]{"exampleexample", 14});
+//        objectList.add(new Object[]{"this", 0});
+//        objectList.add(new Object[]{"examplexample", 12});
+//        objectList.add(new Object[]{"axampleaxample", 12});
+//        objectList.add(new Object[]{"exampleeexample", 13});
+//        objectList.add(new Object[]{"xampleexamp", 11});
+//        objectList.add(new Object[]{"eyampleexayple", 12});
+//        objectList.add(new Object[]{"eyampleyxayple", 11});
+//        objectList.add(new Object[]{"eyampleyxayples", 11});
+//        objectList.add(new Object[]{"aaaaeyampleyxayplesaaaaa", 11});
+        objectList.add(new Object[]{"nice iphone7", 7});
         //objectList.add(new Object[]{"examplZZexample", 11}); //oopsies
-        confirmSimilarSearchWithList("exampleexample", objectList);
+        confirmSimilarSearchWithList("nice iphone7", objectList);
     }
 
     private void update() {
@@ -300,6 +338,7 @@ public class TestTradingInfo extends TestManager {
 
 
     private void confirmSimilarSearch(String itemToSearchId, String expectedItemName, int expectedSimilarityScore, ArrayList<String> list) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
+        /*
         Object[] similarItem = tradingInfoManager.similarSearch(itemToSearchId, list);//tests for missing char
         String expectedItemId = null;
         for (String itemIds : list) {
@@ -315,7 +354,10 @@ public class TestTradingInfo extends TestManager {
             assertEquals(expectedItemName, expectedSimilarityScore, similarItem[1]);
         }
 
+        */
+
     }
+
 
     private void confirmSimilarSearchWithList(String itemToSearchName, ArrayList<Object[]> itemNameAndScore) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
         TradableItem item = new TradableItem(itemToSearchName, "desc");
@@ -333,6 +375,61 @@ public class TestTradingInfo extends TestManager {
         tradableItemDatabase.update(item);
         list.add(item.getId());
         return list;
+    }
+
+    private void testAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+
+        String[] test = tradingInfoManager.automatedTradeSuggestion(t1.getId(), filter);
+        String itemT1Id = null;
+        String itemT2Id = null;
+        for(String ids: getTradableItemDatabase().getItems().keySet()){
+            if(getTradableItem(ids).getName().equals(itemT1Name)){
+                itemT1Id = ids;
+            }
+            if(getTradableItem(ids).getName().equals(itemT2Name)){
+                itemT2Id = ids;
+            }
+        }
+        t1 = getTrader(t1.getId());
+        t2 = getTrader(t2.getId());
+//        System.out.println("item name expected: " + itemT1Name + "--- item id expected: " + itemT1Id);
+//        System.out.println("item name actual: " + getTradableItem(test[2]).getName() + "--- item id expected: " + test[2]);
+        assertEquals(t1.getId(), test[0]);
+        assertEquals(t2.getId(), test[1]);
+//        System.out.println("second user item expected: " + itemT2Name +  "--- item id expected: " + itemT2Id);
+//        System.out.println("second user item actual: " + getTradableItem(test[3]).getName() + "--- item id expected: " + test[3]);
+        assertEquals(itemT1Id, test[2]);
+        assertEquals(itemT2Id, test[3]);
+
+    }
+    /**
+     *
+     * @param name is the name of the trader
+     * @param city is the city of the trader
+     * @param listOfNamesInventory is a list of the names of the items that will be added to this traders inventory
+     * @param listOfNamesWishlist is a list of the names of the items that will be added to this traders wishlist
+     * @return the updated trader
+     * @throws UserNotFoundException
+     * @throws AuthorizationException
+     */
+    private Trader createNewTrader(String name, String city, ArrayList<String> listOfNamesInventory, ArrayList<String> listOfNamesWishlist) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+        ArrayList<String> listIdsInventory = new ArrayList<>();
+        ArrayList<String> listIdsWishlist = new ArrayList<>();
+
+        Trader trader = new Trader(name,"passssssssS11", city, 99, 99, 0);
+        updateUserDatabase(trader);
+        for(String itemNamesInventory: listOfNamesInventory){
+            listIdsInventory = addToItemList(listIdsInventory , itemNamesInventory, "desc");
+        }
+        trader.getAvailableItems().addAll(listIdsInventory);
+        for(String itemNamesWishlist: listOfNamesWishlist){
+            listIdsWishlist = addToItemList(listIdsWishlist , itemNamesWishlist, "desc");
+        }
+        trader.getWishlist().addAll(listIdsWishlist);
+
+
+        updateUserDatabase(trader);
+        return getTrader(trader.getId());
     }
 
 

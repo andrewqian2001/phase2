@@ -308,19 +308,20 @@ public class TradingInfoManager extends Manager {
      * returns string array in this format [thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId]
      *
      * @param thisTraderId id of this trader
+     * @param filterCity is if the trader wants to filter for city
      * @return an array with this traders id, the other traders id, the item this trader will give, the item this trader will get
      * @throws UserNotFoundException if thisTraderId is a bad id
      * @throws AuthorizationException if thisTraderId isn't a trader
      * @throws TradableItemNotFoundException if the tradable item wasn't found
      */
-     public String[] automatedTradeSuggestion(String thisTraderId, String city, Boolean filterCity) throws UserNotFoundException, AuthorizationException{
+     public String[] automatedTradeSuggestion(String thisTraderId,  Boolean filterCity) throws UserNotFoundException, AuthorizationException{
 
          //Finds the most similar trade, most similar is calculated through similarSearch
 
         ArrayList<String> allTraders = getAllTraders();
         allTraders.remove(thisTraderId);
         Trader thisTrader = getTrader(thisTraderId);
-
+        String city = thisTrader.getCity();
         int maxTotalSim = 0;
         String mostSimGetItemId = null;
         String mostSimGiveItemId = null;
@@ -354,32 +355,38 @@ public class TradingInfoManager extends Manager {
             }
 
             //finds the item that otherTrader wants the most from thisTrader
-            for(String inventoryItemId: thisTrader.getAvailableItems()){
+            for(String otherTraderWishlistItemId: otherTrader.getWishlist()){
+
                 Object[] giveItem = null;
                 try {
-                    giveItem = similarSearch(inventoryItemId, otherTrader.getWishlist());
+                    giveItem = similarSearch(otherTraderWishlistItemId, thisTrader.getAvailableItems());
                 } catch (TradableItemNotFoundException e) {
                     giveItem = null;
                 }finally {
                     if(!(giveItem == null)){
                         if (((int) giveItem[1]) > maxGiveSim) {
                             simGiveItemId = (String) giveItem[0];
+
                             maxGiveSim = ((int) giveItem[1]);
                         }
                     }
                 }
             }
-            if(maxGetSim + maxGiveSim > maxTotalSim){
+            if(maxGetSim + maxGiveSim > maxTotalSim && (maxGetSim != 0 && maxGiveSim != 0)){
                 maxTotalSim = maxGetSim + maxGiveSim;
                 mostSimGetItemId = simGetItemId;
                 mostSimGiveItemId = simGiveItemId;
                 mostSimTraderId = otherTraderId;
+
             }
         }
-        if(mostSimTraderId != null)
+
+        if(mostSimTraderId == null || mostSimGetItemId == null || mostSimGiveItemId == null)
+            return new String[]{};
+
         return new String[] {thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId};
 
-        return new String[]{};
+
     }
 
     /**
@@ -389,7 +396,7 @@ public class TradingInfoManager extends Manager {
      * @param list is the list of strings that we are traversing through
      * @return an array with two cells containing the items name and the score of how similar it is
      */
-    public Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+    private Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
         if (list.size() == 0) {
             return new Object[]{null, 0};
@@ -414,7 +421,7 @@ public class TradingInfoManager extends Manager {
         } else {
             name = getTradableItem(nameId).getName();
         }
-
+        String longestWord = "";
         for (String otherNamesId : list) {
             String otherNames;
             if (isListOfTraders) {
@@ -443,13 +450,18 @@ public class TradingInfoManager extends Manager {
                             longerName = otherNameWords[i];
                         }
 
+                        if(longerName.length() > longestWord.length()){ //needed for threshold
+                            longestWord = longerName;
+                        }
+
                         for(int k = 0; k < longerName.length(); k++) {//Finds the maximum similarity score for each word in list
                             int similarities = 0;
                             int k2 = k;
                             int l = 0;
                             while (l < shorterName.length() && k2 < longerName.length()) {
-                                if (Character.toLowerCase(shorterName.charAt(l)) == Character.toLowerCase(longerName.charAt(k2)))
+                                if (Character.toLowerCase(shorterName.charAt(l)) == Character.toLowerCase(longerName.charAt(k2))){
                                     similarities++;
+                                }
                                 l++;
                                 k2++;
                             }
@@ -506,7 +518,7 @@ public class TradingInfoManager extends Manager {
         }
 
         //adds a threshold, so that items we consider not simialr dont get added, even if there is nothing else
-        if(max >= ((int)(name.length()*0.8))){
+        if(max >= ((int)(longestWord.length()*0.8))){
             return new Object[] {mostSimilarNameId, max};
         }
 
