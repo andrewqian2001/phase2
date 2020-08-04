@@ -26,6 +26,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import backend.exceptions.AuthorizationException;
@@ -1145,6 +1146,27 @@ public class TradePanel extends JPanel implements ActionListener {
         if (suggested.length == 0) {
             isSuggestedTrade = false;
             isSuggestedLend = false;
+
+            JDialog noSuggestionsFound = new JDialog();
+            noSuggestionsFound.setTitle("No Suggestions Found");
+            noSuggestionsFound.setSize(500, 200);
+            noSuggestionsFound.setResizable(false);
+            noSuggestionsFound.setLocationRelativeTo(null);
+
+            JTextArea noSuggestionsTitle = new JTextArea("Unfortunately, we are not able to find a trade suggestion for you.\n\nClosing this pop-up will take you to the\n'Add New Trade' menu.");
+            noSuggestionsTitle.setFont(regular.deriveFont(22f));
+            noSuggestionsTitle.setBackground(bg);
+            noSuggestionsTitle.setForeground(Color.WHITE);
+            noSuggestionsTitle.setPreferredSize(new Dimension(500,200));
+            noSuggestionsTitle.setOpaque(true);
+            noSuggestionsTitle.setEditable(false);
+            noSuggestionsTitle.setLineWrap(true);
+            noSuggestionsTitle.setWrapStyleWord(true);
+            noSuggestionsTitle.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+            noSuggestionsFound.add(noSuggestionsTitle);
+            noSuggestionsFound.setModal(true);
+            noSuggestionsFound.setVisible(true);
         }
 
         JDialog addNewTradeModal = new JDialog();
