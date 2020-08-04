@@ -5,14 +5,14 @@ import backend.exceptions.UserAlreadyExistsException;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.trader_managers.TradingInfoManager;
 import frontend.WindowManager;
 import frontend.components.TraderComboBoxItem;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.IOException;
 
 /**
@@ -21,6 +21,7 @@ import java.io.IOException;
 public class ControlPanel extends JPanel implements ActionListener {
 
     private final LoginManager loginManager = new LoginManager();
+    private final TradingInfoManager infoManager = new TradingInfoManager();
     private final JLabel errorMessage = new JLabel();
     private final JComboBox<Integer> minLendChoice, tradeLimitChoice, incompleteLimitChoice;
     private final JButton submitSettings = new JButton("Submit"), submitAdmin = new JButton("Submit");
@@ -125,25 +126,40 @@ public class ControlPanel extends JPanel implements ActionListener {
         undoTradeLabel.setOpaque(false);
 
         JComboBox<TraderComboBoxItem> traders = new JComboBox<>();
-        traders.setPreferredSize(new Dimension(450, 50));
         traders.setFont(regular.deriveFont(20f));
+        traders.setBorder(BorderFactory.createMatteBorder(20, 25, 20, 50, bg));
         traders.setBackground(gray2);
         traders.setForeground(Color.BLACK);
         traders.setOpaque(true);
         traders.addItem(null);
-        // infoManager.getAllTraders().forEach(id -> {
-        //     if (!id.equals(this.traderId))
-        //         traders.addItem(new TraderComboBoxItem(id));
-        // });
+        infoManager.getAllTraders().forEach(id -> {
+            try {
+                traders.addItem(new TraderComboBoxItem(id));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
-        JButton undoTradeButton = new JButton("View Ongoing Trades");
-        undoTradeButton.setFont(bold.deriveFont(20f));
-        undoTradeButton.setBackground(red);
+        // JButton undoTradeButton = new JButton("View Ongoing Trades");
+        JButton undoTradeButton = new JButton("Select a Trader");
+        undoTradeButton.setFont(boldItalic.deriveFont(20f));
+        undoTradeButton.setBackground(bg);
         undoTradeButton.setForeground(Color.WHITE);
-        undoTradeButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, bg));
+        undoTradeButton.setBorder(BorderFactory.createMatteBorder(20, 50, 20, 25, bg));
+        undoTradeButton.setEnabled(false);
+
+        traders.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                if(traders.getItemAt(0) == null) traders.removeItemAt(0);
+                undoTradeButton.setText("View Ongoing Trades");
+                undoTradeButton.setFont(bold.deriveFont(20f));
+                undoTradeButton.setBackground(red);
+                undoTradeButton.setEnabled(true);
+            }
+        });
 
         undoTradeButtonPanel.add(undoTradeLabel);
-        // undoTradeButtonPanel.add(message);
+        undoTradeButtonPanel.add(traders);
         undoTradeButtonPanel.add(undoTradeButton);
         return undoTradeButtonPanel;
     }
