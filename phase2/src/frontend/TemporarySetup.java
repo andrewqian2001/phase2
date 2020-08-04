@@ -82,6 +82,11 @@ public class TemporarySetup {
                 }
 
             }
+            // List of admins
+            for (int i = 0; i < admins.length; i++) {
+                admins[i] = loginManager.registerUser("admin" + i, "userPassword1", UserTypes.ADMIN);
+            }
+
             // Each trader has a wishlist of one item
             for (int i = 0; i < traders.length; i++)
                 traderManager.addToWishList(traders[i], userQuery.getAvailableItems(traders[i - 1 == -1 ? traders.length - 1 : i - 1]).get(0));
@@ -109,10 +114,7 @@ public class TemporarySetup {
             messageManager.sendMessage(traders[5], traders[7], "uk what fine, i never liked you anyway");
             messageManager.sendMessage(traders[4], traders[7], "uk what fine, i never liked you anyway");
             messageManager.sendMessage(traders[0], traders[1], "Can I buy your Ryerson hat for my pokemon cards");
-            // List of admins
-            for (int i = 0; i < admins.length; i++) {
-                admins[i] = loginManager.registerUser("admin" + i, "userPassword1", UserTypes.ADMIN);
-            }
+
         } catch (IOException | UserAlreadyExistsException | BadPasswordException | UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
             System.out.println("Temporary set up failed");
             e.printStackTrace();
