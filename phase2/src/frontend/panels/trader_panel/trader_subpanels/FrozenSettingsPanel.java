@@ -110,6 +110,7 @@ public class FrozenSettingsPanel extends SettingsPanel {
         preface.setFont(super.italic.deriveFont(20f));
         preface.setPreferredSize(new Dimension(1200, 75));
         preface.setLineWrap(true);
+        preface.setWrapStyleWord(true);
         preface.setEditable(false);
         preface.setForeground(gray);
         preface.setOpaque(false);

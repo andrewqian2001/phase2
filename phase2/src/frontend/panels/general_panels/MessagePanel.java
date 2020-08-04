@@ -327,6 +327,7 @@ public class MessagePanel extends JPanel {
                         fullMessageBody.setPreferredSize(new Dimension(550, 200));
                         fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                         fullMessageBody.setLineWrap(true);
+                        fullMessageBody.setWrapStyleWord(true);
                         fullMessageBody.setEditable(false);
 
                         messageDetailsPanel.add(userNameTitle);
@@ -549,6 +550,7 @@ public class MessagePanel extends JPanel {
                 fullMessageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 fullMessageBody.setLineWrap(true);
                 fullMessageBody.setEditable(false);
+                fullMessageBody.setWrapStyleWord(true);
 
 
                 reportDetailsPanel.add(fromUsernametitle);
