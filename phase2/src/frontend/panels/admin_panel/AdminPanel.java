@@ -50,9 +50,9 @@ public class AdminPanel extends JPanel implements ActionListener {
         overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
         searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
         controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
-        messagePanel = new MessagePanel(admin, boldItalic, boldItalic, boldItalic, boldItalic);
+        messagePanel = new MessagePanel(admin, regular, bold, italic, boldItalic);
 
-        setupMessagePanel();
+        ((MessagePanel) messagePanel).changeToAdminColorScheme();
 
         searchPanel.setBackground(Color.BLACK);
         menuContainer.setPreferredSize(new Dimension(250, this.getHeight()));
@@ -71,11 +71,6 @@ public class AdminPanel extends JPanel implements ActionListener {
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
 
-    }
-
-    private void setupMessagePanel() {
-        messagePanel.setBackground(Color.BLACK);
-        messagePanel.setPreferredSize(new Dimension(1200, 900));
     }
 
     private void setupMenuPanelContainer(Color bg, JPanel overviewPanel, JPanel searchPanel, JPanel controlPanel,

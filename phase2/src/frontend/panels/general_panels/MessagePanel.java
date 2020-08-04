@@ -53,15 +53,27 @@ public class MessagePanel extends JPanel {
         this.setPreferredSize(preferredSize);
         this.setBackground(bg);
 
-        getMessageTitleContainer();
-        getMessagesScrollPane();
+        setMessageTitleContainer();
+        setMessagesScrollPane();
 
         this.add(messageTitleContainer);
         this.add(messagesScrollPane);
 
     }
 
-    private void getMessagesScrollPane() {
+    public void changeToAdminColorScheme() {
+        this.setBackground(Color.BLACK);
+        for(Component c : messageTitleContainer.getComponents()) {
+            c.setBackground(Color.BLACK);
+        } messagesListContainer.setBackground(bg);
+        
+        messagesScrollPane.setPreferredSize(new Dimension(1200, 700));
+        for(Component c : messagesListContainer.getComponents()) {
+            c.setPreferredSize(new Dimension(1200, 75));
+        }
+    }
+
+    private void setMessagesScrollPane() {
         messagesScrollPane = new JScrollPane();
         messagesListContainer = new JPanel();
         messagesScrollPane.setPreferredSize(messagesDimension);
@@ -71,7 +83,7 @@ public class MessagePanel extends JPanel {
         messagesScrollPane.setViewportView(messagesListContainer);
     }
 
-    private void getMessageTitleContainer() throws UserNotFoundException {
+    private void setMessageTitleContainer() throws UserNotFoundException {
         messageTitleContainer = new JPanel(new GridLayout(1, 3));
         messageTitleContainer.setPreferredSize(titleBarDimension);
 
