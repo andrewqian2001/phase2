@@ -111,8 +111,12 @@ public class SettingsPanel extends JPanel {
                 try {
                     loginManager.changeUsername(userId, changeUsername.getText());
                     changeUsernameLabel.setFont(regular.deriveFont(25f));
-                    changeUsernameLabel.setText("Username Changed!");
+                    changeUsernameLabel.setText("Reload Required");
                     changeUsername.setText("");
+                    changeUsernameButton.setText("Changed");
+                    changeUsernameButton.setFont(boldItalic.deriveFont(20f));
+                    changeUsernameButton.setBackground(bg);
+                    changeUsernameButton.setEnabled(false);
                 } catch (UserNotFoundException | UserAlreadyExistsException e1) {
                     changeUsernameLabel.setFont(boldItalic.deriveFont(22.5f));
                     changeUsernameLabel.setText("'" + changeUsername.getText().trim() + "' is taken");
@@ -156,7 +160,11 @@ public class SettingsPanel extends JPanel {
             try {
                 loginManager.changePassword(userId, String.valueOf(changePassword.getPassword()));
                 changePasswordLabel.setFont(regular.deriveFont(25f));
-                changePasswordLabel.setText("Password Changed!");
+                changePasswordLabel.setText("Reload Required");
+                changePasswordButton.setText("Changed");
+                changePasswordButton.setFont(boldItalic.deriveFont(20f));
+                changePasswordButton.setBackground(bg);
+                changePasswordButton.setEnabled(false);
                 changePassword.setText("");
             } catch (UserNotFoundException | BadPasswordException e1) {
                 changePasswordLabel.setFont(boldItalic.deriveFont(20f));
@@ -200,7 +208,11 @@ public class SettingsPanel extends JPanel {
             if (changeCity.getText().trim().length() != 0) {
                 try {
                     traderManager.setCity(userId, changeCity.getText());
-                    changeCityLabel.setText("City Changed!");
+                    changeCityLabel.setText("Reload Required");
+                    changeCityButton.setText("Changed");
+                    changeCityButton.setFont(boldItalic.deriveFont(20f));
+                    changeCityButton.setBackground(bg);
+                    changeCityButton.setEnabled(false);
                     changeCity.setText("");
                 } catch (UserNotFoundException | AuthorizationException e1) {
                     e1.printStackTrace();
@@ -245,6 +257,7 @@ public class SettingsPanel extends JPanel {
                 goIdleButton.setFont(boldItalic.deriveFont(20f));
                 goIdleButton.setText("Activated");
                 goIdleButton.setEnabled(false);
+                errMsg.setText("Reload Required");
             } catch (UserNotFoundException | AuthorizationException e1) {
                 errMsg.setFont(boldItalic.deriveFont(20f));
                 errMsg.setText(e1.getMessage());
