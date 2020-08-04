@@ -112,6 +112,12 @@ public class SearchPanel extends JPanel {
         this.add(tradableItemListScrollPane);
     }
 
+    private boolean checkFrozen() throws UserNotFoundException {
+        if(loginManager.getType(user).equals(UserTypes.ADMIN))
+            return false;
+        return userQuery.isFrozen(user);
+    }
+
     private void createTradableItemListScrollPane() {
         tradableItemListScrollPane = new JScrollPane();
         tradableItemListScrollPane.setPreferredSize(new Dimension(1200, 230));
@@ -349,10 +355,11 @@ public class SearchPanel extends JPanel {
 
         });
 
+
         item.add(itemName);
         item.add(itemDesc);
         item.add(itemOwnerName);
-        if(!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER))
+        if(!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER) && !checkFrozen())
             item.add(addToWishlistButton);
         tradableItemListContainer.add(item);
     }

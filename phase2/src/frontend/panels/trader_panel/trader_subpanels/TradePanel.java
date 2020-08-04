@@ -1069,10 +1069,7 @@ public class TradePanel extends JPanel implements ActionListener {
 
                 JButton tradeConfirmButton = new JButton();
 
-                if ((isTraderFirstUser
-                        && (tradeQuery.isFirstUserConfirmed1(tradeID) || tradeQuery.isFirstUserConfirmed2(tradeID)))
-                        || (!isTraderFirstUser && (tradeQuery.isSecondUserConfirmed1(tradeID)
-                                || tradeQuery.isSecondUserConfirmed2(tradeID)))) {
+                if ((isTraderFirstUser && (tradeQuery.isFirstUserConfirmed1(tradeID) || tradeQuery.isFirstUserConfirmed2(tradeID))) || (!isTraderFirstUser && (tradeQuery.isSecondUserConfirmed1(tradeID) || tradeQuery.isSecondUserConfirmed2(tradeID)))) {
                     tradeConfirmButton.setText("Confirmed");
                     tradeConfirmButton.setFont(boldItalic.deriveFont(20f));
                     tradeConfirmButton.setForeground(Color.WHITE);

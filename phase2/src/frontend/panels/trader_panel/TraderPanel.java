@@ -89,8 +89,10 @@ public class TraderPanel extends JPanel implements ActionListener {
 
         createLogoutButton(boldItalic);
 
-        if(isFrozen)
+        if(isFrozen) {
             menuPanelContainer.add(new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic), "Frozen Settings");
+            menuPanelContainer.add(searchPanel, "Search");
+        }
         else if(isIdle)
         {
             menuPanelContainer.add(itemsPanel, "Items");
@@ -111,18 +113,9 @@ public class TraderPanel extends JPanel implements ActionListener {
 
     }
 
-    private boolean checkDemo(String traderId) {
-        try {
-            return userQuery.getUsername(traderId).equals("demo");
-        } catch (UserNotFoundException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
     private String[] getMenuTitles(boolean isFrozen, boolean isIdle) {
         if (isFrozen)
-            return new String[]{"Frozen Settings", "", "", "", ""};
+            return new String[]{"Frozen Settings", "Search", "", "", ""};
         if (isIdle)
             return new String[]{"Items", "Notifications", "Search", "Settings", ""};
         return new String[]{"Trades", "Items", "Notifications", "Search", "Settings"};
