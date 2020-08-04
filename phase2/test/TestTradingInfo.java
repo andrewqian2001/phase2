@@ -37,6 +37,11 @@ public class TestTradingInfo extends TestManager {
     //Variables for testAutomatedTrade below
     Trader t1;
     Trader t2;
+    Trader t3;
+    Trader t4;
+    Trader t5;
+
+
 
     private Admin admin;
     private final String USER_PATH = "./test/testUsers.ser";
@@ -105,6 +110,25 @@ public class TestTradingInfo extends TestManager {
             t2Wishlist.add("ballz");
             t2Wishlist.add("rocket");
             t2 = createNewTrader("johns dad", "toronto", t2Inventory, t2Wishlist);
+            ArrayList<String> t3Inventory = new ArrayList<>();
+            ArrayList<String> t3Wishlist = new ArrayList<>();
+            t3Inventory.add("red apple");
+            t3Inventory.add("wallets");
+            t3Inventory.add("acer computer");
+            t3Wishlist.add("bandage");
+            t3 = createNewTrader("trader3", "Markham", t3Inventory, t3Wishlist);
+            ArrayList<String> t4Inventory = new ArrayList<>();
+            ArrayList<String> t4Wishlist = new ArrayList<>();
+            t4Inventory.add("red bandage");
+            t4Wishlist.add("wallet");
+            t4 = createNewTrader("trader4", "Toronto", t4Inventory, t4Wishlist);
+            ArrayList<String> t5Inventory = new ArrayList<>();
+            ArrayList<String> t5Wishlist = new ArrayList<>();
+            t5Inventory.add("WHAT I WANT YOU CANNOT GIVE ME");
+            t5Wishlist.add("WEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+            t5 = createNewTrader("trader5", "Toronto", t5Inventory, t5Wishlist);
+
+
 
         } catch (IOException ignored) {
             fail("ERRORS WITH SETTING UP DATABASE FILES");
@@ -267,7 +291,10 @@ public class TestTradingInfo extends TestManager {
         //testAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter)
 
 
-        testAutomatedTradeSuggestion(t1, t2 ,"rocketz", "nice iphone7", false);
+        testingAutomatedTradeSuggestion(t1, t2 ,"rocketz", "nice iphone7", false);
+        testingAutomatedTradeSuggestion(t3,t4,"wallets", "red bandage", false);
+        testingAutomatedTradeSuggestion(t3,t4,"", "", true);
+        testingAutomatedTradeSuggestion(t5, t4, "", "", false);
     }
 
     //@Test !make sim search public
@@ -377,7 +404,7 @@ public class TestTradingInfo extends TestManager {
         return list;
     }
 
-    private void testAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+    private void testingAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
 
         String[] test = tradingInfoManager.automatedTradeSuggestion(t1.getId(), filter);
         String itemT1Id = null;
@@ -390,14 +417,21 @@ public class TestTradingInfo extends TestManager {
                 itemT2Id = ids;
             }
         }
+
+        if(itemT1Name.length() == 0 && itemT2Name.length() == 0 && test.length == 0){
+            return;
+        }
+
         t1 = getTrader(t1.getId());
         t2 = getTrader(t2.getId());
-//        System.out.println("item name expected: " + itemT1Name + "--- item id expected: " + itemT1Id);
-//        System.out.println("item name actual: " + getTradableItem(test[2]).getName() + "--- item id expected: " + test[2]);
+        System.out.println("---------------------------------------------------------------------------------------------");
+        System.out.println("item name expected: " + itemT1Name + "--- item id expected: " + itemT1Id);
+        System.out.println("item name actual: " + getTradableItem(test[2]).getName() + "--- item id expected: " + test[2]);
         assertEquals(t1.getId(), test[0]);
         assertEquals(t2.getId(), test[1]);
-//        System.out.println("second user item expected: " + itemT2Name +  "--- item id expected: " + itemT2Id);
-//        System.out.println("second user item actual: " + getTradableItem(test[3]).getName() + "--- item id expected: " + test[3]);
+        System.out.println("item2 name expected: " + itemT2Name +  "--- item id expected: " + itemT2Id);
+        System.out.println("item2 name actual: " + getTradableItem(test[3]).getName() + "--- item id expected: " + test[3]);
+        System.out.println("---------------------------------------------------------------------------------------------");
         assertEquals(itemT1Id, test[2]);
         assertEquals(itemT2Id, test[3]);
 

@@ -327,7 +327,7 @@ public class TradingInfoManager extends Manager {
 
         for (String otherTraderId : allTraders) {
             Trader otherTrader = getTrader(otherTraderId);
-            if (filterCity && !(otherTrader.getCity().equals(city))) {
+            if (filterCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
                 continue;
             }
             String simGetItemId = null;
