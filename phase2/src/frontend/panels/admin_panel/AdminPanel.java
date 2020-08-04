@@ -10,9 +10,9 @@ import java.io.IOException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
-
 import frontend.panels.admin_panel.admin_subpanels.ControlPanel;
 import frontend.panels.admin_panel.admin_subpanels.OverviewPanel;
+import frontend.panels.general_panels.MessagePanel;
 import frontend.panels.general_panels.search_panels.SearchPanel;
 
 /**
@@ -23,6 +23,8 @@ public class AdminPanel extends JPanel implements ActionListener {
     private final JPanel menuContainer = new JPanel(new GridBagLayout()), menuPanelContainer = new JPanel();
     private final JButton logoutButton = new JButton("Logout");
     private final CardLayout cardLayout = new CardLayout();
+
+    private JPanel overviewPanel, searchPanel, controlPanel, messagePanel;
 
     /**
      * For making a new admin panel
@@ -44,9 +46,12 @@ public class AdminPanel extends JPanel implements ActionListener {
         Color gray = new Color(184, 184, 184);
         Color red = new Color(219, 58, 52);
         UserQuery userQuery = new UserQuery();
-        JPanel overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
-        JPanel searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
-        JPanel controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
+        overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
+        searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
+        controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
+        messagePanel = new MessagePanel(admin, regular, bold, italic, boldItalic);
+
+        ((MessagePanel) messagePanel).changeToAdminColorScheme();
 
         searchPanel.setBackground(Color.BLACK);
         menuContainer.setPreferredSize(new Dimension(250, this.getHeight()));
@@ -57,21 +62,24 @@ public class AdminPanel extends JPanel implements ActionListener {
         setupUserIdTitle(admin, regular, gray, gbc);
         setupOverviewPanelButton(regular, current, gbc);
         setupPanelButton(regular, current, gbc, "Control Panel", 4);
-        setupPanelButton(regular, current, gbc, "Search", 5);
-        setupEmptyPanel(gbc);
+        setupPanelButton(regular, current, gbc, "Messages", 5);
+        setupPanelButton(regular, current, gbc, "Search", 6);
+
         setupLogoutButton(boldItalic, red, gbc);
-        setupMenuPanelContainer(bg, overviewPanel, searchPanel, controlPanel);
+        setupMenuPanelContainer(bg, overviewPanel, searchPanel, controlPanel, messagePanel);
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
 
     }
 
-    private void setupMenuPanelContainer(Color bg, JPanel overviewPanel, JPanel searchPanel, JPanel controlPanel) {
+    private void setupMenuPanelContainer(Color bg, JPanel overviewPanel, JPanel searchPanel, JPanel controlPanel,
+            JPanel messagePanel) {
         menuPanelContainer.setLayout(cardLayout);
         menuPanelContainer.setBackground(bg);
         menuPanelContainer.add(overviewPanel, "Overview");
-        menuPanelContainer.add(searchPanel, "Search");
         menuPanelContainer.add(controlPanel, "Control Panel");
+        menuPanelContainer.add(messagePanel, "Messages");
+        menuPanelContainer.add(searchPanel, "Search");
     }
 
     private void setupLogoutButton(Font boldItalic, Color red, GridBagConstraints gbc) {
@@ -86,14 +94,6 @@ public class AdminPanel extends JPanel implements ActionListener {
         gbc.weighty = 0.1;
         gbc.gridy = 7;
         menuContainer.add(logoutButton, gbc);
-    }
-
-    private void setupEmptyPanel(GridBagConstraints gbc) {
-        gbc.weighty = 0.28;
-        JPanel emptyPanel2 = new JPanel();
-        emptyPanel2.setOpaque(false);
-        gbc.gridy = 6;
-        menuContainer.add(emptyPanel2, gbc);
     }
 
     private void setupPanelButton(Font regular, Color current, GridBagConstraints gbc, String s, int i) {

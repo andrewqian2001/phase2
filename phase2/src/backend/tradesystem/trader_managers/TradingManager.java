@@ -408,22 +408,23 @@ public class TradingManager extends Manager {
         Trader secondTrader = getTrader(trade.getSecondUserId());
         if (!firstTrader.getAcceptedTrades().contains(trade.getId()))
             throw new CannotTradeException("The trade is not accepted");
-        if (trade.getSecondMeetingTime() != null && trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1())
-            throw new CannotTradeException("This trade's first meeting has been accepted. The trade must be completed.");
 
 
         // Remove trades
         firstTrader.getAcceptedTrades().remove(tradeID);
         secondTrader.getAcceptedTrades().remove(tradeID);
 
-        // Take back items
+        // Add items
         if (!trade.getFirstUserOffer().equals(""))
             firstTrader.getAvailableItems().add(trade.getFirstUserOffer());
         if (!trade.getSecondUserOffer().equals(""))
             secondTrader.getAvailableItems().add(trade.getSecondUserOffer());
 
         firstTrader.getOngoingItems().remove(trade.getFirstUserOffer());
+        firstTrader.getOngoingItems().remove(trade.getSecondUserOffer());
+        secondTrader.getOngoingItems().remove(trade.getFirstUserOffer());
         secondTrader.getOngoingItems().remove(trade.getSecondUserOffer());
+
         // Update database
         getTradeDatabase().delete(trade.getId());
         updateUserDatabase(firstTrader);

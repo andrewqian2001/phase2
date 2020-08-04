@@ -1132,14 +1132,17 @@ public class TradePanel extends JPanel implements ActionListener {
         try {
             if (isSuggestedLend)
                 suggested = infoManager.suggestLend(trader, false);
-            else if (isSuggestedTrade)
+            else if (isSuggestedTrade) {
                 suggested = infoManager.suggestTrade(trader, false);
+                if(suggested.length == 0) {
+                    suggested = infoManager.automatedTradeSuggestion(trader, userQuery.getCity(trader), true);
+                }
+            }
         } catch (UserNotFoundException | AuthorizationException e3) {
             e3.printStackTrace();
         }
 
         if (suggested.length == 0) {
-            System.out.println("HUH");
             isSuggestedTrade = false;
             isSuggestedLend = false;
         }
