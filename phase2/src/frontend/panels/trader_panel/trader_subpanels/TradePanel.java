@@ -46,6 +46,7 @@ import backend.tradesystem.trader_managers.TradingManager;
 public class TradePanel extends JPanel implements ActionListener {
 
     private JPanel ongoingTradesContainer, tradeRequestsContainer;
+    private JScrollPane tradeRequestsScrollPane, ongoingTradesScrollPane;
     private final JPanel ongoingTradesHeader, tradeRequestsHeader;
     private final Font regular, bold, italic, boldItalic;
     private final String trader;
@@ -142,7 +143,7 @@ public class TradePanel extends JPanel implements ActionListener {
         gbc.weighty = 0.1;
         ongoingTrades.add(ongoingTradesHeader, gbc);
 
-        JScrollPane ongoingTradesScrollPane = new JScrollPane();
+        ongoingTradesScrollPane = new JScrollPane();
         ongoingTradesScrollPane.setPreferredSize(new Dimension(1200, 325));
         getOngoingTradesPanel();
         ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
@@ -176,7 +177,7 @@ public class TradePanel extends JPanel implements ActionListener {
         gbc.weighty = 0.1;
         tradeRequests.add(tradeRequestsHeader, gbc);
 
-        JScrollPane tradeRequestsScrollPane = new JScrollPane();
+        tradeRequestsScrollPane = new JScrollPane();
         tradeRequestsScrollPane.setPreferredSize(new Dimension(1200, 325));
         getTradeRequestPanels();
         tradeRequestsScrollPane.setViewportView(tradeRequestsContainer);
@@ -804,6 +805,10 @@ public class TradePanel extends JPanel implements ActionListener {
                             tradeRequestsContainer.remove(tradeRequestPanel);
                             tradeRequestsContainer.revalidate();
                             tradeRequestsContainer.repaint();
+                            getOngoingTradesPanel();
+                            ongoingTradesContainer.revalidate();
+                            ongoingTradesContainer.repaint();
+                            ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
                         } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException
                                 | CannotTradeException e1) {
                             System.out.println(e1.getMessage());
@@ -1168,12 +1173,12 @@ public class TradePanel extends JPanel implements ActionListener {
 
         JDialog addNewTradeModal = new JDialog();
         addNewTradeModal.setTitle("Add New Trade");
-        addNewTradeModal.setSize(500, 1000);
+        addNewTradeModal.setSize(500, 1050);
         addNewTradeModal.setResizable(false);
         addNewTradeModal.setLocationRelativeTo(null);
 
         JPanel addNewTradePanel = new JPanel();
-        addNewTradePanel.setPreferredSize(new Dimension(500, 1000));
+        addNewTradePanel.setPreferredSize(new Dimension(500, 1050));
         addNewTradePanel.setBackground(bg);
 
         JLabel tradeWithinCityTitle = new JLabel("Trade Within City?");
@@ -1462,6 +1467,14 @@ public class TradePanel extends JPanel implements ActionListener {
                 } catch (ParseException | UserNotFoundException | AuthorizationException | CannotTradeException e2) {
                     error.setText(e2.getMessage());
                     error.setVisible(true);
+                }
+                try {
+                    getTradeRequestPanels();
+                    tradeRequestsContainer.revalidate();
+                    tradeRequestsContainer.repaint();
+                    tradeRequestsScrollPane.setViewportView(tradeRequestsContainer);
+                } catch (UserNotFoundException | AuthorizationException e2) {
+                    e2.printStackTrace();
                 }
             }
         });
