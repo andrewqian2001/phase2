@@ -356,16 +356,18 @@ public class TradingInfoManager extends Manager {
             }
 
             //finds the item that otherTrader wants the most from thisTrader
-            for(String inventoryItemId: thisTrader.getAvailableItems()){
+            for(String otherTraderWishlistItemId: otherTrader.getWishlist()){
+
                 Object[] giveItem = null;
                 try {
-                    giveItem = similarSearch(inventoryItemId, otherTrader.getWishlist());
+                    giveItem = similarSearch(otherTraderWishlistItemId, thisTrader.getAvailableItems());
                 } catch (TradableItemNotFoundException e) {
                     giveItem = null;
                 }finally {
                     if(!(giveItem == null)){
                         if (((int) giveItem[1]) > maxGiveSim) {
                             simGiveItemId = (String) giveItem[0];
+
                             maxGiveSim = ((int) giveItem[1]);
                         }
                     }
@@ -376,14 +378,16 @@ public class TradingInfoManager extends Manager {
                 mostSimGetItemId = simGetItemId;
                 mostSimGiveItemId = simGiveItemId;
                 mostSimTraderId = otherTraderId;
+
             }
         }
-         System.out.println(mostSimGetItemId);
-         System.out.println(getTradableItem(mostSimGetItemId).getName());
-        if(mostSimTraderId != null)
+
+        if(mostSimTraderId == null || mostSimGetItemId == null || mostSimGiveItemId == null)
+            return new String[]{};
+
         return new String[] {thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId};
 
-        return new String[]{};
+
     }
 
     /**
@@ -393,7 +397,7 @@ public class TradingInfoManager extends Manager {
      * @param list is the list of strings that we are traversing through
      * @return an array with two cells containing the items name and the score of how similar it is
      */
-    public Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+    private Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
         if (list.size() == 0) {
             return new Object[]{null, 0};
