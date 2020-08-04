@@ -66,8 +66,10 @@ public class MessagePanel extends JPanel {
         for(Component c : messageTitleContainer.getComponents()) {
             c.setBackground(Color.BLACK);
         } messagesListContainer.setBackground(bg);
-        
+
         messagesScrollPane.setPreferredSize(new Dimension(1200, 700));
+        int numRows = ((GridLayout) messagesListContainer.getLayout()).getRows();
+        
         for(Component c : messagesListContainer.getComponents()) {
             c.setPreferredSize(new Dimension(1200, 75));
         }

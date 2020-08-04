@@ -10,7 +10,6 @@ import java.io.IOException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
-import frontend.panels.admin_panel.admin_subpanels.AdminMessagesPanel;
 import frontend.panels.admin_panel.admin_subpanels.ControlPanel;
 import frontend.panels.admin_panel.admin_subpanels.OverviewPanel;
 import frontend.panels.general_panels.MessagePanel;
