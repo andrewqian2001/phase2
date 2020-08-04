@@ -24,6 +24,7 @@ public class ItemsPanel extends JPanel {
     private final Font regular, bold;
     private JPanel inventoryHeader;
     private JPanel inventoryItemsContainer, wishlistItemsContainer;
+    private JScrollPane wishlistItemsScrollPane;
 
     private final Color bg = new Color(51, 51, 51);
     private final Color gray = new Color(196, 196, 196);
@@ -96,7 +97,7 @@ public class ItemsPanel extends JPanel {
 
         JButton addWishlistItemButton = addWishlistItemButton(traderId, regular, bold, italic, boldItalic);
 
-        JScrollPane wishlistItemsScrollPane = new JScrollPane();
+        wishlistItemsScrollPane = new JScrollPane();
         wishlistItemsScrollPane.setBorder(null);
         wishlistItemsScrollPane.setPreferredSize(new Dimension(1200, 325));
         getWishlist();
@@ -247,6 +248,7 @@ public class ItemsPanel extends JPanel {
             traders.setBackground(gray2);
             traders.setForeground(Color.BLACK);
             traders.setOpaque(true);
+            traders.addItem(null);
             infoManager.getAllTraders().forEach(id -> {
                 if (!id.equals(this.traderId))
                     traders.addItem(new TraderComboBoxItem(id));
@@ -264,6 +266,7 @@ public class ItemsPanel extends JPanel {
             inventoryItems.setBackground(gray2);
             inventoryItems.setForeground(Color.BLACK);
             inventoryItems.setOpaque(true);
+            inventoryItems.setEnabled(false);
 
             JButton itemSubmitButton = new JButton("Submit Request");
             itemSubmitButton.setFont(bold.deriveFont(25f));
@@ -277,6 +280,10 @@ public class ItemsPanel extends JPanel {
                     try {
                         traderManager.addToWishList(traderId, ((InventoryComboBoxItem) inventoryItems.getSelectedItem()).getId());
                         addNewItemModal.dispose();
+                        getWishlist();
+                        wishlistItemsContainer.revalidate();
+                        wishlistItemsContainer.repaint();
+                        wishlistItemsScrollPane.setViewportView(wishlistItemsContainer);
                     } catch (UserNotFoundException | TradableItemNotFoundException | AuthorizationException e1) {
                         System.out.println(e1.getMessage());
                     }
@@ -285,8 +292,10 @@ public class ItemsPanel extends JPanel {
 
             traders.addItemListener(e -> {
                 if (e.getStateChange() == ItemEvent.SELECTED) {
+                    traders.removeItemAt(0);
                     inventoryItems.setVisible(false);
                     inventoryItems.removeAllItems();
+                    inventoryItems.setEnabled(true);
                     try {
                         for (String itemId : userQuery.getAvailableItems(((TraderComboBoxItem) e.getItem()).getId())) {
                             inventoryItems.addItem(new InventoryComboBoxItem(itemId));
