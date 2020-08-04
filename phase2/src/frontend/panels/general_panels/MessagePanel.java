@@ -15,6 +15,7 @@ import backend.tradesystem.general_managers.MessageManager;
 import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
+import frontend.components.TraderComboBoxItem;
 
 import backend.models.users.*; // remove
 
@@ -189,8 +190,13 @@ public class MessagePanel extends JPanel {
             users.setOpaque(true);
             // TODO: FIX TO GET ALL USERS
             infoManager.getAllUsers().forEach(id -> {
-                if (!id.equals(userId))
-                    users.addItem(new TraderComboBoxItem(id));
+                if (!id.equals(userId)) {
+                    try {
+                        users.addItem(new TraderComboBoxItem(id));
+                    } catch (IOException e2) {
+                        e2.printStackTrace();
+                    }
+                }  
             });
 
             JLabel messageBodyTitle = new JLabel("Full Message:");
@@ -584,27 +590,6 @@ public class MessagePanel extends JPanel {
             reportPanel.add(detailsButton);
             reportPanel.add(clearButton);
             messagesListContainer.add(reportPanel);
-        }
-    }
-
-    private class TraderComboBoxItem {
-        final String id;
-
-        public TraderComboBoxItem(String id) {
-            this.id = id;
-        }
-
-        public String toString() {
-            try {
-                return userQuery.getUsername(id);
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
-            }
-            return "";
-        }
-
-        public String getId() {
-            return id;
         }
     }
 }

@@ -9,6 +9,7 @@ import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TraderManager;
 import backend.tradesystem.trader_managers.TradingInfoManager;
+import frontend.components.*;
 
 import java.awt.*;
 import java.awt.event.ItemEvent;
@@ -250,8 +251,13 @@ public class ItemsPanel extends JPanel {
             traders.setOpaque(true);
             traders.addItem(null);
             infoManager.getAllTraders().forEach(id -> {
-                if (!id.equals(this.traderId))
-                    traders.addItem(new TraderComboBoxItem(id));
+                if (!id.equals(this.traderId)) {
+                    try {
+                        traders.addItem(new TraderComboBoxItem(id));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
             });
 
             JLabel inventoryItemTitle = new JLabel("Item from their Inventory:");
@@ -300,7 +306,7 @@ public class ItemsPanel extends JPanel {
                         for (String itemId : userQuery.getAvailableItems(((TraderComboBoxItem) e.getItem()).getId())) {
                             inventoryItems.addItem(new InventoryComboBoxItem(itemId));
                         }
-                    } catch (UserNotFoundException | AuthorizationException ex) {
+                    } catch (UserNotFoundException | AuthorizationException | IOException ex) {
                         ex.printStackTrace();
                     }
                     inventoryItems.setVisible(true);
@@ -522,48 +528,5 @@ public class ItemsPanel extends JPanel {
                 System.out.println(exception.getMessage());
             }
         }
-    }
-
-    private class TraderComboBoxItem {
-        final String id;
-
-        public TraderComboBoxItem(String id) {
-            this.id = id;
-        }
-
-        public String toString() {
-            try {
-                return userQuery.getUsername(id);
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
-            }
-            return "";
-        }
-
-        public String getId() {
-            return id;
-        }
-    }
-
-    private class InventoryComboBoxItem {
-        final String id;
-
-        public InventoryComboBoxItem(String id) {
-            this.id = id;
-        }
-
-        public String toString() {
-            try {
-                return itemQuery.getName(id);
-            } catch (TradableItemNotFoundException e) {
-                e.printStackTrace();
-            }
-            return "";
-        }
-
-        public String getId() {
-            return id;
-        }
-
     }
 }

@@ -6,6 +6,7 @@ import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
 import frontend.WindowManager;
+import frontend.components.TraderComboBoxItem;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -99,15 +100,52 @@ public class ControlPanel extends JPanel implements ActionListener {
         createMessageWrapper(regular, bg, gbc, newAdmin);
         handleSubmitAdmin(bold, bg, gbc, newAdmin);
 
-        JLabel ah = new JLabel("<html><b><i>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. <br>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <br>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</i></b></html>");
-        ah.setBackground(Color.black);
-        ah.setForeground(Color.white);
-        ah.setFont(ah.getFont().deriveFont(20f));
-        ah.setBorder(BorderFactory.createMatteBorder(80, 0, 0, 0, Color.black));
+        // JLabel ah = new JLabel("<html><b><i>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. <br>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <br>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</i></b></html>");
+        // ah.setBackground(Color.black);
+        // ah.setForeground(Color.white);
+        // ah.setFont(ah.getFont().deriveFont(20f));
+        // ah.setBorder(BorderFactory.createMatteBorder(80, 0, 0, 0, Color.black));
 
         this.add(titles);
         this.add(splitContainer);
-        this.add(ah);
+        this.add(setUndoTradeButtonPanel(userId, regular, bold, italic, boldItalic));
+        
+    }
+
+    private JPanel setUndoTradeButtonPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) {
+        JPanel undoTradeButtonPanel = new JPanel(new GridLayout(1, 3));
+        undoTradeButtonPanel.setPreferredSize(new Dimension(1200, 150));
+        undoTradeButtonPanel.setBackground(bg);
+        undoTradeButtonPanel.setBorder(BorderFactory.createMatteBorder(50, 0, 0, 0, Color.BLACK));
+
+        JLabel undoTradeLabel = new JLabel("Undo Trade");
+        undoTradeLabel.setFont(bold.deriveFont(25f));
+        undoTradeLabel.setForeground(Color.WHITE);
+        undoTradeLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        undoTradeLabel.setOpaque(false);
+
+        JComboBox<TraderComboBoxItem> traders = new JComboBox<>();
+        traders.setPreferredSize(new Dimension(450, 50));
+        traders.setFont(regular.deriveFont(20f));
+        traders.setBackground(gray2);
+        traders.setForeground(Color.BLACK);
+        traders.setOpaque(true);
+        traders.addItem(null);
+        // infoManager.getAllTraders().forEach(id -> {
+        //     if (!id.equals(this.traderId))
+        //         traders.addItem(new TraderComboBoxItem(id));
+        // });
+
+        JButton undoTradeButton = new JButton("View Ongoing Trades");
+        undoTradeButton.setFont(bold.deriveFont(20f));
+        undoTradeButton.setBackground(red);
+        undoTradeButton.setForeground(Color.WHITE);
+        undoTradeButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, bg));
+
+        undoTradeButtonPanel.add(undoTradeLabel);
+        // undoTradeButtonPanel.add(message);
+        undoTradeButtonPanel.add(undoTradeButton);
+        return undoTradeButtonPanel;
     }
 
     private void handleSubmitAdmin(Font bold, Color bg, GridBagConstraints gbc, JPanel newAdmin) {
