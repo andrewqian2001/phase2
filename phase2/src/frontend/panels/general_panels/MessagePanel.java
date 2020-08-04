@@ -92,7 +92,7 @@ public class MessagePanel extends JPanel {
         messagesScrollPane.setBorder(null);
         messagesScrollPane.setBackground(gray3);
         getMessages();
-        if (loginManager.getType(userId).equals(UserTypes.ADMIN))
+        if (!userId.equals("") && loginManager.getType(userId).equals(UserTypes.ADMIN))
             getReports();
         messagesScrollPane.setViewportView(messagesListContainer);
     }
@@ -102,7 +102,7 @@ public class MessagePanel extends JPanel {
         messageTitleContainer.setPreferredSize(titleBarDimension);
 
         JLabel messagesTitle = new JLabel("Messages");
-        if (loginManager.getType(userId).equals(UserTypes.ADMIN))
+        if (!userId.equals("") && loginManager.getType(userId).equals(UserTypes.ADMIN))
             messagesTitle.setText("Messages and Reports");
         messagesTitle.setBackground(bg);
         messagesTitle.setForeground(Color.WHITE);
