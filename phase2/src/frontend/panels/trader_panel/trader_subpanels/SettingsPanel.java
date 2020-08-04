@@ -10,7 +10,9 @@ import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.trader_managers.TraderManager;
+import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.queries.UserQuery;
 
 /**
@@ -23,6 +25,10 @@ public class SettingsPanel extends JPanel {
     private TraderManager traderManager = new TraderManager();
     
     private LoginManager loginManager = new LoginManager();
+
+    private TradingInfoManager infoManager = new TradingInfoManager();
+
+    private ReportManager reportManager = new ReportManager();
     
     protected UserQuery userQuery = new UserQuery();
 
@@ -277,11 +283,80 @@ public class SettingsPanel extends JPanel {
         reportButton.addActionListener(e -> {
            if (userId.equals("")) return;
 
-            JDialog reportUserModal = new JDialog();
-            reportUserModal.setTitle("Report a Trader");
-            reportUserModal.setSize(500, 500);
-            reportUserModal.setResizable(false);
-            reportUserModal.setLocationRelativeTo(null);
+            JDialog reportTraderModal = new JDialog();
+            reportTraderModal.setTitle("Report a Trader");
+            reportTraderModal.setSize(500, 500);
+            reportTraderModal.setResizable(false);
+            reportTraderModal.setLocationRelativeTo(null);
+
+            JPanel reportTraderPanel = new JPanel();
+            reportTraderPanel.setPreferredSize(new Dimension(500, 500));
+            reportTraderPanel.setBackground(bg);
+
+            JLabel traderNameTitle = new JLabel("Trader Username");
+            traderNameTitle.setFont(italic.deriveFont(20f));
+            traderNameTitle.setPreferredSize(new Dimension(450, 50));
+            traderNameTitle.setOpaque(false);
+            traderNameTitle.setForeground(Color.WHITE);
+
+            JComboBox<String> traders = new JComboBox<>();
+            traders.setPreferredSize(new Dimension(450, 50));
+            traders.setFont(regular.deriveFont(20f));
+            traders.setBackground(gray2);
+            traders.setForeground(Color.BLACK);
+            traders.setOpaque(true);
+            infoManager.getAllTraders().forEach(traderId -> {
+                if (!traderId.equals(userId)) {
+                    try {
+                        traders.addItem(userQuery.getUsername(traderId));
+                    } catch (UserNotFoundException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            });
+
+            JLabel traderReportMessageTitle = new JLabel("Report Message:");
+            traderReportMessageTitle.setFont(italic.deriveFont(20f));
+            traderReportMessageTitle.setPreferredSize(new Dimension(450, 50));
+            traderReportMessageTitle.setOpaque(false);
+            traderReportMessageTitle.setForeground(Color.WHITE);
+
+            JTextArea traderReportMessage = new JTextArea();
+            traderReportMessage.setFont(regular.deriveFont(20f));
+            traderReportMessage.setBackground(gray2);
+            traderReportMessage.setForeground(Color.BLACK);
+            traderReportMessage.setPreferredSize(new Dimension(450, 200));
+            traderReportMessage.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            traderReportMessage.setLineWrap(true);
+
+            JButton submitReportButton = new JButton("Submit");
+            submitReportButton.setFont(bold.deriveFont(25f));
+            submitReportButton.setBackground(red);
+            submitReportButton.setOpaque(true);
+            submitReportButton.setForeground(Color.WHITE);
+            submitReportButton.setPreferredSize(new Dimension(225, 75));
+            submitReportButton.setBorder(BorderFactory.createLineBorder(bg, 15));
+            submitReportButton.addActionListener(e1 -> {
+                if(traderReportMessage.getText().trim().length() != 0 && traders.getSelectedItem() != null) {
+                    try {
+                        reportManager.reportUser(userId, userQuery.getUserByUsername((String) traders.getSelectedItem()), traderReportMessage.getText());
+                        reportTraderModal.dispose();
+                    } catch (UserNotFoundException | AuthorizationException e2) {
+                        e2.printStackTrace();
+                    }
+                }
+            });
+
+            reportTraderPanel.add(traderNameTitle);
+            reportTraderPanel.add(traders);
+            reportTraderPanel.add(traderReportMessageTitle);
+            reportTraderPanel.add(traderReportMessage);
+
+            reportTraderModal.add(reportTraderPanel);
+            reportTraderModal.add(submitReportButton, BorderLayout.SOUTH);
+            reportTraderModal.setModal(true);
+            reportTraderModal.setVisible(true);
+
 
         });
 
