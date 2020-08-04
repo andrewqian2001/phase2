@@ -66,12 +66,14 @@ public class SettingsPanel extends JPanel {
         JPanel changePasswordPanel = getChangePasswordPanel();
         JPanel changeCityPanel = getChangeCityPanel();
         JPanel goIdlePanel = getGoIdlePanel();
+        JPanel reportUserPanel = getReportUserPanel();
 
         this.add(settingsTitleLabel, 0);
         this.add(changeUsernamePanel, 1);
         this.add(changePasswordPanel, 2);
         this.add(changeCityPanel, 3);
         this.add(goIdlePanel, 4);
+        this.add(reportUserPanel, 5);
     }
 
     private JPanel getChangeUsernamePanel() throws UserNotFoundException {
@@ -248,5 +250,45 @@ public class SettingsPanel extends JPanel {
         idlePanel.add(goIdleButton);
         // idlePanel.add();
         return idlePanel;
+    }
+
+    private JPanel getReportUserPanel() {
+        JPanel newReportPanel = new JPanel(new GridLayout(1, 3));
+        newReportPanel.setPreferredSize(new Dimension(1200, 150));
+        newReportPanel.setBackground(gray2);
+        newReportPanel.setBorder(BorderFactory.createMatteBorder(50, 0, 0, 0, bg));
+
+        JLabel reportLabel = new JLabel("Report a Trader");
+        reportLabel.setFont(boldItalic.deriveFont(25f));
+        reportLabel.setForeground(Color.BLACK);
+        reportLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+        reportLabel.setOpaque(false);
+
+        JLabel msg = new JLabel("Only if they've been naughty!");
+        msg.setFont(italic.deriveFont(25f));
+        msg.setForeground(Color.BLACK);
+        msg.setOpaque(false);
+
+        JButton reportButton = new JButton("Report");
+        reportButton.setFont(bold.deriveFont(20f));
+        reportButton.setBackground(red);
+        reportButton.setForeground(Color.WHITE);
+        reportButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
+        reportButton.addActionListener(e -> {
+           if (userId.equals("")) return;
+
+            JDialog reportUserModal = new JDialog();
+            reportUserModal.setTitle("Report a Trader");
+            reportUserModal.setSize(500, 500);
+            reportUserModal.setResizable(false);
+            reportUserModal.setLocationRelativeTo(null);
+
+        });
+
+        newReportPanel.add(reportLabel);
+        newReportPanel.add(msg);
+        newReportPanel.add(reportButton);
+
+        return newReportPanel;
     }
 }

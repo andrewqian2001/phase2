@@ -16,6 +16,8 @@ import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 
+import backend.models.users.*; // remove
+
 public class MessagePanel extends JPanel {
 
     private final ReportManager reportManager = new ReportManager();
@@ -458,12 +460,13 @@ public class MessagePanel extends JPanel {
     private void getReports() throws UserNotFoundException {
 
         ArrayList<String[]> reports = reportManager.getReports();
-        // System.out.println(((Admin)messageManager.getUser(userId)).getReports().size());
         if (reports.size() == 0) {
-            System.out.println("RUH ROH");
             return;
         }
-        int numRows = ((GridLayout) messagesListContainer.getLayout()).getRows() + reports.size();
+        int numRows = reports.size();
+        if(messagesListContainer.getLayout() instanceof GridLayout) {
+            numRows += ((GridLayout) messagesListContainer.getLayout()).getRows();
+        }
         if(numRows == 0) {
             messagesListContainer = new JPanel();
             setNoMessagesFound();
@@ -471,6 +474,12 @@ public class MessagePanel extends JPanel {
         }
         if (numRows < 7)
             numRows = 7;
+        if (messagesListContainer.getLayout() instanceof BorderLayout) {
+            messagesListContainer = new JPanel(new GridLayout(numRows, 1));
+        } else {
+            messagesListContainer.setLayout(new GridLayout(numRows, 1));
+        }
+                
         for (String[] report : reports) {
             JPanel reportPanel = new JPanel(new GridLayout(1, 4));
             reportPanel.setPreferredSize(new Dimension(1000, 75));
