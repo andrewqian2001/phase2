@@ -483,25 +483,27 @@ public class MessagePanel extends JPanel {
         for (String[] report : reports) {
             JPanel reportPanel = new JPanel(new GridLayout(1, 4));
             reportPanel.setPreferredSize(new Dimension(1000, 75));
-            reportPanel.setBackground(gray2);
+            reportPanel.setBackground(gray3);
             reportPanel.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, bg));
 
             JLabel fromUsername = new JLabel(userQuery.getUsername(report[0]));
             fromUsername.setForeground(Color.BLACK);
             fromUsername.setHorizontalAlignment(JLabel.LEFT);
-            fromUsername.setFont(regular.deriveFont(20f));
+            fromUsername.setFont(bold.deriveFont(20f));
+            fromUsername.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
             JLabel toUsername = new JLabel(userQuery.getUsername(report[1]));
             toUsername.setForeground(Color.BLACK);
             toUsername.setHorizontalAlignment(JLabel.LEFT);
-            toUsername.setFont(regular.deriveFont(20f));
+            toUsername.setFont(bold.deriveFont(20f));
+            toUsername.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
             JButton detailsButton = new JButton("View Full Report");
             detailsButton.setFont(bold.deriveFont(20f));
             detailsButton.setForeground(Color.WHITE);
-            detailsButton.setBackground(gray3);
+            detailsButton.setBackground(bg);
             detailsButton.setOpaque(true);
-            detailsButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+            detailsButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray3));
             detailsButton.addActionListener(e -> {
                 JDialog reportDetailsModal = new JDialog();
                 reportDetailsModal.setTitle("Report Details");
@@ -515,23 +517,23 @@ public class MessagePanel extends JPanel {
 
                 JLabel fromUsernametitle = new JLabel("Report Sender:");
                 fromUsernametitle.setFont(italic.deriveFont(20f));
-                fromUsernametitle.setPreferredSize(new Dimension(250, 50));
+                fromUsernametitle.setPreferredSize(new Dimension(275, 50));
                 fromUsernametitle.setOpaque(false);
                 fromUsernametitle.setForeground(Color.WHITE);
 
                 JLabel fromUsernameLabel = fromUsername;
                 fromUsernameLabel.setForeground(Color.WHITE);
-                fromUsernameLabel.setPreferredSize(new Dimension(250, 50));
+                fromUsernameLabel.setPreferredSize(new Dimension(275, 50));
                 
                 JLabel toUsernametitle = new JLabel("Report Reciever:");
                 toUsernametitle.setFont(italic.deriveFont(20f));
-                toUsernametitle.setPreferredSize(new Dimension(250, 50));
+                toUsernametitle.setPreferredSize(new Dimension(275, 50));
                 toUsernametitle.setOpaque(false);
                 toUsernametitle.setForeground(Color.WHITE);
 
                 JLabel toUsernameLabel = toUsername;
                 toUsernameLabel.setForeground(Color.WHITE);
-                toUsernameLabel.setPreferredSize(new Dimension(250, 50));
+                toUsernameLabel.setPreferredSize(new Dimension(275, 50));
 
                 JLabel messageBodyTitle = new JLabel("Report Message:");
                 messageBodyTitle.setFont(italic.deriveFont(20f));
@@ -567,7 +569,7 @@ public class MessagePanel extends JPanel {
             clearButton.setForeground(Color.WHITE);
             clearButton.setBackground(red);
             clearButton.setOpaque(true);
-            clearButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray2));
+            clearButton.setBorder(BorderFactory.createMatteBorder(15, 20, 15, 20, gray3));
             clearButton.addActionListener(e -> {
                 reportManager.clearReport(report[3]);
                 messagesListContainer.remove(reportPanel);
