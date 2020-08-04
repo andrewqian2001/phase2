@@ -154,7 +154,7 @@ public class MessagePanel extends JPanel {
             users.setForeground(Color.BLACK);
             users.setOpaque(true);
             //TODO: FIX TO GET ALL USERS
-            infoManager.getAllTraders().forEach(id -> {
+            infoManager.getAllUsers().forEach(id -> {
                 if (!id.equals(userId))
                     users.addItem(new TraderComboBoxItem(id));
             });
