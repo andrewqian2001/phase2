@@ -96,10 +96,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         for (int i = 0; i < menuTitles.length; i++)
             createPanelButton(menuTitles[i], i + 3, regular);
 
-        if(!infiltraded)
-        {
-            createLogoutButton(boldItalic);
-        }
+        if(!infiltraded) { createLogoutButton(boldItalic); }
 
         if(isFrozen) {
             menuPanelContainer.add(new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic), "Frozen Settings");
