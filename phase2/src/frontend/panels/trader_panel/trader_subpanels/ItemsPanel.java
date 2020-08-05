@@ -25,7 +25,7 @@ public class ItemsPanel extends JPanel {
     private final Font regular, bold;
     private JPanel inventoryHeader;
     private JPanel inventoryItemsContainer, wishlistItemsContainer;
-    private JScrollPane wishlistItemsScrollPane;
+    private final JScrollPane wishlistItemsScrollPane;
 
     private final Color bg = new Color(51, 51, 51);
     private final Color gray = new Color(196, 196, 196);
@@ -33,7 +33,6 @@ public class ItemsPanel extends JPanel {
     private final Color green = new Color(27, 158, 36);
     private final Color red = new Color(219, 58, 52);
 
-    private GridBagConstraints gbc;
 
     private final TraderManager traderManager = new TraderManager();
 
@@ -66,7 +65,7 @@ public class ItemsPanel extends JPanel {
 
         JPanel inventoryItems = new JPanel(new GridBagLayout());
         JPanel wishListItems = new JPanel(new GridBagLayout());
-        gbc = new GridBagConstraints();
+        GridBagConstraints gbc = new GridBagConstraints();
 
         JButton addInventoryItemButton = addInventoryItemButton(traderId, regular, bold, italic, boldItalic);
 

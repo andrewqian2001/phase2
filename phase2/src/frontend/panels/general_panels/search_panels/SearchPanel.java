@@ -276,7 +276,7 @@ public class SearchPanel extends JPanel {
                 traderDetailsButton.setFont(boldItalic.deriveFont(20f));
                 traderDetailsButton.addActionListener(e -> {
                     try {
-                        ((WindowManager) SwingUtilities.getWindowAncestor(this)).setVisible(false);
+                        SwingUtilities.getWindowAncestor(this).setVisible(false);
                         WindowManager traderFrame = new WindowManager();
                         traderFrame.run();
                         traderFrame.login(t);
