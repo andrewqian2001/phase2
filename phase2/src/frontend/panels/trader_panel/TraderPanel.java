@@ -57,13 +57,14 @@ public class TraderPanel extends JPanel implements ActionListener {
      * @param bold       bold font
      * @param italic     italics font
      * @param boldItalic bold italics font
+     * @param infiltraded
      * @throws IOException            if accessing database has issues
      * @throws UserNotFoundException  if the user id is bad
      * @throws AuthorizationException if this user isn't allowed to access this
      *                                panel
      * @throws TradeNotFoundException
      */
-    public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic)
+    public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic, boolean infiltraded)
             throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
         this.setSize(1600, 900);
         this.setOpaque(false);
@@ -95,7 +96,10 @@ public class TraderPanel extends JPanel implements ActionListener {
         for (int i = 0; i < menuTitles.length; i++)
             createPanelButton(menuTitles[i], i + 3, regular);
 
-        createLogoutButton(boldItalic);
+        if(!infiltraded)
+        {
+            createLogoutButton(boldItalic);
+        }
 
         if(isFrozen) {
             menuPanelContainer.add(new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic), "Frozen Settings");
