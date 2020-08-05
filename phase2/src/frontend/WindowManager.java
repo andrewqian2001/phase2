@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.exceptions.AuthorizationException;
+import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
@@ -34,10 +35,12 @@ public class WindowManager extends JFrame {
      * @throws FontFormatException if the font is bad
      */
     public WindowManager() throws IOException, FontFormatException {
-        regular = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Regular.ttf"));
+        regular = Font.createFont(Font.TRUETYPE_FONT,
+                getClass().getResourceAsStream("./fonts/IBMPlexSans-Regular.ttf"));
         bold = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Bold.ttf"));
         italic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Italic.ttf"));
-        boldItalic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-BoldItalic.ttf"));
+        boldItalic = Font.createFont(Font.TRUETYPE_FONT,
+                getClass().getResourceAsStream("./fonts/IBMPlexSans-BoldItalic.ttf"));
         loginPanel = new LoginPanel(regular, bold, italic, boldItalic);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -52,9 +55,10 @@ public class WindowManager extends JFrame {
      * Changes from login screen to the actual dashboard
      *
      * @param loggedInUserId the user id that is logged in
-     * @throws IOException if login causes issues
+     * @throws IOException            if login causes issues
+     * @throws TradeNotFoundException
      */
-    public void login(String loggedInUserId) throws IOException {
+    public void login(String loggedInUserId) throws IOException, TradeNotFoundException {
         try {
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
                 userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic);

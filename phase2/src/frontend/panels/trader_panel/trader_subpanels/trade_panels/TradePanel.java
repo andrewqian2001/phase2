@@ -74,9 +74,10 @@ public class TradePanel extends JPanel implements ActionListener {
      * @throws IOException            issues with getting database files
      * @throws UserNotFoundException  trader is is bad
      * @throws AuthorizationException user id isn't a trader
+     * @throws TradeNotFoundException
      */
     public TradePanel(String trader, Font regular, Font bold, Font italic, Font boldItalic)
-            throws IOException, UserNotFoundException, AuthorizationException {
+            throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
         this.trader = trader;
         this.regular = regular;
         this.bold = bold;
@@ -129,6 +130,7 @@ public class TradePanel extends JPanel implements ActionListener {
         addTradeButton.setBorderPainted(false);
         addTradeButton.addActionListener(this);
         ongoingTradesTitleContainer.add(addTradeButton);
+
         gbc.fill = GridBagConstraints.BOTH;
         gbc.gridy = 0;
         gbc.weighty = 0.1;
@@ -186,7 +188,8 @@ public class TradePanel extends JPanel implements ActionListener {
         gbc.weighty = 0.8;
         tradeRequests.add(tradeRequestsScrollPane, gbc);
 
-        this.add(ongoingTrades);
+        this.add(new OngoingTradesPanel(trader, regular, bold, italic, boldItalic));
+        // this.add(ongoingTrades);
         this.add(tradeRequests);
     }
 
