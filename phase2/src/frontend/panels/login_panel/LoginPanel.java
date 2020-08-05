@@ -20,6 +20,7 @@ import javax.swing.SwingUtilities;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
+import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
@@ -114,7 +115,7 @@ public class LoginPanel extends JPanel implements ActionListener {
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch (UserNotFoundException ignored) {
                 notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
-            } catch (IOException ex) {
+            } catch (IOException | TradeNotFoundException ex) {
                 ex.printStackTrace();
             }
         } else if (e.getActionCommand().equals("Register")) {
@@ -128,13 +129,13 @@ public class LoginPanel extends JPanel implements ActionListener {
                 notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
             } catch (UserAlreadyExistsException ignored) {
                 notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
-            } catch (IOException | UserNotFoundException | AuthorizationException ex) {
+            } catch (IOException | TradeNotFoundException | UserNotFoundException | AuthorizationException ex) {
                 ex.printStackTrace();
             }
         } else if (e.getActionCommand().equals("Demo")) {
             try {
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).login("");
-            } catch (IOException ignored) {
+            } catch (TradeNotFoundException | IOException ignored) {
                 notifyLogin("<html><b><i>Error with logging in.</i></b></html>");
             }
         }

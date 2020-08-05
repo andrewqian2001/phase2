@@ -8,6 +8,7 @@ import javax.swing.*;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
+import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
@@ -47,10 +48,11 @@ public class SearchPanel extends JPanel {
 
     /**
      * Creates a new search panel
-     * @param user the user id
-     * @param regular the regular font
-     * @param bold the bold font
-     * @param italic italics font
+     * 
+     * @param user       the user id
+     * @param regular    the regular font
+     * @param bold       the bold font
+     * @param italic     italics font
      * @param boldItalic bold italics font
      * @throws IOException issues with getting the database files
      */
@@ -115,7 +117,7 @@ public class SearchPanel extends JPanel {
     }
 
     private boolean checkFrozen() throws UserNotFoundException {
-        if(loginManager.getType(user).equals(UserTypes.ADMIN))
+        if (loginManager.getType(user).equals(UserTypes.ADMIN))
             return false;
         return userQuery.isFrozen(user);
     }
@@ -222,7 +224,7 @@ public class SearchPanel extends JPanel {
         userSearchTitle.setFont(regular.deriveFont(30f));
     }
 
-    private void findUsers(String username)     {
+    private void findUsers(String username) {
         ArrayList<String> matches = infoManager.searchTrader(username);
         int numRows = matches.size();
         if (numRows < 3)
@@ -254,8 +256,7 @@ public class SearchPanel extends JPanel {
         traderName.setHorizontalAlignment(JLabel.LEFT);
         traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
 
-        JLabel traderId = new JLabel(
-                "<html><pre>#" + t.substring(t.length() - 12) + "</pre></html>");
+        JLabel traderId = new JLabel("<html><pre>#" + t.substring(t.length() - 12) + "</pre></html>");
         traderId.setFont(regular.deriveFont(20f));
         traderId.setForeground(Color.BLACK);
         traderId.setHorizontalAlignment(JLabel.CENTER);
@@ -267,7 +268,7 @@ public class SearchPanel extends JPanel {
         traderDetailsButton.setOpaque(true);
         traderDetailsButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
         try {
-            if(!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER)) {
+            if (!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER)) {
                 traderDetailsButton.addActionListener(new SearchPanelTraderDetails(t, regular, italic));
             } else if (!user.equals("")) {
                 traderDetailsButton.setText("Infiltrade");
@@ -281,8 +282,9 @@ public class SearchPanel extends JPanel {
                         traderFrame.run();
                         traderFrame.login(t);
                         traderFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                        traderFrame.addWindowListener(new TraderDetailsWindowAdapter(((WindowManager) SwingUtilities.getWindowAncestor(this))));
-                    } catch (IOException | FontFormatException ioException) {
+                        traderFrame.addWindowListener(new TraderDetailsWindowAdapter(
+                                ((WindowManager) SwingUtilities.getWindowAncestor(this))));
+                    } catch (IOException | FontFormatException | TradeNotFoundException ioException) {
                         ioException.printStackTrace();
                     }
                 });

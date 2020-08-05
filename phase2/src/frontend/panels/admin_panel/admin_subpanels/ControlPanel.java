@@ -1,6 +1,7 @@
 package frontend.panels.admin_panel.admin_subpanels;
 
 import backend.exceptions.BadPasswordException;
+import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
@@ -101,7 +102,13 @@ public class ControlPanel extends JPanel implements ActionListener {
         createMessageWrapper(regular, bg, gbc, newAdmin);
         handleSubmitAdmin(bold, bg, gbc, newAdmin);
 
-        // JLabel ah = new JLabel("<html><b><i>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. <br>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <br>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</i></b></html>");
+        // JLabel ah = new JLabel("<html><b><i>Lorem ipsum dolor sit amet, consectetur
+        // adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+        // aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        // laboris nisi ut aliquip ex ea commodo consequat. <br>Duis aute irure dolor in
+        // reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+        // <br>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+        // deserunt mollit anim id est laborum.</i></b></html>");
         // ah.setBackground(Color.black);
         // ah.setForeground(Color.white);
         // ah.setFont(ah.getFont().deriveFont(20f));
@@ -110,7 +117,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         this.add(titles);
         this.add(splitContainer);
         this.add(setUndoTradeButtonPanel(userId, regular, bold, italic, boldItalic));
-        
+
     }
 
     private JPanel setUndoTradeButtonPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) {
@@ -150,7 +157,8 @@ public class ControlPanel extends JPanel implements ActionListener {
 
         traders.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                if(traders.getItemAt(0) == null) traders.removeItemAt(0);
+                if (traders.getItemAt(0) == null)
+                    traders.removeItemAt(0);
                 undoTradeButton.setText("View Ongoing Trades");
                 undoTradeButton.setFont(bold.deriveFont(20f));
                 undoTradeButton.setBackground(red);
@@ -234,7 +242,8 @@ public class ControlPanel extends JPanel implements ActionListener {
         tradeSettings.add(submitSettings, gbc);
     }
 
-    private void handleInfoSubpanel(Color bg, JPanel info, JComboBox<Integer> minLendChoice, TraderProperties minimumAmountNeededToBorrow) throws IOException {
+    private void handleInfoSubpanel(Color bg, JPanel info, JComboBox<Integer> minLendChoice,
+            TraderProperties minimumAmountNeededToBorrow) throws IOException {
         minLendChoice.setSelectedIndex(loginManager.getProperty(minimumAmountNeededToBorrow) - 1);
         minLendChoice.setBorder(BorderFactory.createMatteBorder(0, 75, 0, 75, bg));
         info.add(minLendChoice);
@@ -287,15 +296,17 @@ public class ControlPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == submitAdmin) {
             try {
-                String loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.ADMIN);
+                String loggedInUser = loginManager.registerUser(usernameInput.getText(),
+                        String.valueOf(passwordInput.getPassword()), UserTypes.ADMIN);
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch (BadPasswordException ex) {
                 notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
             } catch (UserAlreadyExistsException ignored) {
                 notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
-            }
-            catch (IOException ignored){
+            } catch (IOException ignored) {
                 notifyLogin("<html><b><i>Could not create the account at this time.</i></b></html>");
+            } catch (TradeNotFoundException e1) {
+                e1.printStackTrace();
             }
         } else if (e.getSource() == submitSettings) {
             try {

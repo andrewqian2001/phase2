@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.metal.MetalButtonUI;
 
 import backend.exceptions.AuthorizationException;
+import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
@@ -56,11 +57,14 @@ public class TraderPanel extends JPanel implements ActionListener {
      * @param bold       bold font
      * @param italic     italics font
      * @param boldItalic bold italics font
-     * @throws IOException           if accessing database has issues
-     * @throws UserNotFoundException if the user id is bad
-     * @throws AuthorizationException if this user isn't allowed to access this panel
+     * @throws IOException            if accessing database has issues
+     * @throws UserNotFoundException  if the user id is bad
+     * @throws AuthorizationException if this user isn't allowed to access this
+     *                                panel
+     * @throws TradeNotFoundException
      */
-    public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
+    public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic)
+            throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
         this.setSize(1600, 900);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
