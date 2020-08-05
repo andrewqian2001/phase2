@@ -28,8 +28,12 @@ public class TemporarySetup {
      * Used to set up users
      */
     public TemporarySetup() {
-        refreshFiles(); // Deletes existing data in the ser files
+        regularSetup();
+    }
+
+    private void debugSetup(){
         try {
+            refreshFiles(); // Deletes existing data in the ser files
             String[] traders = new String[10];
             String[] admins = new String[5];
             LoginManager loginManager = new LoginManager();
@@ -121,6 +125,117 @@ public class TemporarySetup {
         }
     }
 
+    private void regularSetup(){
+        try{
+            refreshFiles();
+            String[] traders = new String[8];
+            String[] traderNames = new String[]{"Ilan", "James", "Navinn", "William", "Andrew", "Nilay", "Clara", "Morteza"};
+            String[] traderPass = new String[]{"bestTrader2020", "0verlyStr0ngP4ss", "123GUIsensei", "valorantPRO1", "superSearcher3000", "1234yaliN5678", "AW0nderfulP4ss", "designMaster100"};
+            String[][] traderItems = new String[][]{{"Ream of paper", "Nike Shoe", "Fancy Hat"},
+                    {"Steak", "Live Chicken", "Goat Milk"},
+                    {"MacBook", "ASUS motherboard", "Nvidia Geforce RTX 2080"},
+                    {"10 pencils", "Eraser", "Sharpener"},
+                    {"10 ounces of gold", "10 ounces of silver", "10 ounces of copper"},
+                    {"Watter Bottle", "Gatorade", "Coca-Cola bottle"},
+                    {"Monitor", "Keyboard", "Mouse"},
+                    {"Diamond", "Ruby", "Sapphire"}};
+            String[][] traderDescriptions = new String[][]{{"High quality", "very soft", "for special occasions"},
+                    {"Fresh and juicy", "Locally raised!", "Silky smooth and delicious"},
+                    {"Latest version", "Highest quality", "Used, but in perfect condition"},
+                    {"From Staples", "Best rubber in town!", "Has the sharpest blade of them all"},
+                    {"Rectangular piece of gold", "Rectangular piece of silver", "Rectangular piece of copper"},
+                    {"Evian water", "Blueberry flavour", "237 ml"},
+                    {"2k resolution, 144fps, 2ms delay", "mechanical", "bluetooth, 100-16000 dpi"},
+                    {"20 carat", "3 carat", "15 carat"}};
+
+            String[] traderRequests = new String[]{"Slippers", "An elephant", "IPod", "My house", "Silver thread", "Ice Cream Machine", "Webcam", "tissue box"};
+            String[] traderRequestDescription = new String[]{"Extremely comfortable", "from the circus!", "Collector's item", "Giant!", "Made of pure silver", "Worth $200",
+                    "Samsung, worth $200", "Silky smooth, Kleenex"};
+
+            LoginManager loginManager = new LoginManager();
+            TraderManager traderManager = new TraderManager();
+            HandleItemRequestsManager handleRequestsManager = new HandleItemRequestsManager();
+            HandleFrozenManager handleFrozenManager = new HandleFrozenManager();
+            MessageManager messageManager = new MessageManager();
+            TradingManager tradingManager = new TradingManager();
+            ReportManager reportManager = new ReportManager();
+            UserQuery userQuery = new UserQuery();
+
+            try{
+                loginManager.registerUser("admin", "adminPassword1", UserTypes.ADMIN);
+            }
+            catch (BadPasswordException | UserAlreadyExistsException e1){
+
+            }
+            for (int i = 0; i < traders.length; i++) {
+                System.out.println(i);
+                traders[i] = loginManager.registerUser(traderNames[i], traderPass[i], UserTypes.TRADER);
+                for (int j = 0; j < traderItems[0].length; j++)
+                    traderManager.addRequestItem(traders[i], traderItems[i][j], traderDescriptions[i][j]);
+                handleRequestsManager.processItemRequest(traders[i], userQuery.getRequestedItems(traders[i]).get(0), true);
+                handleRequestsManager.processItemRequest(traders[i], userQuery.getRequestedItems(traders[i]).get(0), true);
+                handleRequestsManager.processItemRequest(traders[i], userQuery.getRequestedItems(traders[i]).get(0), true);
+
+                traderManager.addRequestItem(traders[i], traderRequests[i], traderRequestDescription[i]);
+                traderManager.setCity(traders[i], "Toronto");
+            }
+
+            Date goodDate = new Date(System.currentTimeMillis() + 99999999);
+            Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
+            // Trades
+            for (int i = 1; i < traders.length / 2; i++) {
+                try {
+                    String acceptThis = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, goodDate2,
+                            "123 bay street", userQuery.getAvailableItems(traders[i]).get(0), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(0),
+                            3, "Your item looks amazing. Lets trade!"); // This is a temp trade
+                    String ongoing = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, null,
+                            "123 bay street", userQuery.getAvailableItems(traders[i]).get(1), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(1),
+                            3, "This trade may seem strange, but I really need this item to impress my friends!"); // This is a perma trade
+                    String requestedOnly = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, goodDate2,
+                            "123 bay street", userQuery.getAvailableItems(traders[i]).get(2), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(2),
+                            3, "I'll be so grateful if you could accept this trade!"); // this is for requesting temp trade
+                    // Only accepts request and doesn't confirm meetings so trade is ongoing
+                    tradingManager.acceptRequest(traders[traders.length - 1 - i], ongoing);
+                    // Confirms four meetings for a temporary trade and accepts request, meaning the trade is complete
+                    tradingManager.acceptRequest(traders[traders.length - 1 - i], acceptThis);
+                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis, true);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis, true);
+                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis, true);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis, true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            for (int i = 0; i < traders.length; i++)
+                traderManager.addToWishList(traders[i], userQuery.getAvailableItems(traders[i - 1 == -1 ? traders.length - 1 : i - 1]).get(0));
+
+            traders[3] = traderManager.setCity(traders[3], "new york");
+            traders[4] = traderManager.setCity(traders[4], "new york");
+            traders[5] = traderManager.setCity(traders[5], "new york");
+            traders[6] = traderManager.setCity(traders[6], "dallas");
+            traders[7] = traderManager.setCity(traders[7], "dallas");
+            // For changing idle status
+            traders[0] = traderManager.setIdle(traders[0], true);
+            // For adding reviews
+            traderManager.addReview(traders[0], traders[3], 5.3, "This guy was rude");
+            traderManager.addReview(traders[2], traders[3], 2.3, "This guy attacked me");
+            traderManager.addReview(traders[1], traders[4], 9.3, "This guy gave me free money");
+            // For setting frozen status
+            handleFrozenManager.setFrozen(traders[2], true);
+            // For reporting users
+            reportManager.reportUser(traders[3], traders[6], "This user drove off with my lambo and never gave me what I wanted");
+            reportManager.reportUser(traders[1], traders[6], "This user flew away with my helicopter and never gave me what I wanted");
+            // For messaging users
+            messageManager.sendMessage(traders[5], traders[7], "Dallas is pretty far can you come to New York instead");
+            messageManager.sendMessage(traders[5], traders[7], "Ik its a lot to ask but like yeehaw");
+            messageManager.sendMessage(traders[5], traders[7], "Dplease i got covid19 come to new yorkkk");
+            messageManager.sendMessage(traders[5], traders[7], "uk what fine, i never liked you anyway");
+            messageManager.sendMessage(traders[4], traders[7], "uk what fine, i never liked you anyway");
+            messageManager.sendMessage(traders[0], traders[1], "Yo man, that live chicken will love my backyard. How about we trade?");
+        } catch (IOException | UserAlreadyExistsException | BadPasswordException | UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
     // Deletes info in the ser files to reset it
     private void refreshFiles() {
         String[] paths = {DatabaseFilePaths.TRADE.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(),
