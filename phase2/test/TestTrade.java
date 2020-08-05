@@ -439,7 +439,144 @@ public class TestTrade extends TestManager{
             catch(CannotTradeException e){
                 assertEquals("Too many edits. Trade is cancelled.", e.getMessage());
             }
+
+            tradingManager.acceptRequest(trader2.getId(), trade1.getId());
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade1.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade1.getId(), true);
+
+            update();
+            assertEquals(item2, trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1));
+            assertEquals(item1, trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1));
+
+
+
+            /*
+            *******************************
+
+            Testing lends
+
+            *******************************
+            */
+
+            Trade trade2 = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "...",
+                    item3, "", 3, ""));
+
+            tradingManager.counterTradeOffer(trader2.getId(), trade2.getId(), goodDate, null, "...", item4, "", "");
+
+            try{
+                tradingManager.acceptRequest(trader1.getId(), trade2.getId());
+                fail("This user should not have enough lent to borrow");
+            }
+            catch (CannotTradeException e){
+                assertEquals(e.getMessage(), "The trader who originally sent the trade can't borrow");
+            }
+
+            tradingManager.counterTradeOffer(trader1.getId(), trade2.getId(), goodDate, null, "...", item3, "", "");
+            tradingManager.counterTradeOffer(trader2.getId(), trade2.getId(), goodDate, null, "...", "", item3, "");
+
+            tradingManager.acceptRequest(trader1.getId(), trade2.getId());
+            update();
+            assertEquals(0, trader1.getTotalAcceptedBorrows());
+            assertEquals(0, trader2.getTotalAcceptedBorrows());
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade2.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade2.getId(), true);
+            update();
+            assertEquals(item2, trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1));
+            assertEquals(item3, trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1));
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(0, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader1.getTotalAcceptedBorrows());
+
+                        /*
+            *******************************
+
+            Testing borrows
+
+            *******************************
+            */
+
+
+
+            Trade trade3 = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, null, "...",
+                    "", item3, 3, ""));
+            Trade trade4 = getTrade(tradingManager.requestTrade(trader1.getId(), trader2.getId(), goodDate, goodDate2, "...",
+                    "", item1, 3, ""));
+
+            tradingManager.counterTradeOffer(trader2.getId(), trade3.getId(), goodDate, null, "...", item3, "", "");
+
+            tradingManager.acceptRequest(trader1.getId(), trade3.getId());
+            update();
+            assertEquals(1, trader1.getTotalAcceptedBorrows());
+
+            try{
+                tradingManager.acceptRequest(trader2.getId(), trade4.getId());
+                fail("Alraedy accepted a borrow");
+            }
+            catch (CannotTradeException e){
+                assertEquals(e.getMessage(), "The trader who originally sent the trade can't borrow");
+            }
+
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade3.getId(), true);
+
+            update();
+            assertEquals(1, trader1.getTotalAcceptedBorrows());
+
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade3.getId(), true);
+
+            update();
+            assertEquals(0, trader1.getTotalAcceptedBorrows());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(1, trader1.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalAcceptedBorrows());
+            assertEquals(0, trader2.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsLent());
+
+            try{
+                tradingManager.acceptRequest(trader2.getId(), trade4.getId());
+                fail("Trader 1 needs to borrow more");
+            }
+            catch (CannotTradeException e){
+                assertEquals(e.getMessage(), "The trader who originally sent the trade can't borrow");
+            }
+            trader1.setTotalItemsLent(12300);
+            updateUserDatabase(trader1);
+
+            tradingManager.acceptRequest(trader2.getId(), trade4.getId());
+            update();
+            assertEquals(1, trader1.getTotalAcceptedBorrows());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalAcceptedBorrows());
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade4.getId(), true);
+            update();
+            assertEquals(1, trader1.getTotalAcceptedBorrows());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalAcceptedBorrows());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade4.getId(), true);
+            update();
+            assertEquals(1, trader1.getTotalAcceptedBorrows());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalAcceptedBorrows());
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade4.getId(), true);
+            update();
+            assertEquals(1, trader1.getTotalAcceptedBorrows());
+            assertEquals(1, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalAcceptedBorrows());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade4.getId(), true);
+            update();
+            assertEquals(0, trader1.getTotalAcceptedBorrows());
+            assertEquals(2, trader1.getTotalItemsBorrowed());
+            assertEquals(0, trader2.getTotalItemsLent());
+            assertEquals(0, trader2.getTotalAcceptedBorrows());
+
+
+
+
         } catch (CannotTradeException | UserNotFoundException | AuthorizationException | TradeNotFoundException e) {
+            fail();
             e.printStackTrace();
         }
     }

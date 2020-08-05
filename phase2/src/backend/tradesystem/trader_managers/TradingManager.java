@@ -118,8 +118,10 @@ public class TradingManager extends Manager {
 
         // Check that this trader has the ability to accept this trade
         if (!trader.canTrade() || !trader2.canTrade())
-            throw new CannotTradeException("Trade limitations prevent this trade from being accepted.");
-
+            throw new CannotTradeException("Trade limitations prevent this trade from being accepted");
+        if (trade.getFirstUserOffer().equals("") && !trader.canAcceptBorrow()){
+            throw new CannotTradeException("The trader who originally sent the trade can't borrow");
+        }
         // Check to see that the items are available to trade
         if (!hasItem(trader, trade.getFirstUserOffer()) || !hasItem(trader2, trade.getSecondUserOffer())) {
             throw new CannotTradeException("One of the traders no longer has the required item for the trade");
@@ -139,8 +141,12 @@ public class TradingManager extends Manager {
             trader2.getAvailableItems().remove(trade.getSecondUserOffer());
             if (!trade.getFirstUserOffer().equals(""))
                 trader.getOngoingItems().add(trade.getFirstUserOffer());
+            else
+                trader.setTotalAcceptedBorrows(trader.getTotalAcceptedBorrows() + 1);
+
             if (!trade.getSecondUserOffer().equals(""))
                 trader2.getOngoingItems().add(trade.getSecondUserOffer());
+
             trader.getAcceptedTrades().add(tradeId);
             trader2.getAcceptedTrades().add(tradeId);
             trader.getRequestedTrades().remove(tradeId);
@@ -195,8 +201,10 @@ public class TradingManager extends Manager {
 
                 trader1.setTradeCount(trader1.getTradeCount() + 1);
                 trader2.setTradeCount(trader2.getTradeCount() + 1);
-                if (trade.getFirstUserOffer().equals(""))
+                if (trade.getFirstUserOffer().equals("")) {
                     trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed() + 1);
+                    trader1.setTotalAcceptedBorrows(trader1.getTotalAcceptedBorrows() - 1);
+                }
                 if (trade.getSecondUserOffer().equals(""))
                     trader1.setTotalItemsLent(trader1.getTotalItemsLent() + 1);
             } else {
@@ -254,8 +262,10 @@ public class TradingManager extends Manager {
             if (!trade.getFirstUserOffer().equals("")) {
                 trader1.getAvailableItems().add(trade.getFirstUserOffer());
                 trader2.getOngoingItems().remove(trade.getFirstUserOffer());
-            } else
+            } else {
                 trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed() + 1);
+                trader1.setTotalAcceptedBorrows(trader1.getTotalAcceptedBorrows() - 1);
+            }
 
             // Update available items of the second trader / lent item count
             if (!trade.getSecondUserOffer().equals("")) {
@@ -417,6 +427,9 @@ public class TradingManager extends Manager {
         // Add items
         if (!trade.getFirstUserOffer().equals(""))
             firstTrader.getAvailableItems().add(trade.getFirstUserOffer());
+        else{
+            firstTrader.setTotalAcceptedBorrows(firstTrader.getTotalAcceptedBorrows()-1);
+        }
         if (!trade.getSecondUserOffer().equals(""))
             secondTrader.getAvailableItems().add(trade.getSecondUserOffer());
 
