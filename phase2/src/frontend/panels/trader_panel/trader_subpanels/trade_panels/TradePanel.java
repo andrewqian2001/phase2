@@ -68,13 +68,14 @@ public class TradePanel extends JPanel  {
      * @param bold       the bold font
      * @param italic     the italics font
      * @param boldItalic the bold italics font
-     * @throws IOException            issues with getting database files
-     * @throws UserNotFoundException  trader is is bad
-     * @throws AuthorizationException user id isn't a trader
+     * @throws IOException                   issues with getting database files
+     * @throws UserNotFoundException         trader is is bad
+     * @throws AuthorizationException        user id isn't a trader
      * @throws TradeNotFoundException
+     * @throws TradableItemNotFoundException
      */
-    public TradePanel(String trader, Font regular, Font bold, Font italic, Font boldItalic)
-            throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
+    public TradePanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException,
+            UserNotFoundException, AuthorizationException, TradeNotFoundException, TradableItemNotFoundException {
         this.trader = trader;
         this.regular = regular;
         this.bold = bold;
@@ -119,7 +120,7 @@ public class TradePanel extends JPanel  {
         tradeRequests.add(tradeRequestsScrollPane, gbc);
 
         this.add(new OngoingTradesPanel(trader, regular, bold, italic, boldItalic));
-        this.add(tradeRequests);
+        this.add(new TradeRequestsPanel(trader, regular, bold, italic, boldItalic));
     }
 
     private void addTradeRequestsHeader() {

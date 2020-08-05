@@ -202,7 +202,6 @@ public class MessagePanel extends JPanel {
             users.setBackground(gray2);
             users.setForeground(Color.BLACK);
             users.setOpaque(true);
-            // TODO: FIX TO GET ALL USERS
             infoManager.getAllUsers().forEach(id -> {
                 if (!id.equals(userId)) {
                     try {

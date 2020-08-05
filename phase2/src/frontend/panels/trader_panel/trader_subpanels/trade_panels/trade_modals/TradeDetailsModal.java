@@ -6,7 +6,7 @@ import javax.swing.JDialog;
 
 public class TradeDetailsModal extends JDialog {
 
-	public TradeDetailsModal(String tradeID, boolean b, boolean isTraderFirstUser, Font regular, Font bold, Font italic,
+	public TradeDetailsModal(String tradeID, boolean showAvailableEdits, boolean isTraderFirstUser, Font regular, Font bold, Font italic,
 			Font boldItalic) {
 	}
     
