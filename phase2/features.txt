@@ -1,2 +1,19 @@
-Login Manager:
- - The trade system now automatically removes any invlaid trade requests for a trader on login.
+Features:
+ - LoginManager now automatically removes any invlaid trade requests for a trader on login
+   (trades where the items offered are no longer in each trader's inventory).
+ - Able to search for traders and items
+ - Messaging between any two users
+ - Get details about past trades (recently traded items, frequent traders)
+ - Ratings for any trader
+ - Automated trade suggestions when requesting a trade (takes the item name and finds a good suggestion)
+ - The ability to change username, password, and city as a trader
+ - Password is validated so it has to meet certain requirements (certain length, needs upper case, needs symbol)
+ - Idle status, a status that prevents you from trading and makes it so you don’t show up in the system as a trader.
+   This can be toggled by the trader without admin approval as long as there are no ongoing trades
+ - Reports, users can report another user (essentially just sending a message to the admins)
+ - Demo user that can’t trade but can use the program like a trader, although none of the buttons that require an account
+   actually work (such as sending messages, starting a trade)
+ - Every admin can "infiltrade" a trader. This makes them take control of the account, allowing them to preform any actions
+   that same trader could do. This gives the admin the ability to undo certain actions taken by the trader.
+ - Every admin can undo an ongoing trade.
+ -
