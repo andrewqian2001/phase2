@@ -96,7 +96,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         for (int i = 0; i < menuTitles.length; i++)
             createPanelButton(menuTitles[i], i + 3, regular);
 
-        if(!infiltraded) { createLogoutButton(boldItalic); }
+        createLogoutButton(boldItalic, infiltraded);
 
         if(isFrozen) {
             menuPanelContainer.add(new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic), "Frozen Settings");
@@ -158,14 +158,20 @@ public class TraderPanel extends JPanel implements ActionListener {
         menuContainer.setOpaque(false);
     }
 
-    private void createLogoutButton(Font boldItalic) {
-        logoutButton = new JButton("Logout");
-        logoutButton.setFont(boldItalic.deriveFont(25f));
-        logoutButton.setForeground(Color.WHITE);
-        logoutButton.setBackground(RED);
-        logoutButton.setOpaque(true);
+    private void createLogoutButton(Font boldItalic, boolean infiltraded) {
+        logoutButton = new JButton();
+        if(!infiltraded) {
+            logoutButton.setText("Logout");
+            logoutButton.setFont(boldItalic.deriveFont(25f));
+            logoutButton.setForeground(Color.WHITE);
+            logoutButton.setBackground(RED);
+            logoutButton.setOpaque(true);
+            logoutButton.addActionListener(e -> ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout());
+        } else {
+            logoutButton.setOpaque(false);
+            logoutButton.setBackground(CURRENT);
+        }
         logoutButton.setBorderPainted(false);
-        logoutButton.addActionListener(e -> ((WindowManager) SwingUtilities.getWindowAncestor(this)).logout());
         gbc.gridy = 8;
         menuContainer.add(logoutButton, gbc);
     }
