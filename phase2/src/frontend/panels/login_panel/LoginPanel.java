@@ -69,6 +69,11 @@ public class LoginPanel extends JPanel implements ActionListener {
         managePasswordTitle(italic, gbc, inputs);
         managePasswordField(regular, input, gbc, inputs);
 
+        // TODO: REMOVE BELOW FOR DEPLOYMENT (only for testing)
+        // usernameInput = new JTextField("admin1");
+        usernameInput = new JTextField("trader7");
+        passwordInput = new JPasswordField("userPassword1");
+
         JPanel buttonContainer = manageButtonPanel(bold, gbc);
         manageRegisterButton(bold, gbc, buttonContainer);
         manageDemoButton(bold, gbc, buttonContainer);
@@ -101,6 +106,10 @@ public class LoginPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().equals("Login")) {
             try {
+                if(usernameInput.getText().trim().equals("") || String.valueOf(passwordInput.getPassword()).trim().equals("")) {
+                    notifyLogin("<html><b><i>Empty Username and/or Password.</i></b></html>");
+                    return;
+                }
                 String loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch (UserNotFoundException ignored) {

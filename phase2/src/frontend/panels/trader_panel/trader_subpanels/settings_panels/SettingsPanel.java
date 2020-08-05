@@ -1,4 +1,4 @@
-package frontend.panels.trader_panel.trader_subpanels;
+package frontend.panels.trader_panel.trader_subpanels.settings_panels;
 
 import java.awt.*;
 import java.io.IOException;
@@ -20,16 +20,11 @@ import backend.tradesystem.queries.UserQuery;
  */
 public class SettingsPanel extends JPanel {
     protected Font regular, bold, italic, boldItalic;
-    private String userId;
-
-    private TraderManager traderManager = new TraderManager();
-    
-    private LoginManager loginManager = new LoginManager();
-
-    private TradingInfoManager infoManager = new TradingInfoManager();
-
-    private ReportManager reportManager = new ReportManager();
-    
+    private final String userId;
+    private final TraderManager traderManager = new TraderManager();
+    private final LoginManager loginManager = new LoginManager();
+    private final TradingInfoManager infoManager = new TradingInfoManager();
+    private final ReportManager reportManager = new ReportManager();
     protected UserQuery userQuery = new UserQuery();
 
     protected final Color bg = new Color(51, 51, 51);
@@ -46,8 +41,8 @@ public class SettingsPanel extends JPanel {
      * @param bold       bold font
      * @param italic     italics font
      * @param boldItalic bold italics font
-     * @throws IOException issues with getting database files
-     * @throws UserNotFoundException user id is bad
+     * @throws IOException            issues with getting database files
+     * @throws UserNotFoundException  user id is bad
      * @throws AuthorizationException user isn't a trader
      */
     public SettingsPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
@@ -294,7 +289,7 @@ public class SettingsPanel extends JPanel {
         reportButton.setForeground(Color.WHITE);
         reportButton.setBorder(BorderFactory.createMatteBorder(15, 50, 15, 25, gray2));
         reportButton.addActionListener(e -> {
-           if (userId.equals("")) return;
+            if (userId.equals("")) return;
 
             JDialog reportTraderModal = new JDialog();
             reportTraderModal.setTitle("Report a Trader");
@@ -350,7 +345,7 @@ public class SettingsPanel extends JPanel {
             submitReportButton.setPreferredSize(new Dimension(225, 75));
             submitReportButton.setBorder(BorderFactory.createLineBorder(bg, 15));
             submitReportButton.addActionListener(e1 -> {
-                if(traderReportMessage.getText().trim().length() != 0 && traders.getSelectedItem() != null) {
+                if (traderReportMessage.getText().trim().length() != 0 && traders.getSelectedItem() != null) {
                     try {
                         reportManager.reportUser(userId, userQuery.getUserByUsername((String) traders.getSelectedItem()), traderReportMessage.getText());
                         reportTraderModal.dispose();

@@ -9,3 +9,4 @@ Is the architecture for using database class from the managers good design?
 
 Should enums and other classes be included in UML?
 
+Is it fine to reuse managers constnatly?

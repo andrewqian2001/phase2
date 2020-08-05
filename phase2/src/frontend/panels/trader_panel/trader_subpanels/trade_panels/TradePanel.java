@@ -1,4 +1,4 @@
-package frontend.panels.trader_panel.trader_subpanels;
+package frontend.panels.trader_panel.trader_subpanels.trade_panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -46,7 +46,7 @@ import backend.tradesystem.trader_managers.TradingManager;
 public class TradePanel extends JPanel implements ActionListener {
 
     private JPanel ongoingTradesContainer, tradeRequestsContainer;
-    private JScrollPane tradeRequestsScrollPane, ongoingTradesScrollPane;
+    private final JScrollPane tradeRequestsScrollPane, ongoingTradesScrollPane;
     private final JPanel ongoingTradesHeader, tradeRequestsHeader;
     private final Font regular, bold, italic, boldItalic;
     private final String trader;

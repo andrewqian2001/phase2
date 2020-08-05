@@ -24,7 +24,6 @@ public class AdminPanel extends JPanel implements ActionListener {
     private final JButton logoutButton = new JButton("Logout");
     private final CardLayout cardLayout = new CardLayout();
 
-    private JPanel overviewPanel, searchPanel, controlPanel, messagePanel;
 
     /**
      * For making a new admin panel
@@ -46,12 +45,12 @@ public class AdminPanel extends JPanel implements ActionListener {
         Color gray = new Color(184, 184, 184);
         Color red = new Color(219, 58, 52);
         UserQuery userQuery = new UserQuery();
-        overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
-        searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
-        controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
-        messagePanel = new MessagePanel(admin, regular, bold, italic, boldItalic);
+        JPanel overviewPanel = new OverviewPanel(admin, regular, bold, italic, boldItalic);
+        JPanel searchPanel = new SearchPanel(admin, regular, bold, italic, boldItalic);
+        JPanel controlPanel = new ControlPanel(admin, regular, bold, italic, boldItalic);
+        MessagePanel messagePanel = new MessagePanel(admin, regular, bold, italic, boldItalic);
 
-        ((MessagePanel) messagePanel).changeToAdminColorScheme();
+        messagePanel.changeToAdminColorScheme();
 
         searchPanel.setBackground(Color.BLACK);
         menuContainer.setPreferredSize(new Dimension(250, this.getHeight()));

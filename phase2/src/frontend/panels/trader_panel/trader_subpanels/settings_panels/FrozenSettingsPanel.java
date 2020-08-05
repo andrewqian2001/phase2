@@ -1,4 +1,4 @@
-package frontend.panels.trader_panel.trader_subpanels;
+package frontend.panels.trader_panel.trader_subpanels.settings_panels;
 
 import java.awt.*;
 import java.io.IOException;
