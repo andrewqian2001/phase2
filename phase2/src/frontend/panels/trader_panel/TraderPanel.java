@@ -27,6 +27,7 @@ import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
 import frontend.panels.general_panels.search_panels.SearchPanel;
 import frontend.panels.trader_panel.trader_subpanels.*;
+import frontend.panels.trader_panel.trader_subpanels.trade_panels.TradePanel;
 
 /**
  * This is used to show what a trader account sees
