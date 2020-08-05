@@ -27,6 +27,8 @@ import backend.tradesystem.queries.UserQuery;
 import frontend.WindowManager;
 import frontend.panels.general_panels.search_panels.SearchPanel;
 import frontend.panels.trader_panel.trader_subpanels.*;
+import frontend.panels.trader_panel.trader_subpanels.settings_panels.FrozenSettingsPanel;
+import frontend.panels.trader_panel.trader_subpanels.settings_panels.SettingsPanel;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.TradePanel;
 
 /**
