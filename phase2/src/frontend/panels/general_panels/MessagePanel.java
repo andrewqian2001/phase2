@@ -17,8 +17,10 @@ import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import frontend.components.TraderComboBoxItem;
 
-import backend.models.users.*; // remove
 
+/**
+ * Represents messaging and receiving messaging part of the window
+ */
 public class MessagePanel extends JPanel {
 
     private final ReportManager reportManager = new ReportManager();
@@ -36,15 +38,24 @@ public class MessagePanel extends JPanel {
 
     private final Dimension titleBarDimension = new Dimension(1200, 75);
     private final Dimension messagesDimension = new Dimension(1200, 400);
-    private final Dimension preferredSize = new Dimension(1200, 475);
 
     private JPanel messageTitleContainer, messagesListContainer;
     private JScrollPane messagesScrollPane;
 
-    private Font regular, bold, italic, boldItalic;
+    private final Font regular, bold, italic, boldItalic;
 
     private final String userId;
 
+    /**
+     * Making a new messaging panel
+     * @param userId the user
+     * @param regular regular font
+     * @param bold bold font
+     * @param italic italics font
+     * @param boldItalic bold italics font
+     * @throws IOException issues with getting database file
+     * @throws UserNotFoundException if the user isn't found
+     */
     public MessagePanel(String userId, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException {
 
@@ -54,7 +65,7 @@ public class MessagePanel extends JPanel {
         this.italic = italic;
         this.boldItalic = boldItalic;
 
-        this.setPreferredSize(preferredSize);
+        this.setPreferredSize(new Dimension(1200, 475));
         this.setBackground(bg);
 
         setMessageTitleContainer();
@@ -65,6 +76,9 @@ public class MessagePanel extends JPanel {
 
     }
 
+    /**
+     * Changing colour scheme to black
+     */
     public void changeToAdminColorScheme() {
         this.setBackground(Color.BLACK);
         for (Component c : messageTitleContainer.getComponents()) {
@@ -117,14 +131,14 @@ public class MessagePanel extends JPanel {
     }
 
     private JButton getClearAllmessagesButton() {
-        JButton clearAllmessagesButton = new JButton("Clear All Messages");
-        clearAllmessagesButton.setBackground(bg);
-        clearAllmessagesButton.setForeground(Color.CYAN);
-        clearAllmessagesButton.setFont(boldItalic.deriveFont(25f));
-        clearAllmessagesButton.setOpaque(true);
-        clearAllmessagesButton.setBorderPainted(false);
-        clearAllmessagesButton.setHorizontalAlignment(JButton.RIGHT);
-        clearAllmessagesButton.addActionListener(e -> {
+        JButton clearAllMessagesButton = new JButton("Clear All Messages");
+        clearAllMessagesButton.setBackground(bg);
+        clearAllMessagesButton.setForeground(Color.CYAN);
+        clearAllMessagesButton.setFont(boldItalic.deriveFont(25f));
+        clearAllMessagesButton.setOpaque(true);
+        clearAllMessagesButton.setBorderPainted(false);
+        clearAllMessagesButton.setHorizontalAlignment(JButton.RIGHT);
+        clearAllMessagesButton.addActionListener(e -> {
             if (userId.equals("") || messagesListContainer.getLayout() instanceof BorderLayout)
                 return;
             try {
@@ -137,7 +151,7 @@ public class MessagePanel extends JPanel {
             setNoMessagesFound();
         });
 
-        return clearAllmessagesButton;
+        return clearAllMessagesButton;
     }
 
     private void setNoMessagesFound() {

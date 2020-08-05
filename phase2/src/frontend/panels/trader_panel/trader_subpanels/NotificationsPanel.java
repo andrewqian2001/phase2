@@ -48,6 +48,8 @@ public class NotificationsPanel extends JPanel {
      * @param italic     italics font
      * @param boldItalic bold italics font
      * @throws IOException issues with getting database files
+     * @throws UserNotFoundException if user isn't found
+     * @throws AuthorizationException if this user isn't allowed to access this panel
      */
     public NotificationsPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException, AuthorizationException {

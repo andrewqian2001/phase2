@@ -55,6 +55,7 @@ public class TraderPanel extends JPanel implements ActionListener {
      * @param boldItalic bold italics font
      * @throws IOException           if accessing database has issues
      * @throws UserNotFoundException if the user id is bad
+     * @throws AuthorizationException if this user isn't allowed to access this panel
      */
     public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException, UserNotFoundException, AuthorizationException {
         this.setSize(1600, 900);
