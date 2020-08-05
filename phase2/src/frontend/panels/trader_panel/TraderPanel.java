@@ -22,6 +22,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.metal.MetalButtonUI;
 
 import backend.exceptions.AuthorizationException;
+import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
@@ -52,20 +53,22 @@ public class TraderPanel extends JPanel implements ActionListener {
     /**
      * Making a new trader panel
      *
-     * @param traderId   the trader id
-     * @param regular    regular font
-     * @param bold       bold font
-     * @param italic     italics font
-     * @param boldItalic bold italics font
+     * @param traderId    the trader id
+     * @param regular     regular font
+     * @param bold        bold font
+     * @param italic      italics font
+     * @param boldItalic  bold italics font
      * @param infiltraded
-     * @throws IOException            if accessing database has issues
-     * @throws UserNotFoundException  if the user id is bad
-     * @throws AuthorizationException if this user isn't allowed to access this
-     *                                panel
+     * @throws IOException                   if accessing database has issues
+     * @throws UserNotFoundException         if the user id is bad
+     * @throws AuthorizationException        if this user isn't allowed to access
+     *                                       this panel
      * @throws TradeNotFoundException
+     * @throws TradableItemNotFoundException
      */
     public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic, boolean infiltraded)
-            throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
+            throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException,
+            TradableItemNotFoundException {
         this.setSize(1600, 900);
         this.setOpaque(false);
         this.setLayout(new BorderLayout());

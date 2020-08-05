@@ -1,6 +1,7 @@
 package frontend;
 
 import backend.exceptions.AuthorizationException;
+import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
@@ -71,7 +72,7 @@ public class WindowManager extends JFrame {
             this.add(userPanel, BorderLayout.CENTER);
             this.setSize(userPanel.getSize());
             this.setResizable(false);
-        } catch (UserNotFoundException | AuthorizationException e) {
+        } catch (UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
             e.printStackTrace();
         }
         this.remove(loginPanel);
