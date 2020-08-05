@@ -93,9 +93,11 @@ public class ControlPanel extends JPanel implements ActionListener {
         }
         incompleteLimitChoice = new JComboBox<>(incompleteLimitChoices);
         handleInfoSubpanel(bg, info, incompleteLimitChoice, TraderProperties.INCOMPLETE_TRADE_LIM);
+
         createSubmitSettings(bold, bg, gbc, tradeSettings);
         JPanel newAdmin = createNewAdmin(bg, splitContainer);
         gbc = new GridBagConstraints();
+
         JPanel input = createNewInputForAdmin(bg, gbc, newAdmin);
         createLabel(regular, input, "Username:", 25f, JLabel.CENTER);
         createAccountInputs(regular, regular, bg, input);
@@ -122,9 +124,9 @@ public class ControlPanel extends JPanel implements ActionListener {
 
     private JPanel setUndoTradeButtonPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) {
         JPanel undoTradeButtonPanel = new JPanel(new GridLayout(1, 3));
-        undoTradeButtonPanel.setPreferredSize(new Dimension(1200, 150));
+        undoTradeButtonPanel.setPreferredSize(new Dimension(1200, 120));
         undoTradeButtonPanel.setBackground(bg);
-        undoTradeButtonPanel.setBorder(BorderFactory.createMatteBorder(50, 0, 0, 0, Color.BLACK));
+        undoTradeButtonPanel.setBorder(BorderFactory.createMatteBorder(30, 0, 0, 0, Color.BLACK));
 
         JLabel undoTradeLabel = new JLabel("Undo Trade");
         undoTradeLabel.setFont(bold.deriveFont(25f));
