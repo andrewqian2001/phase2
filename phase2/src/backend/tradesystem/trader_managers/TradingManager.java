@@ -307,6 +307,7 @@ public class TradingManager extends Manager {
      * @param meetingLocation   the meeting location of the trade
      * @param thisTraderOffer   the tradable item id that the current trader is offering
      * @param thatTraderOffer   the tradable item id that the current trader wants from the other trader
+     * @param message message of the offer
      * @return the id of the trade
      * @throws CannotTradeException   too many edits
      * @throws TradeNotFoundException this trade doesn't exist

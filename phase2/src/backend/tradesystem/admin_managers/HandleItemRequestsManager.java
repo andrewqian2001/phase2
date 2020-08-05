@@ -67,7 +67,6 @@ public class HandleItemRequestsManager extends Manager {
      * @param traderID   ID of the trader
      * @param reqItemID  the requested item to be confirmed or rejected
      * @param isAccepted true if item is accepted, false if rejected
-     * @return the updated trader
      * @throws TradableItemNotFoundException tradable item id isn't found
      * @throws AuthorizationException        if the user isn't a trader
      * @throws UserNotFoundException         trader isn't found

@@ -56,6 +56,7 @@ public class LoginManager extends Manager {
      * @return The ID of the newly created user
      * @throws UserAlreadyExistsException username is not unique
      * @throws BadPasswordException       password isn't valid
+     * @throws IOException issues with getting database files
      */
     public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException, IOException {
 
@@ -116,6 +117,7 @@ public class LoginManager extends Manager {
      * @param username username of user
      * @param password password of user
      * @return the user id of the logged in user
+     * @throws IOException issues with getting database files
      * @throws UserNotFoundException could not find the user
      */
     public String login(String username, String password) throws UserNotFoundException, IOException {
@@ -243,7 +245,7 @@ public class LoginManager extends Manager {
      *
      * @param propertyType the type of property
      * @return the value of the specified trader property
-     * @throw IOException if the input file doesn't exist
+     * @throws IOException if the input file doesn't exist
      */
     public int getProperty(TraderProperties propertyType) throws IOException {
         // get the file
@@ -265,7 +267,7 @@ public class LoginManager extends Manager {
      *
      * @param propertyName  the property to change
      * @param propertyValue the new value of that property
-     * @throw IOException if the file doesn't exist
+     * @throws IOException if the file doesn't exist
      */
     public void setProperty(TraderProperties propertyName, int propertyValue) throws IOException {
         // get the file
