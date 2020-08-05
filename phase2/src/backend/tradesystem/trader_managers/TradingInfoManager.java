@@ -304,7 +304,8 @@ public class TradingInfoManager extends Manager {
 
 
     /**
-     * returns string array in this format [thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId]
+     * Gives the best trade by taking the trader's wishlist items and their names.
+     * Returns string array in this format [thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId]
      *
      * @param thisTraderId id of this trader
      * @param filterCity   is if the trader wants to filter for city

@@ -38,7 +38,6 @@ public class MessagePanel extends JPanel {
 
     private final Dimension titleBarDimension = new Dimension(1200, 75);
     private final Dimension messagesDimension = new Dimension(1200, 400);
-    private final Dimension preferredSize = new Dimension(1200, 475);
 
     private JPanel messageTitleContainer, messagesListContainer;
     private JScrollPane messagesScrollPane;
@@ -66,7 +65,7 @@ public class MessagePanel extends JPanel {
         this.italic = italic;
         this.boldItalic = boldItalic;
 
-        this.setPreferredSize(preferredSize);
+        this.setPreferredSize(new Dimension(1200, 475));
         this.setBackground(bg);
 
         setMessageTitleContainer();
