@@ -27,6 +27,7 @@ public class WindowManager extends JFrame {
             adminBg = ImageIO.read(new File("./src/frontend/images/IconAdmin.jpg")),
             traderBg = ImageIO.read(new File("./src/frontend/images/IconTrader.jpg"));
     private final LoginManager loginManager = new LoginManager();
+    private boolean infiltraded;
 
     /**
      * This is where initial settings that affects the entire window is at
@@ -61,7 +62,7 @@ public class WindowManager extends JFrame {
     public void login(String loggedInUserId) throws IOException, TradeNotFoundException {
         try {
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
-                userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic);
+                userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic, infiltraded);
                 this.setContentPane(new ImagePanel(traderBg));
             } else {
                 userPanel = new AdminPanel(loggedInUserId, regular, bold, italic, boldItalic);
@@ -108,5 +109,12 @@ public class WindowManager extends JFrame {
             super.paintComponent(g);
             g.drawImage(image, 0, 0, this);
         }
+    }
+
+    /**
+     * Sets infiltraded to true (this WindowManager was created by an admin to infiltrade)
+     */
+    public void setInfiltraded() {
+        infiltraded = true;
     }
 }

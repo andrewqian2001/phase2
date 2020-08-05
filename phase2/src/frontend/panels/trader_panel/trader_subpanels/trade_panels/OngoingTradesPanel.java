@@ -16,19 +16,20 @@ import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
-// import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.TradeDetailsModal;
+
 
 public class OngoingTradesPanel extends JPanel implements ActionListener {
 
@@ -46,11 +47,10 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
 
     private final TradeQuery tradeQuery = new TradeQuery();
     private final UserQuery userQuery = new UserQuery();
-    private final ItemQuery itemQuery = new ItemQuery();
     
     private final TradingManager tradeManager = new TradingManager();
     private final TradingInfoManager infoManager = new TradingInfoManager();
-    
+
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
     public OngoingTradesPanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException,
@@ -287,7 +287,63 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         //same as actionPreformed in TradePanel
+        if (trader.equals(""))
+            return;
 
+        boolean isSuggestedTrade = e.getActionCommand().equals("<html><b><i><u>Suggest Trade</u></i></b></html>");
+        boolean isSuggestedLend = e.getActionCommand().equals("<html><b><i><u>Suggest Lend</u></i></b></html>");
+
+        String[] suggested = new String[0];
+        try {
+            if (isSuggestedLend)
+                suggested = infoManager.suggestLend(trader, false);
+            else if (isSuggestedTrade) {
+                suggested = infoManager.suggestTrade(trader, false);
+                if (suggested.length == 0) {
+                    suggested = infoManager.automatedTradeSuggestion(trader, true);
+                }
+            }
+        } catch (UserNotFoundException | AuthorizationException e1) {
+            e1.printStackTrace();
+        }
+
+        if (suggested.length == 0 && (isSuggestedLend || isSuggestedTrade)) {
+            isSuggestedTrade = false;
+            isSuggestedLend = false;
+
+            JDialog noSuggestionsFoundModal = createNoSuggestsFoundModal();
+            noSuggestionsFoundModal.setVisible(true);
+        }
+
+        // TODO: UNCOMMENT AFTER IMPLEMENTING MODAL
+        // JDialog newTradeModal = new AddNewTradeModal(trader, suggested, regular, bold, italic, boldItalic);
+        // newTradeModal.setVisible(true);
+
+    }
+
+    private JDialog createNoSuggestsFoundModal() {
+        JDialog noSuggestionsFound = new JDialog();
+        noSuggestionsFound.setTitle("No Suggestions Found");
+        noSuggestionsFound.setSize(500, 200);
+        noSuggestionsFound.setResizable(false);
+        noSuggestionsFound.setLocationRelativeTo(null);
+
+        JTextArea noSuggestionsTitle = new JTextArea(
+                "Unfortunately, we are not able to find a trade suggestion for you.\n\nClosing this pop-up will take you to the\n'Add New Trade' menu.");
+        noSuggestionsTitle.setFont(regular.deriveFont(22f));
+        noSuggestionsTitle.setBackground(bg);
+        noSuggestionsTitle.setForeground(Color.WHITE);
+        noSuggestionsTitle.setPreferredSize(new Dimension(500, 200));
+        noSuggestionsTitle.setOpaque(true);
+        noSuggestionsTitle.setEditable(false);
+        noSuggestionsTitle.setLineWrap(true);
+        noSuggestionsTitle.setWrapStyleWord(true);
+        noSuggestionsTitle.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+        noSuggestionsFound.add(noSuggestionsTitle);
+        noSuggestionsFound.setModal(true);
+
+        return noSuggestionsFound;
     }
     
 }
