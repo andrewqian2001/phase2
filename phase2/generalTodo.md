@@ -10,6 +10,7 @@ Should enums and other classes be included in UML?
 
 Is it fine to reuse managers constnatly?
 
+Are citations enough? Is copying code from stackoverflow fine?
 
 Strategy design: Move suggestLend, suggestTrade, automatedTradeSuggestion, automatedLendSuggestion into things
 Facade design: Front end uses this to split up panels
