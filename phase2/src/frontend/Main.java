@@ -15,7 +15,7 @@ import backend.tradesystem.DetectDatabaseChange;
 public class Main {
     public static void main(String[] args) {
         try {
-//             new TemporarySetup();
+             new TemporarySetup();
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             WindowManager windowManager = new WindowManager();
             windowManager.run();
@@ -31,7 +31,7 @@ public class Main {
                 }
             };
             Timer timer = new Timer();
-            timer.schedule(task, new Date(), 1500);
+            timer.schedule(task, new Date(), 500);
 
         } catch (Exception e) {
             e.printStackTrace();
