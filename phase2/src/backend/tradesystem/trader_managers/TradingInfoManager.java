@@ -388,12 +388,62 @@ public class TradingInfoManager extends Manager {
 
     }
 
+
     /**
-     * checks how many similarities name has with strings in list
+     * Suggests an item to lend to traders in the database
+     * @param thisTraderId is the id of the trader
+     * @param filterCity if the user wants to filter for city
+     * @return a 2 cell string array containing the traderId that is suggested this trader lend to with, and this traders item to lend. {mostSimTraderId, mostSimItemId}
+     * @throws UserNotFoundException
+     * @throws AuthorizationException
+     */
+    public String[] automatedLendSuggestion(String thisTraderId, boolean filterCity) throws UserNotFoundException, AuthorizationException{
+
+        ArrayList<String> allTraders = getAllTraders();
+        Trader thisTrader = getTrader(thisTraderId);
+        allTraders.remove(thisTrader); //so it doesn't trade with itself
+        String city = thisTrader.getCity();
+
+        String mostSimItemId = null;
+        String mostSimTraderId = null;
+        int maxSim = 0;
+        for (String otherTraderId : allTraders) {
+            Trader otherTrader = getTrader(otherTraderId);
+            if (filterCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
+                continue;
+            }
+            for(String inventoryItemId: thisTrader.getAvailableItems()){
+                Object[] giveItem = null;
+                try {
+                    giveItem = similarSearch(inventoryItemId, otherTrader.getWishlist());
+                } catch (TradableItemNotFoundException e) {
+                    giveItem = null;
+                } finally {
+                    if (!(giveItem == null)) {
+                        if (((int) giveItem[1]) > maxSim) {
+                            mostSimItemId = inventoryItemId;
+                            mostSimTraderId = otherTraderId;
+                            maxSim = ((int) giveItem[1]);
+                        }
+                    }
+                }
+            }
+        }
+        if(mostSimItemId == null || mostSimTraderId == null){
+            return new String[] {};
+        }
+        return new String[] {mostSimTraderId, mostSimItemId};
+
+
+    }
+
+
+    /**
+     * finds the most similar string in list to the string of the inputted name and returns it if it passes the threshold
      *
      * @param nameId is the id of the item we wish to find a similar name of
-     * @param list   is the list of strings that we are traversing through
-     * @return an array with two cells containing the items name and the score of how similar it is
+     * @param list is the list of strings that we are traversing through
+     * @return an array with two cells containing the items name and the score of how similar it is (if the similarity score passes threshold)
      */
     private Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
@@ -516,7 +566,7 @@ public class TradingInfoManager extends Manager {
             }
         }
 
-        //adds a threshold, so that items we consider not simialr dont get added, even if there is nothing else
+        //adds a threshold, so that items we consider not similar don't get added, even if there is nothing else
         if (max >= ((int) (longestWord.length() * 0.8))) {
             return new Object[]{mostSimilarNameId, max};
         }
