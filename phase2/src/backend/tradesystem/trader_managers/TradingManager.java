@@ -153,6 +153,7 @@ public class TradingManager extends Manager {
             trader2.getRequestedTrades().remove(tradeId);
             updateUserDatabase(trader);
             updateUserDatabase(trader2);
+            removeInvalidRequests(traderId);
             return true;
         }
         return false;
@@ -469,5 +470,39 @@ public class TradingManager extends Manager {
         return (item.equals("") || trader.getAvailableItems().contains(item));
     }
 
+
+    /**
+     * Removes all invalid trade requests and anything that needs to be cleaned up
+     *
+     * @param traderID the id of the trader
+     */
+    private void removeInvalidRequests(String traderID) {
+        // Removes invalid trades
+        try {
+            Trader someTrader = getTrader(traderID);
+
+            for (int i = someTrader.getRequestedTrades().size() - 1; i >= 0; i--) {
+                String tradeID = someTrader.getRequestedTrades().get(i);
+                // Populate required variables.
+                Trade t = getTrade(tradeID);
+                Trader firstTrader = getTrader(t.getFirstUserId());
+                Trader secondTrader = getTrader(t.getSecondUserId());
+
+                // Figure out whether the trade is still valid.
+                boolean isValid = (t.getFirstUserOffer().equals("") || firstTrader.getAvailableItems().contains(t.getFirstUserOffer())) &&
+                        (t.getSecondUserOffer().equals("") || secondTrader.getAvailableItems().contains(t.getSecondUserOffer()));
+
+                if (!isValid) {
+                    firstTrader.getRequestedTrades().remove(i);
+                    secondTrader.getRequestedTrades().remove(i);
+                    getTradeDatabase().delete(tradeID);
+                    getUserDatabase().update(firstTrader);
+                    getUserDatabase().update(secondTrader);
+                }
+            }
+        } catch (EntryNotFoundException | AuthorizationException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

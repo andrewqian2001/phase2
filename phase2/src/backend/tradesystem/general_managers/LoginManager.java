@@ -129,7 +129,6 @@ public class LoginManager extends Manager {
             } catch (IOException ex) {
                 System.out.println("Couldn't reset trade limits");
             }
-            removeInvalidRequests(user.getId());
         }
         updateAllTraderDefaults();
         return user.getId();
@@ -306,58 +305,4 @@ public class LoginManager extends Manager {
         }
     }
 
-    /**
-     * Removes all invalid trade requests and anything that needs to be cleaned up
-     *
-     * @param traderID the id of the trader
-     */
-    private void removeInvalidRequests(String traderID) {
-        // Removes invalid trades
-        try {
-            Trader someTrader = getTrader(traderID);
-
-            for (int i = someTrader.getRequestedTrades().size() - 1; i >= 0; i--) {
-                String tradeID = someTrader.getRequestedTrades().get(i);
-                // Populate required variables.
-                Trade t = getTrade(tradeID);
-                Trader firstTrader = getTrader(t.getFirstUserId());
-                Trader secondTrader = getTrader(t.getSecondUserId());
-
-                // Figure out whether the trade is still valid.
-                boolean isValid = (t.getFirstUserOffer().equals("") || firstTrader.getAvailableItems().contains(t.getFirstUserOffer())) &&
-                        (t.getSecondUserOffer().equals("") || secondTrader.getAvailableItems().contains(t.getSecondUserOffer()));
-
-                if (!isValid) {
-                    firstTrader.getRequestedTrades().remove(i);
-                    secondTrader.getRequestedTrades().remove(i);
-                    getTradeDatabase().delete(tradeID);
-                    getUserDatabase().update(firstTrader);
-                    getUserDatabase().update(secondTrader);
-                }
-            }
-        } catch (EntryNotFoundException | AuthorizationException e) {
-            e.printStackTrace();
-        }
-        // Removes invalid items
-        try {
-            Trader someTrader = getTrader(traderID);
-            for (int i = someTrader.getAvailableItems().size() - 1; i >= 0; i--) {
-                try {
-                    getTradableItem(someTrader.getAvailableItems().get(i));
-                } catch (TradableItemNotFoundException ignored) {
-                    someTrader.getAvailableItems().remove(i);
-                }
-            }
-            for (int i = someTrader.getWishlist().size() - 1; i >= 0; i--) {
-                try {
-                    getTradableItem(someTrader.getWishlist().get(i));
-                } catch (TradableItemNotFoundException ignored) {
-                    someTrader.getWishlist().remove(i);
-                }
-            }
-            updateUserDatabase(someTrader);
-        } catch (UserNotFoundException | AuthorizationException e) {
-            e.printStackTrace();
-        }
-    }
 }
