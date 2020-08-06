@@ -77,7 +77,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
 
         this.setTitle("Add New Trade");
         this.setSize(500, 1200);
-        this.setResizable(false);
+        this.setResizable(true);
         this.setLocationRelativeTo(null);
 
         boolean isSuggested = suggested.length != 0;

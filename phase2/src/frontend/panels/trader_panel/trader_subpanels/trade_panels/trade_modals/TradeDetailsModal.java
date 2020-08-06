@@ -45,17 +45,16 @@ public class TradeDetailsModal extends JDialog {
 		this.italic = italic;
 		this.boldItalic = boldItalic;
 
-		JDialog tradeDetailsModal = new JDialog();
-		tradeDetailsModal.setTitle("Trade Details");
-		tradeDetailsModal.setSize(new Dimension(600, showAvailableEdits ? 550 : 500));
-		tradeDetailsModal.setResizable(false);
-		tradeDetailsModal.setLocationRelativeTo(null);
+		this.setTitle("Trade Details");
+		this.setSize(new Dimension(600, showAvailableEdits ? 550 : 500));
+		this.setResizable(true);
+		this.setLocationRelativeTo(null);
 
 		JPanel tradeDetailsPanel = setTradeDetailsPanel();
 
-		tradeDetailsModal.add(tradeDetailsPanel);
-		tradeDetailsModal.setModal(true);
-		tradeDetailsModal.setVisible(true);
+		this.add(tradeDetailsPanel);
+		this.setModal(true);
+		this.setVisible(true);
 	}
 
 	private JPanel setTradeDetailsPanel() throws TradeNotFoundException, UserNotFoundException,
