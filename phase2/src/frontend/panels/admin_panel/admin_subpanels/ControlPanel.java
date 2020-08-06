@@ -142,7 +142,6 @@ public class ControlPanel extends JPanel implements ActionListener {
         ongoingTradesContainer.setBackground(bg);
 
         ongoingTradesScrollPane.setPreferredSize(new Dimension(1200, 280));
-        ongoingTradesScrollPane.setBackground(bg);
         ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
         ongoingTradesScrollPane.setBorder(null);
 
@@ -159,7 +158,7 @@ public class ControlPanel extends JPanel implements ActionListener {
             return createNoTradesFoundPanel("<html><pre>No Ongoing Trades Found</pre></html>", bold);
 
         int numRows = acceptedTrades.size();
-        numRows = numRows < 4 ? 4 : numRows;
+        numRows = Math.max(4, numRows);
 
         ongoingTradesContainer.setLayout(new GridLayout(numRows, 1));
         ongoingTradesContainer.setBackground(bg);
