@@ -23,6 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import backend.exceptions.AuthorizationException;
@@ -76,19 +77,33 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         this.boldItalic = boldItalic;
 
         this.setTitle("Add New Trade");
-        this.setSize(500, 1200);
+        this.setSize(600, 600);
         this.setResizable(true);
         this.setLocationRelativeTo(null);
 
         boolean isSuggested = suggested.length != 0;
 
-        JPanel addNewTradePanel = setAddNewTradePanel(isSuggested);
+        JScrollPane addNewTradeScrollPane = setAddNewScrollPane(isSuggested);
 
         JButton tradeSubmitButton = setTradeSubmitButton();
 
-        this.add(addNewTradePanel);
+        this.add(addNewTradeScrollPane);
         this.add(tradeSubmitButton, BorderLayout.SOUTH);
         this.setModal(true);
+    }
+
+    private JScrollPane setAddNewScrollPane(boolean isSuggested)
+            throws UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
+        JScrollPane addNewTradeScrollPane = new JScrollPane();
+        addNewTradeScrollPane.setPreferredSize(new Dimension(600,600));
+        addNewTradeScrollPane.setBackground(bg);
+        addNewTradeScrollPane.setBorder(BorderFactory.createEmptyBorder());
+
+        JPanel addNewTradePanel = setAddNewTradePanel(isSuggested);
+
+        addNewTradeScrollPane.setViewportView(addNewTradePanel);
+
+        return addNewTradeScrollPane;
     }
 
     private JButton setTradeSubmitButton() {
@@ -390,7 +405,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
     private JPanel setAddNewTradePanel(boolean isSuggested)
             throws UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
         JPanel addNewTradePanel = new JPanel();
-        addNewTradePanel.setPreferredSize(new Dimension(500, 1050));
+        addNewTradePanel.setPreferredSize(new Dimension(500, 1100));
         addNewTradePanel.setBackground(bg);
 
         JPanel tradeWithinCityPanel = setTradeWithinCityPanel();
