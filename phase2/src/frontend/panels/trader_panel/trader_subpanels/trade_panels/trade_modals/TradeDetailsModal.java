@@ -1,7 +1,9 @@
 package frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals;
 
+import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
+import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
 
@@ -26,13 +28,15 @@ public class TradeDetailsModal extends JDialog {
 	private Font italic;
 	private Font boldItalic;
 
+	private final ItemQuery itemQuery = new ItemQuery();
 	private final TradeQuery tradeQuery = new TradeQuery();
 	private final UserQuery userQuery = new UserQuery();
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
-	public TradeDetailsModal(String tradeID, boolean showAvailableEdits, boolean isTraderFirstUser, Font regular, Font bold, Font italic,
-			Font boldItalic) throws IOException, TradeNotFoundException, UserNotFoundException {
+	public TradeDetailsModal(String tradeID, boolean showAvailableEdits, boolean isTraderFirstUser, Font regular,
+			Font bold, Font italic, Font boldItalic) throws IOException, TradeNotFoundException, UserNotFoundException,
+			TradableItemNotFoundException {
 		this.tradeID = tradeID;
 		this.showAvailableEdits = showAvailableEdits;
 		this.isTraderFirstUser = isTraderFirstUser;
@@ -43,7 +47,7 @@ public class TradeDetailsModal extends JDialog {
 
 		JDialog tradeDetailsModal = new JDialog();
 		tradeDetailsModal.setTitle("Trade Details");
-		tradeDetailsModal.setSize(600, 600);
+		tradeDetailsModal.setSize(new Dimension(600, showAvailableEdits ? 550 : 500));
 		tradeDetailsModal.setResizable(false);
 		tradeDetailsModal.setLocationRelativeTo(null);
 
@@ -54,9 +58,10 @@ public class TradeDetailsModal extends JDialog {
 		tradeDetailsModal.setVisible(true);
 	}
 
-	private JPanel setTradeDetailsPanel() throws TradeNotFoundException, UserNotFoundException {
+	private JPanel setTradeDetailsPanel() throws TradeNotFoundException, UserNotFoundException,
+			TradableItemNotFoundException {
 		JPanel tradeDetailsPanel = new JPanel();
-		tradeDetailsPanel.setPreferredSize(new Dimension(600, 600));
+		tradeDetailsPanel.setPreferredSize(new Dimension(600, showAvailableEdits ? 550 : 500));
 		tradeDetailsPanel.setBackground(bg);
 
 		tradeDetailsPanel.add(setOtherTraderNameTitle());
@@ -71,8 +76,10 @@ public class TradeDetailsModal extends JDialog {
 		tradeDetailsPanel.add(setFirstMeetingDate());
 		tradeDetailsPanel.add(setSecondMeetingDateTitle());
 		tradeDetailsPanel.add(setSecondMeetingDate());
-		tradeDetailsPanel.add(setAvailableEditsTitle());
-		tradeDetailsPanel.add(setAvailableEdits());
+		if(showAvailableEdits) {
+			tradeDetailsPanel.add(setAvailableEditsTitle());
+			tradeDetailsPanel.add(setAvailableEdits());
+		}
 		tradeDetailsPanel.add(setMessageTitle());
 		tradeDetailsPanel.add(setMessageBody());
 
@@ -97,8 +104,7 @@ public class TradeDetailsModal extends JDialog {
 		else
 			otherTraderName = userQuery.getUsername(tradeQuery.getFirstUserId(tradeID));
 
-		JLabel otherTraderDetailsName = new JLabel(
-				"<html><pre>" + otherTraderName + "</pre></html>");
+		JLabel otherTraderDetailsName = new JLabel("<html><pre>" + otherTraderName + "</pre></html>");
 		otherTraderDetailsName.setFont(italic.deriveFont(20f));
 		otherTraderDetailsName.setPreferredSize(new Dimension(290, 50));
 		otherTraderDetailsName.setOpaque(false);
@@ -127,11 +133,10 @@ public class TradeDetailsModal extends JDialog {
 		return otherTraderItemTitle;
 	}
 
-	private JLabel setOtherTraderItemRequestName() throws TradeNotFoundException {
-		String otherTraderItemName = tradeQuery.getSecondUserOffer(tradeID);
+	private JLabel setOtherTraderItemRequestName() throws TradeNotFoundException, TradableItemNotFoundException {
+		String otherTraderItemName = isTraderFirstUser ? itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)) : itemQuery.getName(tradeQuery.getFirstUserOffer(tradeID));
 
-		JLabel otherTraderItemRequestName = new JLabel(
-				"<html><pre>" + otherTraderItemName + "</pre></html>");
+		JLabel otherTraderItemRequestName = new JLabel("<html><pre>" + otherTraderItemName + "</pre></html>");
 		otherTraderItemRequestName.setFont(regular.deriveFont(20f));
 		otherTraderItemRequestName.setPreferredSize(new Dimension(290, 50));
 		otherTraderItemRequestName.setOpaque(false);
@@ -140,8 +145,8 @@ public class TradeDetailsModal extends JDialog {
 		return otherTraderItemRequestName;
 	}
 
-	private JLabel setTraderItemRequestName() throws TradeNotFoundException {
-		String traderItemName = tradeQuery.getFirstUserOffer(tradeID);
+	private JLabel setTraderItemRequestName() throws TradeNotFoundException, TradableItemNotFoundException {
+		String traderItemName = !isTraderFirstUser ? itemQuery.getName(tradeQuery.getSecondUserOffer(tradeID)) : itemQuery.getName(tradeQuery.getFirstUserOffer(tradeID));
 
 		JLabel traderItemRequestName = new JLabel(
 				"<html><pre>" + traderItemName + "</pre></html>");

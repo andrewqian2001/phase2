@@ -168,8 +168,9 @@ public class TradeRequestsPanel extends JPanel {
         JButton tradeDetailsButton = createTradeRequestButton("Details", gray2);
         tradeDetailsButton.addActionListener(e -> {
             try {
-                new TradeDetailsModal(tradeID, false, isTraderFirstUser, regular, bold, italic, boldItalic);
-            } catch (IOException | TradeNotFoundException | UserNotFoundException exception) {
+                new TradeDetailsModal(tradeID, true, isTraderFirstUser, regular, bold, italic, boldItalic);
+            } catch (IOException | TradeNotFoundException | UserNotFoundException
+                    | TradableItemNotFoundException exception) {
                 exception.printStackTrace();
             }
         });

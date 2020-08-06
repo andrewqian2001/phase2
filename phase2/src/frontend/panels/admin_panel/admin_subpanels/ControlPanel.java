@@ -269,7 +269,8 @@ public class ControlPanel extends JPanel implements ActionListener {
         tradeDetailsButton.addActionListener(e -> {
             try {
                 new TradeDetailsModal(tradeID, false, isTraderFirstUser, regular, bold, italic, boldItalic);
-            } catch (IOException | TradeNotFoundException | UserNotFoundException exception) {
+            } catch (IOException | TradeNotFoundException | UserNotFoundException
+                    | TradableItemNotFoundException exception) {
                 exception.printStackTrace();
             }
         });
