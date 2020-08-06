@@ -2,10 +2,9 @@
 
 Ask  TA Questions for meeting: 
 
-Strategy design pattern for TradingInfoManager  
-Potentially iterator pattern also
+Is the architecture for using database class from the managers good design?
 
-Is the architecture for using database class from the managers good design? Use case to gateway???
+Is it fine for classes in the same MVC layer to be composing each other?
 
 Should enums and other classes be included in UML?
 
