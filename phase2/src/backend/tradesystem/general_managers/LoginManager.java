@@ -56,7 +56,7 @@ public class LoginManager extends Manager {
      * @return The ID of the newly created user
      * @throws UserAlreadyExistsException username is not unique
      * @throws BadPasswordException       password isn't valid
-     * @throws IOException issues with getting database files
+     * @throws IOException                issues with getting database files
      */
     public String registerUser(String username, String password, UserTypes type) throws UserAlreadyExistsException, BadPasswordException, IOException {
 
@@ -68,14 +68,13 @@ public class LoginManager extends Manager {
         switch (type) {
             case ADMIN:
                 Admin admin = new Admin(username, password);
-                for (String userId: getAllUsers()){
+                for (String userId : getAllUsers()) {
                     try {
                         if (getUser(userId) instanceof Admin) {
                             admin.setReports(((Admin) getUser(userId)).getReports());
                             break;
                         }
-                    }
-                    catch(UserNotFoundException e){
+                    } catch (UserNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
@@ -117,7 +116,7 @@ public class LoginManager extends Manager {
      * @param username username of user
      * @param password password of user
      * @return the user id of the logged in user
-     * @throws IOException issues with getting database files
+     * @throws IOException           issues with getting database files
      * @throws UserNotFoundException could not find the user
      */
     public String login(String username, String password) throws UserNotFoundException, IOException {
@@ -316,7 +315,9 @@ public class LoginManager extends Manager {
         // Removes invalid trades
         try {
             Trader someTrader = getTrader(traderID);
-            for (String tradeID : someTrader.getRequestedTrades()) {
+
+            for (int i = someTrader.getRequestedTrades().size() - 1; i >= 0; i--) {
+                String tradeID = someTrader.getRequestedTrades().get(i);
                 // Populate required variables.
                 Trade t = getTrade(tradeID);
                 Trader firstTrader = getTrader(t.getFirstUserId());
@@ -327,8 +328,8 @@ public class LoginManager extends Manager {
                         (t.getSecondUserOffer().equals("") || secondTrader.getAvailableItems().contains(t.getSecondUserOffer()));
 
                 if (!isValid) {
-                    firstTrader.getRequestedTrades().remove(tradeID);
-                    secondTrader.getRequestedTrades().remove(tradeID);
+                    firstTrader.getRequestedTrades().remove(i);
+                    secondTrader.getRequestedTrades().remove(i);
                     getTradeDatabase().delete(tradeID);
                     getUserDatabase().update(firstTrader);
                     getUserDatabase().update(secondTrader);
