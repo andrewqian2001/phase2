@@ -131,7 +131,7 @@ public class TemporarySetup {
             refreshFiles();
             String[] traders = new String[8];
             String[] traderNames = new String[]{"Ilan", "James", "Navinn", "William", "Andrew", "Nilay", "Clara", "Morteza"};
-            String[] traderPass = new String[]{"bestTrader2020", "0verlyStr0ngP4ss", "123GUIsensei", "valorantPRO1", "superSearcher3000", "1234yaliN5678", "AW0nderfulP4ss", "designMaster100"};
+                String[] traderPass = new String[]{"bestTrader2020", "0verlyStr0ngP4ss", "123GUIsensei", "valorantPRO1", "superSearcher3000", "1234yaliN5678", "AW0nderfulP4ss", "designMaster100"};
             String[][] traderItems = new String[][]{{"Ream of paper", "Nike Shoe", "Fancy Hat"},
                     {"Steak", "Live Chicken", "Goat Milk"},
                     {"MacBook", "ASUS motherboard", "Nvidia Geforce RTX 2080"},
