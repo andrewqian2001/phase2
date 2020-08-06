@@ -166,8 +166,13 @@ public class TradeRequestsPanel extends JPanel {
         boolean isTraderFirstUser = tradeQuery.getFirstUserId(tradeID).equals(trader);
 
         JButton tradeDetailsButton = createTradeRequestButton("Details", gray2);
-        // TODO: UNCOMMENT AFTER IMPLEMENTING MODAL
-        // tradeDetailsButton.addActionListener(e -> new TradeDetailsModal(tradeID, true, isTraderFirstUser, regular, bold, italic, boldItalic));
+        tradeDetailsButton.addActionListener(e -> {
+            try {
+                new TradeDetailsModal(tradeID, false, isTraderFirstUser, regular, bold, italic, boldItalic);
+            } catch (IOException | TradeNotFoundException | UserNotFoundException exception) {
+                exception.printStackTrace();
+            }
+        });
 
         JButton editTradeButton = createTradeRequestButton("Edit", Color.CYAN);
         // TODO: UNCOMMENT AFTER IMPLEMENTING MODAL
