@@ -116,6 +116,9 @@ public class ControlPanel extends JPanel implements ActionListener {
         createMessageWrapper(regular, bg, gbc, newAdmin);
         handleSubmitAdmin(bold, bg, gbc, newAdmin);
 
+        JPanel ongoingTradesHeader = setOngoingTradesHeader(regular);
+
+
         // JLabel ah = new JLabel("<html><b><i>Lorem ipsum dolor sit amet, consectetur
         // adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
         // aliqua. <br>Ut enim ad minim veniam, quis nostrud exercitation ullamco
@@ -131,8 +134,43 @@ public class ControlPanel extends JPanel implements ActionListener {
         this.add(titles);
         this.add(splitContainer);
         this.add(setUndoTradeButtonPanel(userId, regular, bold, italic, boldItalic));
+        this.add(ongoingTradesHeader);
         this.add(setOngoingTradesScrollPane());
 
+    }
+
+    private JPanel setOngoingTradesHeader(Font regular) {
+        JPanel ongoingTradesHeader = new JPanel(new GridLayout(1, 5, 25, 0));
+        ongoingTradesHeader.setPreferredSize(new Dimension(1200, 25));
+        ongoingTradesHeader.setBackground(bg);
+        ongoingTradesHeader.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 80));
+
+        JLabel name = new JLabel("Name");
+        name.setFont(regular.deriveFont(20f));
+        name.setForeground(Color.white);
+        name.setHorizontalAlignment(JLabel.LEFT);
+
+        JLabel location = new JLabel("Location");
+        location.setFont(regular.deriveFont(20f));
+        location.setForeground(Color.white);
+        location.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel meetingTime = new JLabel("           Meeting Time");
+        meetingTime.setFont(regular.deriveFont(20f));
+        meetingTime.setForeground(Color.white);
+        meetingTime.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel empty2 = new JLabel("");
+        JLabel empty1 = new JLabel("");
+
+        ongoingTradesHeader.add(name);
+        ongoingTradesHeader.add(location);
+        ongoingTradesHeader.add(meetingTime);
+
+        ongoingTradesHeader.add(empty1);
+        ongoingTradesHeader.add(empty2);
+
+        return ongoingTradesHeader;
     }
 
     private JScrollPane setOngoingTradesScrollPane() {
@@ -142,7 +180,6 @@ public class ControlPanel extends JPanel implements ActionListener {
         ongoingTradesContainer.setBackground(bg);
 
         ongoingTradesScrollPane.setPreferredSize(new Dimension(1200, 280));
-        ongoingTradesScrollPane.setBackground(bg);
         ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
         ongoingTradesScrollPane.setBorder(null);
 
@@ -159,7 +196,7 @@ public class ControlPanel extends JPanel implements ActionListener {
             return createNoTradesFoundPanel("<html><pre>No Ongoing Trades Found</pre></html>", bold);
 
         int numRows = acceptedTrades.size();
-        numRows = numRows < 4 ? 4 : numRows;
+        numRows = Math.max(4, numRows);
 
         ongoingTradesContainer.setLayout(new GridLayout(numRows, 1));
         ongoingTradesContainer.setBackground(bg);
