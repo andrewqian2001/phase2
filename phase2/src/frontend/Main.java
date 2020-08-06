@@ -1,16 +1,15 @@
 package frontend;
 
-import backend.tradesystem.DetectDatabaseChange;
-
-import javax.swing.UIManager;
-import java.io.File;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.UIManager;
+
+import backend.tradesystem.DetectDatabaseChange;
+
 /**
- * This is where the program starts running
- * Code partially taken from
+ * This is where the program starts running Code partially taken from
  * https://stackoverflow.com/questions/54815226/how-can-i-detect-if-a-file-has-been-modified-using-lastmodified
  */
 public class Main {
@@ -23,6 +22,12 @@ public class Main {
             TimerTask task = new DetectDatabaseChange() {
                 protected void onChange() {
                     // If backend files change, this gets called
+                    try {
+                        if(!windowManager.getUserId().equals(""))
+                            windowManager.login(windowManager.getUserId());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             };
             Timer timer = new Timer();

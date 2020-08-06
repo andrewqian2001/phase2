@@ -30,6 +30,8 @@ public class WindowManager extends JFrame {
     private final LoginManager loginManager = new LoginManager();
     private boolean infiltraded;
 
+    private String userId;
+
     /**
      * This is where initial settings that affects the entire window is at
      *
@@ -53,6 +55,10 @@ public class WindowManager extends JFrame {
         this.setResizable(false);
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
     /**
      * Changes from login screen to the actual dashboard
      *
@@ -62,6 +68,7 @@ public class WindowManager extends JFrame {
      */
     public void login(String loggedInUserId) throws IOException, TradeNotFoundException {
         try {
+            this.userId = loggedInUserId;
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
                 userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic, infiltraded);
                 this.setContentPane(new ImagePanel(traderBg));
