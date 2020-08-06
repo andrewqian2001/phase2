@@ -214,7 +214,7 @@ public class ControlPanel extends JPanel implements ActionListener {
 
     private JPanel createNoTradesFoundPanel(String message, Font bold) {
         JPanel noTradesFoundPanel = new JPanel();
-        noTradesFoundPanel.setBackground(gray2);
+        noTradesFoundPanel.setBackground(bg);
         JLabel noTradesFound = new JLabel();
         noTradesFound.setFont(bold.deriveFont(30f));
         noTradesFound.setForeground(Color.WHITE);
@@ -274,7 +274,7 @@ public class ControlPanel extends JPanel implements ActionListener {
             }
         });
 
-        JButton tradeUndoButton = setUndoButton(tradeID, bold);
+        JButton tradeUndoButton = setUndoButton(tradeID, regular, bold, italic, boldItalic);
 
         ongoingTradePanel.add(otherTraderName);
         ongoingTradePanel.add(tradeLocation);
@@ -285,7 +285,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         return ongoingTradePanel;
     }
 
-    private JButton setUndoButton(String tradeID, Font bold) {
+    private JButton setUndoButton(String tradeID, Font regular, Font bold, Font italic, Font boldItalic) {
         JButton tradeUndoButton = new JButton();
 
         tradeUndoButton.setText("Undo");
@@ -297,6 +297,8 @@ public class ControlPanel extends JPanel implements ActionListener {
         tradeUndoButton.addActionListener(e -> {
             try {
                 tradingManager.rescindOngoingTrade(tradeID);
+                JPanel ongoingTradesContainer = setOngoingTradesContainer(regular, bold, italic, boldItalic);
+                ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
             } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException | CannotTradeException exception) {
                 exception.printStackTrace();
             }
