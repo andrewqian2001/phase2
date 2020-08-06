@@ -11,12 +11,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A suggestion strategy which can be used to suggest trades where the items traded are similar (not the same) to items
+ * in each trader's wishlist, so each trader will be more or less content with what they will receive
+ */
 public class SimilarWishlistSuggestion extends Manager implements SuggestTradeStrategy, SuggestLendStrategy {
 
+
+    /**
+     * Making the database objects with set file paths
+     *
+     * @param userFilePath           the user database file path
+     * @param tradableItemFilePath   the tradable item database file path
+     * @param tradeFilePath          the trade database file path
+     * @throws IOException issues with getting the file path
+     */
     public SimilarWishlistSuggestion(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
         super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
+
+    /**
+     * Initialize the objects to get items from databases
+     *
+     * @throws IOException if something goes wrong with getting database
+     */
     public SimilarWishlistSuggestion() throws IOException {
     }
 
@@ -178,11 +197,12 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
 
 
     /**
-     * Suggests an item to lend to traders in the database
+     * Suggests a lend where thisTraderId is lending some item that is similar to one in the other trader's wishlist.
+     * If such a trade does not exist, return null.
      * @param thisTraderId is the id of the trader
      * @param inCity if the user wants to filter for city
      * @return a suggestion object that contains info regarding the trade
-     * @throws AuthorizationException
+     * @throws AuthorizationException if thisTraderId is not a trader
      */
     @Override
     public Suggestion suggestLend(String thisTraderId, boolean inCity) throws UserNotFoundException, AuthorizationException {
@@ -223,14 +243,14 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
     }
 
     /**
-     * Gives the best trade by taking the trader's wishlist items and their names.
-     * Returns a suggestion object containing the info regarding this trade
-     *
-     * @param thisTraderId id of this trader
-     * @param inCity   is if the trader wants to filter for city
-     * @return a suggestion object of the info regarding this trade
-     * @throws UserNotFoundException  if thisTraderId is a bad id
-     * @throws AuthorizationException if thisTraderId isn't a trader
+     * Suggests a trade where thisTraderId is offering some item that is similar to one in the other trader's wishlist, and the other
+     * trader is offering some item similar to one in thisTraderId's wish list.
+     * If such a trade does not exist, return null.
+     * @param thisTraderId the id of the trader asking for the suggestion
+     * @param inCity true if you desire to search for other traders within the same city as the original trader
+     * @return A trade suggestion
+     * @throws UserNotFoundException if a user was not found
+     * @throws AuthorizationException if the given trader id represents a non-trader object.
      */
     @Override
     public Suggestion suggestTrade(String thisTraderId, boolean inCity) throws UserNotFoundException, AuthorizationException {

@@ -11,12 +11,29 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ *  A suggestion strategy which can be used to return suggestions that are exactly what each trader wants, according
+ *  to their wishlist
+ */
 public class ExactWishlistSuggestion extends Manager implements SuggestLendStrategy, SuggestTradeStrategy{
 
+    /**
+     * Making the database objects with set file paths
+     *
+     * @param userFilePath           the user database file path
+     * @param tradableItemFilePath   the tradable item database file path
+     * @param tradeFilePath          the trade database file path
+     * @throws IOException issues with getting the file path
+     */
     public ExactWishlistSuggestion(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
         super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
+    /**
+     * Initialize the objects to get items from databases
+     *
+     * @throws IOException if something goes wrong with getting database
+     */
     public ExactWishlistSuggestion() throws IOException {
         super();
     }
@@ -95,6 +112,15 @@ public class ExactWishlistSuggestion extends Manager implements SuggestLendStrat
     }
 
 
+    /**
+     * Suggests a lend where thisTraderId is lending some item that is in the other trader's wishlist.
+     * If such a trade does not exist, return null.
+     * @param thisTraderId the id of the trader asking for the suggestion
+     * @param inCity true if you desire to search for other traders within the same city as the original trader
+     * @return A lend suggestion
+     * @throws UserNotFoundException if a user was not found
+     * @throws AuthorizationException if the given trader id represents a non-trader object.
+     */
     @Override
     public Suggestion suggestLend(String thisTraderId, boolean inCity) throws
             UserNotFoundException, AuthorizationException {
@@ -105,6 +131,16 @@ public class ExactWishlistSuggestion extends Manager implements SuggestLendStrat
         return new Suggestion(lends.get(0)[0], lends.get(0)[1], lends.get(0)[2]);
     }
 
+    /**
+     * Suggests a trade where thisTraderId is offering some item that is in the other trader's wishlist, and the other
+     * trader is offering some item in thisTraderId's wish list.
+     * If such a trade does not exist, return null.
+     * @param thisTraderId the id of the trader asking for the suggestion
+     * @param inCity true if you desire to search for other traders within the same city as the original trader
+     * @return A trade suggestion
+     * @throws UserNotFoundException if a user was not found
+     * @throws AuthorizationException if the given trader id represents a non-trader object.
+     */
     @Override
     public Suggestion suggestTrade(String thisTraderId, boolean inCity) throws
             UserNotFoundException, AuthorizationException {
