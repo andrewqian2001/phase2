@@ -175,7 +175,7 @@ public class TradeRequestsPanel extends JPanel {
             try {
                 JDialog editTradeModal = new EditTradeModal(tradeID, trader, isTraderFirstUser, regular, bold, italic, boldItalic);
                 editTradeModal.setVisible(true);
-            } catch (IOException e2) {
+            } catch (IOException | TradeNotFoundException e2) {
                 e2.printStackTrace();
             }
         });
