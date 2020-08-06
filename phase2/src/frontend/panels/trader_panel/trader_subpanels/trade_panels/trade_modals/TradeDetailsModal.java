@@ -45,23 +45,22 @@ public class TradeDetailsModal extends JDialog {
 		this.italic = italic;
 		this.boldItalic = boldItalic;
 
-		JDialog tradeDetailsModal = new JDialog();
-		tradeDetailsModal.setTitle("Trade Details");
-		tradeDetailsModal.setSize(new Dimension(600, showAvailableEdits ? 550 : 500));
-		tradeDetailsModal.setResizable(false);
-		tradeDetailsModal.setLocationRelativeTo(null);
+		this.setTitle("Trade Details");
+		this.setSize(new Dimension(800, showAvailableEdits ? 550 : 500));
+		this.setResizable(false);
+		this.setLocationRelativeTo(null);
 
 		JPanel tradeDetailsPanel = setTradeDetailsPanel();
 
-		tradeDetailsModal.add(tradeDetailsPanel);
-		tradeDetailsModal.setModal(true);
-		tradeDetailsModal.setVisible(true);
+		this.add(tradeDetailsPanel);
+		this.setModal(true);
+		this.setVisible(true);
 	}
 
 	private JPanel setTradeDetailsPanel() throws TradeNotFoundException, UserNotFoundException,
 			TradableItemNotFoundException {
 		JPanel tradeDetailsPanel = new JPanel();
-		tradeDetailsPanel.setPreferredSize(new Dimension(600, showAvailableEdits ? 550 : 500));
+		tradeDetailsPanel.setPreferredSize(new Dimension(800, showAvailableEdits ? 550 : 500));
 		tradeDetailsPanel.setBackground(bg);
 
 		tradeDetailsPanel.add(setOtherTraderNameTitle());
@@ -106,7 +105,7 @@ public class TradeDetailsModal extends JDialog {
 
 		JLabel otherTraderDetailsName = new JLabel("<html><pre>" + otherTraderName + "</pre></html>");
 		otherTraderDetailsName.setFont(italic.deriveFont(20f));
-		otherTraderDetailsName.setPreferredSize(new Dimension(290, 50));
+		otherTraderDetailsName.setPreferredSize(new Dimension(400, 50));
 		otherTraderDetailsName.setOpaque(false);
 		otherTraderDetailsName.setForeground(Color.WHITE);
 
@@ -138,7 +137,7 @@ public class TradeDetailsModal extends JDialog {
 
 		JLabel otherTraderItemRequestName = new JLabel("<html><pre>" + otherTraderItemName + "</pre></html>");
 		otherTraderItemRequestName.setFont(regular.deriveFont(20f));
-		otherTraderItemRequestName.setPreferredSize(new Dimension(290, 50));
+		otherTraderItemRequestName.setPreferredSize(new Dimension(400, 50));
 		otherTraderItemRequestName.setOpaque(false);
 		otherTraderItemRequestName.setForeground(Color.WHITE);
 
@@ -151,7 +150,7 @@ public class TradeDetailsModal extends JDialog {
 		JLabel traderItemRequestName = new JLabel(
 				"<html><pre>" + traderItemName + "</pre></html>");
 		traderItemRequestName.setFont(regular.deriveFont(20f));
-		traderItemRequestName.setPreferredSize(new Dimension(290, 50));
+		traderItemRequestName.setPreferredSize(new Dimension(400, 50));
 		traderItemRequestName.setOpaque(false);
 		traderItemRequestName.setForeground(Color.WHITE);
 
@@ -178,7 +177,7 @@ public class TradeDetailsModal extends JDialog {
 		}
 
 		meetingLocationName.setFont(italic.deriveFont(20f));
-		meetingLocationName.setPreferredSize(new Dimension(290, 50));
+		meetingLocationName.setPreferredSize(new Dimension(400, 50));
 		meetingLocationName.setOpaque(false);
 		meetingLocationName.setForeground(Color.WHITE);
 
@@ -205,7 +204,7 @@ public class TradeDetailsModal extends JDialog {
 		}
 
 		firstMeetingDate.setFont(italic.deriveFont(20f));
-		firstMeetingDate.setPreferredSize(new Dimension(290, 50));
+		firstMeetingDate.setPreferredSize(new Dimension(400, 50));
 		firstMeetingDate.setOpaque(false);
 		firstMeetingDate.setForeground(Color.WHITE);
 
@@ -225,7 +224,7 @@ public class TradeDetailsModal extends JDialog {
 	private JLabel setSecondMeetingDate() {
 		JLabel secondMeetingDate = new JLabel();
 		secondMeetingDate.setFont(bold.deriveFont(20f));
-		secondMeetingDate.setPreferredSize(new Dimension(290, 50));
+		secondMeetingDate.setPreferredSize(new Dimension(400, 50));
 		secondMeetingDate.setOpaque(false);
 		secondMeetingDate.setForeground(Color.WHITE);
 
@@ -247,7 +246,7 @@ public class TradeDetailsModal extends JDialog {
 	private JLabel setMessageTitle() {
 		JLabel messageTitle = new JLabel("Optional Attached Messsage:");
 		messageTitle.setFont(italic.deriveFont(20f));
-		messageTitle.setPreferredSize(new Dimension(580, 50));
+		messageTitle.setPreferredSize(new Dimension(690, 50));
 		messageTitle.setOpaque(false);
 		messageTitle.setForeground(Color.WHITE);
 
@@ -257,7 +256,7 @@ public class TradeDetailsModal extends JDialog {
 	private JLabel setMessageBody() {
 		JLabel messageBody = new JLabel();
 		messageBody.setFont(regular.deriveFont(20f));
-		messageBody.setPreferredSize(new Dimension(580, 50));
+		messageBody.setPreferredSize(new Dimension(690, 50));
 		messageBody.setHorizontalAlignment(JLabel.CENTER);
 		messageBody.setOpaque(true);
 		messageBody.setBackground(gray);
@@ -293,7 +292,7 @@ public class TradeDetailsModal extends JDialog {
 		}
 
 		availableEdits.setFont(italic.deriveFont(20f));
-		availableEdits.setPreferredSize(new Dimension(290, 50));
+		availableEdits.setPreferredSize(new Dimension(400, 50));
 		availableEdits.setOpaque(false);
 		availableEdits.setForeground(Color.WHITE);
 

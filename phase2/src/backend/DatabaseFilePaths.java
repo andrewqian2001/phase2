@@ -19,15 +19,6 @@ public enum DatabaseFilePaths {
     TRADABLE_ITEM("./src/backend/databasefiles/tradableitems.ser"),
 
     /**
-     * file path for all items that are to be purchased
-     */
-    PURCHASABLE_ITEM("./src/backend/databasefiles/purchasableItems.ser"),
-
-    /**
-     * file path for all purchases
-     */
-    PURCHASE("./src/backend/databasefiles/purchases.ser"),
-    /**
      * file path for trader config file
      */
     TRADER_CONFIG("./src/backend/tradesystem/trader.properties");
