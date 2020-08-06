@@ -106,9 +106,6 @@ public class ItemsPanel extends JPanel {
         JPanel topWishlistItemsScrollHeaderPane = new JPanel(new GridLayout(1, 3));
         topWishlistItemsScrollHeaderPane.setPreferredSize(new Dimension(1200, 325));
 
-        //JPanel topWishlistItemsScrollHeaderPane = new JPanel(new GridLayout(1, 3));
-        //topWishlistItemsScrollHeaderPane.setPreferredSize(new Dimension(1200, 75));
-
         inventoryTitleContainer.add(inventoryTitle);
         inventoryTitleContainer.add(addInventoryItemButton);
 
@@ -142,9 +139,6 @@ public class ItemsPanel extends JPanel {
         gbc.gridy = 2;
         gbc.weighty = 0.8;
         wishListItems.add(wishlistItemsScrollPane, gbc);
-
-        // topInventoryItemsScrollHeaderPane.add(inventoryItemsScrollPane);
-        // topWishlistItemsScrollHeaderPane.add(wishlistItemsScrollPane);
 
         this.add(inventoryItems);
         this.add(wishListItems);
