@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -129,7 +130,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
     private JPanel setOtherTradersPanel()
             throws UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
 
-        ArrayList<String> allTraders = infoManager.getAllTraders();
+        List<String> allTraders = infoManager.getAllTraders();
 
         JPanel otherTradersPanel = new JPanel();
         otherTradersPanel.setBackground(bg);

@@ -6,8 +6,8 @@ import backend.models.users.User;
 import backend.tradesystem.Manager;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Used for managing notifications and messages
@@ -86,7 +86,7 @@ public class MessageManager extends Manager {
      * @return user to messages
      * @throws UserNotFoundException if the user isn't found
      */
-    public HashMap<String, ArrayList<String>> getMessages(String userId) throws UserNotFoundException {
+    public HashMap<String, List<String>> getMessages(String userId) throws UserNotFoundException {
         User user = getUser(userId);
         return user.getMessages();
     }

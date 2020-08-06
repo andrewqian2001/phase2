@@ -1,8 +1,8 @@
 package frontend.panels.general_panels.search_panels;
 
 import java.awt.*;
+import java.util.List;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -225,7 +225,7 @@ public class SearchPanel extends JPanel {
     }
 
     private void findUsers(String username) {
-        ArrayList<String> matches = infoManager.searchTrader(username);
+        List<String> matches = infoManager.searchTrader(username);
         int numRows = matches.size();
         if (numRows < 3)
             numRows = 3;
@@ -301,7 +301,7 @@ public class SearchPanel extends JPanel {
     }
 
     private void findItems(String itemNameSearchString) {
-        ArrayList<String> matches = infoManager.getTradableItemsWithName(itemNameSearchString);
+        List<String> matches = infoManager.getTradableItemsWithName(itemNameSearchString);
         int numRows = matches.size();
         // int numRows = itemNameSearchString.length();
         if (numRows < 3)

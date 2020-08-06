@@ -6,6 +6,7 @@ import backend.models.DatabaseItem;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Represents a typical account
@@ -15,7 +16,7 @@ public abstract class User extends DatabaseItem implements Serializable {
     private String password;
     private boolean isFrozen;
     private boolean isUnfrozenRequested;
-    private HashMap<String, ArrayList<String>> messages; // User id to list of messages
+    private HashMap<String, List<String>> messages; // User id to list of messages
 
     /**
      * Constructs a user with a given username and password.
@@ -124,7 +125,7 @@ public abstract class User extends DatabaseItem implements Serializable {
      * All messages that got sent to this user
      * @return all messages that got sent to this user
      */
-    public HashMap<String, ArrayList<String>> getMessages(){
+    public HashMap<String, List<String>> getMessages(){
         return this.messages;
     }
 

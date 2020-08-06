@@ -1,5 +1,7 @@
 package frontend.panels.general_panels.search_panels;
 
+import java.util.List;
+
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.UserQuery;
@@ -131,7 +133,7 @@ public class SearchPanelTraderDetails implements ActionListener {
     }
 
     private void createTraderReviewsPanel(JScrollPane traderReviewScrollPane) {
-        ArrayList<String[]> reviews = new ArrayList<>();
+        List<String[]> reviews = new ArrayList<>();
         try {
             reviews = userQuery.getReviews(traderId);
         } catch (UserNotFoundException | AuthorizationException e1) {

@@ -5,21 +5,22 @@ import backend.models.Review;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * represents a trader (user who can trade)
  */
 
 public class Trader extends User implements Serializable {
-    private final ArrayList<String> wishList = new ArrayList<>();  // Items that this trader wants.
-    private final ArrayList<String> availableItems = new ArrayList<>(); // Items that the trader is willing to trade,lend etc
-    private final ArrayList<String> requestedItems = new ArrayList<>(); // Items that this trader wishes to be added to availableItems list
-    private final ArrayList<String> ongoingItems = new ArrayList<>(); // Items that this trader is currently using for trades
+    private final List<String> wishList = new ArrayList<>();  // Items that this trader wants.
+    private final List<String> availableItems = new ArrayList<>(); // Items that the trader is willing to trade,lend etc
+    private final List<String> requestedItems = new ArrayList<>(); // Items that this trader wishes to be added to availableItems list
+    private final List<String> ongoingItems = new ArrayList<>(); // Items that this trader is currently using for trades
 
-    private final ArrayList<String> acceptedTrades = new ArrayList<>(); // Trades that are ongoing
-    private final ArrayList<String> requestedTrades = new ArrayList<>(); // Trades yet to be accepted or denied
-    private final ArrayList<String> completedTrades = new ArrayList<>(); // Trades where meetings are finished and confirmed by both sides and transaction has concluded
-    private final ArrayList<Review> reviews = new ArrayList<>(); // List of reviews
+    private final List<String> acceptedTrades = new ArrayList<>(); // Trades that are ongoing
+    private final List<String> requestedTrades = new ArrayList<>(); // Trades yet to be accepted or denied
+    private final List<String> completedTrades = new ArrayList<>(); // Trades where meetings are finished and confirmed by both sides and transaction has concluded
+    private final List<Review> reviews = new ArrayList<>(); // List of reviews
     private int tradeLimit; // This trader's trade limit (total amount of trades that can be conducted per week)
     private int incompleteTradeLim; // This trader's incomplete trade limit
     private int totalItemsBorrowed;
@@ -79,7 +80,7 @@ public class Trader extends User implements Serializable {
      * Gets all ongoing items
      * @return all ongoing items
      */
-    public ArrayList<String> getOngoingItems(){
+    public List<String> getOngoingItems(){
         return ongoingItems;
     }
 
@@ -87,7 +88,7 @@ public class Trader extends User implements Serializable {
      * Gets all reviews
      * @return all reviews
      */
-    public ArrayList<Review> getReviews() {
+    public List<Review> getReviews() {
         return reviews;
     }
 
@@ -200,7 +201,7 @@ public class Trader extends User implements Serializable {
      * @return the trader's wishlist
      */
 
-    public ArrayList<String> getWishlist() {
+    public List<String> getWishlist() {
         return wishList;
     }
 
@@ -210,7 +211,7 @@ public class Trader extends User implements Serializable {
      * @return list of available items this trader has
      */
 
-    public ArrayList<String> getAvailableItems() {
+    public List<String> getAvailableItems() {
         return availableItems;
     }
 
@@ -222,7 +223,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public ArrayList<String> getRequestedItems() {
+    public List<String> getRequestedItems() {
         return requestedItems;
     }
 
@@ -234,7 +235,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public ArrayList<String> getAcceptedTrades() {
+    public List<String> getAcceptedTrades() {
         return acceptedTrades;
     }
 
@@ -245,7 +246,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public ArrayList<String> getCompletedTrades() {
+    public List<String> getCompletedTrades() {
         return completedTrades;
     }
 
@@ -257,7 +258,7 @@ public class Trader extends User implements Serializable {
      */
 
 
-    public ArrayList<String> getRequestedTrades() {
+    public List<String> getRequestedTrades() {
         return requestedTrades;
     }
 

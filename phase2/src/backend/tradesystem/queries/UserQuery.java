@@ -7,6 +7,7 @@ import backend.tradesystem.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 /**
@@ -86,7 +87,7 @@ public class UserQuery extends Manager {
      * @return all messages that got sent to the user
      * @throws UserNotFoundException If the user could not be found in the database
      */
-    public HashMap<String, ArrayList<String>> getMessages(String userId) throws UserNotFoundException {
+    public HashMap<String, List<String>> getMessages(String userId) throws UserNotFoundException {
         return getUser(userId).getMessages();
     }
 
@@ -98,7 +99,7 @@ public class UserQuery extends Manager {
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
-    public ArrayList<String> getOngoingItems(String traderId) throws UserNotFoundException, AuthorizationException {
+    public List<String> getOngoingItems(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getOngoingItems();
     }
 
@@ -111,8 +112,8 @@ public class UserQuery extends Manager {
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
-    public ArrayList<String[]> getReviews(String traderId) throws UserNotFoundException, AuthorizationException {
-        ArrayList<String[]> reviews = new ArrayList<>();
+    public List<String[]> getReviews(String traderId) throws UserNotFoundException, AuthorizationException {
+        List<String[]> reviews = new ArrayList<>();
         for (Review review : getTrader(traderId).getReviews()) {
             String[] items = {review.getFromUserId(), review.getReportOnUserId(), review.getMessage(),
                     review.getRating() + "", review.getId()};
@@ -180,7 +181,7 @@ public class UserQuery extends Manager {
      * @throws AuthorizationException if the user isn't a trader
      */
 
-    public ArrayList<String> getWishlist(String traderId) throws UserNotFoundException, AuthorizationException {
+    public List<String> getWishlist(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getWishlist();
     }
 
@@ -193,7 +194,7 @@ public class UserQuery extends Manager {
      * @throws AuthorizationException if the user isn't a trader
      */
 
-    public ArrayList<String> getAvailableItems(String traderId) throws UserNotFoundException, AuthorizationException {
+    public List<String> getAvailableItems(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getAvailableItems();
     }
 
@@ -206,7 +207,7 @@ public class UserQuery extends Manager {
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
-    public ArrayList<String> getRequestedItems(String traderId) throws UserNotFoundException, AuthorizationException {
+    public List<String> getRequestedItems(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getRequestedItems();
     }
 
@@ -219,7 +220,7 @@ public class UserQuery extends Manager {
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
-    public ArrayList<String> getAcceptedTrades(String traderId) throws UserNotFoundException, AuthorizationException {
+    public List<String> getAcceptedTrades(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getAcceptedTrades();
     }
 
@@ -231,7 +232,7 @@ public class UserQuery extends Manager {
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
-    public ArrayList<String> getCompletedTrades(String traderId) throws UserNotFoundException, AuthorizationException {
+    public List<String> getCompletedTrades(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getCompletedTrades();
     }
 
@@ -244,7 +245,7 @@ public class UserQuery extends Manager {
      * @throws UserNotFoundException  if the trader doesn't exist
      * @throws AuthorizationException if the user isn't a trader
      */
-    public ArrayList<String> getRequestedTrades(String traderId) throws UserNotFoundException, AuthorizationException {
+    public List<String> getRequestedTrades(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getRequestedTrades();
     }
 
