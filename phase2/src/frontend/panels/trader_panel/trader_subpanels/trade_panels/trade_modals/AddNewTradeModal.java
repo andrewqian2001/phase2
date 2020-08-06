@@ -29,7 +29,6 @@ import backend.exceptions.CannotTradeException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.ItemQuery;
-import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
@@ -436,11 +435,6 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         if (otherTraderItems.isEnabled() && (!meetingLocationInput.getText().trim().equals(""))
                 && ((traderItems.getSelectedItem() != null ^ otherTraderItems.getSelectedItem() != null)
                         || (traderItems.getSelectedItem() != null && otherTraderItems.getSelectedItem() != null))) {
-            // meetingInput.add(months); 0
-            // meetingInput.add(days); 1
-            // meetingInput.add(years); 2
-            // meetingInput.add(hours); 3
-            // meetingInput.add(minutes); 4
             String firstMeetingString = "";
             String secondMeetingString = "";
             for (int i = 0; i < 5; i++) {

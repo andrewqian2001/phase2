@@ -178,7 +178,14 @@ public class TradeRequestsPanel extends JPanel {
 
         JButton editTradeButton = createTradeRequestButton("Edit", Color.CYAN);
         // TODO: UNCOMMENT AFTER IMPLEMENTING MODAL
-        // editTradeButton.addActionListener(e -> new EditTradeModal(tradeID, trader, isTraderFirstUser, regular, bold, italic, boldItalic));
+        editTradeButton.addActionListener(e -> {
+            try {
+                JDialog editTradeModal = new EditTradeModal(tradeID, trader, isTraderFirstUser, regular, bold, italic, boldItalic);
+                editTradeModal.setVisible(true);
+            } catch (IOException e2) {
+                e2.printStackTrace();
+            }
+        });
 
         JButton tradeConfirmButton = createTradeRequestButton("Accept", green);
         tradeConfirmButton.addActionListener(e -> {
