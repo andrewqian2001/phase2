@@ -19,7 +19,7 @@ public class Suggestion {
         this(fromTraderId, toTraderId, fromTraderOfferId, "");
     }
 
-    public String getFROM_TRADER_ID() {
+    public String getFromTraderId() {
         return FROM_TRADER_ID;
     }
 
@@ -27,7 +27,7 @@ public class Suggestion {
         return FROM_TRADER_OFFER_ID;
     }
 
-    public String getTO_TRADER_ID() {
+    public String getToTraderId() {
         return TO_TRADER_ID;
     }
 

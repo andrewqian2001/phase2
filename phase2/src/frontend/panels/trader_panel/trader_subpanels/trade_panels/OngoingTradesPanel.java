@@ -27,8 +27,13 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.Suggestion;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
+import backend.tradesystem.suggestion_strategies.ExactWishlistSuggestion;
+import backend.tradesystem.suggestion_strategies.SimilarWishlistSuggestion;
+import backend.tradesystem.suggestion_strategies.SuggestLendStrategy;
+import backend.tradesystem.suggestion_strategies.SuggestTradeStrategy;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.AddNewTradeModal;
@@ -55,6 +60,11 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     private final TradingInfoManager infoManager = new TradingInfoManager();
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
+
+    private final SuggestLendStrategy normalSuggestLendStrategy = new ExactWishlistSuggestion();
+    private final SuggestTradeStrategy normalSuggestTradeStrategy = new ExactWishlistSuggestion();
+    private final SuggestLendStrategy similarSuggestLendStrategy = new SimilarWishlistSuggestion();
+    private final SuggestTradeStrategy similarSuggestTradeStrategy = new SimilarWishlistSuggestion();
 
     public OngoingTradesPanel(String trader, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
@@ -309,21 +319,25 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         boolean isSuggestedTrade = e.getActionCommand().equals("<html><b><i><u>Suggest Trade</u></i></b></html>");
         boolean isSuggestedLend = e.getActionCommand().equals("<html><b><i><u>Suggest Lend</u></i></b></html>");
 
-        String[] suggested = new String[0];
+        Suggestion suggested = null;
         try {
-            if (isSuggestedLend)
-                suggested = infoManager.suggestLend(trader, false);
+            if (isSuggestedLend) {
+                suggested = infoManager.suggestLend(trader, false, normalSuggestLendStrategy);
+                if (suggested == null){
+                    suggested = infoManager.suggestLend(trader, false, similarSuggestLendStrategy);
+                }
+            }
             else if (isSuggestedTrade) {
-                suggested = infoManager.suggestTrade(trader, false);
-                if (suggested.length == 0) {
-                    suggested = infoManager.automatedTradeSuggestion(trader, true);
+                suggested = infoManager.suggestTrade(trader, false, normalSuggestTradeStrategy);
+                if (suggested == null) {
+                    suggested = infoManager.suggestTrade(trader, true, similarSuggestTradeStrategy);
                 }
             }
         } catch (UserNotFoundException | AuthorizationException e1) {
             e1.printStackTrace();
         }
 
-        if (suggested.length == 0 && (isSuggestedLend || isSuggestedTrade)) {
+        if (suggested == null && (isSuggestedLend || isSuggestedTrade)) {
             isSuggestedTrade = false;
             isSuggestedLend = false;
 

@@ -29,6 +29,7 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.CannotTradeException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
+import backend.models.Suggestion;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
@@ -37,7 +38,7 @@ import backend.tradesystem.trader_managers.TradingManager;
 public class AddNewTradeModal extends JDialog implements ActionListener {
 
     private String trader;
-    private String[] suggested;
+    private Suggestion suggested;
 
     private final Font regular, bold, italic, boldItalic;
 
@@ -65,7 +66,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
-    public AddNewTradeModal(String trader, String[] suggested, Font regular, Font bold, Font italic, Font boldItalic)
+    public AddNewTradeModal(String trader, Suggestion suggested, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
 
         this.trader = trader;
@@ -80,7 +81,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
 
-        boolean isSuggested = suggested.length != 0;
+        boolean isSuggested = suggested != null;
 
         JPanel addNewTradePanel = setAddNewTradePanel(isSuggested);
 
@@ -421,10 +422,10 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         addNewTradePanel.add(error);
 
         if (isSuggested) {
-            traders.setSelectedItem(userQuery.getUsername(suggested[1]));
-            traderItems.setSelectedItem(itemQuery.getName(suggested[2]));
-            if (suggested.length == 4) {
-                otherTraderItems.setSelectedItem(itemQuery.getName(suggested[3]));
+            traders.setSelectedItem(userQuery.getUsername(suggested.getToTraderId()));
+            traderItems.setSelectedItem(itemQuery.getName(suggested.getFromTraderOfferId()));
+            if (!suggested.getToTraderOfferId().equals("")) {
+                otherTraderItems.setSelectedItem(itemQuery.getName(suggested.getToTraderOfferId()));
             }
         }
 

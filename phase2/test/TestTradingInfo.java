@@ -1,4 +1,5 @@
 import backend.exceptions.*;
+import backend.models.Suggestion;
 import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Admin;
@@ -13,6 +14,8 @@ import backend.Database;
 import java.lang.reflect.Array;
 import java.util.Date;
 
+import backend.tradesystem.suggestion_strategies.ExactWishlistSuggestion;
+import backend.tradesystem.suggestion_strategies.SimilarWishlistSuggestion;
 import backend.tradesystem.trader_managers.TraderManager;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
@@ -245,15 +248,14 @@ public class TestTradingInfo extends TestManager {
         }
     }
 
-
     @Test
     public void testSuggestLend() {
         try {
             for (int i = 2; i < traders.length - 2; i++) {
-                String[] suggested = tradingInfoManager.suggestLend(traders[i].getId(), true);
-                assertEquals(suggested[0], traders[i].getId());
-                assertEquals(suggested[1], traders[i - 1].getId());
-                assertEquals(suggested[2], traders[i - 1].getWishlist().get(0));
+                Suggestion suggested = tradingInfoManager.suggestLend(traders[i].getId(), true, new ExactWishlistSuggestion(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH));
+                assertEquals(suggested.getFromTraderId(), traders[i].getId());
+                assertEquals(suggested.getToTraderId(), traders[i - 1].getId());
+                assertEquals(suggested.getFromTraderOfferId(), traders[i - 1].getWishlist().get(0));
 
             }
         } catch (Exception e) {
@@ -271,15 +273,15 @@ public class TestTradingInfo extends TestManager {
                 traders[i] = getTrader(traders[i].getId());
             }
             for (int i = 2; i < traders.length - 2; i++) {
-                String[] suggested = tradingInfoManager.suggestTrade(traders[i].getId(), true);
+                Suggestion suggested = tradingInfoManager.suggestTrade(traders[i].getId(), true, new ExactWishlistSuggestion(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH));
                 //[thisTraderId, toTraderId, itemIdToGive, itemIdToReceive]
-                assertEquals(suggested[0], traders[i].getId());
-                if (suggested[1].equals(traders[i + 1].getId())) {
-                    assertEquals(suggested[2], traders[i].getAvailableItems().get(0));
-                    assertEquals(suggested[3], traders[i + 1].getAvailableItems().get(0));
-                } else if (suggested[1].equals(traders[i - 1].getId())) {
-                    assertEquals(suggested[2], traders[i].getAvailableItems().get(0));
-                    assertEquals(suggested[3], traders[i - 1].getAvailableItems().get(0));
+                assertEquals(suggested.getFromTraderId(), traders[i].getId());
+                if (suggested.getToTraderId().equals(traders[i + 1].getId())) {
+                    assertEquals(suggested.getFromTraderOfferId(), traders[i].getAvailableItems().get(0));
+                    assertEquals(suggested.getToTraderOfferId(), traders[i + 1].getAvailableItems().get(0));
+                } else if (suggested.getToTraderId().equals(traders[i - 1].getId())) {
+                    assertEquals(suggested.getFromTraderOfferId(), traders[i].getAvailableItems().get(0));
+                    assertEquals(suggested.getToTraderOfferId(), traders[i - 1].getAvailableItems().get(0));
                 } else {
                     fail();
                 }
@@ -293,7 +295,7 @@ public class TestTradingInfo extends TestManager {
     }
 
     @Test
-    public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+    public void testAutomatedTradeSuggestion() throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException, IOException {
 
         //testAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter)
 
@@ -411,9 +413,9 @@ public class TestTradingInfo extends TestManager {
         return list;
     }
 
-    private void testingAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException {
+    private void testingAutomatedTradeSuggestion(Trader t1, Trader t2, String itemT1Name, String itemT2Name, boolean filter) throws UserNotFoundException, AuthorizationException, TradableItemNotFoundException, IOException {
 
-        String[] test = tradingInfoManager.automatedTradeSuggestion(t1.getId(), filter);
+        Suggestion test = tradingInfoManager.suggestTrade(t1.getId(), filter, new SimilarWishlistSuggestion(USER_PATH, TRADABLE_ITEM_PATH, TRADE_PATH));
         String itemT1Id = null;
         String itemT2Id = null;
         for(String ids: getTradableItemDatabase().getItems().keySet()){
@@ -425,7 +427,7 @@ public class TestTradingInfo extends TestManager {
             }
         }
 
-        if(itemT1Name.length() == 0 && itemT2Name.length() == 0 && test.length == 0){
+        if(itemT1Name.length() == 0 && itemT2Name.length() == 0 && test == null){
             return;
         }
 
@@ -433,14 +435,14 @@ public class TestTradingInfo extends TestManager {
         t2 = getTrader(t2.getId());
         System.out.println("---------------------------------------------------------------------------------------------");
         System.out.println("item name expected: " + itemT1Name + "--- item id expected: " + itemT1Id);
-        System.out.println("item name actual: " + getTradableItem(test[2]).getName() + "--- item id expected: " + test[2]);
-        assertEquals(t1.getId(), test[0]);
-        assertEquals(t2.getId(), test[1]);
+        System.out.println("item name actual: " + getTradableItem(test.getFromTraderOfferId()).getName() + "--- item id expected: " + test.getFromTraderOfferId());
+        assertEquals(t1.getId(), test.getFromTraderId());
+        assertEquals(t2.getId(), test.getToTraderId());
         System.out.println("item2 name expected: " + itemT2Name +  "--- item id expected: " + itemT2Id);
-        System.out.println("item2 name actual: " + getTradableItem(test[3]).getName() + "--- item id expected: " + test[3]);
+        System.out.println("item2 name actual: " + getTradableItem(test.getToTraderOfferId()).getName() + "--- item id expected: " + test.getToTraderOfferId());
         System.out.println("---------------------------------------------------------------------------------------------");
-        assertEquals(itemT1Id, test[2]);
-        assertEquals(itemT2Id, test[3]);
+        assertEquals(itemT1Id, test.getFromTraderOfferId());
+        assertEquals(itemT2Id, test.getToTraderOfferId());
 
     }
     /**
