@@ -114,7 +114,7 @@ public class TradeRequestsPanel extends JPanel {
         tradeRequestsContainer.setBorder(null);
 
         for (String tradeID : requestedTrades) {
-            boolean isTraderAbleToEdit = (tradeQuery.getFirstUserId(tradeID).equals(trader) && tradeQuery.getUserTurnToEdit(tradeID).equals(trader)) || !tradeQuery.getFirstUserId(tradeID).equals(trader);
+            boolean isTraderAbleToEdit = tradeQuery.getUserTurnToEdit(tradeID).equals(trader);
 
             if(isTraderAbleToEdit) {
                 JPanel tradeRequestPanel = createTradeRequestPanel(tradeID);
