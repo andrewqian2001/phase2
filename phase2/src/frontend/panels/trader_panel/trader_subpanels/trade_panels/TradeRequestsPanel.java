@@ -2,22 +2,17 @@ package frontend.panels.trader_panel.trader_subpanels.trade_panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
-
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -30,7 +25,6 @@ import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
-import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.EditTradeModal;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.TradeDetailsModal;
@@ -53,7 +47,6 @@ public class TradeRequestsPanel extends JPanel {
     private final ItemQuery itemQuery = new ItemQuery();
 
     private final TradingManager tradeManager = new TradingManager();
-    private final TradingInfoManager infoManager = new TradingInfoManager();
 
     public TradeRequestsPanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException,
             UserNotFoundException, AuthorizationException, TradeNotFoundException, TradableItemNotFoundException {
@@ -104,7 +97,7 @@ public class TradeRequestsPanel extends JPanel {
         List<String> requestedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getRequestedTrades(trader);
 
         if(requestedTrades.isEmpty())
-            return createNoTradesFoundPanel("<html><pre>No Ongoing Trades Found</pre></html>");
+            return createNoTradesFoundPanel("<html><pre>No Trade Requests Found</pre></html>");
 
         int numRows = requestedTrades.size();
         numRows = numRows < 4 ? 4 : numRows;
@@ -121,6 +114,9 @@ public class TradeRequestsPanel extends JPanel {
                 tradeRequestsContainer.add(tradeRequestPanel);
             }
         }
+
+        if (tradeRequestsContainer.getComponentCount() == 0)
+            return createNoTradesFoundPanel("<html><pre>No Trade Requests Found</pre></html>");
 
         return tradeRequestsContainer;
     }
@@ -176,12 +172,15 @@ public class TradeRequestsPanel extends JPanel {
         });
 
         JButton editTradeButton = createTradeRequestButton("Edit", Color.CYAN);
-        // TODO: UNCOMMENT AFTER IMPLEMENTING MODAL
         editTradeButton.addActionListener(e -> {
             try {
-                JDialog editTradeModal = new EditTradeModal(tradeID, trader, isTraderFirstUser, regular, bold, italic, boldItalic);
-                editTradeModal.setVisible(true);
-            } catch (IOException | TradeNotFoundException e2) {
+                EditTradeModal editTradeModal = new EditTradeModal(tradeID, trader, isTraderFirstUser, regular, bold, italic, boldItalic);
+                boolean result = editTradeModal.showDialog();
+                if(result) {
+                    ((TradePanel) this.getParent()).refreshTradeRequestsPanel();
+                } 
+            } catch (IOException | TradeNotFoundException | UserNotFoundException | TradableItemNotFoundException
+                    | AuthorizationException e2) {
                 e2.printStackTrace();
             }
         });
@@ -190,8 +189,10 @@ public class TradeRequestsPanel extends JPanel {
         tradeConfirmButton.addActionListener(e -> {
             try {
                 tradeManager.acceptRequest(trader, tradeID);
-                // TODO: HANDLE REMOVING THE TRADEREQUESTPANEL
-            } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException | CannotTradeException e1) {
+                ((TradePanel) this.getParent()).refreshOngoingTradesPanel();
+                ((TradePanel) this.getParent()).refreshTradeRequestsPanel();
+            } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException | CannotTradeException
+                    | IOException | TradableItemNotFoundException e1) {
                 e1.printStackTrace();
             }
 
@@ -201,8 +202,9 @@ public class TradeRequestsPanel extends JPanel {
         tradeRejectButton.addActionListener(e -> {
             try {
                 tradeManager.rescindTradeRequest(tradeID);
-                // TODO: HANDLE REMOVING THE TRADEREQUESTPANEL
-            } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException e1) {
+                ((TradePanel) this.getParent()).refreshTradeRequestsPanel();
+            } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException
+                    | TradableItemNotFoundException | IOException e1) {
                 e1.printStackTrace();
             }
         });
@@ -231,10 +233,13 @@ public class TradeRequestsPanel extends JPanel {
 
     private JPanel createNoTradesFoundPanel(String message) {
         JPanel noTradesFoundPanel = new JPanel();
+        noTradesFoundPanel.setPreferredSize(new Dimension(1200, 300));
         noTradesFoundPanel.setBackground(gray2);
-        JLabel noTradesFound = new JLabel();
+        JLabel noTradesFound = new JLabel(message);
         noTradesFound.setFont(bold.deriveFont(30f));
         noTradesFound.setForeground(Color.WHITE);
+        noTradesFound.setHorizontalAlignment(JLabel.CENTER);
+        noTradesFound.setPreferredSize(new Dimension(1200, 300));
         noTradesFoundPanel.add(noTradesFound, BorderLayout.CENTER);
         return noTradesFoundPanel;
     }

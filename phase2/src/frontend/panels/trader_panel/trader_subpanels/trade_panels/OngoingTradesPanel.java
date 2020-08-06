@@ -207,7 +207,8 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
                 tradeConfirmButton.setText("Confirmed");
                 tradeConfirmButton.setEnabled(false);
                 tradeConfirmButton.setFont(boldItalic.deriveFont(20f));
-            } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException e1) {
+                ((TradePanel) this.getParent()).refreshOngoingTradesPanel();
+            } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException | IOException e1) {
                 e1.printStackTrace();
             }
         });
@@ -217,10 +218,13 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
 
     private JPanel createNoTradesFoundPanel(String message) {
         JPanel noTradesFoundPanel = new JPanel();
+        noTradesFoundPanel.setPreferredSize(new Dimension(1200, 300));
         noTradesFoundPanel.setBackground(gray2);
-        JLabel noTradesFound = new JLabel();
+        JLabel noTradesFound = new JLabel(message);
         noTradesFound.setFont(bold.deriveFont(30f));
         noTradesFound.setForeground(Color.WHITE);
+        noTradesFound.setHorizontalAlignment(JLabel.CENTER);
+        noTradesFound.setPreferredSize(new Dimension(1200, 300));
         noTradesFoundPanel.add(noTradesFound, BorderLayout.CENTER);
         return noTradesFoundPanel;
     }

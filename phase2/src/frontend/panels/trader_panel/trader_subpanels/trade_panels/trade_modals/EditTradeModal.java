@@ -50,6 +50,8 @@ public class EditTradeModal extends JDialog implements ActionListener {
 
 	private final Font regular, bold, italic, boldItalic;
 
+	private boolean returnValue;
+
 	private final Color bg = new Color(51, 51, 51);
 	private final Color gray = new Color(196, 196, 196);
 	private final Color gray2 = new Color(142, 142, 142);
@@ -88,6 +90,11 @@ public class EditTradeModal extends JDialog implements ActionListener {
 
 		this.add(tradeEditsPanel);
 		this.add(submitButton, BorderLayout.SOUTH);
+	}
+
+	public boolean showDialog() {
+		this.setVisible(true);
+		return returnValue;
 	}
 
 	private JButton setSubmitButton() {
@@ -505,6 +512,7 @@ public class EditTradeModal extends JDialog implements ActionListener {
 				}
 				tradeManager.counterTradeOffer(trader, tradeID, firstMeeting, secondMeeting,
 						meetingLocationInput.getText(), thisTraderOffer, thatTraderOffer, messageInput.getText());
+				returnValue = true;
 				this.dispose();
 			} catch (ParseException | TradeNotFoundException | UserNotFoundException | CannotTradeException
 					| AuthorizationException e2) {
