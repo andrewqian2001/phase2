@@ -8,6 +8,7 @@ import backend.tradesystem.Manager;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Used for managing reports
@@ -71,12 +72,12 @@ public class ReportManager extends Manager {
      *
      * @return all reports
      */
-    public ArrayList<String[]> getReports() {
+    public List<String[]> getReports() {
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Admin) {
                     Admin admin = ((Admin) getUser(userId));
-                    ArrayList<String[]> reports = new ArrayList<>();
+                    List<String[]> reports = new ArrayList<>();
                     for (Report report : admin.getReports()) {
                         String[] item = {report.getFromUserId(), report.getReportOnUserId(), report.getMessage(), report.getId()};
                         reports.add(item);
@@ -100,7 +101,7 @@ public class ReportManager extends Manager {
             try {
                 if (getUser(userId) instanceof Admin) {
                     Admin admin = ((Admin) getUser(userId));
-                    ArrayList<Report> reports = admin.getReports();
+                    List<Report> reports = admin.getReports();
                     reports.removeIf(report -> report.getId().equals(reportId));
                     updateUserDatabase(admin);
                 }

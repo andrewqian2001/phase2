@@ -13,6 +13,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 /**
@@ -271,7 +272,7 @@ public class OverviewPanel extends JPanel {
     }
 
     private void getAllItemRequests() {
-        HashMap<String, ArrayList<String>> itemRequests = itemRequestManager.getAllItemRequests();
+        HashMap<String, List<String>> itemRequests = itemRequestManager.getAllItemRequests();
         if (itemRequests.size() == 0) {
             itemRequestsContainer = new JPanel();
             itemRequestsContainer.setBackground(bg);

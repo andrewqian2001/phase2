@@ -9,6 +9,7 @@ import backend.tradesystem.Manager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * For handling new TradableItem + purchasable items requests
@@ -41,14 +42,14 @@ public class HandleItemRequestsManager extends Manager {
      *
      * @return a hashmap of trader ids to an arraylist of their requested item ids
      */
-    public HashMap<String, ArrayList<String>> getAllItemRequests() {
-        HashMap<String, ArrayList<String>> allItems = new HashMap<>();
+    public HashMap<String, List<String>> getAllItemRequests() {
+        HashMap<String, List<String>> allItems = new HashMap<>();
 
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Trader) {
                     // Get requested item IDs
-                    ArrayList<String> requestedItems = ((Trader) getUser(userId)).getRequestedItems();
+                    List<String> requestedItems = ((Trader) getUser(userId)).getRequestedItems();
 
                     // Add the populated list to the result
                     allItems.put(userId, requestedItems);
@@ -73,7 +74,7 @@ public class HandleItemRequestsManager extends Manager {
      */
     public void processItemRequest(String traderID, String reqItemID, boolean isAccepted) throws TradableItemNotFoundException, AuthorizationException, UserNotFoundException {
         Trader trader = getTrader(traderID);
-        ArrayList<String> itemIDs = trader.getRequestedItems();
+        List<String> itemIDs = trader.getRequestedItems();
         if (!itemIDs.contains(reqItemID)) throw new TradableItemNotFoundException(reqItemID);
         if (isAccepted) {
             trader.getAvailableItems().add(reqItemID);
