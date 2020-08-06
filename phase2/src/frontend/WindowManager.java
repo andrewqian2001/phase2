@@ -30,7 +30,7 @@ public class WindowManager extends JFrame {
     private final LoginManager loginManager = new LoginManager();
     private boolean infiltraded;
 
-    private String userId;
+    private String userId = "";
 
     /**
      * This is where initial settings that affects the entire window is at
