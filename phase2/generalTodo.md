@@ -10,3 +10,7 @@ Should enums and other classes be included in UML?
 
 Is it fine to reuse managers constnatly?
 
+
+Strategy design: Move suggestLend, suggestTrade, automatedTradeSuggestion, automatedLendSuggestion into things
+Facade design: Front end uses this to split up panels
+Adapter design: Possible? Front end may use this to change an existing class
