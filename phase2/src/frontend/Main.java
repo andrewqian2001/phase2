@@ -9,13 +9,14 @@ import javax.swing.UIManager;
 import backend.tradesystem.DetectDatabaseChange;
 
 /**
- * This is where the program starts running Code partially taken from
+ * This is where the program starts running
+ * Code partially taken from
  * https://stackoverflow.com/questions/54815226/how-can-i-detect-if-a-file-has-been-modified-using-lastmodified
  */
 public class Main {
     public static void main(String[] args) {
         try {
-//             new TemporarySetup();
+//            new TemporarySetup();
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             WindowManager windowManager = new WindowManager();
             windowManager.run();
@@ -23,7 +24,7 @@ public class Main {
                 protected void onChange() {
                     // If backend files change, this gets called
                     try {
-                        if(!windowManager.getUserId().equals(""))
+                        if (!windowManager.getUserId().equals(""))
                             windowManager.login(windowManager.getUserId());
                     } catch (Exception e) {
                         e.printStackTrace();
