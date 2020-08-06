@@ -29,6 +29,7 @@ import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
+import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.AddNewTradeModal;
 
 
 public class OngoingTradesPanel extends JPanel implements ActionListener {
@@ -315,9 +316,12 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
             noSuggestionsFoundModal.setVisible(true);
         }
 
-        // TODO: UNCOMMENT AFTER IMPLEMENTING MODAL
-        // JDialog newTradeModal = new AddNewTradeModal(trader, suggested, regular, bold, italic, boldItalic);
-        // newTradeModal.setVisible(true);
+        try {
+            JDialog newTradeModal = new AddNewTradeModal(trader, suggested, regular, bold, italic, boldItalic);
+            newTradeModal.setVisible(true);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
 
     }
 
