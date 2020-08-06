@@ -478,13 +478,13 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
                 String otherTraderOffer = "";
 
                 if (traderItems.getSelectedItem() != null) {
-                    firstTraderOffer = userQuery.getAvailableItems(trader).get(traderItems.getSelectedIndex());
+                    firstTraderOffer = userQuery.getAvailableItems(trader).get(traderItems.getSelectedIndex() -1);
                 }
 
                 if (otherTraderItems.getSelectedItem() != null) {
                     otherTraderOffer = userQuery
                             .getAvailableItems(userQuery.getUserByUsername((String) traders.getSelectedItem()))
-                            .get(otherTraderItems.getSelectedIndex());
+                            .get(otherTraderItems.getSelectedIndex() - 1);
                 }
                 String message = messageInput.getText();
 
