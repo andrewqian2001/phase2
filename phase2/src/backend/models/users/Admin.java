@@ -4,6 +4,7 @@ import backend.models.Report;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents an admin
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 public class Admin extends User implements Serializable{
 
 
-    private ArrayList<Report> reports;
+    private List<Report> reports;
 
     /**
      * Constructs an admin with a given username and password.
@@ -28,7 +29,7 @@ public class Admin extends User implements Serializable{
      * Getting reports
      * @return the reports
      */
-    public ArrayList<Report> getReports() {
+    public List<Report> getReports() {
         return reports;
     }
 
@@ -36,7 +37,7 @@ public class Admin extends User implements Serializable{
      * Setting reports
      * @param reports reports
      */
-    public void setReports(ArrayList<Report> reports){
+    public void setReports(List<Report> reports){
         this.reports = reports;
     }
 

@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -33,7 +34,10 @@ public class NotificationsPanel extends JPanel {
     private final Color bg = new Color(51, 51, 51);
     private final Color gray2 = new Color(196, 196, 196);
 
-    private final Font regular, bold, italic, boldItalic;
+    private final Font regular;
+    private final Font bold;
+    private final Font italic;
+    private final Font boldItalic;
 
     private final String traderId;
 
@@ -97,7 +101,7 @@ public class NotificationsPanel extends JPanel {
     }
 
     private void getFreqTraders() throws AuthorizationException, UserNotFoundException {
-        ArrayList<String> freqTraders = new ArrayList<>();
+        List<String> freqTraders = new ArrayList<>();
         if (!traderId.equals("")) {
             try {
                 freqTraders = infoManager.getFrequentTraders(traderId);
@@ -125,7 +129,7 @@ public class NotificationsPanel extends JPanel {
         try {
             freqTradableItemsPanel = new JPanel(new GridLayout(0, 1));
             freqTradableItemsPanel.setBackground(gray2);
-            ArrayList<String> items = infoManager.getRecentTradeItems(traderId);
+            List<String> items = infoManager.getRecentTradeItems(traderId);
             int numRows = items.size();
             if (numRows < 3)
                 numRows = 3;

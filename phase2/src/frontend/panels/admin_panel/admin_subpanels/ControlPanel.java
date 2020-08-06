@@ -18,6 +18,7 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -190,7 +191,7 @@ public class ControlPanel extends JPanel implements ActionListener {
             TradeNotFoundException {
         JPanel ongoingTradesContainer = new JPanel();
 
-        ArrayList<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
+        List<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
 
         if(acceptedTrades.isEmpty())
             return createNoTradesFoundPanel("<html><pre>No Ongoing Trades Found</pre></html>", bold);
