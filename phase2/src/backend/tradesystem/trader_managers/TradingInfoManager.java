@@ -401,7 +401,7 @@ public class TradingInfoManager extends Manager {
 
         ArrayList<String> allTraders = getAllTraders();
         Trader thisTrader = getTrader(thisTraderId);
-        allTraders.remove(thisTrader); //so it doesn't trade with itself
+        allTraders.remove(thisTraderId); //so it doesn't trade with itself
         String city = thisTrader.getCity();
 
         String mostSimItemId = null;
