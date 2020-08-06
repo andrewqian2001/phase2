@@ -40,6 +40,9 @@ public class TestTradingInfo extends TestManager {
     Trader t3;
     Trader t4;
     Trader t5;
+    Trader t6;
+    Trader t7;
+
 
 
 
@@ -127,6 +130,10 @@ public class TestTradingInfo extends TestManager {
             t5Inventory.add("WHAT I WANT YOU CANNOT GIVE ME");
             t5Wishlist.add("WEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
             t5 = createNewTrader("trader5", "Toronto", t5Inventory, t5Wishlist);
+            ArrayList<String> t6Inventory = new ArrayList<>();
+            ArrayList<String> t6Wishlist = new ArrayList<>();
+            t5Inventory.add("12345678");
+            t5Inventory.add("1234567");
 
 
 

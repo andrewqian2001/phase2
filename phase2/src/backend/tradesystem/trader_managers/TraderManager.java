@@ -10,7 +10,7 @@ import backend.models.users.Trader;
 import backend.tradesystem.Manager;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Used for the actions of a Trader
@@ -184,7 +184,7 @@ public class TraderManager extends Manager {
      */
     public void removeReview(String userThatHasReview, String reviewId) throws UserNotFoundException, AuthorizationException {
         Trader trader = getTrader(userThatHasReview);
-        ArrayList<Review> reviews = trader.getReviews();
+        List<Review> reviews = trader.getReviews();
         for (Review review : reviews) {
             if (review.getId().equals(reviewId)) {
                 reviews.remove(review);

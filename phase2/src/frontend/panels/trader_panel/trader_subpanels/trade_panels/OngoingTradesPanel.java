@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -99,7 +100,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
             throws UserNotFoundException, AuthorizationException, TradeNotFoundException {
         JPanel ongoingTradesContainer = new JPanel();
 
-        ArrayList<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
+        List<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
 
         if (acceptedTrades.isEmpty())
             return createNoTradesFoundPanel("<html><pre>No Ongoing Trades Found</pre></html>");

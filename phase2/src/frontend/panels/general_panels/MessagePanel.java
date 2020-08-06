@@ -3,6 +3,7 @@ package frontend.panels.general_panels;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 import javax.swing.*;
@@ -259,7 +260,7 @@ public class MessagePanel extends JPanel {
 
     private void getMessages() {
         try {
-            HashMap<String, ArrayList<String>> messages = userId.equals("") ? new HashMap<>()
+            HashMap<String, List<String>> messages = userId.equals("") ? new HashMap<>()
                     : messageManager.getMessages(userId);
             if (messages.size() == 0) {
                 messagesListContainer = new JPanel();
@@ -479,7 +480,7 @@ public class MessagePanel extends JPanel {
 
     private void getReports() throws UserNotFoundException {
 
-        ArrayList<String[]> reports = reportManager.getReports();
+        List<String[]> reports = reportManager.getReports();
         if (reports.size() == 0) {
             return;
         }

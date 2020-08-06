@@ -1,6 +1,7 @@
 package frontend.panels.trader_panel.trader_subpanels;
 
 import javax.swing.*;
+import java.util.List;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
@@ -23,7 +24,7 @@ public class ItemsPanel extends JPanel {
 
     private final String traderId;
     private final Font regular, bold;
-    private JPanel inventoryHeader;
+    private JPanel inventoryHeader, wishListHeader;
     private JPanel inventoryItemsContainer, wishlistItemsContainer;
     private final JScrollPane wishlistItemsScrollPane;
 
@@ -40,7 +41,6 @@ public class ItemsPanel extends JPanel {
 
     private final ItemQuery itemQuery = new ItemQuery();
     private final UserQuery userQuery = new UserQuery();
-    private JPanel wishListHeader;
 
     /**
      * Makes a new panel that shows list of items and wishlist items
@@ -121,7 +121,7 @@ public class ItemsPanel extends JPanel {
         gbc.weighty = 0.1;
         createInventoryHeader();
         inventoryItems.add(inventoryHeader, gbc);
-
+                                                        
         gbc.gridy = 2;
         gbc.weighty = 0.8;
         inventoryItems.add(inventoryItemsScrollPane, gbc);
@@ -402,7 +402,7 @@ public class ItemsPanel extends JPanel {
     }
 
     private void getInventory() throws UserNotFoundException, AuthorizationException {
-        ArrayList<String> availableItems = traderId.equals("") ? new ArrayList<>() : userQuery.getAvailableItems(traderId);
+        List<String> availableItems = traderId.equals("") ? new ArrayList<>() : userQuery.getAvailableItems(traderId);
         int numRows = availableItems.size();
         if (numRows < 4) numRows = 4;
         inventoryItemsContainer = new JPanel(new GridLayout(numRows, 1));
@@ -463,7 +463,7 @@ public class ItemsPanel extends JPanel {
     }
 
     private void getWishlist() throws UserNotFoundException, AuthorizationException {
-        ArrayList<String> wishlist = traderId.equals("") ? new ArrayList<>() : userQuery.getWishlist(traderId);
+        List<String> wishlist = traderId.equals("") ? new ArrayList<>() : userQuery.getWishlist(traderId);
         int numRows = wishlist.size();
         if (numRows < 4) numRows = 4;
         wishlistItemsContainer = new JPanel(new GridLayout(numRows, 1));

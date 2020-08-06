@@ -40,8 +40,8 @@ public class TradingInfoManager extends Manager {
      *
      * @return all the traders in the database
      */
-    public ArrayList<String> getAllTraders() {
-        ArrayList<String> allTraders = new ArrayList<>();
+    public List<String> getAllTraders() {
+        List<String> allTraders = new ArrayList<>();
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Trader)
@@ -59,8 +59,8 @@ public class TradingInfoManager extends Manager {
      * @param name the string to search for
      * @return traders with similar names
      */
-    public ArrayList<String> searchTrader(String name) {
-        ArrayList<String> similarTraders = new ArrayList<>();
+    public List<String> searchTrader(String name) {
+        List<String> similarTraders = new ArrayList<>();
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Trader && getUser(userId).getUsername().toLowerCase().contains(name.toLowerCase()))
@@ -78,8 +78,8 @@ public class TradingInfoManager extends Manager {
      * @param city the city name
      * @return list of all traders within the same city
      */
-    public ArrayList<String> getAllTradersInCity(String city) {
-        ArrayList<String> allTraders = new ArrayList<>();
+    public List<String> getAllTradersInCity(String city) {
+        List<String> allTraders = new ArrayList<>();
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Trader && ((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
@@ -100,8 +100,8 @@ public class TradingInfoManager extends Manager {
      * @param name the name to check for
      * @return list of tradable item ids that match the name
      */
-    public ArrayList<String> getTradableItemsWithName(String name) {
-        ArrayList<String> items = new ArrayList<>();
+    public List<String> getTradableItemsWithName(String name) {
+        List<String> items = new ArrayList<>();
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Trader) {
@@ -154,9 +154,9 @@ public class TradingInfoManager extends Manager {
      * @throws UserNotFoundException  user not found
      * @throws TradeNotFoundException trade not found
      */
-    public ArrayList<String> getFrequentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
-        ArrayList<String> frequentTraders = new ArrayList<>();
-        ArrayList<String> traders = new ArrayList<>();
+    public List<String> getFrequentTraders(String traderId) throws AuthorizationException, UserNotFoundException, TradeNotFoundException {
+        List<String> frequentTraders = new ArrayList<>();
+        List<String> traders = new ArrayList<>();
 
 
         for (String tradeId : getTrader(traderId).getCompletedTrades()) {
@@ -195,12 +195,12 @@ public class TradingInfoManager extends Manager {
      * @throws TradeNotFoundException trade not found
      * @throws UserNotFoundException  trader id is bad
      */
-    public ArrayList<String> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
+    public List<String> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
             UserNotFoundException {
         Trader trader = getTrader(traderId);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
-        ArrayList<String> completedTrades = trader.getCompletedTrades();
-        ArrayList<String> recentTradeItems = new ArrayList<>();
+        List<String> completedTrades = trader.getCompletedTrades();
+        List<String> recentTradeItems = new ArrayList<>();
         for (String tradeID : completedTrades) {
             Trade trade = getTrade(tradeID);
             String firstItemId = trade.getFirstUserOffer();
@@ -229,7 +229,7 @@ public class TradingInfoManager extends Manager {
      */
     public String[] suggestLend(String thisTraderId, boolean inCity) throws
             UserNotFoundException, AuthorizationException {
-        ArrayList<String[]> lends = suggestLendList(thisTraderId, inCity);
+        List<String[]> lends = suggestLendList(thisTraderId, inCity);
         if (lends.size() == 0) {
             return new String[0];
         }
@@ -246,14 +246,14 @@ public class TradingInfoManager extends Manager {
      * @throws UserNotFoundException  if the user can not be found
      * @throws AuthorizationException if the user is frozen
      */
-    private ArrayList<String[]> suggestLendList(String thisTraderId, boolean inCity) throws
+    private List<String[]> suggestLendList(String thisTraderId, boolean inCity) throws
             UserNotFoundException, AuthorizationException {
         Trader thisTrader = getTrader(thisTraderId);
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
-        ArrayList<String[]> result = new ArrayList<>();
+        List<String[]> result = new ArrayList<>();
         HashSet<String> thisTraderItems = new HashSet<>(thisTrader.getAvailableItems());
 
-        ArrayList<String> allTraders = inCity ? getAllTradersInCity(thisTrader.getCity()) : getAllTraders();
+        List<String> allTraders = inCity ? getAllTradersInCity(thisTrader.getCity()) : getAllTraders();
 
         // Get suggested items for all traders
         for (String traderId : allTraders) {
@@ -287,7 +287,7 @@ public class TradingInfoManager extends Manager {
         Trader thisTrader = getTrader(thisTraderId);
         if (thisTrader.isFrozen()) throw new AuthorizationException("Frozen account");
 
-        ArrayList<String[]> toLend = suggestLendList(thisTraderId, inCity);
+        List<String[]> toLend = suggestLendList(thisTraderId, inCity);
 
         HashSet<String> thisTraderWishlist = new HashSet<>(thisTrader.getWishlist());
 
@@ -317,7 +317,7 @@ public class TradingInfoManager extends Manager {
 
         //Finds the most similar trade, most similar is calculated through similarSearch
 
-        ArrayList<String> allTraders = getAllTraders();
+        List<String> allTraders = getAllTraders();
         allTraders.remove(thisTraderId);
         Trader thisTrader = getTrader(thisTraderId);
         String city = thisTrader.getCity();
@@ -388,19 +388,69 @@ public class TradingInfoManager extends Manager {
 
     }
 
+
     /**
-     * checks how many similarities name has with strings in list
+     * Suggests an item to lend to traders in the database
+     * @param thisTraderId is the id of the trader
+     * @param filterCity if the user wants to filter for city
+     * @return a 2 cell string array containing the traderId that is suggested this trader lend to with, and this traders item to lend. {mostSimTraderId, mostSimItemId}
+     * @throws UserNotFoundException
+     * @throws AuthorizationException
+     */
+    public String[] automatedLendSuggestion(String thisTraderId, boolean filterCity) throws UserNotFoundException, AuthorizationException{
+
+        List<String> allTraders = getAllTraders();
+        Trader thisTrader = getTrader(thisTraderId);
+        allTraders.remove(thisTraderId); //so it doesn't trade with itself
+        String city = thisTrader.getCity();
+
+        String mostSimItemId = null;
+        String mostSimTraderId = null;
+        int maxSim = 0;
+        for (String otherTraderId : allTraders) {
+            Trader otherTrader = getTrader(otherTraderId);
+            if (filterCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
+                continue;
+            }
+            for(String inventoryItemId: thisTrader.getAvailableItems()){
+                Object[] giveItem = null;
+                try {
+                    giveItem = similarSearch(inventoryItemId, otherTrader.getWishlist());
+                } catch (TradableItemNotFoundException e) {
+                    giveItem = null;
+                } finally {
+                    if (!(giveItem == null)) {
+                        if (((int) giveItem[1]) > maxSim) {
+                            mostSimItemId = inventoryItemId;
+                            mostSimTraderId = otherTraderId;
+                            maxSim = ((int) giveItem[1]);
+                        }
+                    }
+                }
+            }
+        }
+        if(mostSimItemId == null || mostSimTraderId == null){
+            return new String[] {};
+        }
+        return new String[] {mostSimTraderId, mostSimItemId};
+
+
+    }
+
+
+    /**
+     * finds the most similar string in list to the string of the inputted name and returns it if it passes the threshold
      *
      * @param nameId is the id of the item we wish to find a similar name of
-     * @param list   is the list of strings that we are traversing through
-     * @return an array with two cells containing the items name and the score of how similar it is
+     * @param list is the list of strings that we are traversing through
+     * @return an array with two cells containing the items name and the score of how similar it is (if the similarity score passes threshold)
      */
-    private Object[] similarSearch(String nameId, ArrayList<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
+    private Object[] similarSearch(String nameId, List<String> list) throws TradableItemNotFoundException, UserNotFoundException, AuthorizationException {
 
         if (list.size() == 0) {
             return new Object[]{null, 0};
         }
-        ArrayList<Object[]> similarNames = new ArrayList<>();
+        List<Object[]> similarNames = new ArrayList<>();
 
         //This is to check what type of list the parameter list is so that this function can work with traders
         // and tradable items
@@ -516,7 +566,7 @@ public class TradingInfoManager extends Manager {
             }
         }
 
-        //adds a threshold, so that items we consider not simialr dont get added, even if there is nothing else
+        //adds a threshold, so that items we consider not similar don't get added, even if there is nothing else
         if (max >= ((int) (longestWord.length() * 0.8))) {
             return new Object[]{mostSimilarNameId, max};
         }
