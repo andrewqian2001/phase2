@@ -399,7 +399,7 @@ public class TradingInfoManager extends Manager {
      */
     public String[] automatedLendSuggestion(String thisTraderId, boolean filterCity) throws UserNotFoundException, AuthorizationException{
 
-        ArrayList<String> allTraders = getAllTraders();
+        List<String> allTraders = getAllTraders();
         Trader thisTrader = getTrader(thisTraderId);
         allTraders.remove(thisTrader); //so it doesn't trade with itself
         String city = thisTrader.getCity();
