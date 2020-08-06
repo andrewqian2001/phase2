@@ -32,6 +32,7 @@ import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.AddNewTradeModal;
+import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.TradeDetailsModal;
 
 public class OngoingTradesPanel extends JPanel implements ActionListener {
 
@@ -83,7 +84,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     }
 
     private JScrollPane setOngoingTradesScrollPane()
-            throws UserNotFoundException, AuthorizationException, TradeNotFoundException {
+            throws UserNotFoundException, AuthorizationException, TradeNotFoundException, IOException {
         JScrollPane ongoingTradesScrollPane = new JScrollPane();
 
         JPanel ongoingTradesContainer = setOngoingTradesContainer();
@@ -97,7 +98,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     }
 
     private JPanel setOngoingTradesContainer()
-            throws UserNotFoundException, AuthorizationException, TradeNotFoundException {
+            throws UserNotFoundException, AuthorizationException, TradeNotFoundException, IOException {
         JPanel ongoingTradesContainer = new JPanel();
 
         List<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
@@ -120,7 +121,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         return ongoingTradesContainer;
     }
 
-    private JPanel createOngoingTradePanel(String tradeID) throws TradeNotFoundException, UserNotFoundException {
+    private JPanel createOngoingTradePanel(String tradeID) throws TradeNotFoundException, UserNotFoundException, IOException {
         JPanel ongoingTradePanel = new JPanel(new GridLayout(1, 5, 10, 0));
         ongoingTradePanel.setPreferredSize(new Dimension(1000, 75));
         ongoingTradePanel.setBorder(BorderFactory.createLineBorder(bg));
@@ -164,9 +165,13 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         tradeDetailsButton.setOpaque(true);
         tradeDetailsButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
-        // TODO: UNCOMMENT AFTER IMPLEMENTING MODAL
-        // tradeDetailsButton.addActionListener(e -> new TradeDetailsModal(tradeID,
-        // false, isTraderFirstUser, regular, bold, italic, boldItalic));
+        tradeDetailsButton.addActionListener(e -> {
+            try {
+                new TradeDetailsModal(tradeID, false, isTraderFirstUser, regular, bold, italic, boldItalic);
+            } catch (IOException | TradeNotFoundException | UserNotFoundException exception) {
+                exception.printStackTrace();
+            }
+        });
 
         JButton tradeConfirmButton = setConfirmTradeButton(tradeID, isTraderFirstUser);
 
