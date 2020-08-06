@@ -1,12 +1,13 @@
 package frontend.panels.admin_panel.admin_subpanels;
 
-import backend.exceptions.BadPasswordException;
-import backend.exceptions.TradeNotFoundException;
-import backend.exceptions.UserAlreadyExistsException;
+import backend.exceptions.*;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
+import backend.tradesystem.queries.TradeQuery;
+import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
+import backend.tradesystem.trader_managers.TradingManager;
 import frontend.WindowManager;
 import frontend.components.TraderComboBoxItem;
 
@@ -15,6 +16,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * This is used to show the different settings that an admin can configure
@@ -34,6 +38,14 @@ public class ControlPanel extends JPanel implements ActionListener {
     private final Color gray2 = new Color(142, 142, 142);
     private final Color green = new Color(27, 158, 36);
     private final Color red = new Color(219, 58, 52);
+
+    private final TradeQuery tradeQuery = new TradeQuery();
+    private final UserQuery userQuery = new UserQuery();
+    private String trader = "";
+    private JComboBox<TraderComboBoxItem> traders;
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
+    private final TradingManager tradingManager = new TradingManager();
+    private JScrollPane ongoingTradesScrollPane;
 
     /**
      * Makes a new control panel
@@ -93,9 +105,11 @@ public class ControlPanel extends JPanel implements ActionListener {
         }
         incompleteLimitChoice = new JComboBox<>(incompleteLimitChoices);
         handleInfoSubpanel(bg, info, incompleteLimitChoice, TraderProperties.INCOMPLETE_TRADE_LIM);
+
         createSubmitSettings(bold, bg, gbc, tradeSettings);
         JPanel newAdmin = createNewAdmin(bg, splitContainer);
         gbc = new GridBagConstraints();
+
         JPanel input = createNewInputForAdmin(bg, gbc, newAdmin);
         createLabel(regular, input, "Username:", 25f, JLabel.CENTER);
         createAccountInputs(regular, regular, bg, input);
@@ -117,14 +131,141 @@ public class ControlPanel extends JPanel implements ActionListener {
         this.add(titles);
         this.add(splitContainer);
         this.add(setUndoTradeButtonPanel(userId, regular, bold, italic, boldItalic));
+        this.add(setOngoingTradesScrollPane());
 
+    }
+
+    private JScrollPane setOngoingTradesScrollPane() {
+        ongoingTradesScrollPane = new JScrollPane();
+
+        JPanel ongoingTradesContainer = new JPanel();
+        ongoingTradesContainer.setBackground(bg);
+
+        ongoingTradesScrollPane.setPreferredSize(new Dimension(1200, 280));
+        ongoingTradesScrollPane.setBackground(bg);
+        ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
+        ongoingTradesScrollPane.setBorder(null);
+
+        return ongoingTradesScrollPane;
+    }
+
+    private JPanel setOngoingTradesContainer(Font regular, Font bold) throws UserNotFoundException, AuthorizationException,
+            TradeNotFoundException {
+        JPanel ongoingTradesContainer = new JPanel();
+
+        ArrayList<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
+
+        if(acceptedTrades.isEmpty())
+            return createNoTradesFoundPanel("<html><pre>No Ongoing Trades Found</pre></html>", bold);
+
+        int numRows = acceptedTrades.size();
+        numRows = numRows < 4 ? 4 : numRows;
+
+        ongoingTradesContainer.setLayout(new GridLayout(numRows, 1));
+        ongoingTradesContainer.setBackground(bg);
+        ongoingTradesContainer.setBorder(null);
+
+        for (String tradeID : acceptedTrades) {
+            JPanel ongoingTradePanel = createOngoingTradePanel(tradeID, bold, regular);
+            ongoingTradesContainer.add(ongoingTradePanel);
+        }
+
+        return ongoingTradesContainer;
+    }
+
+    private JPanel createNoTradesFoundPanel(String message, Font bold) {
+        JPanel noTradesFoundPanel = new JPanel();
+        noTradesFoundPanel.setBackground(gray2);
+        JLabel noTradesFound = new JLabel();
+        noTradesFound.setFont(bold.deriveFont(30f));
+        noTradesFound.setForeground(Color.WHITE);
+        noTradesFoundPanel.add(noTradesFound, BorderLayout.CENTER);
+        return noTradesFoundPanel;
+    }
+
+    private JPanel createOngoingTradePanel(String tradeID, Font regular, Font bold) throws TradeNotFoundException, UserNotFoundException {
+        JPanel ongoingTradePanel = new JPanel(new GridLayout(1, 5, 10, 0));
+        ongoingTradePanel.setPreferredSize(new Dimension(1000, 75));
+        ongoingTradePanel.setBorder(BorderFactory.createLineBorder(bg));
+        ongoingTradePanel.setBackground(gray);
+
+        boolean isTraderFirstUser = tradeQuery.getFirstUserId(tradeID).equals(trader);
+
+        JLabel otherTraderName = new JLabel();
+
+        if(isTraderFirstUser)
+            otherTraderName.setText(userQuery.getUsername(tradeQuery.getSecondUserId(tradeID)));
+        else
+            otherTraderName.setText(userQuery.getUsername(tradeQuery.getFirstUserId(tradeID)));
+
+        otherTraderName.setFont(regular.deriveFont(20f));
+        otherTraderName.setForeground(Color.BLACK);
+        otherTraderName.setHorizontalAlignment(JLabel.LEFT);
+        otherTraderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
+
+        JLabel tradeLocation = new JLabel(tradeQuery.getMeetingLocation(tradeID));
+        tradeLocation.setFont(regular.deriveFont(20f));
+        tradeLocation.setForeground(Color.BLACK);
+        tradeLocation.setHorizontalAlignment(JLabel.CENTER);
+
+        JLabel tradeMeetingTime = new JLabel();
+
+        if (tradeQuery.isFirstUserConfirmed1(tradeID) && tradeQuery.isSecondUserConfirmed1(tradeID)) {
+            tradeMeetingTime.setText(dateFormat.format(tradeQuery.getSecondMeetingTime(tradeID)));
+        } else {
+            tradeMeetingTime.setText(dateFormat.format(tradeQuery.getMeetingTime(tradeID)));
+        }
+
+        tradeMeetingTime.setFont(regular.deriveFont(20f));
+        tradeMeetingTime.setForeground(Color.BLACK);
+        tradeMeetingTime.setHorizontalAlignment(JLabel.CENTER);
+
+        JButton tradeDetailsButton = new JButton("Details");
+        tradeDetailsButton.setFont(bold.deriveFont(20f));
+        tradeDetailsButton.setForeground(Color.WHITE);
+        tradeDetailsButton.setBackground(gray2);
+        tradeDetailsButton.setOpaque(true);
+        tradeDetailsButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+
+        // TODO: UNCOMMENT AFTER IMPLEMENTING MODAL
+        // tradeDetailsButton.addActionListener(e -> new TradeDetailsModal(tradeID, false, isTraderFirstUser, regular, bold, italic, boldItalic));
+
+        JButton tradeUndoButton = setUndoButton(tradeID, bold);
+
+        ongoingTradePanel.add(otherTraderName);
+        ongoingTradePanel.add(tradeLocation);
+        ongoingTradePanel.add(tradeMeetingTime);
+        ongoingTradePanel.add(tradeDetailsButton);
+        ongoingTradePanel.add(tradeUndoButton);
+
+        return ongoingTradePanel;
+    }
+
+    private JButton setUndoButton(String tradeID, Font bold) {
+        JButton tradeUndoButton = new JButton();
+
+        tradeUndoButton.setText("Undo");
+        tradeUndoButton.setFont(bold.deriveFont(20f));
+        tradeUndoButton.setForeground(Color.WHITE);
+        tradeUndoButton.setBackground(Color.red);
+        tradeUndoButton.setBorder(BorderFactory.createLineBorder(gray, 15));
+
+        tradeUndoButton.addActionListener(e -> {
+            try {
+                tradingManager.rescindOngoingTrade(tradeID);
+            } catch (TradeNotFoundException | UserNotFoundException | AuthorizationException | CannotTradeException exception) {
+                exception.printStackTrace();
+            }
+        });
+
+        return tradeUndoButton;
     }
 
     private JPanel setUndoTradeButtonPanel(String userId, Font regular, Font bold, Font italic, Font boldItalic) {
         JPanel undoTradeButtonPanel = new JPanel(new GridLayout(1, 3));
-        undoTradeButtonPanel.setPreferredSize(new Dimension(1200, 150));
+        undoTradeButtonPanel.setPreferredSize(new Dimension(1200, 130));
         undoTradeButtonPanel.setBackground(bg);
-        undoTradeButtonPanel.setBorder(BorderFactory.createMatteBorder(50, 0, 0, 0, Color.BLACK));
+        undoTradeButtonPanel.setBorder(BorderFactory.createMatteBorder(30, 0, 10, 0, Color.BLACK));
 
         JLabel undoTradeLabel = new JLabel("Undo Trade");
         undoTradeLabel.setFont(bold.deriveFont(25f));
@@ -132,7 +273,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         undoTradeLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
         undoTradeLabel.setOpaque(false);
 
-        JComboBox<TraderComboBoxItem> traders = new JComboBox<>();
+        traders = new JComboBox<>();
         traders.setFont(regular.deriveFont(20f));
         traders.setBorder(BorderFactory.createMatteBorder(20, 25, 20, 50, bg));
         traders.setBackground(gray2);
@@ -154,6 +295,16 @@ public class ControlPanel extends JPanel implements ActionListener {
         undoTradeButton.setForeground(Color.WHITE);
         undoTradeButton.setBorder(BorderFactory.createMatteBorder(20, 50, 20, 25, bg));
         undoTradeButton.setEnabled(false);
+        undoTradeButton.addActionListener(e -> {
+            trader = traders.getItemAt(traders.getSelectedIndex()).getId();
+            System.out.println(trader);
+            try {
+                JPanel ongoingTradesContainer = setOngoingTradesContainer(regular, bold);
+                ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);
+            } catch (UserNotFoundException | AuthorizationException | TradeNotFoundException exception) {
+                exception.printStackTrace();
+            }
+        });
 
         traders.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
