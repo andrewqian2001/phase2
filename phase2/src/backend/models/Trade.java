@@ -82,15 +82,6 @@ public class Trade  implements Serializable, Idable {
     }
 
     /**
-     * confirm the first meeting by the first user
-     *
-     * @param firstUserConfirmed1 if the user that initialized the trade confirmed the first meeting
-     */
-    public void setFirstUserConfirmed1(boolean firstUserConfirmed1) {
-        isFirstUserConfirmed1 = firstUserConfirmed1;
-    }
-
-    /**
      * if the user that got sent the trade confirmed the first meeting
      *
      * @return if the user that got sent the trade confirmed the first meeting
@@ -99,14 +90,6 @@ public class Trade  implements Serializable, Idable {
         return isSecondUserConfirmed1;
     }
 
-    /**
-     * if the user that got sent the trade confirmed the first meeting
-     *
-     * @param secondUserConfirmed1 if the user that got sent the trade confirmed the first meeting
-     */
-    public void setSecondUserConfirmed1(boolean secondUserConfirmed1) {
-        isSecondUserConfirmed1 = secondUserConfirmed1;
-    }
 
     /**
      * if the user that initialized the trade confirmed the second meeting
@@ -117,14 +100,6 @@ public class Trade  implements Serializable, Idable {
         return isFirstUserConfirmed2;
     }
 
-    /**
-     * if the user that initialized the trade confirmed the second meeting
-     *
-     * @param firstUserConfirmed2 if the user that initialized the trade confirmed the second meeting
-     */
-    public void setFirstUserConfirmed2(boolean firstUserConfirmed2) {
-        isFirstUserConfirmed2 = firstUserConfirmed2;
-    }
 
     /**
      * if the user that initialized the trade confirmed the second meeting
@@ -133,15 +108,6 @@ public class Trade  implements Serializable, Idable {
      */
     public boolean isSecondUserConfirmed2() {
         return isSecondUserConfirmed2;
-    }
-
-    /**
-     * if the user that got sent the trade confirmed the second meeting
-     *
-     * @param secondUserConfirmed2 if the user that got sent the trade confirmed the second meeting
-     */
-    public void setSecondUserConfirmed2(boolean secondUserConfirmed2) {
-        isSecondUserConfirmed2 = secondUserConfirmed2;
     }
 
     /**
@@ -341,6 +307,25 @@ public class Trade  implements Serializable, Idable {
      */
     public boolean isTraderInTrade(String traderId) {
         return this.getFirstUserId().equals(traderId) || this.getSecondUserId().equals(traderId);
+    }
+
+    public void setUserConfirmed(String traderId){
+        if (traderId.equals(FIRST_USER_ID)){
+            if (!isFirstUserConfirmed1){
+                isFirstUserConfirmed1 = true;
+            }
+            else if (isFirstUserConfirmed1 && isSecondUserConfirmed1){
+                isFirstUserConfirmed2 = true;
+            }
+        }
+        else{
+            if (!isSecondUserConfirmed1){
+                isSecondUserConfirmed1 = true;
+            }
+            else if (isFirstUserConfirmed1 && isSecondUserConfirmed1){
+                isSecondUserConfirmed2 = true;
+            }
+        }
     }
 
     /**

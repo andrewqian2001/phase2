@@ -232,7 +232,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
 
         tradeConfirmButton.addActionListener(e -> {
             try {
-                tradeManager.confirmMeetingGeneral(trader, tradeID, true);
+                tradeManager.confirmMeetingGeneral(trader, tradeID);
                 // System.out.println(tradeQuery.isFirstUserConfirmed1(tradeID));
                 // System.out.println(tradeQuery.isSecondUserConfirmed1(tradeID));
                 // System.out.println(tradeQuery.isFirstUserConfirmed2(tradeID));

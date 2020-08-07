@@ -34,6 +34,6 @@ public class Review extends Report implements Serializable {
      */
     @Override
     public String getId() {
-        return getId() + RATING;
+        return super.getId() + RATING;
     }
 }
