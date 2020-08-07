@@ -204,18 +204,21 @@ public class TradingInfoManager extends Manager {
         Trader trader = getTrader(traderId);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         List<String> completedTrades = trader.getCompletedTrades();
+        Map<String, Boolean> used = new HashMap<>();
         List<String> recentTradeItems = new ArrayList<>();
-        for (String tradeID : completedTrades) {
+        for (int i = completedTrades.size() - 1; i >= 0; i--) {
+            String tradeID = completedTrades.get(i);
             Trade trade = getTrade(tradeID);
             String firstItemId = trade.getFirstUserOffer();
             String secondItemId = trade.getSecondUserOffer();
-            try {
-                if (!firstItemId.equals(""))
-                    recentTradeItems.add(getTradableItem(firstItemId).getId());
-                if (!secondItemId.equals(""))
-                    recentTradeItems.add(getTradableItem(secondItemId).getId());
-            } catch (EntryNotFoundException e) {
-                e.printStackTrace();
+
+            if (!used.getOrDefault(firstItemId, false) && !firstItemId.equals("")) {
+                recentTradeItems.add(firstItemId);
+                used.put(firstItemId, true);
+            }
+            if (!used.getOrDefault(secondItemId, false) && !secondItemId.equals("")) {
+                recentTradeItems.add(secondItemId);
+                used.put(secondItemId, true);
             }
         }
         return recentTradeItems;
