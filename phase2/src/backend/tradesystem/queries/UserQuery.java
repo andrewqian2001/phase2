@@ -80,28 +80,7 @@ public class UserQuery extends Manager {
     }
 
 
-    /**
-     * All messages that got sent to a user
-     *
-     * @param userId The id of the user being checked
-     * @return all messages that got sent to the user
-     * @throws UserNotFoundException If the user could not be found in the database
-     */
-    public HashMap<String, List<String>> getMessages(String userId) throws UserNotFoundException {
-        return getUser(userId).getMessages();
-    }
 
-    /**
-     * Gets all ongoing items of a trader
-     *
-     * @param traderId The id of the trader being checked
-     * @return all ongoing items of this trader
-     * @throws UserNotFoundException  if the trader doesn't exist
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public List<String> getOngoingItems(String traderId) throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getOngoingItems();
-    }
 
     /**
      * Gets all reviews of a trader
@@ -145,30 +124,6 @@ public class UserQuery extends Manager {
      */
     public boolean isIdle(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).isIdle();
-    }
-
-    /**
-     * the number of incomplete trades a trader has done
-     *
-     * @param traderId The id of the trader being checked
-     * @return the number of incomplete trades the trader has done
-     * @throws UserNotFoundException  if the trader doesn't exist
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public int getIncompleteTradeCount(String traderId) throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getIncompleteTradeCount();
-    }
-
-    /**
-     * total completed trade count of a trader
-     *
-     * @param traderId The id of the trader being checked
-     * @return total completed trade count of the trader
-     * @throws UserNotFoundException  if the trader doesn't exist
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public int getTradeCount(String traderId) throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getTradeCount();
     }
 
 
@@ -224,18 +179,6 @@ public class UserQuery extends Manager {
         return getTrader(traderId).getAcceptedTrades();
     }
 
-    /**
-     * list of completed trades a trader has (ie confirmed by both users)
-     *
-     * @param traderId The id of the trader being checked
-     * @return list of trades that are completed (ie confirmed by both users)
-     * @throws UserNotFoundException  if the trader doesn't exist
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public List<String> getCompletedTrades(String traderId) throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getCompletedTrades();
-    }
-
 
     /**
      * list of trades requested by a trader
@@ -249,29 +192,6 @@ public class UserQuery extends Manager {
         return getTrader(traderId).getRequestedTrades();
     }
 
-    /**
-     * how many transactions a trader can conduct in 1 week
-     *
-     * @param traderId The id of the trader being checked
-     * @return how many transactions the trader can conduct in 1 week
-     * @throws UserNotFoundException  if the trader doesn't exist
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public int getTradeLimit(String traderId) throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getTradeLimit();
-    }
-
-    /**
-     * how many transactions can be incomplete before a trader's account is frozen
-     *
-     * @param traderId The id of the trader being checked
-     * @return how many transactions can be incomplete before the trader's account is frozen
-     * @throws UserNotFoundException  if the trader doesn't exist
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public int getIncompleteTradeLim(String traderId) throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getIncompleteTradeLim();
-    }
 
     /**
      * total number of items borrowed by a trader
