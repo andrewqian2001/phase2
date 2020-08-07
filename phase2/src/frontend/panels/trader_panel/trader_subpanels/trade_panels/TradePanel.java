@@ -33,8 +33,8 @@ public class TradePanel extends JPanel  {
      * @throws IOException                   issues with getting database files
      * @throws UserNotFoundException         trader is is bad
      * @throws AuthorizationException        user id isn't a trader
-     * @throws TradeNotFoundException
-     * @throws TradableItemNotFoundException
+     * @throws TradeNotFoundException trade doesn't exist
+     * @throws TradableItemNotFoundException item doesn't exist
      */
     public TradePanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException,
             UserNotFoundException, AuthorizationException, TradeNotFoundException, TradableItemNotFoundException {

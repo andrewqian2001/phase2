@@ -64,7 +64,7 @@ public class WindowManager extends JFrame {
      *
      * @param loggedInUserId the user id that is logged in
      * @throws IOException            if login causes issues
-     * @throws TradeNotFoundException
+     * @throws TradeNotFoundException trade doesn't exist
      */
     public void login(String loggedInUserId) throws IOException, TradeNotFoundException {
         try {

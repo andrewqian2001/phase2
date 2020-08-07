@@ -222,7 +222,10 @@ public class TradingInfoManager extends Manager {
 
     /**
      * Returns the suggestion provided by a suggest lend algorithm
+     *
+     * @param traderId trader id
      * @param strategy The lending strategy to use
+     * @param inCity   whether to filter for city or not
      * @return the suggestion provided by a suggest lend strategy
      * @throws UserNotFoundException  if the user can not be found
      * @throws AuthorizationException if the user is frozen
@@ -236,7 +239,9 @@ public class TradingInfoManager extends Manager {
     /**
      * Returns the suggestion provided by a suggest trade algorithm
      *
+     * @param traderId trader id
      * @param strategy The trading strategy to use
+     * @param inCity   whether to filter for city or not
      * @return the suggestion provided by the suggest trade algorithm
      * @throws UserNotFoundException  bad trader ids
      * @throws AuthorizationException can't suggest because user is not a trader or is frozen

@@ -58,13 +58,13 @@ public class TraderPanel extends JPanel implements ActionListener {
      * @param bold        bold font
      * @param italic      italics font
      * @param boldItalic  bold italics font
-     * @param infiltraded
+     * @param infiltraded if this is true, it means an admin is accessing this panel
      * @throws IOException                   if accessing database has issues
      * @throws UserNotFoundException         if the user id is bad
      * @throws AuthorizationException        if this user isn't allowed to access
      *                                       this panel
-     * @throws TradeNotFoundException
-     * @throws TradableItemNotFoundException
+     * @throws TradeNotFoundException        if trade doesn't exist
+     * @throws TradableItemNotFoundException if item doesn't exist
      */
     public TraderPanel(String traderId, Font regular, Font bold, Font italic, Font boldItalic, boolean infiltraded)
             throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException,
