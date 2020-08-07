@@ -148,7 +148,7 @@ public class AdminPanel extends JPanel implements ActionListener {
 
     private void setupIconText(String admin, Font boldItalic, UserQuery userQuery, GridBagConstraints gbc) throws UserNotFoundException {
         JLabel iconText = new JLabel(userQuery.getUsername(admin).toUpperCase().substring(0, 1));
-        iconText.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        iconText.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         iconText.setFont(boldItalic.deriveFont(55f));
         iconText.setForeground(Color.WHITE);
         iconText.setHorizontalAlignment(SwingConstants.CENTER);
