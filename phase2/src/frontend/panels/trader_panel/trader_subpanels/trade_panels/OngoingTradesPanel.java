@@ -27,7 +27,7 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.Suggestion;
+import backend.tradesystem.suggestion_strategies.Suggestion;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.suggestion_strategies.ExactWishlistSuggestion;

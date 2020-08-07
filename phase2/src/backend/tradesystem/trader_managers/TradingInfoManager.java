@@ -1,7 +1,7 @@
 package backend.tradesystem.trader_managers;
 
 import backend.exceptions.*;
-import backend.models.Suggestion;
+import backend.tradesystem.suggestion_strategies.Suggestion;
 import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;

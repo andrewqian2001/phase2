@@ -7,7 +7,7 @@ import java.util.UUID;
  * Provides for a way to keep track of all items with each having a unique id
  */
 public abstract class DatabaseItem implements Serializable {
-    private String thisId;
+    private final String thisId;
 
     /**
      * Generates random id

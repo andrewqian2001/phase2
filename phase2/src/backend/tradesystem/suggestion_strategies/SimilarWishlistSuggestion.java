@@ -3,7 +3,6 @@ package backend.tradesystem.suggestion_strategies;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.models.Suggestion;
 import backend.models.users.Trader;
 import backend.tradesystem.Manager;
 

@@ -1,4 +1,4 @@
-package backend.models;
+package backend.tradesystem.suggestion_strategies;
 
 /**
  * This class represents a suggestion for a trade
