@@ -3,6 +3,7 @@ package backend.tradesystem;
 import backend.DatabaseFilePaths;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 /**
@@ -11,23 +12,20 @@ import java.util.TimerTask;
  * https://stackoverflow.com/questions/54815226/how-can-i-detect-if-a-file-has-been-modified-using-lastmodified
  */
 public abstract class DetectDatabaseChange extends TimerTask {
-    private final long[] times;
-    private final File[] file;
+    private final ArrayList<Long> times  = new ArrayList<>();
+    private final ArrayList<File> file = new ArrayList<>();
 
     /**
      * For making an instance that detects if any files in the database got changed
      */
     public DetectDatabaseChange() {
-        File[] file = new File[DatabaseFilePaths.values().length];
-        long[] times = new long[DatabaseFilePaths.values().length];
         int i = 0;
         for (DatabaseFilePaths path : DatabaseFilePaths.values()) {
-            file[i] = new File(path.getFilePath());
-            times[i] = file[i].lastModified();
+            if (!path.isConfig()) return;
+            file.add(new File(path.getFilePath()));
+            times.add(file.get(i).lastModified());
             i++;
         }
-        this.file = file;
-        this.times = times;
     }
 
     /**
@@ -35,9 +33,9 @@ public abstract class DetectDatabaseChange extends TimerTask {
      */
     @Override
     public final void run() {
-        for (int i = 0; i < DatabaseFilePaths.values().length; i++) {
-            if (times[i] != file[i].lastModified()) {
-                times[i] = file[i].lastModified();
+        for (int i = 0; i < times.size(); i++) {
+            if (times.get(i) != file.get(i).lastModified()) {
+                times.set(i, file.get(i).lastModified());
                 onChange();
             }
         }
