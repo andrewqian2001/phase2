@@ -344,7 +344,6 @@ public class ControlPanel extends JPanel implements ActionListener {
         undoTradeButton.setEnabled(false);
         undoTradeButton.addActionListener(e -> {
             trader = traders.getItemAt(traders.getSelectedIndex()).getId();
-            System.out.println(trader);
             try {
                 JPanel ongoingTradesContainer = setOngoingTradesContainer(regular, bold, italic, boldItalic);
                 ongoingTradesScrollPane.setViewportView(ongoingTradesContainer);

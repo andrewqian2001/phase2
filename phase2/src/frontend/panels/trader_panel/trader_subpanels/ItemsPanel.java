@@ -284,7 +284,7 @@ public class ItemsPanel extends JPanel {
                         wishlistItemsContainer.repaint();
                         wishlistItemsScrollPane.setViewportView(wishlistItemsContainer);
                     } catch (UserNotFoundException | TradableItemNotFoundException | AuthorizationException e1) {
-                        System.out.println(e1.getMessage());
+                        e1.printStackTrace();
                     }
                 }
             });
@@ -377,7 +377,7 @@ public class ItemsPanel extends JPanel {
                         traderManager.addRequestItem(traderId, itemNameInput.getText().trim(), itemDescInput.getText().trim());
                         addNewItemModal.dispose();
                     } catch (UserNotFoundException | AuthorizationException e1) {
-                        System.out.println(e1.getMessage());
+                        e1.printStackTrace();
                     }
                 }
             });
@@ -446,12 +446,12 @@ public class ItemsPanel extends JPanel {
                         inventoryItemsContainer.revalidate();
                         inventoryItemsContainer.repaint();
                     } catch (UserNotFoundException | AuthorizationException e) {
-                        System.out.println(e.getMessage());
+                        e.printStackTrace();
                     }
                 });
 
             } catch (TradableItemNotFoundException exception) {
-                System.out.println(exception.getMessage());
+                exception.printStackTrace();
             }
         }
     }
@@ -513,12 +513,12 @@ public class ItemsPanel extends JPanel {
                         wishlistItemsContainer.revalidate();
                         wishlistItemsContainer.repaint();
                     } catch (UserNotFoundException | AuthorizationException e) {
-                        System.out.println(e.getMessage());
+                        e.printStackTrace();
                     }
                 });
 
             } catch (TradableItemNotFoundException exception) {
-                System.out.println(exception.getMessage());
+                exception.printStackTrace();
             }
         }
     }

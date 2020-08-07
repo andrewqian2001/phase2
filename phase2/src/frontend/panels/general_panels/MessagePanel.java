@@ -374,7 +374,7 @@ public class MessagePanel extends JPanel {
                             messagesListContainer.revalidate();
                             messagesListContainer.repaint();
                         } catch (UserNotFoundException e1) {
-                            System.out.println(e1.getMessage());
+                            e1.printStackTrace();
                         }
                     });
 
@@ -446,7 +446,7 @@ public class MessagePanel extends JPanel {
                                     messagesListContainer.revalidate();
                                     messagesListContainer.repaint();
                                 } catch (UserNotFoundException | AuthorizationException e2) {
-                                    System.out.println(e2.getMessage());
+                                    e2.printStackTrace();
                                 }
                             }
                         });
@@ -474,7 +474,7 @@ public class MessagePanel extends JPanel {
                 }
             });
         } catch (UserNotFoundException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 

@@ -314,7 +314,7 @@ public class SearchPanel extends JPanel {
             try {
                 createTradableItemRow(t);
             } catch (TradableItemNotFoundException e1) {
-                System.out.println(e1.getMessage());
+                e1.printStackTrace();
             } catch (UserNotFoundException e) {
                 e.printStackTrace();
             }
@@ -356,7 +356,7 @@ public class SearchPanel extends JPanel {
             try {
                 traderManager.addToWishList(user, t);
             } catch (UserNotFoundException | TradableItemNotFoundException | AuthorizationException e1) {
-                System.out.println(e1.getMessage());
+                e1.printStackTrace();
             }
 
         });

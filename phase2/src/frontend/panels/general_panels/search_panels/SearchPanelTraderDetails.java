@@ -161,7 +161,7 @@ public class SearchPanelTraderDetails implements ActionListener {
         try {
             text.setText(userQuery.getUsername(review[0]) + ": " + (review[3] + "   ->  ") + review[2]);
         } catch (UserNotFoundException ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
         text.setFont(regular.deriveFont(20f));
         text.setForeground(Color.BLACK);

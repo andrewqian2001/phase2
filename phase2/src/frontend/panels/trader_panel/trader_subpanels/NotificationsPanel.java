@@ -148,7 +148,7 @@ public class NotificationsPanel extends JPanel {
 
         } catch (UserNotFoundException | TradeNotFoundException | AuthorizationException
                 | TradableItemNotFoundException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
 
     }

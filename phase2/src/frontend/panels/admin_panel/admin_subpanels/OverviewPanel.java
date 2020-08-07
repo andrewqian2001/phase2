@@ -344,7 +344,7 @@ public class OverviewPanel extends JPanel {
                                 itemRequestsContainer.revalidate();
                                 itemRequestsContainer.repaint();
                             } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
-                                System.out.println(e1.getMessage());
+                                e1.printStackTrace();
                             }
                         });
 
@@ -355,11 +355,11 @@ public class OverviewPanel extends JPanel {
                                 itemRequestsContainer.revalidate();
                                 itemRequestsContainer.repaint();
                             } catch (TradableItemNotFoundException | UserNotFoundException | AuthorizationException e1) {
-                                System.out.println(e1.getMessage());
+                                e1.printStackTrace();
                             }
                         });
                     } catch (TradableItemNotFoundException | UserNotFoundException e) {
-                        System.out.println(e.getMessage());
+                        e.printStackTrace();
                     }
                 })
         );
@@ -399,7 +399,7 @@ public class OverviewPanel extends JPanel {
                 traderName.setHorizontalAlignment(JLabel.LEFT);
                 traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
             } catch (UserNotFoundException e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
 
             JButton acceptUnFreezeRequestButton = new JButton("Un-Freeze");
@@ -428,7 +428,7 @@ public class OverviewPanel extends JPanel {
                     unFreezeRequestsContainer.revalidate();
                     unFreezeRequestsContainer.repaint();
                 } catch (UserNotFoundException e1) {
-                    System.out.println(e1.getMessage());
+                    e1.printStackTrace();
                 }
             });
 
@@ -475,7 +475,7 @@ public class OverviewPanel extends JPanel {
                 traderName.setHorizontalAlignment(JLabel.LEFT);
                 traderName.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
             } catch (UserNotFoundException e) {
-                System.out.println(e.getMessage());
+                e.printStackTrace();
             }
 
             JButton freezeTraderButton = new JButton("FREEZE");
@@ -496,7 +496,7 @@ public class OverviewPanel extends JPanel {
                     freezeTradersContainer.revalidate();
                     freezeTradersContainer.repaint();
                 } catch (UserNotFoundException e1) {
-                    System.out.println(e1.getMessage());
+                    e1.printStackTrace();
                 }
             });
         });
