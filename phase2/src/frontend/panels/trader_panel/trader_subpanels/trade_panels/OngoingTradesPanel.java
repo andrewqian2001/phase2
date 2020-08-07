@@ -213,21 +213,30 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     private JButton setConfirmTradeButton(String tradeID, boolean isTraderFirstUser) throws TradeNotFoundException {
         JButton tradeConfirmButton = new JButton();
 
-        boolean hasUserConfirmedTrade = (isTraderFirstUser
-                && (tradeQuery.isFirstUserConfirmed1(tradeID) || tradeQuery.isFirstUserConfirmed2(tradeID)))
-                || (!isTraderFirstUser
-                        && (tradeQuery.isSecondUserConfirmed1(tradeID) || tradeQuery.isSecondUserConfirmed2(tradeID)));
+        boolean hasSecondMeeting = tradeQuery.getSecondMeetingTime(tradeID) != null;
+        boolean hasFirstMeetingCompleted = tradeQuery.isFirstUserConfirmed1(tradeID) && tradeQuery.isSecondUserConfirmed1(tradeID);
+        boolean hasSecondMeetingCompleted = tradeQuery.isFirstUserConfirmed2(tradeID) && tradeQuery.isSecondUserConfirmed2(tradeID);
+        boolean isTraderAbleToConfirm = true;
+        if(hasFirstMeetingCompleted && (hasSecondMeeting && !hasSecondMeetingCompleted)) {
+            isTraderAbleToConfirm = isTraderFirstUser ? !tradeQuery.isFirstUserConfirmed2(tradeID) : !tradeQuery.isSecondUserConfirmed2(tradeID); 
+        } else if(!hasFirstMeetingCompleted) {
+            isTraderAbleToConfirm = isTraderFirstUser ? !tradeQuery.isFirstUserConfirmed1(tradeID) : !tradeQuery.isSecondUserConfirmed1(tradeID);
+        }
 
-        tradeConfirmButton.setText(hasUserConfirmedTrade ? "Confirmed" : "Confirm");
-        tradeConfirmButton.setFont((hasUserConfirmedTrade ? boldItalic : bold).deriveFont(20f));
+        tradeConfirmButton.setText(!isTraderAbleToConfirm ? "Confirmed" : "Confirm");
+        tradeConfirmButton.setFont((!isTraderAbleToConfirm ? boldItalic : bold).deriveFont(20f));
         tradeConfirmButton.setForeground(Color.WHITE);
-        tradeConfirmButton.setBackground(hasUserConfirmedTrade ? bg : green);
-        tradeConfirmButton.setEnabled(!hasUserConfirmedTrade);
+        tradeConfirmButton.setBackground(!isTraderAbleToConfirm ? bg : green);
+        tradeConfirmButton.setEnabled(isTraderAbleToConfirm);
         tradeConfirmButton.setBorder(BorderFactory.createLineBorder(gray, 15));
 
         tradeConfirmButton.addActionListener(e -> {
             try {
                 tradeManager.confirmMeetingGeneral(trader, tradeID, true);
+                // System.out.println(tradeQuery.isFirstUserConfirmed1(tradeID));
+                // System.out.println(tradeQuery.isSecondUserConfirmed1(tradeID));
+                // System.out.println(tradeQuery.isFirstUserConfirmed2(tradeID));
+                // System.out.println(tradeQuery.isSecondUserConfirmed2(tradeID));
                 tradeConfirmButton.setBackground(bg);
                 tradeConfirmButton.setText("Confirmed");
                 tradeConfirmButton.setEnabled(false);
