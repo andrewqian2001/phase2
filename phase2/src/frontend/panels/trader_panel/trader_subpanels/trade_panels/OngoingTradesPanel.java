@@ -39,6 +39,9 @@ import backend.tradesystem.trader_managers.TradingManager;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.AddNewTradeModal;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.TradeDetailsModal;
 
+/**
+ * For showing ongoing trades
+ */
 public class OngoingTradesPanel extends JPanel implements ActionListener {
 
     private String trader;
@@ -66,6 +69,18 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     private final SuggestLendStrategy similarSuggestLendStrategy = new SimilarWishlistSuggestion();
     private final SuggestTradeStrategy similarSuggestTradeStrategy = new SimilarWishlistSuggestion();
 
+    /**
+     * For making a panel to show ongoing trades
+     * @param trader the trader id
+     * @param regular regular font
+     * @param bold bold font
+     * @param italic italics font
+     * @param boldItalic bold italics font
+     * @throws IOException if database files aren't found
+     * @throws UserNotFoundException if the trader isn't found
+     * @throws AuthorizationException if the trader isn't allowed to access this
+     * @throws TradeNotFoundException if the trade isn't found
+     */
     public OngoingTradesPanel(String trader, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
         this.trader = trader;
@@ -310,6 +325,10 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         return ongoingTradesTitleContainer;
     }
 
+    /**
+     * For responding to any events
+     * @param e the event
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         // same as actionPreformed in TradePanel
@@ -322,13 +341,13 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         Suggestion suggested = null;
         try {
             if (isSuggestedLend) {
-                suggested = infoManager.suggestLend(trader, false, normalSuggestLendStrategy);
+                suggested = infoManager.suggestLend(trader, true, normalSuggestLendStrategy);
                 if (suggested == null){
-                    suggested = infoManager.suggestLend(trader, false, similarSuggestLendStrategy);
+                    suggested = infoManager.suggestLend(trader, true, similarSuggestLendStrategy);
                 }
             }
             else if (isSuggestedTrade) {
-                suggested = infoManager.suggestTrade(trader, false, normalSuggestTradeStrategy);
+                suggested = infoManager.suggestTrade(trader, true, normalSuggestTradeStrategy);
                 if (suggested == null) {
                     suggested = infoManager.suggestTrade(trader, true, similarSuggestTradeStrategy);
                 }
@@ -338,9 +357,6 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         }
 
         if (suggested == null && (isSuggestedLend || isSuggestedTrade)) {
-            isSuggestedTrade = false;
-            isSuggestedLend = false;
-
             JDialog noSuggestionsFoundModal = createNoSuggestsFoundModal();
             noSuggestionsFoundModal.setVisible(true);
         }

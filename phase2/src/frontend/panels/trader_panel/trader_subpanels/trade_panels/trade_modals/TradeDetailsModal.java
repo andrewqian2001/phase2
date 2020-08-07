@@ -14,6 +14,9 @@ import java.util.Locale;
 
 import javax.swing.*;
 
+/**
+ * Showing the details of a trade
+ */
 public class TradeDetailsModal extends JDialog {
 
 	private final Color bg = new Color(51, 51, 51);
@@ -34,6 +37,20 @@ public class TradeDetailsModal extends JDialog {
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
+	/**
+	 * Making a new dialog showing details of a trade
+	 * @param tradeID the trade id
+	 * @param showAvailableEdits the number of edits the trade can have
+	 * @param isTraderFirstUser whether or not if this trader is the first user of the trade
+	 * @param regular regular font
+	 * @param bold bold font
+	 * @param italic italics font
+	 * @param boldItalic bold italics font
+	 * @throws IOException if database files aren't found
+	 * @throws TradeNotFoundException if the trade isn't found
+	 * @throws UserNotFoundException if the user doesn't exist
+	 * @throws TradableItemNotFoundException if the item doesn't exist
+	 */
 	public TradeDetailsModal(String tradeID, boolean showAvailableEdits, boolean isTraderFirstUser, Font regular,
 			Font bold, Font italic, Font boldItalic) throws IOException, TradeNotFoundException, UserNotFoundException,
 			TradableItemNotFoundException {

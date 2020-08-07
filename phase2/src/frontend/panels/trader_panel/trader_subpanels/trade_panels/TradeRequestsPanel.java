@@ -29,6 +29,9 @@ import backend.tradesystem.trader_managers.TradingManager;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.EditTradeModal;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.TradeDetailsModal;
 
+/**
+ * For showing trade requests
+ */
 public class TradeRequestsPanel extends JPanel {
 
     private final Font regular, bold, italic, boldItalic;
@@ -48,6 +51,19 @@ public class TradeRequestsPanel extends JPanel {
 
     private final TradingManager tradeManager = new TradingManager();
 
+    /**
+     * For making a panel for showing trade requests
+     * @param trader the trader id
+     * @param regular regular font
+     * @param bold bold font
+     * @param italic italics font
+     * @param boldItalic bold italics font
+     * @throws IOException issues with getting database file
+     * @throws UserNotFoundException if the user wasn't found
+     * @throws AuthorizationException if the user isn't allowed to do certain actions
+     * @throws TradeNotFoundException if the trade isn't found
+     * @throws TradableItemNotFoundException if the item isn't found
+     */
     public TradeRequestsPanel(String trader, Font regular, Font bold, Font italic, Font boldItalic) throws IOException,
             UserNotFoundException, AuthorizationException, TradeNotFoundException, TradableItemNotFoundException {
         this.trader = trader;

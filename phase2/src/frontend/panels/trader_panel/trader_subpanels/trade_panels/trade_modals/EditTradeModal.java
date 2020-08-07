@@ -35,6 +35,9 @@ import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 
+/**
+ * For showing the dialog that edits a trade
+ */
 public class EditTradeModal extends JDialog implements ActionListener {
 	
 	private String tradeID, trader;
@@ -67,6 +70,18 @@ public class EditTradeModal extends JDialog implements ActionListener {
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
+	/**
+	 * Making a dialog to edit a trade
+	 * @param tradeID the trade id
+	 * @param trader the trader id
+	 * @param isTraderFirstUser if the trader is the user that started the trade
+	 * @param regular regular font
+	 * @param bold bold font
+	 * @param italic italics font
+	 * @param boldItalic bold italics font
+	 * @throws IOException issues with getting database files
+	 * @throws TradeNotFoundException if the trade doesn't exist
+	 */
 	public EditTradeModal(String tradeID, String trader, boolean isTraderFirstUser, Font regular, Font bold,
 			Font italic, Font boldItalic) throws IOException, TradeNotFoundException {
 

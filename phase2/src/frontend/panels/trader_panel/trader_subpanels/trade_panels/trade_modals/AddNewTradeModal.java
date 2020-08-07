@@ -35,6 +35,9 @@ import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 
+/**
+ * For showing the dialog that adds a new trade
+ */
 public class AddNewTradeModal extends JDialog implements ActionListener {
 
     private String trader;
@@ -66,6 +69,19 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
+    /**
+     * For making a new dialog that shows adding a new trade
+     * @param trader the trader id
+     * @param suggested the suggestion for the trade
+     * @param regular regular font
+     * @param bold bold font
+     * @param italic italics font
+     * @param boldItalic bold italics font
+     * @throws IOException issues with getting database files
+     * @throws UserNotFoundException if the user isn't found
+     * @throws TradableItemNotFoundException if the item isn't found
+     * @throws AuthorizationException if the user isn't allowed to access this
+     */
     public AddNewTradeModal(String trader, Suggestion suggested, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
 
@@ -142,8 +158,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         return tradeWithinCityPanel;
     }
 
-    private JPanel setOtherTradersPanel()
-            throws UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
+    private JPanel setOtherTradersPanel() {
 
         List<String> allTraders = infoManager.getAllTraders();
 
@@ -231,7 +246,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         return otherTradersPanel;
     }
 
-    private JPanel setTraderItemsPanel() throws TradableItemNotFoundException {
+    private JPanel setTraderItemsPanel()  {
 
         JPanel traderItemsPanel = new JPanel();
         traderItemsPanel.setBackground(bg);
@@ -265,8 +280,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         return traderItemsPanel;
     }
 
-    private JPanel setOtherTraderItemsPanel()
-            throws UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
+    private JPanel setOtherTraderItemsPanel() {
 
         JPanel otherTraderItemsPanel = new JPanel();
         otherTraderItemsPanel.setBackground(bg);
@@ -446,6 +460,10 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         return addNewTradePanel;
     }
 
+    /**
+     * Handling any events
+     * @param e events
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(meetingLocationInput.getText().trim().equals("")) {

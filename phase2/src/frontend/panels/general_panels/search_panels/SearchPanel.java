@@ -1,6 +1,7 @@
 package frontend.panels.general_panels.search_panels;
 
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 import java.util.List;
 import java.io.IOException;
 
@@ -48,7 +49,7 @@ public class SearchPanel extends JPanel {
 
     /**
      * Creates a new search panel
-     * 
+     *
      * @param user       the user id
      * @param regular    the regular font
      * @param bold       the bold font
@@ -283,8 +284,13 @@ public class SearchPanel extends JPanel {
                         traderFrame.setInfiltraded();
                         traderFrame.login(t);
                         traderFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                        traderFrame.addWindowListener(new TraderDetailsWindowAdapter(
-                                ((WindowManager) SwingUtilities.getWindowAncestor(this))));
+                        JFrame frame = ((WindowManager) SwingUtilities.getWindowAncestor(this));
+                        traderFrame.addWindowListener(new WindowAdapter() {
+                            public void windowClosing(java.awt.event.WindowEvent e) {
+                                frame.setVisible(true);
+                                e.getWindow().dispose();
+                            }
+                        });
                     } catch (IOException | FontFormatException | TradeNotFoundException ioException) {
                         ioException.printStackTrace();
                     }
@@ -313,10 +319,8 @@ public class SearchPanel extends JPanel {
         for (String t : matches) {
             try {
                 createTradableItemRow(t);
-            } catch (TradableItemNotFoundException e1) {
+            } catch (TradableItemNotFoundException | UserNotFoundException e1) {
                 e1.printStackTrace();
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
             }
         }
         tradableItemListScrollPane.setViewportView(tradableItemListContainer);
@@ -365,7 +369,7 @@ public class SearchPanel extends JPanel {
         item.add(itemName);
         item.add(itemDesc);
         item.add(itemOwnerName);
-        if(!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER) && !checkFrozen())
+        if (!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER) && !checkFrozen())
             item.add(addToWishlistButton);
         tradableItemListContainer.add(item);
     }
