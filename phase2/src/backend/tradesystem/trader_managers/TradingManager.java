@@ -119,7 +119,7 @@ public class TradingManager extends Manager {
         // Check that this trader has the ability to accept this trade
         if (!trader.canTrade() || !trader2.canTrade())
             throw new CannotTradeException("Trade limitations prevent this trade from being accepted");
-        if (trade.getFirstUserOffer().equals("") && !trader.canAcceptBorrow()){
+        if (trade.getFirstUserOffer().equals("") && !trader.canAcceptBorrow()) {
             throw new CannotTradeException("The trader who originally sent the trade can't borrow");
         }
         // Check to see that the items are available to trade
@@ -153,7 +153,7 @@ public class TradingManager extends Manager {
             trader2.getRequestedTrades().remove(tradeId);
             updateUserDatabase(trader);
             updateUserDatabase(trader2);
-            removeInvalidRequests(traderId);
+            removeInvalidRequests();
             return true;
         }
         return false;
@@ -318,7 +318,7 @@ public class TradingManager extends Manager {
      * @param meetingLocation   the meeting location of the trade
      * @param thisTraderOffer   the tradable item id that the current trader is offering
      * @param thatTraderOffer   the tradable item id that the current trader wants from the other trader
-     * @param message message of the offer
+     * @param message           message of the offer
      * @return the id of the trade
      * @throws CannotTradeException   too many edits
      * @throws TradeNotFoundException this trade doesn't exist
@@ -429,8 +429,8 @@ public class TradingManager extends Manager {
         // Add items
         if (!trade.getFirstUserOffer().equals(""))
             firstTrader.getAvailableItems().add(trade.getFirstUserOffer());
-        else{
-            firstTrader.setTotalAcceptedBorrows(firstTrader.getTotalAcceptedBorrows()-1);
+        else {
+            firstTrader.setTotalAcceptedBorrows(firstTrader.getTotalAcceptedBorrows() - 1);
         }
         if (!trade.getSecondUserOffer().equals(""))
             secondTrader.getAvailableItems().add(trade.getSecondUserOffer());
@@ -471,38 +471,39 @@ public class TradingManager extends Manager {
     }
 
 
-    /**
-     * Removes all invalid trade requests and anything that needs to be cleaned up
-     *
-     * @param traderID the id of the trader
-     */
-    private void removeInvalidRequests(String traderID) {
+    private void removeInvalidRequests() throws UserNotFoundException {
         // Removes invalid trades
-        try {
-            Trader someTrader = getTrader(traderID);
 
-            for (int i = someTrader.getRequestedTrades().size() - 1; i >= 0; i--) {
-                String tradeID = someTrader.getRequestedTrades().get(i);
-                // Populate required variables.
-                Trade t = getTrade(tradeID);
-                Trader firstTrader = getTrader(t.getFirstUserId());
-                Trader secondTrader = getTrader(t.getSecondUserId());
-
-                // Figure out whether the trade is still valid.
-                boolean isValid = (t.getFirstUserOffer().equals("") || firstTrader.getAvailableItems().contains(t.getFirstUserOffer())) &&
-                        (t.getSecondUserOffer().equals("") || secondTrader.getAvailableItems().contains(t.getSecondUserOffer()));
-
-                if (!isValid) {
-                    firstTrader.getRequestedTrades().remove(i);
-                    secondTrader.getRequestedTrades().remove(i);
-                    getTradeDatabase().delete(tradeID);
-                    getUserDatabase().update(firstTrader);
-                    getUserDatabase().update(secondTrader);
-                }
+        for (String id : getAllUsers()) {
+            if (!(getUser(id) instanceof Trader)) {
+                continue;
             }
-        } catch (EntryNotFoundException | AuthorizationException e) {
-            e.printStackTrace();
+            Trader trader = (Trader) getUser(id);
+            try {
+                for (int i = trader.getRequestedTrades().size() - 1; i >= 0; i--) {
+                    String tradeID = trader.getRequestedTrades().get(i);
+                    // Populate required variables.
+                    Trade t = getTrade(tradeID);
+                    Trader firstTrader = getTrader(t.getFirstUserId());
+                    Trader secondTrader = getTrader(t.getSecondUserId());
+
+                    // Figure out whether the trade is still valid.
+                    boolean isValid = (t.getFirstUserOffer().equals("") || firstTrader.getAvailableItems().contains(t.getFirstUserOffer())) &&
+                            (t.getSecondUserOffer().equals("") || secondTrader.getAvailableItems().contains(t.getSecondUserOffer()));
+
+                    if (!isValid) {
+                        firstTrader.getRequestedTrades().remove(i);
+                        secondTrader.getRequestedTrades().remove(i);
+                        getTradeDatabase().delete(tradeID);
+                        getUserDatabase().update(firstTrader);
+                        getUserDatabase().update(secondTrader);
+                    }
+                }
+            } catch (EntryNotFoundException | AuthorizationException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 
 }
