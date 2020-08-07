@@ -493,17 +493,14 @@ public class ControlPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == submitAdmin) {
             try {
-                String loggedInUser = loginManager.registerUser(usernameInput.getText(),
+                loginManager.registerUser(usernameInput.getText(),
                         String.valueOf(passwordInput.getPassword()), UserTypes.ADMIN);
-                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch (BadPasswordException ex) {
                 notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
             } catch (UserAlreadyExistsException ignored) {
                 notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
             } catch (IOException ignored) {
                 notifyLogin("<html><b><i>Could not create the account at this time.</i></b></html>");
-            } catch (TradeNotFoundException e1) {
-                e1.printStackTrace();
             }
         } else if (e.getSource() == submitSettings) {
             try {
