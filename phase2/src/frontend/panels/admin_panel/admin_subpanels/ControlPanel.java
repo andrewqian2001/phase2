@@ -433,6 +433,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         submitSettings.setBackground(green);
         submitSettings.setForeground(Color.WHITE);
         submitSettings.setFont(bold.deriveFont(25f));
+        submitSettings.addActionListener(this);
         gbc.gridy = 1;
         gbc.weighty = 0.1;
         gbc.insets = new Insets(30, 0, 0, 0);
