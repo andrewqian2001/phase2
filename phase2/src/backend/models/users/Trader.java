@@ -2,6 +2,7 @@ package backend.models.users;
 
 
 import backend.models.Review;
+import backend.tradesystem.TraderProperties;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -139,16 +140,6 @@ public class Trader extends User implements Serializable {
 
 
     /**
-     * minimum amount needed to lend before borrowing
-     *
-     * @param minimumAmountNeededToBorrow minimum amount needed to lend before borrowing
-     */
-    public void setMinimumAmountNeededToBorrow(int minimumAmountNeededToBorrow) {
-        this.minimumAmountNeededToBorrow = minimumAmountNeededToBorrow;
-    }
-
-
-    /**
      * If the trader can borrow
      *
      * @return if the trader can borrow
@@ -166,15 +157,6 @@ public class Trader extends User implements Serializable {
         return !isFrozen() && tradeCount < tradeLimit && !isIdle();
     }
 
-
-    /**
-     * the number of incomplete trades this trader has done
-     *
-     * @return the number of incomplete trades this trader has done
-     */
-    public int getIncompleteTradeCount() {
-        return acceptedTrades.size();
-    }
 
     /**
      * total completed trade count
@@ -262,44 +244,6 @@ public class Trader extends User implements Serializable {
         return requestedTrades;
     }
 
-    /**
-     * how many transactions this trader can conduct in 1 week
-     *
-     * @return how many transactions this trader can conduct in 1 week
-     */
-
-    public int getTradeLimit() {
-        return tradeLimit;
-    }
-
-    /**
-     * set a new tradeLimit to this trader
-     *
-     * @param tradeLimit number of transactions this trader can conduct in 1 week
-     */
-
-
-    public void setTradeLimit(int tradeLimit) {
-        this.tradeLimit = tradeLimit;
-    }
-
-    /**
-     * how many transactions can be incomplete before this trader's account is frozen
-     *
-     * @return how many transactions can be incomplete before this trader's account is frozen
-     */
-    public int getIncompleteTradeLim() {
-        return incompleteTradeLim;
-    }
-
-    /**
-     * set a new incomplete trade limit value to this trader
-     *
-     * @param incompleteTradeLim how many transactions can be incomplete before this trader's account is frozen
-     */
-    public void setIncompleteTradeLim(int incompleteTradeLim) {
-        this.incompleteTradeLim = incompleteTradeLim;
-    }
 
 
     /**
@@ -338,6 +282,32 @@ public class Trader extends User implements Serializable {
      */
     public void setTotalItemsLent(int totalItemsLent) {
         this.totalItemsLent = totalItemsLent;
+    }
+
+    /**
+     * Sets the value of a specific limit
+     * @param limit the limit to change
+     * @param newValue the new value of the limit
+     */
+    public void setLimit(TraderProperties limit, int newValue){
+        switch(limit){
+            case INCOMPLETE_TRADE_LIM:
+                this.incompleteTradeLim = newValue;
+                break;
+            case MINIMUM_AMOUNT_NEEDED_TO_BORROW:
+                this.minimumAmountNeededToBorrow = newValue;
+                break;
+            default:
+                this.tradeLimit = newValue;
+        }
+    }
+
+    /**
+     * Return whether this trader has surpassed the incomplete trade limit
+     * @return whether this trader has surpassed the incomplete trade limit
+     */
+    public boolean hasSurpassedIncompleteTradeLimit(){
+        return acceptedTrades.size() > incompleteTradeLim;
     }
 
 }

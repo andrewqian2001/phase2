@@ -102,9 +102,9 @@ public class LoginManager extends Manager {
             User populatedUser = users.get(user);
             if (populatedUser instanceof Trader) {
                 Trader t = (Trader) populatedUser;
-                t.setTradeLimit(defaultTradeLimit);
-                t.setIncompleteTradeLim(defaultIncompleteTradeLim);
-                t.setMinimumAmountNeededToBorrow(defaultMinimumAmountNeededToBorrow);
+                t.setLimit(TraderProperties.TRADE_LIMIT, defaultTradeLimit);
+                t.setLimit(TraderProperties.INCOMPLETE_TRADE_LIM, defaultIncompleteTradeLim);
+                t.setLimit(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW, defaultMinimumAmountNeededToBorrow);
             }
         }
         getUserDatabase().save(users);

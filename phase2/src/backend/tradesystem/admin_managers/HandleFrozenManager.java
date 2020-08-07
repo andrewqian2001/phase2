@@ -87,7 +87,7 @@ public class HandleFrozenManager extends Manager {
         HashMap<String, User> items = getUserDatabase().getItems();
         for (String userId : items.keySet()) {
             User user = items.get(userId);
-            if (user instanceof Trader && ((Trader) user).getIncompleteTradeCount() > ((Trader) user).getIncompleteTradeLim()) {
+            if (user instanceof Trader && ((Trader) user).hasSurpassedIncompleteTradeLimit()) {
                 freezable.add(userId);
             }
         }
