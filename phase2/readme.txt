@@ -51,7 +51,7 @@ THE TRADING PROCESS:
           (i.e. some other trader editing a trade still makes it count towards the original trader's borrow/lend count,
           provided that it's still a borrow/lend)
         - You can only ever borrow once the count of amount lent minus amount borrowed surpasses the limit set by
-          an admin
+          an admin (default limit is 1)
 
 
 The following section will explain the purpose and usage of each section of the GUI and is meant to guide new users
@@ -94,6 +94,6 @@ This section of the GUI consists of:
     1. Changing your username.
     2. Changing your password.
     3. Changing your city.
-    4. Entering idle mode. Idle mode is a mode in which you become unable to trade, or be sent trade requests. This is
+    4. Entering idle mode. Idle mode is a mode in which you become unable to trade, or be sent trade requests.
     5. Reporting a trader. If some trader has conducted a serious offense, we encourage you to submit a report. All admins
        see this report, and can decide on a course of action given the information in the report.

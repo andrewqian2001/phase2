@@ -1,15 +1,11 @@
 # general todo
 
-Ask  TA Questions for meeting: 
+Fix database class so clean architecture is used.
 
-Is the architecture for using database class from the managers good design?
+Further divide managers into sub managers.
 
-Is it fine for classes in the same MVC layer to be composing each other?
+Fix citations. Stack overflow code is copy righted.
 
-Should enums and other classes be included in UML?
+Clean up getters and setters (group them), both in entites and query classes
 
-Is it fine to reuse managers constantly?
-
-Are citations enough? Is copying code from stackoverflow fine?
-
-Resolution size? What can be assumed?
+BUGS:

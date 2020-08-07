@@ -284,10 +284,10 @@ public class SearchPanel extends JPanel {
                         traderFrame.setInfiltraded();
                         traderFrame.login(t);
                         traderFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                        JFrame frame = ((WindowManager) SwingUtilities.getWindowAncestor(this));
+                        Window window = SwingUtilities.getWindowAncestor(this);
                         traderFrame.addWindowListener(new WindowAdapter() {
                             public void windowClosing(java.awt.event.WindowEvent e) {
-                                frame.setVisible(true);
+                                window.setVisible(true);
                                 e.getWindow().dispose();
                             }
                         });
