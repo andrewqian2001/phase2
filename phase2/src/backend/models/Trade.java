@@ -27,7 +27,7 @@ public class Trade extends DatabaseItem implements Serializable {
     private String userTurnToEdit;
 
     /**
-     * Saves user ids
+     * Makes a new trade object
      *
      * @param firstUserId       the user id of the person initializing the trade
      * @param secondUserId      the user id of the person the trade is being sent to
