@@ -136,7 +136,7 @@ public class TradingInfoManager extends Manager {
         for (String userId : getUserDatabase().getItems().keySet()) {
             try {
                 if (getUser(userId) instanceof Trader) {
-                    if (((Trader) getUser(userId)).getAvailableItems().contains(id)) {
+                    if (((Trader) getUser(userId)).getAvailableItems().contains(id) || ((Trader) getUser(userId)).getOngoingItems().contains(id)) {
                         return userId;
                     }
                 }
