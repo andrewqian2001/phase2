@@ -12,8 +12,4 @@ Is it fine to reuse managers constantly?
 
 Are citations enough? Is copying code from stackoverflow fine?
 
-Strategy design: Move suggestLend, suggestTrade, automatedTradeSuggestion, automatedLendSuggestion into things
-Facade design: Front end uses this to split up panels
-Adapter design: Possible? Front end may use this to change an existing class
-
 Resolution size? What can be assumed?
