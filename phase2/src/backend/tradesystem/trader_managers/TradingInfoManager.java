@@ -177,13 +177,14 @@ public class TradingInfoManager extends Manager {
             for (String traderID : distinct) {
                 int possibleHigh = Collections.frequency(traders, traderID);
                 if (possibleHigh > highest) {
-                    if (frequentTraders.size() >= i)
+                    if (frequentTraders.size() == i)
                         frequentTraders.add(null);
                     frequentTraders.set(i, traderID);
                     highest = possibleHigh;
                 }
             }
             distinct.remove(frequentTraders.get(i));
+
         }
         return frequentTraders;
     }
