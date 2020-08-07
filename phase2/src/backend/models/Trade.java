@@ -3,11 +3,12 @@ package backend.models;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Represents a trade between two users
  */
-public class Trade extends DatabaseItem implements Serializable {
+public class Trade  implements Serializable, Idable {
     private Date meetingTime;
     private Date secondMeetingTime;
     private String meetingLocation;
@@ -23,7 +24,7 @@ public class Trade extends DatabaseItem implements Serializable {
     private final String FIRST_USER_ID, SECOND_USER_ID;
     private final int MAX_ALLOWED_NUM_EDITS;
     private String message;
-
+    private final String id = UUID.randomUUID().toString();
     private String userTurnToEdit;
 
     /**
@@ -340,5 +341,14 @@ public class Trade extends DatabaseItem implements Serializable {
      */
     public boolean isTraderInTrade(String traderId) {
         return this.getFirstUserId().equals(traderId) || this.getSecondUserId().equals(traderId);
+    }
+
+    /**
+     * Gets the id
+     * @return the id
+     */
+    @Override
+    public String getId() {
+        return id;
     }
 }

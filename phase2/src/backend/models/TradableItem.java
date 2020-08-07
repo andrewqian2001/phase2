@@ -2,15 +2,16 @@ package backend.models;
 
 
 import java.io.Serializable;
+import java.util.UUID;
 
 /**
  * Represents an item that is supposed to be traded
  */
-public class TradableItem extends DatabaseItem implements Serializable {
+public class TradableItem  implements Serializable, Idable{
 
     private final String NAME;
     private final String DESCRIPTION;
-
+    private final String id = UUID.randomUUID().toString();
     /**
      * Constructs a tradable item.
      *
@@ -47,5 +48,14 @@ public class TradableItem extends DatabaseItem implements Serializable {
     @Override
     public String toString(){
         return NAME;
+    }
+
+    /**
+     * Gets the id
+     * @return the id
+     */
+    @Override
+    public String getId() {
+        return id;
     }
 }

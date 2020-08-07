@@ -2,7 +2,7 @@ package backend;
 
 
 import backend.exceptions.EntryNotFoundException;
-import backend.models.DatabaseItem;
+import backend.models.Idable;
 
 import java.io.*;
 
@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  *
  * @param <T> the entry must have an id to identify different entries
  */
-public class Database<T extends DatabaseItem> implements Serializable {
+public class Database<T extends Idable> implements Serializable {
     private final String FILE_PATH;
 
     private static final Logger logger = Logger.getLogger(Database.class.getName());

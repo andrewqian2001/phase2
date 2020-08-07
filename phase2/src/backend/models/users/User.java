@@ -1,22 +1,25 @@
 package backend.models.users;
 
 
-import backend.models.DatabaseItem;
+
+import backend.models.Idable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents a typical account
  */
-public abstract class User extends DatabaseItem implements Serializable {
+public abstract class User implements Serializable, Idable {
     private String username;
     private String password;
     private boolean isFrozen;
     private boolean isUnfrozenRequested;
     private HashMap<String, List<String>> messages; // User id to list of messages
+    private final String id = UUID.randomUUID().toString();
 
     /**
      * Constructs a user with a given username and password.
@@ -136,5 +139,14 @@ public abstract class User extends DatabaseItem implements Serializable {
     @Override
     public String toString(){
         return username;
+    }
+
+    /**
+     * Gets the id
+     * @return gets the id
+     */
+    @Override
+    public String getId(){
+        return id;
     }
 }
