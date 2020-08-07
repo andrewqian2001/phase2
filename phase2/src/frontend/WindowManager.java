@@ -23,7 +23,7 @@ import java.io.IOException;
 public class WindowManager extends JFrame {
     protected Font regular, bold, italic, boldItalic;
     private final LoginPanel loginPanel;
-    private JPanel userPanel;
+    private JPanel userPanel = null;
     private final BufferedImage loginBg = ImageIO.read(new File("./src/frontend/images/LoginPanelBg.jpg")),
             adminBg = ImageIO.read(new File("./src/frontend/images/IconAdmin.jpg")),
             traderBg = ImageIO.read(new File("./src/frontend/images/IconTrader.jpg"));
@@ -78,22 +78,20 @@ public class WindowManager extends JFrame {
             }
             this.add(userPanel, BorderLayout.CENTER);
             this.setSize(userPanel.getSize());
-            this.setResizable(false);
         } catch (UserNotFoundException | AuthorizationException | TradableItemNotFoundException e) {
             e.printStackTrace();
         }
-        this.remove(loginPanel);
     }
 
     /**
      * Puts the window back on the login screen
      */
     public void logout() {
-        this.remove(userPanel);
+        if (userPanel != null)
+            this.remove(userPanel);
         this.setContentPane(new ImagePanel(loginBg));
         this.add(loginPanel, BorderLayout.CENTER);
         this.setSize(loginPanel.getSize());
-        this.setResizable(false);
     }
 
     /**

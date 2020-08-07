@@ -24,8 +24,10 @@ public class Main {
                 protected void onChange() {
                     // If backend files change, this gets called
                     try {
-                        if (!windowManager.getUserId().equals(""))
+                        if (!windowManager.getUserId().equals("")) {
+                            windowManager.logout();
                             windowManager.login(windowManager.getUserId());
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
