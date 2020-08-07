@@ -1,20 +1,11 @@
 # general todo
 
-Is the architecture for using database class from the managers good design?
-Database class doesn't make sense since Manager makes DatabaseItem. This needs to be fixed.
+Fix database class so clean architecture is used.
 
-Should enums and other classes be included in UML?
-Enums are not necessary unless unless implements interface. All classes are needed in UML. 
-Getters and setters should all be shown, and if not comments should be used.
+Further divide managers into sub managers.
 
-Is it fine to reuse managers constantly?
-This is fine, but use case classes should be divided further. 
+Fix citations. Stack overflow code is copy righted.
 
-Are citations enough? Is copying code from stackoverflow fine?
-Talk to prof perhaps. Open source code? Show exactly which lines were used.
+Clean up getters and setters (group them), both in entites and query classes
 
-Resolution size? What can be assumed?
-Lab computers. This is fine.
-
-Admin panel "infiltrade":
-Making the original JFrame is not clean architecture. 
+BUGS:
