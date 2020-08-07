@@ -129,7 +129,9 @@ public class NotificationsPanel extends JPanel {
         try {
             freqTradableItemsPanel = new JPanel(new GridLayout(0, 1));
             freqTradableItemsPanel.setBackground(gray2);
-            List<String> items = infoManager.getRecentTradeItems(traderId);
+            List<String> items = new ArrayList<>();
+            if (!traderId.equals(""))
+                items = infoManager.getRecentTradeItems(traderId);
             int numRows = items.size();
             if (numRows < 3)
                 numRows = 3;
