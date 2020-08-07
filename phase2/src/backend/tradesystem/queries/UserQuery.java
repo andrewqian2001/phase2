@@ -148,18 +148,6 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * the number of incomplete trades a trader has done
-     *
-     * @param traderId The id of the trader being checked
-     * @return the number of incomplete trades the trader has done
-     * @throws UserNotFoundException  if the trader doesn't exist
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public int getIncompleteTradeCount(String traderId) throws UserNotFoundException, AuthorizationException {
-        return getTrader(traderId).getIncompleteTradeCount();
-    }
-
-    /**
      * total completed trade count of a trader
      *
      * @param traderId The id of the trader being checked
