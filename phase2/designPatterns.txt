@@ -7,6 +7,8 @@ reducing coupling between the LoginManager and other classes.
 Dependency injection pattern:
 Admin - contains a list of Report objects without instancing them
 Trader - contains a list of Review objects without instancing them
+This makes it so both classes are less coupled with the Review and Report classes because
+they don't have to deal with instancing them.
 
 
 Strategy Design Pattern:
