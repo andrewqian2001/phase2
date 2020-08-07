@@ -520,6 +520,10 @@ public class EditTradeModal extends JDialog implements ActionListener {
 				error.setVisible(true);
 			}
 
+		} else {
+			error.setText("Enter a meeting location.");
+			error.setVisible(true);
+			return;
 		}
 
 	}

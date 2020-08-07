@@ -449,6 +449,12 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if(meetingLocationInput.getText().trim().equals("")) {
+            error.setText("Enter a meeting location.");
+            error.setVisible(true);
+            return;
+        }
+        error.setVisible(false);
         if (otherTraderItems.isEnabled() && (!meetingLocationInput.getText().trim().equals(""))
                 && ((traderItems.getSelectedItem() != null ^ otherTraderItems.getSelectedItem() != null)
                         || (traderItems.getSelectedItem() != null && otherTraderItems.getSelectedItem() != null))) {
