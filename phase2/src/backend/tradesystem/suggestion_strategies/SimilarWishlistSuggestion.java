@@ -17,18 +17,6 @@ import java.util.List;
 public class SimilarWishlistSuggestion extends Manager implements SuggestTradeStrategy, SuggestLendStrategy {
 
 
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath           the user database file path
-     * @param tradableItemFilePath   the tradable item database file path
-     * @param tradeFilePath          the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public SimilarWishlistSuggestion(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
-    }
-
 
     /**
      * Initialize the objects to get items from databases
@@ -46,7 +34,7 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
      */
     private List<String> getAllTraders() {
         List<String> allTraders = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
                 if (getUser(userId) instanceof Trader)
                     allTraders.add(userId);

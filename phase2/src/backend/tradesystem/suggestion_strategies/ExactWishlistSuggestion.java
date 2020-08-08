@@ -16,17 +16,6 @@ import java.util.List;
  */
 public class ExactWishlistSuggestion extends Manager implements SuggestLendStrategy, SuggestTradeStrategy{
 
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath           the user database file path
-     * @param tradableItemFilePath   the tradable item database file path
-     * @param tradeFilePath          the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public ExactWishlistSuggestion(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
-    }
 
     /**
      * Initialize the objects to get items from databases
@@ -44,7 +33,7 @@ public class ExactWishlistSuggestion extends Manager implements SuggestLendStrat
      */
     private List<String> getAllTraders() {
         List<String> allTraders = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
                 if (getUser(userId) instanceof Trader)
                     allTraders.add(userId);
@@ -63,11 +52,11 @@ public class ExactWishlistSuggestion extends Manager implements SuggestLendStrat
      */
     private List<String> getAllTradersInCity(String city) {
         List<String> allTraders = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllTraders()) {
             try {
-                if (getUser(userId) instanceof Trader && ((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
+                if (getTrader(userId).getCity().equalsIgnoreCase(city))
                     allTraders.add(userId);
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | AuthorizationException e) {
                 e.printStackTrace();
             }
         }
