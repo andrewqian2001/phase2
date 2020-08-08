@@ -1,6 +1,7 @@
 package backend.tradesystem.queries;
 
 import backend.exceptions.TradeNotFoundException;
+import backend.models.Trade;
 import backend.tradesystem.Manager;
 
 import java.io.IOException;
@@ -186,6 +187,23 @@ public class TradeQuery extends Manager {
      */
     public String getSecondUserId(String tradeId) throws TradeNotFoundException {
         return getTrade(tradeId).getSecondUserId();
+    }
+
+    /**
+     * Gets the id of the other user participating in the trade
+     * @param tradeId the id of the trade
+     * @param traderId the id of one of the users participating in the trade
+     * @return the id of the other user participating in the trade
+     * @throws TradeNotFoundException if the trade could not be found
+     */
+    public String getOtherUserId(String tradeId, String traderId) throws TradeNotFoundException {
+        Trade t= getTrade(tradeId);
+        if (t.getFirstUserId().equals(traderId)){
+            return t.getSecondUserId();
+        }
+        else{
+            return t.getFirstUserId();
+        }
     }
 
 }
