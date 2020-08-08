@@ -475,7 +475,7 @@ public class TradingManager extends Manager {
                         secondTrader.getRequestedTrades().remove(i);
                         deleteTrade(tradeID);
                         updateUserDatabase(firstTrader);
-                        updateUserDatabase(secondTrader)
+                        updateUserDatabase(secondTrader);
                     }
                 }
             } catch (EntryNotFoundException | AuthorizationException e) {
