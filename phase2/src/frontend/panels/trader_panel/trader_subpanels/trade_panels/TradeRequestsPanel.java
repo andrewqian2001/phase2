@@ -43,8 +43,6 @@ public class TradeRequestsPanel extends JPanel {
     private final Color green = new Color(27, 158, 36);
     private final Color red = new Color(219, 58, 52);
 
-    private final GridBagConstraints gbc = new GridBagConstraints();
-
     private final TradeQuery tradeQuery = new TradeQuery();
     private final UserQuery userQuery = new UserQuery();
     private final ItemQuery itemQuery = new ItemQuery();
@@ -73,6 +71,7 @@ public class TradeRequestsPanel extends JPanel {
         this.boldItalic = boldItalic;
 
         this.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
         JLabel tradeRequestsTitle = setTradeRequestsTitle();
@@ -113,10 +112,10 @@ public class TradeRequestsPanel extends JPanel {
         List<String> requestedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getRequestedTrades(trader);
 
         if(requestedTrades.isEmpty())
-            return createNoTradesFoundPanel("<html><pre>No Trade Requests Found</pre></html>");
+            return createNoTradesFoundPanel();
 
         int numRows = requestedTrades.size();
-        numRows = numRows < 4 ? 4 : numRows;
+        numRows = Math.max(numRows, 4);
 
         tradeRequestsContainer.setLayout(new GridLayout(numRows, 1));
         tradeRequestsContainer.setBackground(gray2);
@@ -132,7 +131,7 @@ public class TradeRequestsPanel extends JPanel {
         }
 
         if (tradeRequestsContainer.getComponentCount() == 0)
-            return createNoTradesFoundPanel("<html><pre>No Trade Requests Found</pre></html>");
+            return createNoTradesFoundPanel();
 
         return tradeRequestsContainer;
     }
@@ -247,11 +246,11 @@ public class TradeRequestsPanel extends JPanel {
         return tradeRequestButton;
     }
 
-    private JPanel createNoTradesFoundPanel(String message) {
+    private JPanel createNoTradesFoundPanel() {
         JPanel noTradesFoundPanel = new JPanel();
         noTradesFoundPanel.setPreferredSize(new Dimension(1200, 300));
         noTradesFoundPanel.setBackground(gray2);
-        JLabel noTradesFound = new JLabel(message);
+        JLabel noTradesFound = new JLabel("<html><pre>No Trade Requests Found</pre></html>");
         noTradesFound.setFont(bold.deriveFont(30f));
         noTradesFound.setForeground(Color.WHITE);
         noTradesFound.setHorizontalAlignment(JLabel.CENTER);

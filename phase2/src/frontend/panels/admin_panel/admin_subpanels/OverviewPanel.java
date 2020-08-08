@@ -11,7 +11,6 @@ import backend.tradesystem.queries.UserQuery;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,7 +23,9 @@ public class OverviewPanel extends JPanel {
     private JPanel itemRequestsContainer,
             unFreezeRequestsContainer, freezeTradersContainer;
     private final JPanel itemRequestsHeader, unFreezeRequestsHeader, freezeTradersHeader;
-    private final Font regular, bold, italic, boldItalic;
+    private final Font regular;
+    private final Font bold;
+    private final Font boldItalic;
     private final UserQuery userQuery = new UserQuery();
     private final ItemQuery itemQuery = new ItemQuery();
     private final HandleItemRequestsManager itemRequestManager = new HandleItemRequestsManager();
@@ -49,7 +50,6 @@ public class OverviewPanel extends JPanel {
     public OverviewPanel(String adminId, Font regular, Font bold, Font italic, Font boldItalic) throws IOException {
         this.regular = regular;
         this.bold = bold;
-        this.italic = italic;
         this.boldItalic = boldItalic;
 
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 0, 25));

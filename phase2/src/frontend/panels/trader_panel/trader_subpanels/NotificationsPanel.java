@@ -35,9 +35,6 @@ public class NotificationsPanel extends JPanel {
     private final Color gray2 = new Color(196, 196, 196);
 
     private final Font regular;
-    private final Font bold;
-    private final Font italic;
-    private final Font boldItalic;
 
     private final String traderId;
 
@@ -60,9 +57,6 @@ public class NotificationsPanel extends JPanel {
 
         this.traderId = traderId;
         this.regular = regular;
-        this.bold = bold;
-        this.italic = italic;
-        this.boldItalic = boldItalic;
 
         this.setSize(1000, 900);
         this.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));

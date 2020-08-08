@@ -50,7 +50,7 @@ public class TraderPanel extends JPanel implements ActionListener {
     private final Color GRAY = new Color(75, 75, 75);
     private final Color RED = new Color(219, 58, 52);
 
-    private String currentPanel = "";
+    private String currentPanel;
 
     /**
      * Making a new trader panel
@@ -149,8 +149,8 @@ public class TraderPanel extends JPanel implements ActionListener {
                     button.setEnabled(true);
                     ((JButton) button).setOpaque(false);
                 }
-                if (((JButton) button).getName().equals(panelName)) {
-                    ((JButton) button).setEnabled(false);
+                if (button.getName().equals(panelName)) {
+                    button.setEnabled(false);
                     ((JButton) button).setOpaque(true);
                     ((JButton) button).setUI(new MetalButtonUI() {
                         protected Color getDisabledTextColor() {

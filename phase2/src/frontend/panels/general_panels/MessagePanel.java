@@ -268,7 +268,7 @@ public class MessagePanel extends JPanel {
             messagesListContainer = new JPanel(new GridLayout(numRows, 1));
             messagesListContainer.setPreferredSize(messagesDimension); // fix
             messagesListContainer.setBackground(gray3);
-            messages.keySet().forEach(fromUserId -> {
+            for (String fromUserId : messages.keySet()) {
                 JPanel messagePanel = new JPanel(new GridLayout(1, 5));
                 messagePanel.setPreferredSize(new Dimension(1000, 75));
                 messagePanel.setBackground(gray2);
@@ -307,7 +307,7 @@ public class MessagePanel extends JPanel {
                         userNameTitle.setOpaque(false);
                         userNameTitle.setForeground(Color.WHITE);
 
-                        JLabel userNameCopy = null;
+                        JLabel userNameCopy = new JLabel();
                         try {
                             userNameCopy = new JLabel(userQuery.getUsername(fromUserId));
                         } catch (UserNotFoundException userNotFoundException) {
@@ -331,9 +331,9 @@ public class MessagePanel extends JPanel {
                         messageBodyTitle.setOpaque(false);
                         messageBodyTitle.setForeground(Color.WHITE);
 
-                        StringBuilder fullMessageString = new StringBuilder("");
+                        StringBuilder fullMessageString = new StringBuilder();
                         messages.get(fromUserId).forEach(msg -> {
-                            fullMessageString.append("-> " + msg + "\n");
+                            fullMessageString.append("-> ").append(msg).append("\n");
                         });
                         JTextArea fullMessageBody = new JTextArea(fullMessageString.toString());
                         fullMessageBody.setFont(regular.deriveFont(20f));
@@ -396,7 +396,7 @@ public class MessagePanel extends JPanel {
                         userNameTitle.setOpaque(false);
                         userNameTitle.setForeground(Color.WHITE);
 
-                        JLabel userNameCopy = null;
+                        JLabel userNameCopy = new JLabel();
                         try {
                             userNameCopy = new JLabel(userQuery.getUsername(fromUserId));
                         } catch (UserNotFoundException userNotFoundException) {
@@ -467,7 +467,7 @@ public class MessagePanel extends JPanel {
                 } catch (UserNotFoundException e) {
                     e.printStackTrace();
                 }
-            });
+            }
         } catch (UserNotFoundException e) {
             e.printStackTrace();
         }

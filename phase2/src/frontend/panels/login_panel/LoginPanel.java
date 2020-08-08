@@ -102,36 +102,40 @@ public class LoginPanel extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand().equals("Login")) {
-            try {
-                if(usernameInput.getText().trim().equals("") || String.valueOf(passwordInput.getPassword()).trim().equals("")) {
-                    notifyLogin("<html><b><i>Empty Username and/or Password.</i></b></html>");
-                    return;
+        switch (e.getActionCommand()) {
+            case "Login":
+                try {
+                    if (usernameInput.getText().trim().equals("") || String.valueOf(passwordInput.getPassword()).trim().equals("")) {
+                        notifyLogin("<html><b><i>Empty Username and/or Password.</i></b></html>");
+                        return;
+                    }
+                    String loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
+                    ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+                } catch (UserNotFoundException ignored) {
+                    notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
+                } catch (IOException | TradeNotFoundException ex) {
+                    ex.printStackTrace();
                 }
-                String loggedInUser = loginManager.login(usernameInput.getText(), String.valueOf(passwordInput.getPassword()));
-                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
-            } catch (UserNotFoundException ignored) {
-                notifyLogin("<html><b><i>Username or Password is incorrect.</i></b></html>");
-            } catch (IOException | TradeNotFoundException ex) {
-                ex.printStackTrace();
-            }
-        } else if (e.getActionCommand().equals("Register")) {
-            try {
-                String loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
-                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
-            } catch (BadPasswordException ex) {
-                notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
-            } catch (UserAlreadyExistsException ignored) {
-                notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
-            } catch (IOException | TradeNotFoundException ex) {
-                ex.printStackTrace();
-            }
-        } else if (e.getActionCommand().equals("Demo")) {
-            try {
-                ((WindowManager) SwingUtilities.getWindowAncestor(this)).login("");
-            } catch (TradeNotFoundException | IOException ignored) {
-                notifyLogin("<html><b><i>Error with logging in.</i></b></html>");
-            }
+                break;
+            case "Register":
+                try {
+                    String loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
+                    ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
+                } catch (BadPasswordException ex) {
+                    notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
+                } catch (UserAlreadyExistsException ignored) {
+                    notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
+                } catch (IOException | TradeNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+                break;
+            case "Demo":
+                try {
+                    ((WindowManager) SwingUtilities.getWindowAncestor(this)).login("");
+                } catch (TradeNotFoundException | IOException ignored) {
+                    notifyLogin("<html><b><i>Error with logging in.</i></b></html>");
+                }
+                break;
         }
     }
 

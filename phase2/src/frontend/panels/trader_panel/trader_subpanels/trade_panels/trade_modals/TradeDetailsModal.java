@@ -23,7 +23,8 @@ public class TradeDetailsModal extends JDialog {
 	private final Color gray = new Color(196, 196, 196);
 
 	private final String tradeID;
-	private String traderName, otherTraderName;
+	private final String traderName;
+	private final String otherTraderName;
 	private final boolean showAvailableEdits;
 	private final boolean isTraderFirstUser;
 
@@ -33,7 +34,6 @@ public class TradeDetailsModal extends JDialog {
 
 	private final ItemQuery itemQuery = new ItemQuery();
 	private final TradeQuery tradeQuery = new TradeQuery();
-	private final UserQuery userQuery = new UserQuery();
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
@@ -60,6 +60,7 @@ public class TradeDetailsModal extends JDialog {
 		this.regular = regular;
 		this.bold = bold;
 		this.italic = italic;
+		UserQuery userQuery = new UserQuery();
 		if (isTraderFirstUser) {
 			traderName = userQuery.getUsername(tradeQuery.getFirstUserId(tradeID));
 			otherTraderName = userQuery.getUsername(tradeQuery.getSecondUserId(tradeID));
