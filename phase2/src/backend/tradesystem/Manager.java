@@ -24,27 +24,14 @@ public class Manager {
     private final Database<Trade> tradeDatabase;
 
     /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath         the user database file path
-     * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath        the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public Manager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        userDatabase = new Database<>(userFilePath);
-        tradableItemDatabase = new Database<>(tradableItemFilePath);
-        tradeDatabase = new Database<>(tradeFilePath);
-
-    }
-
-    /**
      * Initialize the objects to get items from databases
      *
      * @throws IOException if something goes wrong with getting database
      */
     public Manager() throws IOException {
-        this(DatabaseFilePaths.USER.getFilePath(), DatabaseFilePaths.TRADABLE_ITEM.getFilePath(), DatabaseFilePaths.TRADE.getFilePath());
+        userDatabase = new Database<>(DatabaseFilePaths.USER.getFilePath());
+        tradableItemDatabase = new Database<>( DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
+        tradeDatabase = new Database<>(DatabaseFilePaths.TRADE.getFilePath());
     }
 
 
@@ -148,7 +135,7 @@ public class Manager {
      * @throws UserNotFoundException cant find username
      */
     public String getUserByUsername(String username) throws UserNotFoundException {
-        for (String userId : getUserDatabase().getItems().keySet())
+        for (String userId : getAllUsers())
             if (getUser(userId).getUsername().equals(username))
                 return userId;
         throw new UserNotFoundException();
