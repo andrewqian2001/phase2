@@ -1,9 +1,14 @@
 package backend.tradesystem.queries;
 
 import backend.exceptions.AuthorizationException;
+import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.Review;
+import backend.models.users.Admin;
+import backend.models.users.Trader;
+import backend.models.users.User;
 import backend.tradesystem.Manager;
+import backend.tradesystem.UserTypes;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -216,6 +221,83 @@ public class UserQuery extends Manager {
     public int getTotalItemsLent(String traderId) throws UserNotFoundException, AuthorizationException {
         return getTrader(traderId).getTotalItemsLent();
     }
+
+    /**
+     * Gets all the trader ids in the database
+     *
+     * @return all the traders in the database
+     */
+    public List<String> getAllTraders() {
+        List<String> allTraders = new ArrayList<>();
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Trader)
+                    allTraders.add(userId);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return allTraders;
+    }
+
+    /**
+     * Gets the trader that has the tradable item id
+     *
+     * @param id the tradable item id
+     * @return the trader id
+     * @throws TradableItemNotFoundException if the item id is invalid
+     */
+    public String getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException {
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Trader) {
+                    if (((Trader) getUser(userId)).getAvailableItems().contains(id) || ((Trader) getUser(userId)).getOngoingItems().contains(id)) {
+                        return userId;
+                    }
+                }
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        throw new TradableItemNotFoundException();
+    }
+
+    /**
+     * Gets all the trader ids within the same city
+     *
+     * @param city the city name
+     * @return list of all traders within the same city
+     */
+    public List<String> getAllTradersInCity(String city) {
+        List<String> allTraders = new ArrayList<>();
+        for (String userId : getUserDatabase().getItems().keySet()) {
+            try {
+                if (getUser(userId) instanceof Trader && ((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
+                    allTraders.add(userId);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return allTraders;
+    }
+
+    /**
+     * Get the type of user
+     *
+     * @param userId the user id
+     * @return the user type of the user
+     * @throws UserNotFoundException if the user id wasn't found
+     */
+    public UserTypes getType(String userId) throws UserNotFoundException {
+        User user = getUser(userId);
+        if (user instanceof Admin)
+            return UserTypes.ADMIN;
+        else {
+            return UserTypes.TRADER;
+        }
+
+    }
+
 
 
 }

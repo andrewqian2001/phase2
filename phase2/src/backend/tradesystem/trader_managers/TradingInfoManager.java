@@ -38,23 +38,7 @@ public class TradingInfoManager extends Manager {
     }
 
 
-    /**
-     * Gets all the trader ids in the database
-     *
-     * @return all the traders in the database
-     */
-    public List<String> getAllTraders() {
-        List<String> allTraders = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
-            try {
-                if (getUser(userId) instanceof Trader)
-                    allTraders.add(userId);
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return allTraders;
-    }
+
 
     /**
      * Return trader ids that contain name
@@ -75,24 +59,7 @@ public class TradingInfoManager extends Manager {
         return similarTraders;
     }
 
-    /**
-     * Gets all the trader ids within the same city
-     *
-     * @param city the city name
-     * @return list of all traders within the same city
-     */
-    public List<String> getAllTradersInCity(String city) {
-        List<String> allTraders = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
-            try {
-                if (getUser(userId) instanceof Trader && ((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
-                    allTraders.add(userId);
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        return allTraders;
-    }
+
 
 
     /**
@@ -125,27 +92,7 @@ public class TradingInfoManager extends Manager {
         return items;
     }
 
-    /**
-     * Gets the trader that has the tradable item id
-     *
-     * @param id the tradable item id
-     * @return the trader id
-     * @throws TradableItemNotFoundException if the item id is invalid
-     */
-    public String getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException {
-        for (String userId : getUserDatabase().getItems().keySet()) {
-            try {
-                if (getUser(userId) instanceof Trader) {
-                    if (((Trader) getUser(userId)).getAvailableItems().contains(id) || ((Trader) getUser(userId)).getOngoingItems().contains(id)) {
-                        return userId;
-                    }
-                }
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-        throw new TradableItemNotFoundException();
-    }
+
 
 
     /**

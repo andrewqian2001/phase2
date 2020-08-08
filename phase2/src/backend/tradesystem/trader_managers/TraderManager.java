@@ -121,39 +121,9 @@ public class TraderManager extends Manager {
         return traderId;
     }
 
-    /**
-     * Set idle status, an idle trader has some limitations such as being unable to trade
-     *
-     * @param traderId the trader
-     * @param status   whether the trader is idle
-     * @return the trader id
-     * @throws UserNotFoundException  if the trader isn't found
-     * @throws AuthorizationException if unable to go idle
-     */
-    public String setIdle(String traderId, boolean status) throws UserNotFoundException, AuthorizationException {
-        Trader trader = getTrader(traderId);
-        if (status && trader.getAcceptedTrades().size() > 0)
-            throw new AuthorizationException("Cannot go idle until ongoing trades have been resolved");
-        trader.setIdle(status);
-        updateUserDatabase(trader);
-        return traderId;
-    }
 
-    /**
-     * Sets the city of the trader
-     *
-     * @param traderId the trader
-     * @param city     the city
-     * @return the trader id
-     * @throws UserNotFoundException  if the trader doesn't exist
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public String setCity(String traderId, String city) throws UserNotFoundException, AuthorizationException {
-        Trader trader = getTrader(traderId);
-        trader.setCity(city);
-        updateUserDatabase(trader);
-        return traderId;
-    }
+
+
 
     /**
      * Adds a new review

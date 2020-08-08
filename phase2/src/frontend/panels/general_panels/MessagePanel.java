@@ -108,7 +108,7 @@ public class MessagePanel extends JPanel {
         messagesScrollPane.setBorder(null);
         messagesScrollPane.setBackground(gray3);
         getMessages();
-        if (!userId.equals("") && loginManager.getType(userId).equals(UserTypes.ADMIN))
+        if (!userId.equals("") && userQuery.getType(userId).equals(UserTypes.ADMIN))
             getReports();
         messagesScrollPane.setViewportView(messagesListContainer);
     }
@@ -118,7 +118,7 @@ public class MessagePanel extends JPanel {
         messageTitleContainer.setPreferredSize(titleBarDimension);
 
         JLabel messagesTitle = new JLabel("Messages");
-        if (!userId.equals("") && loginManager.getType(userId).equals(UserTypes.ADMIN))
+        if (!userId.equals("") && userQuery.getType(userId).equals(UserTypes.ADMIN))
             messagesTitle.setText("Messages and Reports");
         messagesTitle.setBackground(bg);
         messagesTitle.setForeground(Color.WHITE);
@@ -144,7 +144,7 @@ public class MessagePanel extends JPanel {
                 return;
             try {
                 messageManager.clearMessages(userId);
-                if (loginManager.getType(userId).equals(UserTypes.ADMIN))
+                if (userQuery.getType(userId).equals(UserTypes.ADMIN))
                     reportManager.clearReports();
             } catch (UserNotFoundException e1) {
                 e1.printStackTrace();
@@ -281,7 +281,7 @@ public class MessagePanel extends JPanel {
 
                 try {
                     JLabel userName = new JLabel(userQuery.getUsername(fromUserId));
-                    if (loginManager.getType(fromUserId).equals(UserTypes.TRADER))
+                    if (userQuery.getType(fromUserId).equals(UserTypes.TRADER))
                         userName.setFont(regular.deriveFont(20f));
                     else
                         userName.setFont(bold.deriveFont(20f));
@@ -319,7 +319,7 @@ public class MessagePanel extends JPanel {
                             userNotFoundException.printStackTrace();
                         }
                         try {
-                            if (loginManager.getType(fromUserId).equals(UserTypes.TRADER))
+                            if (userQuery.getType(fromUserId).equals(UserTypes.TRADER))
                                 userNameCopy.setFont(regular.deriveFont(20f));
                             else
                                 userNameCopy.setFont(bold.deriveFont(20f));
@@ -408,7 +408,7 @@ public class MessagePanel extends JPanel {
                             userNotFoundException.printStackTrace();
                         }
                         try {
-                            if (loginManager.getType(fromUserId).equals(UserTypes.TRADER))
+                            if (userQuery.getType(fromUserId).equals(UserTypes.TRADER))
                                 userNameCopy.setFont(regular.deriveFont(20f));
                             else
                                 userNameCopy.setFont(bold.deriveFont(20f));

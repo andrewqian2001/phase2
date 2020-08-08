@@ -327,7 +327,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         traders.setForeground(Color.BLACK);
         traders.setOpaque(true);
         traders.addItem(null);
-        infoManager.getAllTraders().forEach(id -> {
+        userQuery.getAllTraders().forEach(id -> {
             try {
                 traders.addItem(new TraderComboBoxItem(id));
             } catch (IOException e) {

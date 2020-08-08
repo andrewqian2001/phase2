@@ -118,7 +118,7 @@ public class SearchPanel extends JPanel {
     }
 
     private boolean checkFrozen() throws UserNotFoundException {
-        if (loginManager.getType(user).equals(UserTypes.ADMIN))
+        if (userQuery.getType(user).equals(UserTypes.ADMIN))
             return false;
         return userQuery.isFrozen(user);
     }
@@ -269,7 +269,7 @@ public class SearchPanel extends JPanel {
         traderDetailsButton.setOpaque(true);
         traderDetailsButton.setBorder(BorderFactory.createLineBorder(gray2, 15));
         try {
-            if (!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER)) {
+            if (!user.equals("") && userQuery.getType(user).equals(UserTypes.TRADER)) {
                 traderDetailsButton.addActionListener(new SearchPanelTraderDetails(t, regular, italic));
             } else if (!user.equals("")) {
                 traderDetailsButton.setText("Infiltrade");
@@ -327,7 +327,7 @@ public class SearchPanel extends JPanel {
     }
 
     private void createTradableItemRow(String t) throws TradableItemNotFoundException, UserNotFoundException {
-        String owner = infoManager.getTraderThatHasTradableItemId(t);
+        String owner = userQuery.getTraderThatHasTradableItemId(t);
 
         JPanel item = new JPanel(new GridLayout(1, 4));
         item.setPreferredSize(new Dimension(1000, 75));
@@ -369,7 +369,7 @@ public class SearchPanel extends JPanel {
         item.add(itemName);
         item.add(itemDesc);
         item.add(itemOwnerName);
-        if (!user.equals("") && loginManager.getType(user).equals(UserTypes.TRADER) && !checkFrozen())
+        if (!user.equals("") && userQuery.getType(user).equals(UserTypes.TRADER) && !checkFrozen())
             item.add(addToWishlistButton);
         tradableItemListContainer.add(item);
     }

@@ -37,34 +37,7 @@ public class ReportManager extends Manager {
         super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
-    /**
-     * Reporting a user
-     *
-     * @param fromUserId the user that sent the report
-     * @param toUserId   user being reported
-     * @param message    what the report is about
-     * @return whether or not the report successfully went through
-     * @throws UserNotFoundException  user wasn't found
-     * @throws AuthorizationException report is invalid
-     */
-    public boolean reportUser(String fromUserId, String toUserId, String message) throws UserNotFoundException, AuthorizationException {
-        boolean successful = false;
-        if (fromUserId.equals(toUserId)) throw new AuthorizationException("You cannot report yourself.");
-        if (getUser(fromUserId).isFrozen())
-            throw new AuthorizationException("This user is frozen and can't report others.");
-        Report report = new Report(fromUserId, toUserId, message);
 
-        // Add the report to all admins so that they can see the report.
-        for (String userId : getUserDatabase().getItems().keySet()) {
-            if (getUser(userId) instanceof Admin) {
-                Admin admin = ((Admin) getUser(userId));
-                admin.getReports().add(report);
-                updateUserDatabase(admin);
-                successful = true;
-            }
-        }
-        return successful;
-    }
 
     /**
      * Gets all reports

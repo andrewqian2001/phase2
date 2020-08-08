@@ -2,6 +2,7 @@ package frontend;
 
 import backend.DatabaseFilePaths;
 import backend.exceptions.*;
+import backend.tradesystem.SettingsManager;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.admin_managers.HandleFrozenManager;
@@ -18,6 +19,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * This class is not used in production and is only used to have an example interface full of users
@@ -45,6 +47,7 @@ public class TemporarySetup {
             TradingManager tradingManager = new TradingManager();
             ReportManager reportManager = new ReportManager();
             UserQuery userQuery = new UserQuery();
+            SettingsManager settingsManager = new SettingsManager();
             // Each trader has some items that are confirmed and not confirmed
             // Username is trader{index here from 0 to 9 inclusive}
             // Password is 'userPassword1'
@@ -58,7 +61,7 @@ public class TemporarySetup {
                 handleRequestsManager.processItemRequest(traders[i], userQuery.getRequestedItems(traders[i]).get(0), true);
                 traderManager.addRequestItem(traders[i], "requested" + i, "requested desc" + i);
                 traderManager.addRequestItem(traders[i], "another requested" + i, "bad desc requested" + i);
-                traderManager.setCity(traders[i], "Toronto");
+                settingsManager.setCity(traders[i], "Toronto");
             }
             Date goodDate = new Date(System.currentTimeMillis() + 99999999);
             Date goodDate2 = new Date(System.currentTimeMillis() + 999999999);
@@ -96,13 +99,13 @@ public class TemporarySetup {
             for (int i = 0; i < traders.length; i++)
                 traderManager.addToWishList(traders[i], userQuery.getAvailableItems(traders[i - 1 == -1 ? traders.length - 1 : i - 1]).get(0));
             // For changing cities
-            traders[3] = traderManager.setCity(traders[3], "new york");
-            traders[4] = traderManager.setCity(traders[4], "new york");
-            traders[5] = traderManager.setCity(traders[5], "new york");
-            traders[6] = traderManager.setCity(traders[6], "dallas");
-            traders[7] = traderManager.setCity(traders[7], "dallas");
+            traders[3] = settingsManager.setCity(traders[3], "new york");
+            traders[4] = settingsManager.setCity(traders[4], "new york");
+            traders[5] = settingsManager.setCity(traders[5], "new york");
+            traders[6] = settingsManager.setCity(traders[6], "dallas");
+            traders[7] = settingsManager.setCity(traders[7], "dallas");
             // For changing idle status
-            traders[0] = traderManager.setIdle(traders[0], true);
+            traders[0] = settingsManager.setIdle(traders[0], true);
             // For adding reviews
             traderManager.addReview(traders[0], traders[3], 5.3, "This guy was rude");
             traderManager.addReview(traders[2], traders[3], 2.3, "This guy attacked me");
@@ -110,8 +113,8 @@ public class TemporarySetup {
             // For setting frozen status
             handleFrozenManager.setFrozen(traders[8], true);
             // For reporting users
-            reportManager.reportUser(traders[3], traders[6], "This user drove off with my lambo and never gave me what I wanted");
-            reportManager.reportUser(traders[1], traders[6], "This user flew away with my helicopter and never gave me what I wanted");
+            settingsManager.reportUser(traders[3], traders[6], "This user drove off with my lambo and never gave me what I wanted");
+            settingsManager.reportUser(traders[1], traders[6], "This user flew away with my helicopter and never gave me what I wanted");
             // For messaging users
             messageManager.sendMessage(traders[5], traders[7], "Dallas is pretty far can you come to New York instead");
             messageManager.sendMessage(traders[5], traders[7], "Ik its a lot to ask but like yeehaw");
@@ -161,7 +164,7 @@ public class TemporarySetup {
             TradingManager tradingManager = new TradingManager();
             ReportManager reportManager = new ReportManager();
             UserQuery userQuery = new UserQuery();
-
+            SettingsManager settingsManager = new SettingsManager();
             try{
                 loginManager.registerUser("admin", "adminPassword1", UserTypes.ADMIN);
             }
@@ -178,7 +181,7 @@ public class TemporarySetup {
                 handleRequestsManager.processItemRequest(traders[i], userQuery.getRequestedItems(traders[i]).get(0), true);
 
                 traderManager.addRequestItem(traders[i], traderRequests[i], traderRequestDescription[i]);
-                traderManager.setCity(traders[i], "Toronto");
+                settingsManager.setCity(traders[i], "Toronto");
             }
 
             Date goodDate = new Date(System.currentTimeMillis() + 99999999);
@@ -210,13 +213,13 @@ public class TemporarySetup {
             for (int i = 0; i < traders.length; i++)
                 traderManager.addToWishList(traders[i], userQuery.getAvailableItems(traders[i - 1 == -1 ? traders.length - 1 : i - 1]).get(0));
 
-            traders[3] = traderManager.setCity(traders[3], "new york");
-            traders[4] = traderManager.setCity(traders[4], "new york");
-            traders[5] = traderManager.setCity(traders[5], "new york");
-            traders[6] = traderManager.setCity(traders[6], "dallas");
-            traders[7] = traderManager.setCity(traders[7], "dallas");
+            traders[3] = settingsManager.setCity(traders[3], "new york");
+            traders[4] = settingsManager.setCity(traders[4], "new york");
+            traders[5] = settingsManager.setCity(traders[5], "new york");
+            traders[6] = settingsManager.setCity(traders[6], "dallas");
+            traders[7] = settingsManager.setCity(traders[7], "dallas");
             // For changing idle status
-            traders[0] = traderManager.setIdle(traders[0], true);
+            traders[0] = settingsManager.setIdle(traders[0], true);
             // For adding reviews
             traderManager.addReview(traders[0], traders[3], 5.3, "This guy was rude");
             traderManager.addReview(traders[2], traders[3], 2.3, "This guy attacked me");
@@ -224,8 +227,8 @@ public class TemporarySetup {
             // For setting frozen status
             handleFrozenManager.setFrozen(traders[2], true);
             // For reporting users
-            reportManager.reportUser(traders[3], traders[6], "This user drove off with my lambo and never gave me what I wanted");
-            reportManager.reportUser(traders[1], traders[6], "This user flew away with my helicopter and never gave me what I wanted");
+            settingsManager.reportUser(traders[3], traders[6], "This user drove off with my lambo and never gave me what I wanted");
+            settingsManager.reportUser(traders[1], traders[6], "This user flew away with my helicopter and never gave me what I wanted");
             // For messaging users
             messageManager.sendMessage(traders[5], traders[7], "Dallas is pretty far can you come to New York instead");
             messageManager.sendMessage(traders[5], traders[7], "Ik its a lot to ask but like yeehaw");

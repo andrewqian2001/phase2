@@ -116,6 +116,24 @@ public class LoginManager extends Manager {
         return user.getId();
     }
 
+
+
+    /**
+     * Checks if the username exists in the database file
+     *
+     * @param username username to check for
+     * @return if username is unique
+     */
+    public boolean isUsernameUnique(String username) {
+        try {
+            getUserByUsername(username);
+            return false;
+        } catch (UserNotFoundException ignored) {
+            return true;
+        }
+    }
+
+
     /**
      * Get the type of user
      *
@@ -133,56 +151,6 @@ public class LoginManager extends Manager {
 
     }
 
-    /**
-     * Checks if the username exists in the database file
-     *
-     * @param username username to check for
-     * @return if username is unique
-     */
-    public boolean isUsernameUnique(String username) {
-        try {
-            getUserByUsername(username);
-            return false;
-        } catch (UserNotFoundException ignored) {
-            return true;
-        }
-    }
-
-    /**
-     * Change the username of an existing user
-     *
-     * @param userId   the existing user
-     * @param username the new username
-     * @return the user id
-     * @throws UserAlreadyExistsException if the username is taken
-     * @throws UserNotFoundException      the userId wasn't found
-     */
-    public String changeUsername(String userId, String username) throws UserAlreadyExistsException, UserNotFoundException {
-        if (!isUsernameUnique(username)) {
-            throw new UserAlreadyExistsException();
-        }
-        User user = getUser(userId);
-        user.setUsername(username);
-        updateUserDatabase(user);
-        return user.getId();
-    }
-
-    /**
-     * Change password of the user
-     *
-     * @param userId   the user
-     * @param password the new password
-     * @return the user id
-     * @throws BadPasswordException  if the password isn't valid
-     * @throws UserNotFoundException if the user wasn't found
-     */
-    public String changePassword(String userId, String password) throws BadPasswordException, UserNotFoundException {
-        validatePassword(password);
-        User user = getUser(userId);
-        user.setPassword(password);
-        updateUserDatabase(user);
-        return user.getId();
-    }
 
     /**
      * Checks if password is valid

@@ -9,6 +9,7 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
+import backend.tradesystem.SettingsManager;
 import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.trader_managers.TraderManager;
@@ -21,10 +22,7 @@ import backend.tradesystem.queries.UserQuery;
 public class SettingsPanel extends JPanel {
     protected Font regular, bold, italic, boldItalic;
     private final String userId;
-    private final TraderManager traderManager = new TraderManager();
-    private final LoginManager loginManager = new LoginManager();
-    private final TradingInfoManager infoManager = new TradingInfoManager();
-    private final ReportManager reportManager = new ReportManager();
+    private final SettingsManager settingsManager = new SettingsManager();
     protected UserQuery userQuery = new UserQuery();
 
     protected final Color bg = new Color(51, 51, 51);
@@ -104,7 +102,7 @@ public class SettingsPanel extends JPanel {
             if (userId.equals("")) return;
             if (changeUsername.getText().trim().length() != 0) {
                 try {
-                    loginManager.changeUsername(userId, changeUsername.getText());
+                    settingsManager.changeUsername(userId, changeUsername.getText());
                     changeUsernameLabel.setFont(regular.deriveFont(25f));
                     changeUsernameLabel.setText("Reload Required");
                     changeUsername.setText("");
@@ -153,7 +151,7 @@ public class SettingsPanel extends JPanel {
         changePasswordButton.addActionListener(e -> {
             if (userId.equals("")) return;
             try {
-                loginManager.changePassword(userId, String.valueOf(changePassword.getPassword()));
+                settingsManager.changePassword(userId, String.valueOf(changePassword.getPassword()));
                 changePasswordLabel.setFont(regular.deriveFont(25f));
                 changePasswordLabel.setText("Reload Required");
                 changePasswordButton.setText("Changed");
@@ -202,7 +200,7 @@ public class SettingsPanel extends JPanel {
             if (userId.equals("")) return;
             if (changeCity.getText().trim().length() != 0) {
                 try {
-                    traderManager.setCity(userId, changeCity.getText());
+                    settingsManager.setCity(userId, changeCity.getText());
                     changeCityLabel.setText("Reload Required");
                     changeCityButton.setText("Changed");
                     changeCityButton.setFont(boldItalic.deriveFont(20f));
@@ -247,7 +245,7 @@ public class SettingsPanel extends JPanel {
         goIdleButton.addActionListener(e -> {
             if (userId.equals("")) return;
             try {
-                traderManager.setIdle(userId, !userQuery.isIdle(userId));
+                settingsManager.setIdle(userId, !userQuery.isIdle(userId));
                 goIdleButton.setBackground(bg);
                 goIdleButton.setFont(boldItalic.deriveFont(20f));
                 goIdleButton.setText("Activated");
@@ -313,7 +311,7 @@ public class SettingsPanel extends JPanel {
             traders.setBackground(gray2);
             traders.setForeground(Color.BLACK);
             traders.setOpaque(true);
-            infoManager.getAllTraders().forEach(traderId -> {
+            userQuery.getAllTraders().forEach(traderId -> {
                 if (!traderId.equals(userId)) {
                     try {
                         traders.addItem(userQuery.getUsername(traderId));
@@ -347,7 +345,7 @@ public class SettingsPanel extends JPanel {
             submitReportButton.addActionListener(e1 -> {
                 if (traderReportMessage.getText().trim().length() != 0 && traders.getSelectedItem() != null) {
                     try {
-                        reportManager.reportUser(userId, userQuery.getUserByUsername((String) traders.getSelectedItem()), traderReportMessage.getText());
+                        settingsManager.reportUser(userId, userQuery.getUserByUsername((String) traders.getSelectedItem()), traderReportMessage.getText());
                         reportTraderModal.dispose();
                     } catch (UserNotFoundException | AuthorizationException e2) {
                         e2.printStackTrace();

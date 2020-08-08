@@ -243,7 +243,7 @@ public class ItemsPanel extends JPanel {
             traders.setForeground(Color.BLACK);
             traders.setOpaque(true);
             traders.addItem(null);
-            infoManager.getAllTraders().forEach(id -> {
+            userQuery.getAllTraders().forEach(id -> {
                 if (!id.equals(this.traderId)) {
                     try {
                         traders.addItem(new TraderComboBoxItem(id));
@@ -487,7 +487,7 @@ public class ItemsPanel extends JPanel {
                 itemIdTitle.setForeground(Color.BLACK);
                 itemIdTitle.setHorizontalAlignment(JLabel.LEFT);
 
-                JLabel itemOwnerName = new JLabel(userQuery.getUsername(infoManager.getTraderThatHasTradableItemId(itemId)));
+                JLabel itemOwnerName = new JLabel(userQuery.getUsername(userQuery.getTraderThatHasTradableItemId(itemId)));
                 itemOwnerName.setFont(regular.deriveFont(20f));
                 itemOwnerName.setForeground(Color.BLACK);
                 itemOwnerName.setHorizontalAlignment(JLabel.CENTER);
