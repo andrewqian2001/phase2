@@ -50,7 +50,7 @@ public class TradeDetailsModal extends JDialog {
 	 * @throws UserNotFoundException if the user doesn't exist
 	 * @throws TradableItemNotFoundException if the item doesn't exist
 	 */
-	public TradeDetailsModal(String tradeID, boolean showAvailableEdits, boolean isTraderFirstUser, Font regular,
+	public TradeDetailsModal(String tradeID, boolean showAvailableEdits, boolean isTraderFirstUser, boolean fromAdmin, Font regular,
 			Font bold, Font italic, Font boldItalic) throws IOException, TradeNotFoundException, UserNotFoundException,
 			TradableItemNotFoundException {
 		this.tradeID = tradeID;
