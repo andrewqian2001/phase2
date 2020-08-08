@@ -24,18 +24,6 @@ public class TradingManager extends Manager {
     }
 
     /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath         the user database file path
-     * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath        the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public TradingManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
-    }
-
-    /**
      * Adds a new trade to the system and acknowledges that it is a requested trade between two users in the trade.
      * A trade is a borrow if the the item the first user is offering is "".
      * A trade is a lend if the item the second user is offering is "".
@@ -388,7 +376,7 @@ public class TradingManager extends Manager {
             throw new TradeNotFoundException("Trade request wasn't found");
         }
         secondTrader.getRequestedTrades().remove(tradeID);
-        getTradeDatabase().delete(tradeID);
+        deleteTrade(tradeID);
         updateUserDatabase(firstTrader);
         updateUserDatabase(secondTrader);
     }
@@ -432,7 +420,7 @@ public class TradingManager extends Manager {
         secondTrader.getOngoingItems().remove(trade.getSecondUserOffer());
 
         // Update database
-        getTradeDatabase().delete(trade.getId());
+        deleteTrade(trade.getId());
         updateUserDatabase(firstTrader);
         updateUserDatabase(secondTrader);
 
@@ -485,9 +473,9 @@ public class TradingManager extends Manager {
                     if (!isValid) {
                         firstTrader.getRequestedTrades().remove(i);
                         secondTrader.getRequestedTrades().remove(i);
-                        getTradeDatabase().delete(tradeID);
-                        getUserDatabase().update(firstTrader);
-                        getUserDatabase().update(secondTrader);
+                        deleteTrade(tradeID);
+                        updateUserDatabase(firstTrader);
+                        updateUserDatabase(secondTrader)
                     }
                 }
             } catch (EntryNotFoundException | AuthorizationException e) {
