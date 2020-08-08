@@ -129,6 +129,7 @@ public class WindowManager extends JFrame {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (userId.equals("bad")) return;
                 for (int i = 0; i < times.size(); i++) {
                     if (times.get(i) != file.get(i).lastModified()) {
                         times.set(i, file.get(i).lastModified());
