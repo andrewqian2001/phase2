@@ -53,7 +53,7 @@ public class TradingManager extends Manager {
         }
         // If neither trader can trade, throw an exception
         if (!trader.canTrade())
-            throw new CannotTradeException("This user cannot trade due to trading restrictions");
+            throw new CannotTradeException("You cannot trade due to trading restrictions");
         if (!secondTrader.canTrade())
             throw new CannotTradeException("The user requested cannot trade due to trading restrictions");
         if (firstUserOfferId.equals("") && !trader.canBorrow())
@@ -138,6 +138,8 @@ public class TradingManager extends Manager {
             trader2.getAcceptedTrades().add(tradeId);
             trader.getRequestedTrades().remove(tradeId);
             trader2.getRequestedTrades().remove(tradeId);
+            trader.setTradeCount(trader.getTradeCount() + 1);
+            trader2.setTradeCount(trader2.getTradeCount() + 1);
             updateUserDatabase(trader);
             updateUserDatabase(trader2);
             removeInvalidRequests();
@@ -185,8 +187,6 @@ public class TradingManager extends Manager {
                 if (!trade.getFirstUserOffer().equals(""))
                     trader2.getAvailableItems().add(trade.getFirstUserOffer());
 
-                trader1.setTradeCount(trader1.getTradeCount() + 1);
-                trader2.setTradeCount(trader2.getTradeCount() + 1);
                 if (trade.getFirstUserOffer().equals("")) {
                     trader1.setTotalItemsBorrowed(trader1.getTotalItemsBorrowed() + 1);
                     trader1.setTotalAcceptedBorrows(trader1.getTotalAcceptedBorrows() - 1);
@@ -258,8 +258,6 @@ public class TradingManager extends Manager {
 
             trader1.getWishlist().remove(trade.getFirstUserOffer());
             trader2.getWishlist().remove(trade.getSecondUserOffer());
-            trader1.setTradeCount(trader1.getTradeCount() + 1);
-            trader2.setTradeCount(trader2.getTradeCount() + 1);
             updateUserDatabase(trader1);
             updateUserDatabase(trader2);
         }
@@ -418,6 +416,8 @@ public class TradingManager extends Manager {
         firstTrader.getOngoingItems().remove(trade.getSecondUserOffer());
         secondTrader.getOngoingItems().remove(trade.getFirstUserOffer());
         secondTrader.getOngoingItems().remove(trade.getSecondUserOffer());
+        firstTrader.setTradeCount(firstTrader.getTradeCount() - 1);
+        secondTrader.setTradeCount(secondTrader.getTradeCount() - 1);
 
         // Update database
         deleteTrade(trade.getId());
@@ -467,8 +467,12 @@ public class TradingManager extends Manager {
                     Trader secondTrader = getTrader(t.getSecondUserId());
 
                     // Figure out whether the trade is still valid.
-                    boolean isValid = (t.getFirstUserOffer().equals("") || firstTrader.getAvailableItems().contains(t.getFirstUserOffer())) &&
-                            (t.getSecondUserOffer().equals("") || secondTrader.getAvailableItems().contains(t.getSecondUserOffer()));
+                    boolean isValid = hasItem(firstTrader, t.getFirstUserOffer()) && hasItem(secondTrader, t.getSecondUserOffer());
+
+                    isValid = isValid && firstTrader.canTrade() && secondTrader.canTrade();
+
+                    if (t.getFirstUserOffer().equals(""))
+                        isValid = isValid && firstTrader.canBorrow();
 
                     if (!isValid) {
                         firstTrader.getRequestedTrades().remove(i);
