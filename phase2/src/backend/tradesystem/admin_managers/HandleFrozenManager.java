@@ -10,6 +10,7 @@ import backend.tradesystem.Manager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,8 +60,8 @@ public class HandleFrozenManager extends Manager {
      *
      * @return a list of all user ids that requested to be unfrozen
      */
-    public ArrayList<String> getAllUnfreezeRequests() {
-        ArrayList<String> result = new ArrayList<>();
+    public List<String> getAllUnfreezeRequests() {
+        List<String> result = new ArrayList<>();
         Set<String> items = getAllUsers();
         for (String userId : items) {
             try {
@@ -80,8 +81,8 @@ public class HandleFrozenManager extends Manager {
      *
      * @return true if the user should be frozen, false otherwise
      */
-    public ArrayList<String> getShouldBeFrozen() {
-        ArrayList<String> freezable = new ArrayList<>();
+    public List<String> getShouldBeFrozen() {
+        List<String> freezable = new ArrayList<>();
         Set<String> items = getAllUsers();
         for (String userId : items) {
             User user = null;
