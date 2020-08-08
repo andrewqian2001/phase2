@@ -36,18 +36,32 @@ public class HandleItemRequestsManager extends Manager {
 
         for (String userId : getAllUsers()) {
             try {
-                if (getUser(userId) instanceof Trader) {
-                    // Get requested item IDs
-                    List<String> requestedItems = ((Trader) getUser(userId)).getRequestedItems();
+                // Get requested item IDs
+                List<String> requestedItems = getTrader(userId).getRequestedItems();
 
-                    // Add the populated list to the result
-                    allItems.put(userId, requestedItems);
-                }
-            } catch (UserNotFoundException e) {
+                // Add the populated list to the result
+                allItems.put(userId, requestedItems);
+            } catch (UserNotFoundException | AuthorizationException e) {
                 e.printStackTrace();
             }
         }
         return allItems;
+    }
+
+    /**
+     * Accepts all item requests
+     */
+    public void acceptAllItemRequests() {
+        HashMap<String, List<String>> allRequests = getAllItemRequests();
+        for (String traderId : allRequests.keySet()){
+            for (String reqId: allRequests.get(traderId)){
+                try {
+                    processItemRequest(traderId, reqId, true);
+                } catch (TradableItemNotFoundException | AuthorizationException | UserNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 

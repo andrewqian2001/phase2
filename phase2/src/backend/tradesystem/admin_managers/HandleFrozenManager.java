@@ -67,8 +67,10 @@ public class HandleFrozenManager extends Manager {
             try {
                 if (getTrader(userId).isUnfrozenRequested())
                     result.add(userId);
-            } catch (UserNotFoundException | AuthorizationException e) {
+            } catch (UserNotFoundException e) {
                 e.printStackTrace();
+            } catch (AuthorizationException e){
+
             }
         }
         return result;
