@@ -9,12 +9,20 @@ import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
 
-public class SettingsManager {
+import java.io.IOException;
+
+/**
+ * For changing existing settings for a trader
+ */
+public class SettingsManager extends Manager {
 
 
-
-    public SettingsManager(){
-
+    /**
+     * Initialize the objects to get items from databases
+     *
+     * @throws IOException if something goes wrong with getting database
+     */
+    public SettingsManager() throws IOException {
     }
 
     /**
@@ -88,6 +96,20 @@ public class SettingsManager {
     }
 
     /**
+     * Checks if password is valid
+     *
+     * @param password must have no white space, length greater than 11, has a capital letter, has a number
+     * @throws BadPasswordException if the password is not valid
+     */
+    private void validatePassword(String password) throws BadPasswordException {
+        if (password.contains(" ")) throw new BadPasswordException("No white space allowed");
+        if (password.length() < 11) throw new BadPasswordException("Length of password must be at least 12");
+        if (password.toLowerCase().equals(password))
+            throw new BadPasswordException("Must have at least one capital letter");
+        if (!password.matches(".*[0-9]+.*")) throw new BadPasswordException("Must contain at least one number");
+    }
+
+    /**
      * Reporting a user
      *
      * @param fromUserId the user that sent the report
@@ -105,7 +127,7 @@ public class SettingsManager {
         Report report = new Report(fromUserId, toUserId, message);
 
         // Add the report to all admins so that they can see the report.
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             if (getUser(userId) instanceof Admin) {
                 Admin admin = ((Admin) getUser(userId));
                 admin.getReports().add(report);
@@ -116,4 +138,18 @@ public class SettingsManager {
         return successful;
     }
 
+    /**
+     * Checks if the username exists in the database file
+     *
+     * @param username username to check for
+     * @return if username is unique
+     */
+    public boolean isUsernameUnique(String username) {
+        try {
+            getUserByUsername(username);
+            return false;
+        } catch (UserNotFoundException ignored) {
+            return true;
+        }
+    }
 }

@@ -160,7 +160,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
 
     private JPanel setOtherTradersPanel() {
 
-        List<String> allTraders = infoManager.getAllTraders();
+        List<String> allTraders = userQuery.getAllTraders();
 
         JPanel otherTradersPanel = new JPanel();
         otherTradersPanel.setBackground(bg);
@@ -217,12 +217,12 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
             allTraders.clear();
             if (tradeWithinCityButton.isSelected()) {
                 try {
-                    allTraders.addAll(infoManager.getAllTradersInCity(userQuery.getCity(trader)));
+                    allTraders.addAll(userQuery.getAllTradersInCity(userQuery.getCity(trader)));
                 } catch (UserNotFoundException | AuthorizationException e2) {
                     e2.printStackTrace();
                 }
             } else {
-                allTraders.addAll(infoManager.getAllTraders());
+                allTraders.addAll(userQuery.getAllTraders());
             }
             traders.addItem(null);
             allTraders.forEach(traderId -> {

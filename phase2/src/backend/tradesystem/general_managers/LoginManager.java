@@ -138,8 +138,6 @@ public class LoginManager extends Manager {
         }
 
     }
-
-
     /**
      * Checks if password is valid
      *
@@ -153,6 +151,8 @@ public class LoginManager extends Manager {
             throw new BadPasswordException("Must have at least one capital letter");
         if (!password.matches(".*[0-9]+.*")) throw new BadPasswordException("Must contain at least one number");
     }
+
+
 
     /**
      * Tries to refresh the trade count of all traders (this only happens every week).
