@@ -75,7 +75,6 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.setOpaque(false);
         this.setLayout(new BorderLayout());
 
-
         JPanel searchPanel = new SearchPanel(traderId, regular, bold, italic, boldItalic);
         JPanel tradePanel = new TradePanel(traderId, regular, bold, italic, boldItalic);
         JPanel itemsPanel = new ItemsPanel(traderId, regular, bold, italic, boldItalic);
@@ -103,18 +102,16 @@ public class TraderPanel extends JPanel implements ActionListener {
 
         createLogoutButton(boldItalic, infiltraded);
 
-        if(isFrozen) {
-            menuPanelContainer.add(new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic), "Frozen Settings");
+        if (isFrozen) {
+            menuPanelContainer.add(new FrozenSettingsPanel(traderId, regular, bold, italic, boldItalic),
+                    "Frozen Settings");
             menuPanelContainer.add(searchPanel, "Search");
-        }
-        else if(isIdle)
-        {
+        } else if (isIdle) {
             menuPanelContainer.add(itemsPanel, "Items");
             menuPanelContainer.add(notificationsPanel, "Notifications");
             menuPanelContainer.add(searchPanel, "Search");
             menuPanelContainer.add(settingsPanel, "Settings");
-        }
-        else {
+        } else {
             menuPanelContainer.add(tradePanel, "Trades");
             menuPanelContainer.add(itemsPanel, "Items");
             menuPanelContainer.add(notificationsPanel, "Notifications");
@@ -129,10 +126,20 @@ public class TraderPanel extends JPanel implements ActionListener {
 
     }
 
+    /**
+     * Gets the current Panel that the trader is in
+     * 
+     * @return the current panel
+     */
     public String getCurrentPanel() {
         return this.currentPanel;
     }
 
+    /**
+     * Sets the currentPanel given the name of the panel
+     * 
+     * @param panelName name of the panel
+     */
     public void setCurrentPanel(String panelName) {
         this.currentPanel = panelName;
         cardLayout.show(menuPanelContainer, panelName);
@@ -141,7 +148,8 @@ public class TraderPanel extends JPanel implements ActionListener {
                 if (!button.equals(logoutButton)) {
                     button.setEnabled(true);
                     ((JButton) button).setOpaque(false);
-                } if (((JButton) button).getName().equals(panelName)) {
+                }
+                if (((JButton) button).getName().equals(panelName)) {
                     ((JButton) button).setEnabled(false);
                     ((JButton) button).setOpaque(true);
                     ((JButton) button).setUI(new MetalButtonUI() {
@@ -156,10 +164,10 @@ public class TraderPanel extends JPanel implements ActionListener {
 
     private String[] getMenuTitles(boolean isFrozen, boolean isIdle) {
         if (isFrozen)
-            return new String[]{"Frozen Settings", "Search", "", "", ""};
+            return new String[] { "Frozen Settings", "Search", "", "", "" };
         if (isIdle)
-            return new String[]{"Items", "Notifications", "Search", "Settings", ""};
-        return new String[]{"Trades", "Items", "Notifications", "Search", "Settings"};
+            return new String[] { "Items", "Notifications", "Search", "Settings", "" };
+        return new String[] { "Trades", "Items", "Notifications", "Search", "Settings" };
     }
 
     private boolean checkIdleTrader(String traderId) {
@@ -192,7 +200,7 @@ public class TraderPanel extends JPanel implements ActionListener {
 
     private void createLogoutButton(Font boldItalic, boolean infiltraded) {
         logoutButton = new JButton();
-        if(!infiltraded) {
+        if (!infiltraded) {
             logoutButton.setText("Logout");
             logoutButton.setName("Logout");
             logoutButton.setFont(boldItalic.deriveFont(25f));
@@ -228,7 +236,8 @@ public class TraderPanel extends JPanel implements ActionListener {
     }
 
     private void createUserIdTitle(String traderId, Font regular) {
-        JLabel userIdTitle = new JLabel("<html><pre>ID: #" + (traderId.equals("") ? "DemoID" : traderId.substring(traderId.length() - 12)) + "</pre></html>");
+        JLabel userIdTitle = new JLabel("<html><pre>ID: #"
+                + (traderId.equals("") ? "DemoID" : traderId.substring(traderId.length() - 12)) + "</pre></html>");
         userIdTitle.setFont(regular.deriveFont(20f));
         userIdTitle.setForeground(GRAY);
         userIdTitle.setHorizontalAlignment(JLabel.CENTER);
@@ -239,8 +248,10 @@ public class TraderPanel extends JPanel implements ActionListener {
     }
 
     private void createUsernameTitle(String traderId, Font regular) throws UserNotFoundException {
-        String text = traderId.equals("") ? "Demo" : (userQuery.getUsername(traderId).length() > 12 ? userQuery.getUsername(traderId).substring(0, 12) + "..."
-                : userQuery.getUsername(traderId));
+        String text = traderId.equals("") ? "Demo"
+                : (userQuery.getUsername(traderId).length() > 12
+                        ? userQuery.getUsername(traderId).substring(0, 12) + "..."
+                        : userQuery.getUsername(traderId));
         JLabel usernameTitle = new JLabel(text);
         usernameTitle.setFont(regular.deriveFont(35f));
         usernameTitle.setForeground(Color.BLACK);
