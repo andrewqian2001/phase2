@@ -261,7 +261,7 @@ public class LoginManager extends Manager {
                 e.printStackTrace();
             }
             catch (AuthorizationException ignored){
-
+                continue;
             }
             updateUserDatabase(trader);
         }
