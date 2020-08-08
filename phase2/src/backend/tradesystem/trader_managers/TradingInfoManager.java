@@ -25,19 +25,6 @@ public class TradingInfoManager extends Manager {
         super();
     }
 
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath         the user database file path
-     * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath        the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public TradingInfoManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
-    }
-
-
 
 
     /**
@@ -48,7 +35,7 @@ public class TradingInfoManager extends Manager {
      */
     public List<String> searchTrader(String name) {
         List<String> similarTraders = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
                 if (getUser(userId) instanceof Trader && getUser(userId).getUsername().toLowerCase().contains(name.toLowerCase()))
                     similarTraders.add(userId);
@@ -72,7 +59,7 @@ public class TradingInfoManager extends Manager {
      */
     public List<String> getTradableItemsWithName(String name) {
         List<String> items = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
                 if (getUser(userId) instanceof Trader) {
                     for (String id : ((Trader) getUser(userId)).getAvailableItems()) {
