@@ -309,6 +309,10 @@ public class Trade  implements Serializable, Idable {
         return this.getFirstUserId().equals(traderId) || this.getSecondUserId().equals(traderId);
     }
 
+    /**
+     * Sets the corresponding trader's confirmed status to true
+     * @param traderId the trader who's confirmed status will be updated
+     */
     public void setUserConfirmed(String traderId){
         if (traderId.equals(FIRST_USER_ID)){
             if (!isFirstUserConfirmed1){
