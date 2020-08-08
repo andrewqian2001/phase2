@@ -26,14 +26,6 @@ transactions can be incomplete before the account is frozen. An incomplete trans
 one where two users agree to a one-way or two-way trade, but one of them does not show up.
 Therefore, at least one person does not confirm to the program that the transaction occurred, because it did not.
 
-A frozen account is one where you can log in and look for items, but you cannot arrange any transactions.
-A user who has been frozen can request that the administrative user unfreezes their account.
-
 In a previous paragraph, we said that a user must have lent (at least one) more item(s) than they have
 borrowed, in order to make a non-lending transaction. However, the administrative user should be able
 to change that to "at least two more items..." or "at least three..." etc.
-
-The initial administrative user should be able to add subsequent administrative users to the system.
-
-Allow the admin user to adjust all of the threshold values,
-either from inside the program or by typing into a text file.

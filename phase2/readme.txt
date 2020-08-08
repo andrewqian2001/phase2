@@ -52,7 +52,12 @@ THE TRADING PROCESS:
           provided that it's still a borrow/lend)
         - You can only ever borrow once the count of amount lent minus amount borrowed surpasses the limit set by
           an admin (default limit is 1)
-
+        - You can only trade so much in a week (the default trade limit is 10)
+        - You can only have so many ongoing trades (incomplete trades) at one time before an admin may freeze your account (the
+          default limit is 3 ongoing trades, so any more trades means you risk being frozen). This does not happen automatically,
+          so as long as you keep your ongoing trade count below the limit before an admin sees, you will be safe.
+          A frozen account is an account that cannot do most actions, except changing their username, password, city, or reporting a user.
+          A frozen account can also send an un-freeze request to an admin.
 
 The following section will explain the purpose and usage of each section of the GUI and is meant to guide new users
 through our design.
