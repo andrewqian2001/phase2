@@ -39,7 +39,7 @@ public class WindowManager extends JFrame {
     private final LoginManager loginManager = new LoginManager();
     private boolean infiltraded;
 
-    private String userId = "";
+    private String userId = "bad";
 
     /**
      * This is where initial settings that affects the entire window is at
@@ -78,6 +78,7 @@ public class WindowManager extends JFrame {
      * @throws TradeNotFoundException trade doesn't exist
      */
     public void login(String loggedInUserId) throws IOException, TradeNotFoundException {
+        if (userId.equals("bad")) return;
         try {
             this.userId = loggedInUserId;
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
@@ -98,6 +99,12 @@ public class WindowManager extends JFrame {
      * Puts the window back on the login screen
      */
     public void logout() {
+        privateLogout();
+        this.userId = "bad";
+    }
+
+
+    private void privateLogout() {
         if (userPanel != null)
             this.remove(userPanel);
         this.setContentPane(new ImagePanel(loginBg));
@@ -127,7 +134,7 @@ public class WindowManager extends JFrame {
                         times.set(i, file.get(i).lastModified());
                         try {
                             if (!userId.equals("")) {
-                                logout();
+                                privateLogout();
                                 login(userId);
                                 break;
                             }
