@@ -161,33 +161,36 @@ public class OverviewPanel extends JPanel {
 
     private void handleButtonPress(JButton acceptAllItemRequestsButton, JButton unFreezeAllTradersButton, JButton freezeAllTradersButton) {
         acceptAllItemRequestsButton.addActionListener(e -> {
-            for (Component itemRequest : itemRequestsContainer.getComponents()) {
-                for (Component c : ((JPanel) itemRequest).getComponents()) {
-                    if (c instanceof JButton && c.getBackground() == confirmButton) {
-                        ((JButton) c).doClick();
-                    }
-                }
-            }
+            // for (Component itemRequest : itemRequestsContainer.getComponents()) {
+            //     for (Component c : ((JPanel) itemRequest).getComponents()) {
+            //         if (c instanceof JButton && c.getBackground() == confirmButton) {
+            //             ((JButton) c).doClick();
+            //         }
+            //     }
+            // }
+            itemRequestManager.acceptAllItemRequests();
         });
 
         unFreezeAllTradersButton.addActionListener(e -> {
-            for (Component unFreezeRequest : unFreezeRequestsContainer.getComponents()) {
-                for (Component c : ((JPanel) unFreezeRequest).getComponents()) {
-                    if (c instanceof JButton && c.getBackground() == confirmButton) {
-                        ((JButton) c).doClick();
-                    }
-                }
-            }
+            // for (Component unFreezeRequest : unFreezeRequestsContainer.getComponents()) {
+            //     for (Component c : ((JPanel) unFreezeRequest).getComponents()) {
+            //         if (c instanceof JButton && c.getBackground() == confirmButton) {
+            //             ((JButton) c).doClick();
+            //         }
+            //     }
+            // }
+            frozenManager.unfreezeAllFromRequests();
         });
 
         freezeAllTradersButton.addActionListener(e -> {
-            for (Component freezeComponent : freezeTradersContainer.getComponents()) {
-                for (Component c : ((JPanel) freezeComponent).getComponents()) {
-                    if (c instanceof JButton && c.getBackground() == blue) {
-                        ((JButton) c).doClick();
-                    }
-                }
-            }
+            // for (Component freezeComponent : freezeTradersContainer.getComponents()) {
+            //     for (Component c : ((JPanel) freezeComponent).getComponents()) {
+            //         if (c instanceof JButton && c.getBackground() == blue) {
+            //             ((JButton) c).doClick();
+            //         }
+            //     }
+            // }
+            frozenManager.freezeAllShouldBeFrozen();
         });
     }
 
