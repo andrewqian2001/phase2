@@ -27,7 +27,6 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.suggestion_strategies.Suggestion;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.suggestion_strategies.ExactWishlistSuggestion;
@@ -346,7 +345,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         boolean isSuggestedTrade = e.getActionCommand().equals("<html><b><i><u>Suggest Trade</u></i></b></html>");
         boolean isSuggestedLend = e.getActionCommand().equals("<html><b><i><u>Suggest Lend</u></i></b></html>");
 
-        Suggestion suggested = null;
+        String[] suggested = null;
         try {
             if (isSuggestedLend) {
                 suggested = infoManager.suggestLend(trader, true, normalSuggestLendStrategy);

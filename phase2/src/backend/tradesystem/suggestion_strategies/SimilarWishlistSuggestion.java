@@ -188,11 +188,11 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
      * If such a trade does not exist, return null.
      * @param thisTraderId is the id of the trader
      * @param inCity if the user wants to filter for city
-     * @return a suggestion object that contains info regarding the trade
+     * @return A lend suggestion in the form [fromUserId, toUserId, itemIdToLend]
      * @throws AuthorizationException if thisTraderId is not a trader
      */
     @Override
-    public Suggestion suggestLend(String thisTraderId, boolean inCity) throws UserNotFoundException, AuthorizationException {
+    public String[] suggestLend(String thisTraderId, boolean inCity) throws UserNotFoundException, AuthorizationException {
         List<String> allTraders = getAllTraders();
         Trader thisTrader = getTrader(thisTraderId);
         allTraders.remove(thisTraderId); //so it doesn't trade with itself
@@ -226,7 +226,7 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
         if(mostSimItemId == null || mostSimTraderId == null){
             return null;
         }
-        return new Suggestion(thisTraderId, mostSimTraderId, mostSimItemId);
+        return new String[]{thisTraderId, mostSimTraderId, mostSimItemId};
     }
 
     /**
@@ -235,12 +235,12 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
      * If such a trade does not exist, return null.
      * @param thisTraderId the id of the trader asking for the suggestion
      * @param inCity true if you desire to search for other traders within the same city as the original trader
-     * @return A trade suggestion
+     * @return A trade suggestion in the form of [fromUserId, toUserId, lendItemId, receiveItemId]
      * @throws UserNotFoundException if a user was not found
      * @throws AuthorizationException if the given trader id represents a non-trader object.
      */
     @Override
-    public Suggestion suggestTrade(String thisTraderId, boolean inCity) throws UserNotFoundException, AuthorizationException {
+    public String[] suggestTrade(String thisTraderId, boolean inCity) throws UserNotFoundException, AuthorizationException {
         //Finds the most similar trade, most similar is calculated through similarSearch
 
         List<String> allTraders = getAllTraders();
@@ -309,6 +309,6 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
         if (mostSimTraderId == null || mostSimGetItemId == null || mostSimGiveItemId == null)
             return null;
 
-        return new Suggestion(thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId);
+        return new String[]{thisTraderId, mostSimTraderId, mostSimGiveItemId, mostSimGetItemId};
     }
 }

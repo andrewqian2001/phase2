@@ -1,7 +1,6 @@
 package backend.tradesystem.trader_managers;
 
 import backend.exceptions.*;
-import backend.tradesystem.suggestion_strategies.Suggestion;
 import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
@@ -164,11 +163,11 @@ public class TradingInfoManager extends Manager {
      * @param traderId trader id
      * @param strategy The lending strategy to use
      * @param inCity   whether to filter for city or not
-     * @return the suggestion provided by a suggest lend strategy
+     * @return A lend suggestion in the form [fromUserId, toUserId, itemIdToLend]
      * @throws UserNotFoundException  if the user can not be found
      * @throws AuthorizationException if the user is frozen
      */
-    public Suggestion suggestLend(String traderId, boolean inCity, SuggestLendStrategy strategy) throws
+    public String[] suggestLend(String traderId, boolean inCity, SuggestLendStrategy strategy) throws
             UserNotFoundException, AuthorizationException {
         return strategy.suggestLend(traderId, inCity);
     }
@@ -180,11 +179,11 @@ public class TradingInfoManager extends Manager {
      * @param traderId trader id
      * @param strategy The trading strategy to use
      * @param inCity   whether to filter for city or not
-     * @return the suggestion provided by the suggest trade algorithm
+     * @return A trade suggestion in the form of [fromUserId, toUserId, lendItemId, receiveItemId]
      * @throws UserNotFoundException  bad trader ids
      * @throws AuthorizationException can't suggest because user is not a trader or is frozen
      */
-    public Suggestion suggestTrade(String traderId, boolean inCity, SuggestTradeStrategy strategy) throws
+    public String[] suggestTrade(String traderId, boolean inCity, SuggestTradeStrategy strategy) throws
             UserNotFoundException, AuthorizationException {
         return strategy.suggestTrade(traderId, inCity);
     }

@@ -29,7 +29,6 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.CannotTradeException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.suggestion_strategies.Suggestion;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingManager;
@@ -40,7 +39,7 @@ import backend.tradesystem.trader_managers.TradingManager;
 public class AddNewTradeModal extends JDialog implements ActionListener {
 
     private final String trader;
-    private final Suggestion suggested;
+    private final String[] suggested;
 
     private final Font regular, bold, italic, boldItalic;
 
@@ -55,7 +54,6 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
     private JLabel error;
 
     private final Color bg = new Color(51, 51, 51);
-    private final Color gray = new Color(196, 196, 196);
     private final Color gray2 = new Color(142, 142, 142);
     private final Color green = new Color(27, 158, 36);
     private final Color red = new Color(219, 58, 52);
@@ -80,7 +78,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
      * @throws TradableItemNotFoundException if the item isn't found
      * @throws AuthorizationException if the user isn't allowed to access this
      */
-    public AddNewTradeModal(String trader, Suggestion suggested, Font regular, Font bold, Font italic, Font boldItalic)
+    public AddNewTradeModal(String trader, String[] suggested, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
 
         this.trader = trader;
@@ -415,7 +413,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
     }
 
     private JPanel setAddNewTradePanel(boolean isSuggested)
-            throws UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
+            throws UserNotFoundException, TradableItemNotFoundException {
         JPanel addNewTradePanel = new JPanel();
         addNewTradePanel.setPreferredSize(new Dimension(500, 1100));
         addNewTradePanel.setBackground(bg);
@@ -448,10 +446,11 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
         addNewTradePanel.add(error);
 
         if (isSuggested) {
-            traders.setSelectedItem(userQuery.getUsername(suggested.getToTraderId()));
-            traderItems.setSelectedItem(itemQuery.getName(suggested.getFromTraderOfferId()));
-            if (!suggested.getToTraderOfferId().equals("")) {
-                otherTraderItems.setSelectedItem(itemQuery.getName(suggested.getToTraderOfferId()));
+            traders.setSelectedItem(userQuery.getUsername(suggested[1]));
+            traderItems.setSelectedItem(itemQuery.getName(suggested[2]));
+
+            if (suggested.length == 4) {
+                otherTraderItems.setSelectedItem(itemQuery.getName(suggested[3]));
             }
         }
 

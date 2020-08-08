@@ -10,11 +10,12 @@ public interface SuggestTradeStrategy {
 
     /**
      * Suggests a trade where thisTraderId is offering some item to another trader.
+     *
      * @param thisTraderId the id of the trader asking for the suggestion
-     * @param inCity true if you desire to search for other traders within the same city as the original trader
-     * @return A trade suggestion
-     * @throws UserNotFoundException if a user was not found
+     * @param inCity       true if you desire to search for other traders within the same city as the original trader
+     * @return A trade suggestion in the form of [fromUserId, toUserId, lendItemId, receiveItemId]
+     * @throws UserNotFoundException  if a user was not found
      * @throws AuthorizationException if the given trader id represents a non-trader object.
      */
-    Suggestion suggestTrade(String thisTraderId, boolean inCity) throws UserNotFoundException, AuthorizationException;
+    String[] suggestTrade(String thisTraderId, boolean inCity) throws UserNotFoundException, AuthorizationException;
 }

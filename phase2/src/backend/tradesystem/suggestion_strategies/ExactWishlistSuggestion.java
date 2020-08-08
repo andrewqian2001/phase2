@@ -105,18 +105,18 @@ public class ExactWishlistSuggestion extends Manager implements SuggestLendStrat
      * If such a trade does not exist, return null.
      * @param thisTraderId the id of the trader asking for the suggestion
      * @param inCity true if you desire to search for other traders within the same city as the original trader
-     * @return A lend suggestion
+     * @return A lend suggestion in the form [fromUserId, toUserId, itemIdToLend]
      * @throws UserNotFoundException if a user was not found
      * @throws AuthorizationException if the given trader id represents a non-trader object.
      */
     @Override
-    public Suggestion suggestLend(String thisTraderId, boolean inCity) throws
+    public String[] suggestLend(String thisTraderId, boolean inCity) throws
             UserNotFoundException, AuthorizationException {
         List<String[]> lends = suggestLendList(thisTraderId, inCity);
         if (lends.size() == 0) {
             return null;
         }
-        return new Suggestion(lends.get(0)[0], lends.get(0)[1], lends.get(0)[2]);
+        return new String[]{lends.get(0)[0], lends.get(0)[1], lends.get(0)[2]};
     }
 
     /**
@@ -125,12 +125,12 @@ public class ExactWishlistSuggestion extends Manager implements SuggestLendStrat
      * If such a trade does not exist, return null.
      * @param thisTraderId the id of the trader asking for the suggestion
      * @param inCity true if you desire to search for other traders within the same city as the original trader
-     * @return A trade suggestion
+     * @return A trade suggestion in the form of [fromUserId, toUserId, lendItemId, receiveItemId]
      * @throws UserNotFoundException if a user was not found
      * @throws AuthorizationException if the given trader id represents a non-trader object.
      */
     @Override
-    public Suggestion suggestTrade(String thisTraderId, boolean inCity) throws
+    public String[] suggestTrade(String thisTraderId, boolean inCity) throws
             UserNotFoundException, AuthorizationException {
 
         Trader thisTrader = getTrader(thisTraderId);
@@ -144,7 +144,7 @@ public class ExactWishlistSuggestion extends Manager implements SuggestLendStrat
         for (String[] lendInfo : toLend) {
             for (String candidateItem : getTrader(lendInfo[1]).getAvailableItems()) {
                 if (thisTraderWishlist.contains(candidateItem)) {
-                    return new Suggestion(lendInfo[0], lendInfo[1], lendInfo[2], candidateItem);
+                    return new String[]{lendInfo[0], lendInfo[1], lendInfo[2], candidateItem};
                 }
             }
         }
