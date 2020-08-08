@@ -78,10 +78,10 @@ public class TemporarySetup {
                     tradingManager.acceptRequest(traders[traders.length - 1 - i], ongoing);
                     // Confirms four meetings for a temporary trade and accepts request, meaning the trade is complete
                     tradingManager.acceptRequest(traders[traders.length - 1 - i], acceptThis);
-                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis, true);
-                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis, true);
-                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis, true);
-                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis, true);
+                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis);
+                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -199,10 +199,10 @@ public class TemporarySetup {
                     tradingManager.acceptRequest(traders[traders.length - 1 - i], ongoing);
                     // Confirms four meetings for a temporary trade and accepts request, meaning the trade is complete
                     tradingManager.acceptRequest(traders[traders.length - 1 - i], acceptThis);
-                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis, true);
-                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis, true);
-                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis, true);
-                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis, true);
+                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis);
+                    tradingManager.confirmMeetingGeneral(traders[i], acceptThis);
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - 1 - i], acceptThis);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

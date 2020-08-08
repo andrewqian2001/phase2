@@ -147,7 +147,7 @@ public class TestTrade extends TestManager{
             assertFalse(trader2.getAvailableItems().contains(item2));
 
             //confirm trade
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId());
             // Make sure nothing changed after first confirmation
             assertNotEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
             assertNotEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
@@ -159,7 +159,7 @@ public class TestTrade extends TestManager{
             assertEquals(0, trader1.getTotalItemsBorrowed());
 
             // Make sure confirming first meeting again does nothing
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId());
             assertNotEquals(trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1), item2);
             assertNotEquals(trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1), item1);
             assertEquals(0, trader1.getTradeCount());
@@ -169,9 +169,8 @@ public class TestTrade extends TestManager{
             assertEquals(0, trader2.getTotalItemsBorrowed());
             assertEquals(0, trader1.getTotalItemsBorrowed());
 
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId());
 
-            //check the trade is now in the completed trades
             update();
             // check that the trade is still accepted
             assertTrue(trader1.getAcceptedTrades().size() == 1);
@@ -216,12 +215,12 @@ public class TestTrade extends TestManager{
             userDatabase.update(trader1);
 
 
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId());
             // Make sure nothing has changed after first confirmation.
             update();
             // check that the trade is still accepted
-            assertTrue(trader1.getAcceptedTrades().size() == 4);
-            assertTrue(trader2.getAcceptedTrades().size() == 1);
+            assertEquals(4,trader1.getAcceptedTrades().size());
+            assertEquals(1, trader2.getAcceptedTrades().size());
             // check that the items are in the correct pos
             assertEquals(trader1.getOngoingItems().get(trader1.getOngoingItems().size()-1), item2);
             assertEquals(trader2.getOngoingItems().get(trader2.getOngoingItems().size()-1), item1);
@@ -233,7 +232,7 @@ public class TestTrade extends TestManager{
             assertEquals(0, trader1.getTotalItemsBorrowed());
 
             // Make sure confirming again will not do anything
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId());
             update();
             // check that the trade is still accepted
             assertTrue(trader1.getAcceptedTrades().size() == 4);
@@ -248,7 +247,7 @@ public class TestTrade extends TestManager{
             assertEquals(0, trader2.getTotalItemsBorrowed());
             assertEquals(0, trader1.getTotalItemsBorrowed());
 
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId());
             //check the trade is now in the completed trades
             update();
             assertEquals(trader1.getCompletedTrades().get(0), trade.getId());
@@ -322,8 +321,8 @@ public class TestTrade extends TestManager{
             userDatabase.update(trader1);
 
             //confirm trade
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade.getId());
 
             //check the trade is now in the completed trades
             update();
@@ -441,8 +440,8 @@ public class TestTrade extends TestManager{
             }
 
             tradingManager.acceptRequest(trader2.getId(), trade1.getId());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade1.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade1.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade1.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade1.getId());
 
             update();
             assertEquals(item2, trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1));
@@ -478,8 +477,8 @@ public class TestTrade extends TestManager{
             update();
             assertEquals(0, trader1.getTotalAcceptedBorrows());
             assertEquals(0, trader2.getTotalAcceptedBorrows());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade2.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade2.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade2.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade2.getId());
             update();
             assertEquals(item2, trader1.getAvailableItems().get(trader1.getAvailableItems().size()-1));
             assertEquals(item3, trader2.getAvailableItems().get(trader2.getAvailableItems().size()-1));
@@ -516,12 +515,12 @@ public class TestTrade extends TestManager{
                 assertEquals(e.getMessage(), "The trader who originally sent the trade can't borrow");
             }
 
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade3.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade3.getId());
 
             update();
             assertEquals(1, trader1.getTotalAcceptedBorrows());
 
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade3.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade3.getId());
 
             update();
             assertEquals(0, trader1.getTotalAcceptedBorrows());
@@ -547,25 +546,25 @@ public class TestTrade extends TestManager{
             assertEquals(1, trader1.getTotalItemsBorrowed());
             assertEquals(0, trader2.getTotalItemsLent());
             assertEquals(0, trader2.getTotalAcceptedBorrows());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade4.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade4.getId());
             update();
             assertEquals(1, trader1.getTotalAcceptedBorrows());
             assertEquals(1, trader1.getTotalItemsBorrowed());
             assertEquals(0, trader2.getTotalItemsLent());
             assertEquals(0, trader2.getTotalAcceptedBorrows());
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade4.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade4.getId());
             update();
             assertEquals(1, trader1.getTotalAcceptedBorrows());
             assertEquals(1, trader1.getTotalItemsBorrowed());
             assertEquals(0, trader2.getTotalItemsLent());
             assertEquals(0, trader2.getTotalAcceptedBorrows());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), trade4.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), trade4.getId());
             update();
             assertEquals(1, trader1.getTotalAcceptedBorrows());
             assertEquals(1, trader1.getTotalItemsBorrowed());
             assertEquals(0, trader2.getTotalItemsLent());
             assertEquals(0, trader2.getTotalAcceptedBorrows());
-            tradingManager.confirmMeetingGeneral(trader2.getId(), trade4.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), trade4.getId());
             update();
             assertEquals(0, trader1.getTotalAcceptedBorrows());
             assertEquals(2, trader1.getTotalItemsBorrowed());
@@ -615,13 +614,13 @@ public class TestTrade extends TestManager{
             assertEquals(trader1.getRequestedTrades().size(), 0);
             assertEquals(0, trader2.getRequestedTrades().size());
 
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId());
 
             update();
             assertEquals(trader1.getAvailableItems().size(), 2);
             assertEquals(trader2.getAvailableItems().size(), 3);
 
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId());
 
             update();
             assertEquals(1, trader1.getCompletedTrades().size());
@@ -659,8 +658,8 @@ public class TestTrade extends TestManager{
             assertEquals(2, trader1.getAvailableItems().size());
             assertEquals(1, trader2.getOngoingItems().size());
             assertEquals(0, trader1.getOngoingItems().size());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId());
 
 
             update();
@@ -672,8 +671,8 @@ public class TestTrade extends TestManager{
             assertEquals(2, trader1.getAvailableItems().size());
             assertEquals(0, trader2.getOngoingItems().size());
             assertEquals(1, trader1.getOngoingItems().size());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId());
             update();
             assertEquals(2, trader1.getTradeCount());
             assertEquals(2, trader2.getTradeCount());
@@ -745,13 +744,13 @@ public class TestTrade extends TestManager{
             assertEquals(trader1.getRequestedTrades().size(), 0);
             assertEquals(0, trader2.getRequestedTrades().size());
 
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId());
 
             update();
             assertEquals(trader1.getAvailableItems().size(), 3);
             assertEquals(trader2.getAvailableItems().size(), 2);
 
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId());
 
             update();
             assertEquals(1, trader1.getCompletedTrades().size());
@@ -803,8 +802,8 @@ public class TestTrade extends TestManager{
             assertEquals(0, trader2.getOngoingItems().size());
             assertEquals(1, trader1.getOngoingItems().size());
 
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId());
 
 
             update();
@@ -818,8 +817,8 @@ public class TestTrade extends TestManager{
             assertEquals(3, trader1.getAvailableItems().size());
             assertEquals(1, trader2.getOngoingItems().size());
             assertEquals(0, trader1.getOngoingItems().size());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t.getId());
             update();
             assertEquals(2, trader1.getTradeCount());
             assertEquals(2, trader2.getTradeCount());
@@ -880,8 +879,8 @@ public class TestTrade extends TestManager{
 
             // This other trade will be confirmed
             tradingManager.acceptRequest(trader2.getId(), t3.getId());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId());
             try{
                 tradingManager.rescindTradeRequest(t3.getId());
                 fail();
@@ -947,10 +946,10 @@ public class TestTrade extends TestManager{
             assertTrue(trader2.getAvailableItems().contains(item4));
             // This other trade will be confirmed
             tradingManager.acceptRequest(trader2.getId(), t3.getId());
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId(), true);
-            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId(), true);
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId());
+            tradingManager.confirmMeetingGeneral(trader1.getId(), t3.getId());
+            tradingManager.confirmMeetingGeneral(trader2.getId(), t3.getId());
             try{
                 tradingManager.rescindTradeRequest(t3.getId());
                 fail();

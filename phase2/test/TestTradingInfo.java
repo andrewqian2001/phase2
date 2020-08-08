@@ -176,10 +176,10 @@ public class TestTradingInfo extends TestManager {
                     Trade trade = getTrade(tradingManager.requestTrade(traders[i].getId(), traders[traders.length - i - 1].getId(), goodDate, goodDate2, "home",
                             item1, item2, 3, "This is a trade"));
                     tradingManager.acceptRequest(traders[traders.length - i - 1].getId(), trade.getId());
-                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId(), true);
+                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId());
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId());
+                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId());
+                    tradingManager.confirmMeetingGeneral(traders[traders.length - i - 1].getId(), trade.getId());
                 }
             }
             for (int i = 0; i < n; i++) {
@@ -193,10 +193,10 @@ public class TestTradingInfo extends TestManager {
                     Trade trade = getTrade(tradingManager.requestTrade(traders[i].getId(), traders[i + 1].getId(), goodDate, goodDate2, "home",
                             item1, item2, 3, "This is a trade"));
                     tradingManager.acceptRequest(traders[i + 1].getId(), trade.getId());
-                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
-                    tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId(), true);
+                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId());
+                    tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId());
+                    tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId());
+                    tradingManager.confirmMeetingGeneral(traders[i + 1].getId(), trade.getId());
                 }
             }
             for (int i = 0; i < n; i++) {
@@ -219,10 +219,10 @@ public class TestTradingInfo extends TestManager {
                 Trade trade = getTrade(tradingManager.requestTrade(traders[i].getId(), traders[i + 2].getId(), goodDate, goodDate2, "home",
                         item1, item2, 3, "This is a trade"));
                 tradingManager.acceptRequest(traders[i + 2].getId(), trade.getId());
-                tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
-                tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId(), true);
-                tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId(), true);
-                tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId(), true);
+                tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId());
+                tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId());
+                tradingManager.confirmMeetingGeneral(traders[i].getId(), trade.getId());
+                tradingManager.confirmMeetingGeneral(traders[i + 2].getId(), trade.getId());
             }
 
             for (int i = 0; i < n; i++) {

@@ -163,17 +163,15 @@ public class TradingManager extends Manager {
      *
      * @param traderId the trader confirming the meeting
      * @param tradeId  id of the trade
-     * @param status   if the meeting is confirmed and the trade happened
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException  if the user doesn't exist
      */
-    private void confirmFirstMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+    private void confirmFirstMeeting(String traderId, String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
         if (!trade.isTraderInTrade(traderId))
             throw new AuthorizationException("This trader doesn't belong to this trade");
-        if (trade.getFirstUserId().equals(traderId)) trade.setFirstUserConfirmed1(status);
-        else if ((trade.getSecondUserId().equals(traderId))) trade.setSecondUserConfirmed1(status);
+        trade.setUserConfirmed(traderId);
 
         // If both users confirmed the first meeting meeting...
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1()) {
@@ -227,12 +225,11 @@ public class TradingManager extends Manager {
      *
      * @param traderId the trader confirming the meeting
      * @param tradeId  id of the trade
-     * @param status   if the meeting is confirmed and the trade happened
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException  if the other user of the trade is not found
      */
-    private void confirmSecondMeeting(String traderId, String tradeId, boolean status) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
+    private void confirmSecondMeeting(String traderId, String tradeId) throws TradeNotFoundException, AuthorizationException, UserNotFoundException {
         Trade trade = getTrade(tradeId);
         Trader trader1 = getTrader(trade.getFirstUserId());
         Trader trader2 = getTrader(trade.getSecondUserId());
@@ -243,11 +240,7 @@ public class TradingManager extends Manager {
         if (!trade.isFirstUserConfirmed1() || !trade.isSecondUserConfirmed1()) {
             throw new AuthorizationException("First meeting hasn't been confirmed");
         }
-        if (trade.getFirstUserId().equals(traderId)) {
-            trade.setFirstUserConfirmed2(status);
-        } else if ((trade.getSecondUserId().equals(traderId))) {
-            trade.setSecondUserConfirmed2(status);
-        }
+        trade.setUserConfirmed(traderId);
 
         // If the second meeting has been confirmed...
         if (trade.isFirstUserConfirmed1() && trade.isSecondUserConfirmed1() &&
@@ -292,18 +285,17 @@ public class TradingManager extends Manager {
      *
      * @param traderId the trader confirming the meeting
      * @param tradeId  id of the trade
-     * @param status   if the meeting is confirmed and the trade happened
      * @throws TradeNotFoundException trade wasn't found
      * @throws AuthorizationException this trade doesn't belong to this user
      * @throws UserNotFoundException  if the other user of the trade is not found
      */
-    public void confirmMeetingGeneral(String traderId, String tradeId, boolean status) throws TradeNotFoundException,
+    public void confirmMeetingGeneral(String traderId, String tradeId) throws TradeNotFoundException,
             AuthorizationException, UserNotFoundException {
         Trade t = getTrade(tradeId);
         if (t.isFirstUserConfirmed1() && t.isSecondUserConfirmed1()) {
-            confirmSecondMeeting(traderId, tradeId, status);
+            confirmSecondMeeting(traderId, tradeId);
         } else {
-            confirmFirstMeeting(traderId, tradeId, status);
+            confirmFirstMeeting(traderId, tradeId);
         }
     }
 
