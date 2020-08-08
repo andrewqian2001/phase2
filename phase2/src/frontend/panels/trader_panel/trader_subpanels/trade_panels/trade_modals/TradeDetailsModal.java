@@ -300,7 +300,7 @@ public class TradeDetailsModal extends JDialog {
 		JLabel availableEdits = new JLabel();
 		try {
 			availableEdits = new JLabel("<html><pre>"
-					+ (tradeQuery.getMaxAllowedEdits(tradeID) / 2 - tradeQuery.getNumEdits(tradeID))
+					+ tradeQuery.getEditAmountLeft(tradeID)
 					+ "</pre></html>");
 		} catch (TradeNotFoundException tradeNotFoundException) {
 			tradeNotFoundException.printStackTrace();
