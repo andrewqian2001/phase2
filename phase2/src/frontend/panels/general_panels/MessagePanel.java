@@ -13,7 +13,6 @@ import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.MessageManager;
 import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.queries.UserQuery;
-import backend.tradesystem.trader_managers.TradingInfoManager;
 import frontend.components.TraderComboBoxItem;
 
 
@@ -23,7 +22,6 @@ import frontend.components.TraderComboBoxItem;
 public class MessagePanel extends JPanel {
 
     private final ReportManager reportManager = new ReportManager();
-    private final TradingInfoManager infoManager = new TradingInfoManager();
     private final MessageManager messageManager = new MessageManager();
     private final UserQuery userQuery = new UserQuery();
 
@@ -200,7 +198,7 @@ public class MessagePanel extends JPanel {
             users.setBackground(gray2);
             users.setForeground(Color.BLACK);
             users.setOpaque(true);
-            infoManager.getAllUsers().forEach(id -> {
+            messageManager.getAllUsers().forEach(id -> {
                 if (!id.equals(userId)) {
                     try {
                         users.addItem(new TraderComboBoxItem(id));
