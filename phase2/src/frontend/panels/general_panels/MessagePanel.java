@@ -537,7 +537,10 @@ public class MessagePanel extends JPanel {
                 fromUsernametitle.setOpaque(false);
                 fromUsernametitle.setForeground(Color.WHITE);
 
-                JLabel fromUsernameLabel = fromUsername;
+                JLabel fromUsernameLabel = new JLabel(fromUsername.getText());
+                fromUsernameLabel.setHorizontalAlignment(JLabel.LEFT);
+                fromUsernameLabel.setFont(regular.deriveFont(20f));
+                fromUsernameLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
                 fromUsernameLabel.setForeground(Color.WHITE);
                 fromUsernameLabel.setPreferredSize(new Dimension(275, 50));
                 
@@ -547,7 +550,10 @@ public class MessagePanel extends JPanel {
                 toUsernametitle.setOpaque(false);
                 toUsernametitle.setForeground(Color.WHITE);
 
-                JLabel toUsernameLabel = toUsername;
+                JLabel toUsernameLabel = new JLabel(toUsername.getText());
+                toUsernameLabel.setHorizontalAlignment(JLabel.LEFT);
+                toUsernameLabel.setFont(bold.deriveFont(20f));
+                toUsernameLabel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 0));
                 toUsernameLabel.setForeground(Color.WHITE);
                 toUsernameLabel.setPreferredSize(new Dimension(275, 50));
 
