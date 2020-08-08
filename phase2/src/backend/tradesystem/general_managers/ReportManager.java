@@ -25,18 +25,6 @@ public class ReportManager extends Manager {
         super();
     }
 
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath         the user database file path
-     * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath        the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public ReportManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
-    }
-
 
 
     /**
@@ -46,7 +34,7 @@ public class ReportManager extends Manager {
      * @return all reports
      */
     public List<String[]> getReports() {
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
                 if (getUser(userId) instanceof Admin) {
                     Admin admin = ((Admin) getUser(userId));
@@ -70,7 +58,7 @@ public class ReportManager extends Manager {
      * @param reportId the report being removed
      */
     public void clearReport(String reportId) {
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
                 if (getUser(userId) instanceof Admin) {
                     Admin admin = ((Admin) getUser(userId));
@@ -88,7 +76,7 @@ public class ReportManager extends Manager {
      * Clears all reports
      */
     public void clearReports() {
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
                 if (getUser(userId) instanceof Admin) {
                     Admin admin = ((Admin) getUser(userId));
