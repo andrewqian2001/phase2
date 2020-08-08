@@ -38,8 +38,8 @@ import backend.tradesystem.trader_managers.TradingManager;
  */
 public class EditTradeModal extends JDialog implements ActionListener {
 	
-	private String tradeID, trader;
-	private boolean isTraderFirstUser;
+	private final String tradeID, trader;
+	private final boolean isTraderFirstUser;
 
 	private JLabel availableEdits, error;
 	private JPanel firstMeetingDate, secondMeetingDate;

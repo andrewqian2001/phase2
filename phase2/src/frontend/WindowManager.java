@@ -39,7 +39,7 @@ public class WindowManager extends JFrame {
     private final LoginManager loginManager = new LoginManager();
     private boolean infiltraded;
 
-    private String userId = "";
+    private String userId = "bad";
 
     /**
      * This is where initial settings that affects the entire window is at
@@ -80,6 +80,7 @@ public class WindowManager extends JFrame {
     public void login(String loggedInUserId) throws IOException, TradeNotFoundException {
         try {
             this.userId = loggedInUserId;
+            if (userId.equals("bad")) return;
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
                 userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic, infiltraded);
                 if(!((TraderPanel) userPanel).getCurrentPanel().equals(""))
@@ -100,6 +101,12 @@ public class WindowManager extends JFrame {
      * Puts the window back on the login screen
      */
     public void logout() {
+        privateLogout();
+        this.userId = "bad";
+    }
+
+
+    private void privateLogout() {
         if (userPanel != null)
             this.remove(userPanel);
         this.setContentPane(new ImagePanel(loginBg));
@@ -124,12 +131,13 @@ public class WindowManager extends JFrame {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (userId.equals("bad")) return;
                 for (int i = 0; i < times.size(); i++) {
                     if (times.get(i) != file.get(i).lastModified()) {
                         times.set(i, file.get(i).lastModified());
                         try {
                             if (!userId.equals("")) {
-                                logout();
+                                privateLogout();
                                 login(userId);
                                 break;
                             }
