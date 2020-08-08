@@ -91,7 +91,7 @@ public class HandleFrozenManager extends Manager {
             } catch (UserNotFoundException e) {
                 e.printStackTrace();
             }
-            if (user instanceof Trader && ((Trader) user).hasSurpassedIncompleteTradeLimit()) {
+            if (user instanceof Trader && !user.isFrozen() && ((Trader) user).hasSurpassedIncompleteTradeLimit()) {
                 freezable.add(userId);
             }
         }
