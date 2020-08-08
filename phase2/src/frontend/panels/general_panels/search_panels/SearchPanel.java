@@ -12,7 +12,6 @@ import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TraderManager;
@@ -32,7 +31,6 @@ public class SearchPanel extends JPanel {
 
     private final TraderManager traderManager;
     private final TradingInfoManager infoManager;
-    private final LoginManager loginManager;
     private final String user;
 
     private final UserQuery userQuery;
@@ -67,7 +65,6 @@ public class SearchPanel extends JPanel {
         this.user = user;
         traderManager = new TraderManager();
         infoManager = new TradingInfoManager();
-        loginManager = new LoginManager();
 
         userQuery = new UserQuery();
         itemQuery = new ItemQuery();

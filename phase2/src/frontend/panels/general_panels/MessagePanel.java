@@ -2,7 +2,6 @@ package frontend.panels.general_panels;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 
@@ -11,7 +10,6 @@ import javax.swing.*;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
-import backend.tradesystem.general_managers.LoginManager;
 import backend.tradesystem.general_managers.MessageManager;
 import backend.tradesystem.general_managers.ReportManager;
 import backend.tradesystem.queries.UserQuery;
@@ -25,7 +23,6 @@ import frontend.components.TraderComboBoxItem;
 public class MessagePanel extends JPanel {
 
     private final ReportManager reportManager = new ReportManager();
-    private final LoginManager loginManager = new LoginManager();
     private final TradingInfoManager infoManager = new TradingInfoManager();
     private final MessageManager messageManager = new MessageManager();
     private final UserQuery userQuery = new UserQuery();
