@@ -1,5 +1,6 @@
 package frontend;
 
+import backend.DatabaseFilePaths;
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.TradableItemNotFoundException;
 import backend.exceptions.TradeNotFoundException;
@@ -16,9 +17,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * This is used to manage settings in the overall window itself
+ * Code inspired from
+ * https://stackoverflow.com/questions/54815226/how-can-i-detect-if-a-file-has-been-modified-using-lastmodified
  */
 public class WindowManager extends JFrame {
     protected Font regular, bold, italic, boldItalic;
@@ -53,6 +60,8 @@ public class WindowManager extends JFrame {
         this.setSize(loginPanel.getSize());
         this.setLocationRelativeTo(null);
         this.setResizable(false);
+
+
     }
 
     public String getUserId() {
@@ -95,9 +104,37 @@ public class WindowManager extends JFrame {
     }
 
     /**
-     * Sets the window to visible
+     * Sets the window to visible and refreshes the JFrame if needed
      */
     public void run() {
+        ArrayList<Long> times = new ArrayList<>();
+        ArrayList<File> file = new ArrayList<>();
+        int i = 0;
+        for (DatabaseFilePaths path : DatabaseFilePaths.values()) {
+            if (!path.isConfig()) return;
+            file.add(new File(path.getFilePath()));
+            times.add(file.get(i).lastModified());
+            i++;
+        }
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                for (int i = 0; i < times.size(); i++) {
+                    if (times.get(i) != file.get(i).lastModified()) {
+                        times.set(i, file.get(i).lastModified());
+                        try {
+                            if (!userId.equals("")) {
+                                logout();
+                                login(userId);
+                                break;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }, new Date(), 500);
         this.setVisible(true);
     }
 
