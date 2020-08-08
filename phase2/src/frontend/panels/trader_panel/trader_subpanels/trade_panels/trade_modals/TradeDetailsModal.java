@@ -22,14 +22,13 @@ public class TradeDetailsModal extends JDialog {
 	private final Color bg = new Color(51, 51, 51);
 	private final Color gray = new Color(196, 196, 196);
 
-	private String tradeID;
-	private boolean showAvailableEdits;
-	private boolean isTraderFirstUser;
+	private final String tradeID;
+	private final boolean showAvailableEdits;
+	private final boolean isTraderFirstUser;
 
-	private Font regular;
-	private Font bold;
-	private Font italic;
-	private Font boldItalic;
+	private final Font regular;
+	private final Font bold;
+	private final Font italic;
 
 	private final ItemQuery itemQuery = new ItemQuery();
 	private final TradeQuery tradeQuery = new TradeQuery();
@@ -60,7 +59,6 @@ public class TradeDetailsModal extends JDialog {
 		this.regular = regular;
 		this.bold = bold;
 		this.italic = italic;
-		this.boldItalic = boldItalic;
 
 		this.setTitle("Trade Details");
 		this.setSize(new Dimension(800, showAvailableEdits ? 550 : 500));

@@ -40,8 +40,8 @@ import backend.tradesystem.trader_managers.TradingManager;
  */
 public class AddNewTradeModal extends JDialog implements ActionListener {
 
-    private String trader;
-    private Suggestion suggested;
+    private final String trader;
+    private final Suggestion suggested;
 
     private final Font regular, bold, italic, boldItalic;
 

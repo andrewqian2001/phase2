@@ -37,8 +37,6 @@ public class ItemsPanel extends JPanel {
 
     private final TraderManager traderManager = new TraderManager();
 
-    private final TradingInfoManager infoManager = new TradingInfoManager();
-
     private final ItemQuery itemQuery = new ItemQuery();
     private final UserQuery userQuery = new UserQuery();
 

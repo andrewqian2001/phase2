@@ -44,7 +44,7 @@ import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.T
  */
 public class OngoingTradesPanel extends JPanel implements ActionListener {
 
-    private String trader;
+    private final String trader;
 
     private final Font regular, bold, italic, boldItalic;
 
@@ -52,7 +52,6 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     private final Color gray = new Color(196, 196, 196);
     private final Color gray2 = new Color(142, 142, 142);
     private final Color green = new Color(27, 158, 36);
-    private final Color red = new Color(219, 58, 52);
 
     private final GridBagConstraints gbc = new GridBagConstraints();
 

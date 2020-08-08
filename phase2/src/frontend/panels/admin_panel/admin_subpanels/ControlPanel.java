@@ -8,7 +8,6 @@ import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
-import frontend.WindowManager;
 import frontend.components.TraderComboBoxItem;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.TradeDetailsModal;
 
@@ -28,7 +27,6 @@ import java.util.Locale;
 public class ControlPanel extends JPanel implements ActionListener {
 
     private final LoginManager loginManager = new LoginManager();
-    private final TradingInfoManager infoManager = new TradingInfoManager();
     private final JLabel errorMessage = new JLabel();
     private final JComboBox<Integer> minLendChoice, tradeLimitChoice, incompleteLimitChoice;
     private final JButton submitSettings = new JButton("Submit"), submitAdmin = new JButton("Submit");
