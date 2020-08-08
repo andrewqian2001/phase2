@@ -11,7 +11,6 @@ import java.awt.event.ItemEvent;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -32,7 +31,6 @@ import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
-import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 
 /**
@@ -40,8 +38,8 @@ import backend.tradesystem.trader_managers.TradingManager;
  */
 public class EditTradeModal extends JDialog implements ActionListener {
 	
-	private String tradeID, trader;
-	private boolean isTraderFirstUser;
+	private final String tradeID, trader;
+	private final boolean isTraderFirstUser;
 
 	private JLabel availableEdits, error;
 	private JPanel firstMeetingDate, secondMeetingDate;
@@ -66,7 +64,6 @@ public class EditTradeModal extends JDialog implements ActionListener {
 	private final ItemQuery itemQuery = new ItemQuery();
 
 	private final TradingManager tradeManager = new TradingManager();
-	private final TradingInfoManager infoManager = new TradingInfoManager();
 
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 

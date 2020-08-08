@@ -83,6 +83,8 @@ public class WindowManager extends JFrame {
             if (userId.equals("bad")) return;
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
                 userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic, infiltraded);
+                if(!((TraderPanel) userPanel).getCurrentPanel().equals(""))
+                    ((TraderPanel) userPanel).setCurrentPanel(((TraderPanel) userPanel).getCurrentPanel());
                 this.setContentPane(new ImagePanel(traderBg));
                 this.setContentPane(new ImagePanel(traderBg));
             } else {
