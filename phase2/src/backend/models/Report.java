@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Represents what goes into reporting someone
  */
-public class Report implements Serializable {
+public class Report implements Serializable, Idable {
     private final String FROM_USER_ID;
     private final String REPORT_ON_USER_ID;
     private final String MESSAGE;
@@ -47,5 +47,14 @@ public class Report implements Serializable {
      */
     public String getMessage() {
         return MESSAGE;
+    }
+
+    /**
+     * Gets the id
+     * @return the id
+     */
+    @Override
+    public String getId() {
+        return FROM_USER_ID + REPORT_ON_USER_ID + MESSAGE;
     }
 }
