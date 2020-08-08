@@ -86,6 +86,7 @@ public class WindowManager extends JFrame {
                 if(!((TraderPanel) userPanel).getCurrentPanel().equals(""))
                     ((TraderPanel) userPanel).setCurrentPanel(((TraderPanel) userPanel).getCurrentPanel());
                 this.setContentPane(new ImagePanel(traderBg));
+                this.setContentPane(new ImagePanel(traderBg));
             } else {
                 userPanel = new AdminPanel(loggedInUserId, regular, bold, italic, boldItalic);
                 this.setContentPane(new ImagePanel(adminBg));
