@@ -48,7 +48,6 @@ public class Database<T extends Idable> implements Serializable {
     public T update(T newItem) {
         HashMap<String, T> allItems = getItems();
         T oldItem = allItems.getOrDefault(newItem.getId(), newItem);
-        System.out.println(newItem.getId());
         try {
             allItems.put(newItem.getId(), newItem);
             save(allItems);
