@@ -67,13 +67,38 @@ public class HandleFrozenManager extends Manager {
             try {
                 if (getTrader(userId).isUnfrozenRequested())
                     result.add(userId);
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | AuthorizationException e) {
                 e.printStackTrace();
-            } catch (AuthorizationException e){
-
             }
         }
         return result;
+    }
+
+    /**
+     * Unfreezes all from requests
+     */
+    public void unfreezeAllFromRequests(){
+        List<String> requests = getAllUnfreezeRequests();
+        for (String userId: requests){
+            try {
+                Trader trader = getTrader(userId);
+                trader.setFrozen(false);
+                updateUserDatabase(trader);
+            } catch (UserNotFoundException | AuthorizationException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void freezeAllShouldBeFrozen(){
+        for (String userId: getShouldBeFrozen()){
+            try {
+                Trader trader = getTrader(userId);
+                trader.setFrozen(true);
+                updateUserDatabase(trader);
+            } catch (UserNotFoundException | AuthorizationException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
