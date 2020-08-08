@@ -85,8 +85,6 @@ public class TradeDetailsModal extends JDialog {
 		tradeDetailsPanel.setPreferredSize(new Dimension(800, showAvailableEdits ? 550 : 500));
 		tradeDetailsPanel.setBackground(bg);
 
-		tradeDetailsPanel.add(setOtherTraderNameTitle());
-		tradeDetailsPanel.add(setOtherTraderDetailsName());
 		tradeDetailsPanel.add(setTraderItemTitle());
 		tradeDetailsPanel.add(setTraderItemRequestName());
 		tradeDetailsPanel.add(setOtherTraderItemTitle());
@@ -105,27 +103,6 @@ public class TradeDetailsModal extends JDialog {
 		tradeDetailsPanel.add(setMessageBody());
 
 		return tradeDetailsPanel;
-	}
-
-	private JLabel setOtherTraderNameTitle() {
-		JLabel otherTraderNameTitle = new JLabel("Trader Username:");
-		otherTraderNameTitle.setFont(italic.deriveFont(20f));
-		otherTraderNameTitle.setPreferredSize(new Dimension(290, 50));
-		otherTraderNameTitle.setOpaque(false);
-		otherTraderNameTitle.setForeground(Color.WHITE);
-
-		return otherTraderNameTitle;
-	}
-
-	private JLabel setOtherTraderDetailsName() {
-
-		JLabel otherTraderDetailsName = new JLabel("<html><pre>" + otherTraderName + "</pre></html>");
-		otherTraderDetailsName.setFont(italic.deriveFont(20f));
-		otherTraderDetailsName.setPreferredSize(new Dimension(400, 50));
-		otherTraderDetailsName.setOpaque(false);
-		otherTraderDetailsName.setForeground(Color.WHITE);
-
-		return otherTraderDetailsName;
 	}
 
 	private JLabel setTraderItemTitle() {
