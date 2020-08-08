@@ -436,10 +436,14 @@ public class OverviewPanel extends JPanel {
             });
 
             rejectUnFreezeRequestButton.addActionListener(e -> {
-                unFreezeRequestsContainer.remove(unFreezeRequestsPanel);
-                unFreezeRequestsContainer.revalidate();
-                unFreezeRequestsContainer.repaint();
-
+                try {
+                    frozenManager.requestUnfreeze(user, false);
+                    unFreezeRequestsContainer.remove(unFreezeRequestsPanel);
+                    unFreezeRequestsContainer.revalidate();
+                    unFreezeRequestsContainer.repaint();
+                } catch (UserNotFoundException e1) {
+                    e1.printStackTrace();
+                }
             });
         });
     }
