@@ -14,6 +14,7 @@ import java.util.Set;
 /**
  * This is used to help make accessing and modifying the database files to be easier,
  * while giving the generic EntryNotFoundException more meaning.
+ * By extending this class, the database files are gained access to without directly accessing the Database class.
  * <p>
  * This contains general methods that is useful in all applications.
  */
@@ -22,6 +23,7 @@ public class Manager {
     private final Database<User> userDatabase;
     private final Database<TradableItem> tradableItemDatabase;
     private final Database<Trade> tradeDatabase;
+
 
     /**
      * Initialize the objects to get items from databases
