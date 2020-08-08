@@ -203,7 +203,7 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
         int maxSim = 0;
         for (String otherTraderId : allTraders) {
             Trader otherTrader = getTrader(otherTraderId);
-            if (inCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
+            if (!otherTrader.canTrade() || inCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
                 continue;
             }
             for(String inventoryItemId: thisTrader.getAvailableItems()){
@@ -254,7 +254,7 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
 
         for (String otherTraderId : allTraders) {
             Trader otherTrader = getTrader(otherTraderId);
-            if (inCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
+            if (!otherTrader.canTrade() || inCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
                 continue;
             }
             String simGetItemId = null;

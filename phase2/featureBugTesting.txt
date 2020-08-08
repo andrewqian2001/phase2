@@ -1,7 +1,5 @@
 Features:
 
-Give the admin user the ability to undo every action taken by regular users that can reasonably be undone.
-
 Have your program automatically suggest items to lend to a given user,
 if there is something that is both on one person's wish list and the other's lending list.
 In other words, when the user sees something they want to borrow,

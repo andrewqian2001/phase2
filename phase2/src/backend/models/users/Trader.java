@@ -24,13 +24,13 @@ public class Trader extends User implements Serializable {
     private final List<Review> reviews = new ArrayList<>(); // List of reviews
     private int tradeLimit; // This trader's trade limit (total amount of trades that can be conducted per week)
     private int incompleteTradeLim; // This trader's incomplete trade limit
-    private int totalItemsBorrowed;
-    private int totalAcceptedBorrows; // This trader's amount of trades they accepted which are borrows
     private int totalItemsLent;
     private int minimumAmountNeededToBorrow; // The minimum value totalItemsLent - totalItemsBorrowed needs to be to borrow
     private int tradeCount;
     private boolean isIdle = false;
     private String city;
+    private int totalItemsBorrowed;
+    private int totalAcceptedBorrows; // This trader's amount of trades they accepted which are borrows
 
 
 
