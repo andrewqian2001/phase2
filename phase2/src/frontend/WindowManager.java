@@ -78,9 +78,9 @@ public class WindowManager extends JFrame {
      * @throws TradeNotFoundException trade doesn't exist
      */
     public void login(String loggedInUserId) throws IOException, TradeNotFoundException {
-        if (userId.equals("bad")) return;
         try {
             this.userId = loggedInUserId;
+            if (userId.equals("bad")) return;
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
                 userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic, infiltraded);
                 this.setContentPane(new ImagePanel(traderBg));
