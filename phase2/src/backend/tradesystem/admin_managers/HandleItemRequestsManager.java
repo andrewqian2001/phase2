@@ -41,8 +41,10 @@ public class HandleItemRequestsManager extends Manager {
 
                 // Add the populated list to the result
                 allItems.put(userId, requestedItems);
-            } catch (UserNotFoundException | AuthorizationException e) {
+            } catch (UserNotFoundException e) {
                 e.printStackTrace();
+            } catch (AuthorizationException e){
+
             }
         }
         return allItems;
