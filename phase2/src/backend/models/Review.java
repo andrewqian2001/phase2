@@ -28,12 +28,4 @@ public class Review extends Report implements Serializable {
     public double getRating() {
         return RATING;
     }
-    /**
-     * Gets the id
-     * @return the id
-     */
-    @Override
-    public String getId() {
-        return super.getId() + RATING;
-    }
 }
