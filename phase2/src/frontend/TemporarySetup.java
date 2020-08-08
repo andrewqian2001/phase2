@@ -73,7 +73,7 @@ public class TemporarySetup {
                     String ongoing = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, null,
                             "123 bay street", userQuery.getAvailableItems(traders[i]).get(1), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(1),
                             3, "give me your banana " + i); // This is a perma trade
-                    String requestedOnly = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, goodDate2,
+                    tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, goodDate2,
                             "123 bay street", userQuery.getAvailableItems(traders[i]).get(2), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(2),
                             3, "I give you my kiwi " + i); // this is for requesting temp trade
                     // Only accepts request and doesn't confirm meetings so trade is ongoing
@@ -161,13 +161,12 @@ public class TemporarySetup {
             HandleFrozenManager handleFrozenManager = new HandleFrozenManager();
             MessageManager messageManager = new MessageManager();
             TradingManager tradingManager = new TradingManager();
-            ReportManager reportManager = new ReportManager();
             UserQuery userQuery = new UserQuery();
             SettingsManager settingsManager = new SettingsManager();
             try{
                 loginManager.registerUser("admin", "adminPassword1", UserTypes.ADMIN);
             }
-            catch (BadPasswordException | UserAlreadyExistsException e1){
+            catch (BadPasswordException | UserAlreadyExistsException ignored){
 
             }
             for (int i = 0; i < traders.length; i++) {
@@ -194,7 +193,7 @@ public class TemporarySetup {
                     String ongoing = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, null,
                             "123 bay street", userQuery.getAvailableItems(traders[i]).get(1), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(1),
                             3, "This trade may seem strange, but I really need this item to impress my friends!"); // This is a perma trade
-                    String requestedOnly = tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, goodDate2,
+                    tradingManager.requestTrade(traders[i], traders[traders.length - 1 - i], goodDate, goodDate2,
                             "123 bay street", userQuery.getAvailableItems(traders[i]).get(2), userQuery.getAvailableItems(traders[traders.length - 1 - i]).get(2),
                             3, "I'll be so grateful if you could accept this trade!"); // this is for requesting temp trade
                     // Only accepts request and doesn't confirm meetings so trade is ongoing

@@ -105,7 +105,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
     }
 
     private JScrollPane setAddNewScrollPane(boolean isSuggested)
-            throws UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
+            throws UserNotFoundException, TradableItemNotFoundException {
         JScrollPane addNewTradeScrollPane = new JScrollPane();
         addNewTradeScrollPane.setPreferredSize(new Dimension(600,600));
         addNewTradeScrollPane.setBackground(bg);
@@ -553,7 +553,7 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
 
         months.addItemListener(e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                int numDays = 0;
+                int numDays;
                 if (e.getItem().equals("Apr") || e.getItem().equals("Jun") || e.getItem().equals("Sep")
                         || e.getItem().equals("Nov"))
                     numDays = 30;

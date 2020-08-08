@@ -218,7 +218,7 @@ public class UserQuery extends Manager {
             try {
                 getTrader(userId); // Check if it is a trader
                 allTraders.add(userId);
-            } catch (UserNotFoundException | AuthorizationException e) {
+            } catch (UserNotFoundException | AuthorizationException ignored) {
             }
         }
         return allTraders;
@@ -234,11 +234,10 @@ public class UserQuery extends Manager {
     public String getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException {
         for (String userId : getAllUsers()) {
             try {
-                getTrader(userId); // Check if it is a trader
-                if (((Trader) getUser(userId)).getAvailableItems().contains(id) || ((Trader) getUser(userId)).getOngoingItems().contains(id)) {
+                if (getTrader(userId).getAvailableItems().contains(id) || getTrader(userId).getOngoingItems().contains(id)) {
                     return userId;
                 }
-            } catch (UserNotFoundException | AuthorizationException e) {
+            } catch (UserNotFoundException | AuthorizationException ignored) {
             }
         }
         throw new TradableItemNotFoundException();
@@ -257,7 +256,7 @@ public class UserQuery extends Manager {
                 getTrader(userId); // Checks if this is a trader
                 if (((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
                     allTraders.add(userId);
-            } catch (AuthorizationException | UserNotFoundException e) {
+            } catch (AuthorizationException | UserNotFoundException ignored) {
             }
         }
         return allTraders;

@@ -64,7 +64,10 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
         // and tradable items
         boolean isListOfTraders = false;
         for (String traderIds : getAllTraders()) {
-            if (traderIds.equals(list.get(0))) isListOfTraders = true;
+            if (traderIds.equals(list.get(0))) {
+                isListOfTraders = true;
+                break;
+            }
         }
         /*
         Goes through all items in list and finds similarity score
@@ -93,18 +96,18 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
                 String[] otherNameWords = otherNames.split("\\s+");
                 String[] thisNameWords = name.split("\\s+");
 
-                for (int i = 0; i < otherNameWords.length; i++) {//compares every single word in otherWord to every single word in the string we are searching for
-                    for (int j = 0; j < thisNameWords.length; j++) {
+                for (String otherNameWord : otherNameWords) {//compares every single word in otherWord to every single word in the string we are searching for
+                    for (String thisNameWord : thisNameWords) {
 
                         String longerName; //these are needed to fix bug when comparing strings with different sizes
                         String shorterName;
 
-                        if (otherNameWords[i].length() < thisNameWords[j].length()) {
-                            longerName = thisNameWords[j];
-                            shorterName = otherNameWords[i];
+                        if (otherNameWord.length() < thisNameWord.length()) {
+                            longerName = thisNameWord;
+                            shorterName = otherNameWord;
                         } else {
-                            shorterName = thisNameWords[j];
-                            longerName = otherNameWords[i];
+                            shorterName = thisNameWord;
+                            longerName = otherNameWord;
                         }
 
                         if (longerName.length() > longestWord.length()) { //needed for threshold
@@ -203,15 +206,14 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
         int maxSim = 0;
         for (String otherTraderId : allTraders) {
             Trader otherTrader = getTrader(otherTraderId);
-            if (inCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
+            if (!otherTrader.canTrade() || inCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
                 continue;
             }
             for(String inventoryItemId: thisTrader.getAvailableItems()){
                 Object[] giveItem = null;
                 try {
                     giveItem = similarSearch(inventoryItemId, otherTrader.getWishlist());
-                } catch (TradableItemNotFoundException e) {
-                    giveItem = null;
+                } catch (TradableItemNotFoundException ignored) {
                 } finally {
                     if (!(giveItem == null)) {
                         if (((int) giveItem[1]) > maxSim) {
@@ -254,7 +256,7 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
 
         for (String otherTraderId : allTraders) {
             Trader otherTrader = getTrader(otherTraderId);
-            if (inCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
+            if (!otherTrader.canTrade() || inCity && !(otherTrader.getCity().equalsIgnoreCase(city))) {
                 continue;
             }
             String simGetItemId = null;
@@ -267,8 +269,7 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
                 Object[] getItem = null;
                 try {
                     getItem = similarSearch(wishlistItemId, otherTrader.getAvailableItems());
-                } catch (TradableItemNotFoundException e) {
-                    getItem = null;
+                } catch (TradableItemNotFoundException ignored) {
                 } finally {
                     if (!(getItem == null)) {
                         if (((int) getItem[1]) > maxGetSim) {
@@ -285,8 +286,7 @@ public class SimilarWishlistSuggestion extends Manager implements SuggestTradeSt
                 Object[] giveItem = null;
                 try {
                     giveItem = similarSearch(otherTraderWishlistItemId, thisTrader.getAvailableItems());
-                } catch (TradableItemNotFoundException e) {
-                    giveItem = null;
+                } catch (TradableItemNotFoundException ignored) {
                 } finally {
                     if (!(giveItem == null)) {
                         if (((int) giveItem[1]) > maxGiveSim) {

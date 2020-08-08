@@ -17,8 +17,6 @@ import backend.exceptions.UserNotFoundException;
  */
 public class TradePanel extends JPanel  {
 
-    private final Color bg = new Color(51, 51, 51);
-
     private final Font regular, bold, italic, boldItalic;
     private final String trader;
 
@@ -46,6 +44,7 @@ public class TradePanel extends JPanel  {
         this.boldItalic = boldItalic;
 
         this.setBorder(BorderFactory.createEmptyBorder(25, 0, 100, 25));
+        Color bg = new Color(51, 51, 51);
         this.setBackground(bg);
 
         this.add(new OngoingTradesPanel(trader, regular, bold, italic, boldItalic));

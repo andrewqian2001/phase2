@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * Represents a trade between two users
  */
-public class Trade  implements Serializable, Idable {
+public class Trade implements Serializable, Idable {
     private Date meetingTime;
     private Date secondMeetingTime;
     private String meetingLocation;
@@ -58,6 +58,7 @@ public class Trade  implements Serializable, Idable {
 
     /**
      * The message along with the trade offer
+     *
      * @return the message
      */
     public String getMessage() {
@@ -66,6 +67,7 @@ public class Trade  implements Serializable, Idable {
 
     /**
      * Sets the message with the trade offer
+     *
      * @param message the message
      */
     public void setMessage(String message) {
@@ -311,29 +313,26 @@ public class Trade  implements Serializable, Idable {
 
     /**
      * Sets the corresponding trader's confirmed status to true
+     *
      * @param traderId the trader who's confirmed status will be updated
      */
-    public void setUserConfirmed(String traderId){
-        if (traderId.equals(FIRST_USER_ID)){
-            if (!isFirstUserConfirmed1){
+    public void setUserConfirmed(String traderId) {
+        if (traderId.equals(FIRST_USER_ID)) {
+            if (!isFirstUserConfirmed1)
                 isFirstUserConfirmed1 = true;
-            }
-            else if (isFirstUserConfirmed1 && isSecondUserConfirmed1){
+            else if (isSecondUserConfirmed1)
                 isFirstUserConfirmed2 = true;
-            }
-        }
-        else{
-            if (!isSecondUserConfirmed1){
+        } else {
+            if (!isSecondUserConfirmed1)
                 isSecondUserConfirmed1 = true;
-            }
-            else if (isFirstUserConfirmed1 && isSecondUserConfirmed1){
+            else if (isFirstUserConfirmed1)
                 isSecondUserConfirmed2 = true;
-            }
         }
     }
 
     /**
      * Gets the id
+     *
      * @return the id
      */
     @Override

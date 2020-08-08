@@ -78,17 +78,6 @@ public class TradeQuery extends Manager {
     }
 
     /**
-     * number of times the trade has been edited
-     *
-     * @param tradeId The id of the trade which is being checked
-     * @return number of times the trade has been edited
-     * @throws TradeNotFoundException if the trade could not be found in the system
-     */
-    public int getNumEdits(String tradeId) throws TradeNotFoundException {
-        return getTrade(tradeId).getNumEdits();
-    }
-
-    /**
      * when the first trade is taking place
      *
      * @param tradeId The id of the trade which is being checked
@@ -142,17 +131,6 @@ public class TradeQuery extends Manager {
      */
     public String getSecondUserOffer(String tradeId) throws TradeNotFoundException {
         return getTrade(tradeId).getSecondUserOffer();
-    }
-
-    /**
-     * how many edits can be done
-     *
-     * @param tradeId The id of the trade which is being checked
-     * @return how many edits can be done
-     * @throws TradeNotFoundException if the trade could not be found in the system
-     */
-    public int getMaxAllowedEdits(String tradeId) throws TradeNotFoundException {
-        return getTrade(tradeId).getMaxAllowedEdits();
     }
 
     /**

@@ -192,7 +192,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         List<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
 
         if(acceptedTrades.isEmpty())
-            return createNoTradesFoundPanel("<html><pre>No Ongoing Trades Found</pre></html>", bold);
+            return createNoTradesFoundPanel(bold);
 
         int numRows = acceptedTrades.size();
         numRows = Math.max(4, numRows);
@@ -209,7 +209,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         return ongoingTradesContainer;
     }
 
-    private JPanel createNoTradesFoundPanel(String message, Font bold) {
+    private JPanel createNoTradesFoundPanel(Font bold) {
         JPanel noTradesFoundPanel = new JPanel();
         noTradesFoundPanel.setBackground(bg);
         JLabel noTradesFound = new JLabel();

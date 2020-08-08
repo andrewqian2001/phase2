@@ -54,7 +54,6 @@ public class EditTradeModal extends JDialog implements ActionListener {
 	private boolean returnValue;
 
 	private final Color bg = new Color(51, 51, 51);
-	private final Color gray = new Color(196, 196, 196);
 	private final Color gray2 = new Color(142, 142, 142);
 	private final Color green = new Color(27, 158, 36);
 	private final Color red = new Color(219, 58, 52);
@@ -146,9 +145,7 @@ public class EditTradeModal extends JDialog implements ActionListener {
 		error.setHorizontalAlignment(JLabel.CENTER);
 		error.setVisible(false);
 
-		isTemporaryButton.addItemListener(ex -> {
-			secondMeetingDatePanel.setVisible(isTemporaryButton.isSelected());
-		});
+		isTemporaryButton.addItemListener(ex -> secondMeetingDatePanel.setVisible(isTemporaryButton.isSelected()));
 
 		tradeEditsPanel.add(traderItemsPanel);
 		tradeEditsPanel.add(otherTraderItemsPanel);
@@ -427,7 +424,7 @@ public class EditTradeModal extends JDialog implements ActionListener {
 
 		months.addItemListener(e -> {
 			if (e.getStateChange() == ItemEvent.SELECTED) {
-				int numDays = 0;
+				int numDays;
 				if (e.getItem().equals("Apr") || e.getItem().equals("Jun") || e.getItem().equals("Sep")
 						|| e.getItem().equals("Nov"))
 					numDays = 30;
@@ -542,7 +539,6 @@ public class EditTradeModal extends JDialog implements ActionListener {
 		} else {
 			error.setText("Enter a meeting location.");
 			error.setVisible(true);
-			return;
 		}
 
 	}

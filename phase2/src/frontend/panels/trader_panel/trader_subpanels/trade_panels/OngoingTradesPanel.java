@@ -52,8 +52,6 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     private final Color gray2 = new Color(142, 142, 142);
     private final Color green = new Color(27, 158, 36);
 
-    private final GridBagConstraints gbc = new GridBagConstraints();
-
     private final TradeQuery tradeQuery = new TradeQuery();
     private final UserQuery userQuery = new UserQuery();
 
@@ -88,6 +86,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         this.boldItalic = boldItalic;
 
         this.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.BOTH;
 
         JPanel ongoingTradesTitleHeader = setOngoingTradesTitleHeader();
@@ -127,10 +126,10 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         List<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
 
         if (acceptedTrades.isEmpty())
-            return createNoTradesFoundPanel("<html><pre>No Ongoing Trades Found</pre></html>");
+            return createNoTradesFoundPanel();
 
         int numRows = acceptedTrades.size();
-        numRows = numRows < 4 ? 4 : numRows;
+        numRows = Math.max(numRows, 4);
 
         ongoingTradesContainer.setLayout(new GridLayout(numRows, 1));
         ongoingTradesContainer.setBackground(gray2);
@@ -144,7 +143,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         return ongoingTradesContainer;
     }
 
-    private JPanel createOngoingTradePanel(String tradeID) throws TradeNotFoundException, UserNotFoundException, IOException {
+    private JPanel createOngoingTradePanel(String tradeID) throws TradeNotFoundException, UserNotFoundException {
         JPanel ongoingTradePanel = new JPanel(new GridLayout(1, 5, 10, 0));
         ongoingTradePanel.setPreferredSize(new Dimension(1000, 75));
         ongoingTradePanel.setBorder(BorderFactory.createLineBorder(bg));
@@ -248,11 +247,11 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         return tradeConfirmButton;
     }
 
-    private JPanel createNoTradesFoundPanel(String message) {
+    private JPanel createNoTradesFoundPanel() {
         JPanel noTradesFoundPanel = new JPanel();
         noTradesFoundPanel.setPreferredSize(new Dimension(1200, 300));
         noTradesFoundPanel.setBackground(gray2);
-        JLabel noTradesFound = new JLabel(message);
+        JLabel noTradesFound = new JLabel("<html><pre>No Ongoing Trades Found</pre></html>");
         noTradesFound.setFont(bold.deriveFont(30f));
         noTradesFound.setForeground(Color.WHITE);
         noTradesFound.setHorizontalAlignment(JLabel.CENTER);

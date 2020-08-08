@@ -95,8 +95,8 @@ public class AdminPanel extends JPanel implements ActionListener {
                     button.setEnabled(true);
                     ((JButton) button).setOpaque(false);
                 }
-                if (((JButton) button).getName().equals(panelName)) {
-                    ((JButton) button).setEnabled(false);
+                if (button.getName().equals(panelName)) {
+                    button.setEnabled(false);
                     ((JButton) button).setOpaque(true);
                     ((JButton) button).setUI(new MetalButtonUI() {
                         protected Color getDisabledTextColor() {

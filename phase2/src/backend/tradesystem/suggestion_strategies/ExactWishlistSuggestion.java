@@ -88,6 +88,8 @@ public class ExactWishlistSuggestion extends Manager implements SuggestLendStrat
                 continue;
             }
             Trader trader = getTrader(traderId);
+            if (!trader.canTrade())
+                continue;
             for (String item : trader.getWishlist()) {
                 if (thisTraderItems.contains(item)) {
                     String[] items = {thisTraderId, traderId, item};
