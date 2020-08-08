@@ -121,15 +121,12 @@ public class LoginPanel extends JPanel implements ActionListener {
         } else if (e.getActionCommand().equals("Register")) {
             try {
                 String loggedInUser = loginManager.registerUser(usernameInput.getText(), String.valueOf(passwordInput.getPassword()), UserTypes.TRADER);
-                if (loginManager.getType(loggedInUser).equals(UserTypes.TRADER)) {
-                    traderManager.setCity(loggedInUser, "Toronto");
-                }
                 ((WindowManager) SwingUtilities.getWindowAncestor(this)).login(loggedInUser);
             } catch (BadPasswordException ex) {
                 notifyLogin("<html><b><i>Invalid Password: " + ex.getMessage() + "</i></b></html>");
             } catch (UserAlreadyExistsException ignored) {
                 notifyLogin("<html><b><i>The username '" + usernameInput.getText() + "' is taken.</i></b></html>");
-            } catch (IOException | TradeNotFoundException | UserNotFoundException | AuthorizationException ex) {
+            } catch (IOException | TradeNotFoundException ex) {
                 ex.printStackTrace();
             }
         } else if (e.getActionCommand().equals("Demo")) {
