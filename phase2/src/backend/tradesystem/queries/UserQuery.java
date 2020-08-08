@@ -20,24 +20,12 @@ import java.util.HashMap;
  */
 public class UserQuery extends Manager {
     /**
-     * Create an instance of ItemQuery with preset file paths from Databse enum
+     * For getting access to database files
      *
      * @throws IOException issues with getting the file path
      */
     public UserQuery() throws IOException {
         super();
-    }
-
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath         the user database file path
-     * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath        the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public UserQuery(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
     /**
@@ -83,8 +71,6 @@ public class UserQuery extends Manager {
     public boolean isUnfrozenRequested(String userId) throws UserNotFoundException {
         return getUser(userId).isUnfrozenRequested();
     }
-
-
 
 
     /**
@@ -229,12 +215,11 @@ public class UserQuery extends Manager {
      */
     public List<String> getAllTraders() {
         List<String> allTraders = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
-                if (getUser(userId) instanceof Trader)
-                    allTraders.add(userId);
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
+                getTrader(userId); // Check if it is a trader
+                allTraders.add(userId);
+            } catch (UserNotFoundException | AuthorizationException e) {
             }
         }
         return allTraders;
@@ -248,15 +233,13 @@ public class UserQuery extends Manager {
      * @throws TradableItemNotFoundException if the item id is invalid
      */
     public String getTraderThatHasTradableItemId(String id) throws TradableItemNotFoundException {
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
-                if (getUser(userId) instanceof Trader) {
-                    if (((Trader) getUser(userId)).getAvailableItems().contains(id) || ((Trader) getUser(userId)).getOngoingItems().contains(id)) {
-                        return userId;
-                    }
+                getTrader(userId); // Check if it is a trader
+                if (((Trader) getUser(userId)).getAvailableItems().contains(id) || ((Trader) getUser(userId)).getOngoingItems().contains(id)) {
+                    return userId;
                 }
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
+            } catch (UserNotFoundException | AuthorizationException e) {
             }
         }
         throw new TradableItemNotFoundException();
@@ -270,12 +253,12 @@ public class UserQuery extends Manager {
      */
     public List<String> getAllTradersInCity(String city) {
         List<String> allTraders = new ArrayList<>();
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
-                if (getUser(userId) instanceof Trader && ((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
+                getTrader(userId); // Checks if this is a trader
+                if (((Trader) getUser(userId)).getCity().equalsIgnoreCase(city))
                     allTraders.add(userId);
-            } catch (UserNotFoundException e) {
-                e.printStackTrace();
+            } catch (AuthorizationException | UserNotFoundException e) {
             }
         }
         return allTraders;
@@ -297,7 +280,6 @@ public class UserQuery extends Manager {
         }
 
     }
-
 
 
 }

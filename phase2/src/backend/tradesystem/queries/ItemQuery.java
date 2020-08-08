@@ -11,7 +11,7 @@ import java.io.IOException;
 public class ItemQuery extends Manager {
 
     /**
-     * Create an instance of ItemQuery with preset file paths from Databse enum
+     * For getting access to database files
      *
      * @throws IOException issues with getting the file path
      */

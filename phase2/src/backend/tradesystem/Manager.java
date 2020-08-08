@@ -168,5 +168,13 @@ public class Manager {
         return tradableItemDatabase.getItems().keySet();
     }
 
+    /**
+     * Deletes trade from the database
+     * @param tradeId the trade id
+     */
+    protected void deleteTrade(String tradeId){
+        tradeDatabase.delete(tradeId);
+    }
+
 
 }
