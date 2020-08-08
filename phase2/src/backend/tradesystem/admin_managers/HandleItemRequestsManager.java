@@ -41,8 +41,9 @@ public class HandleItemRequestsManager extends Manager {
 
                 // Add the populated list to the result
                 allItems.put(userId, requestedItems);
-            } catch (UserNotFoundException | AuthorizationException e) {
+            } catch (UserNotFoundException e) {
                 e.printStackTrace();
+            } catch (AuthorizationException ignored) {
             }
         }
         return allItems;
@@ -53,8 +54,8 @@ public class HandleItemRequestsManager extends Manager {
      */
     public void acceptAllItemRequests() {
         HashMap<String, List<String>> allRequests = getAllItemRequests();
-        for (String traderId : allRequests.keySet()){
-            for (String reqId: allRequests.get(traderId)){
+        for (String traderId : allRequests.keySet()) {
+            for (String reqId : allRequests.get(traderId)) {
                 try {
                     processItemRequest(traderId, reqId, true);
                 } catch (TradableItemNotFoundException | AuthorizationException | UserNotFoundException e) {

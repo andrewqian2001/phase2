@@ -257,8 +257,11 @@ public class LoginManager extends Manager {
                 trader = getTrader(id);
                 trader.setTradeCount(0);
             }
-            catch (UserNotFoundException | AuthorizationException e) {
+            catch (UserNotFoundException e) {
                 e.printStackTrace();
+            }
+            catch (AuthorizationException ignored){
+
             }
             updateUserDatabase(trader);
         }
