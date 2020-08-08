@@ -104,6 +104,10 @@ public class EditTradeModal extends JDialog implements ActionListener {
 		this.add(submitButton, BorderLayout.SOUTH);
 	}
 
+	/**
+	 * Shows this dialog to the user (used in TradePanel)
+	 * @return returnValue, true if the user has submitted an edit false otherwise
+	 */
 	public boolean showDialog() {
 		this.setVisible(true);
 		return returnValue;
@@ -469,6 +473,10 @@ public class EditTradeModal extends JDialog implements ActionListener {
 		return meetingInput;
 	}
 
+	/**
+	 * This is the actionListener for the SubmitButton
+	 * @param e the actionEvent of the button press
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (!meetingLocationInput.getText().equals("")) {

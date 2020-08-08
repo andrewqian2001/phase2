@@ -25,8 +25,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * This is used to manage settings in the overall window itself
- * Code inspired from
+ * This is used to manage settings in the overall window itself Code inspired
+ * from
  * https://stackoverflow.com/questions/54815226/how-can-i-detect-if-a-file-has-been-modified-using-lastmodified
  */
 public class WindowManager extends JFrame {
@@ -65,9 +65,12 @@ public class WindowManager extends JFrame {
         this.setLocationRelativeTo(null);
         this.setResizable(false);
 
-
     }
 
+    /**
+     * Gets the current userId (trader or admin)
+     * @return the userId
+     */
     public String getUserId() {
         return userId;
     }
@@ -82,10 +85,11 @@ public class WindowManager extends JFrame {
     public void login(String loggedInUserId) throws IOException, TradeNotFoundException {
         try {
             this.userId = loggedInUserId;
-            if (userId.equals("bad")) return;
+            if (userId.equals("bad"))
+                return;
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
                 userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic, infiltraded);
-                if(!this.currentPanel.equals(""))
+                if (!this.currentPanel.equals(""))
                     ((TraderPanel) userPanel).setCurrentPanel(this.currentPanel);
                 this.setContentPane(new ImagePanel(traderBg));
                 this.setContentPane(new ImagePanel(traderBg));
@@ -110,10 +114,9 @@ public class WindowManager extends JFrame {
         this.userId = "bad";
     }
 
-
     private void privateLogout() {
-        this.currentPanel = userPanel instanceof TraderPanel ? ((TraderPanel) userPanel).getCurrentPanel() : ((AdminPanel) userPanel)
-                .getCurrentPanel();
+        this.currentPanel = userPanel instanceof TraderPanel ? ((TraderPanel) userPanel).getCurrentPanel()
+                : ((AdminPanel) userPanel).getCurrentPanel();
         if (userPanel != null)
             this.remove(userPanel);
         this.setContentPane(new ImagePanel(loginBg));
@@ -129,7 +132,8 @@ public class WindowManager extends JFrame {
         ArrayList<File> file = new ArrayList<>();
         int i = 0;
         for (DatabaseFilePaths path : DatabaseFilePaths.values()) {
-            if (path.isConfig()) continue;
+            if (path.isConfig())
+                continue;
             file.add(new File(path.getFilePath()));
             times.add(file.get(i).lastModified());
             i++;
@@ -138,7 +142,8 @@ public class WindowManager extends JFrame {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (userId.equals("bad")) return;
+                if (userId.equals("bad"))
+                    return;
                 for (int i = 0; i < times.size(); i++) {
                     if (times.get(i) != file.get(i).lastModified()) {
                         times.set(i, file.get(i).lastModified());
@@ -164,14 +169,12 @@ public class WindowManager extends JFrame {
         this.setVisible(true);
     }
 
-
     private static class ImagePanel extends JComponent {
         private final Image image;
 
         public ImagePanel(Image image) {
             this.image = image;
         }
-
 
         @Override
         protected void paintComponent(Graphics g) {
@@ -181,7 +184,8 @@ public class WindowManager extends JFrame {
     }
 
     /**
-     * Sets infiltraded to true (this WindowManager was created by an admin to infiltrade)
+     * Sets infiltraded to true (this WindowManager was created by an admin to
+     * infiltrade)
      */
     public void setInfiltraded() {
         infiltraded = true;

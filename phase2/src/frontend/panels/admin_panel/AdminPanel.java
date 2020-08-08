@@ -73,10 +73,18 @@ public class AdminPanel extends JPanel implements ActionListener {
 
     }
 
+    /**
+     * Gets the current Panel that the admin user is in
+     * @return the current Panel
+     */
     public String getCurrentPanel() {
         return this.currentPanel;
     }
 
+    /**
+     * Sets the current Panel, and changes the buttons to match
+     * @param panelName name of the panel (eg. "Control Panel")
+     */
     public void setCurrentPanel(String panelName) {
         this.currentPanel = panelName;
         cardLayout.show(menuPanelContainer, panelName);

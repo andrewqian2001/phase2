@@ -52,6 +52,13 @@ public class TradePanel extends JPanel  {
         this.add(new TradeRequestsPanel(trader, regular, bold, italic, boldItalic));
     }
 
+    /**
+     * Refreshes the ongoingTradePanel 
+     * @throws UserNotFoundException if the user is not found
+     * @throws TradeNotFoundException if the trade is not found
+     * @throws IOException since we call managers in this class
+     * @throws AuthorizationException if the user does not have authorization
+     */
     public void refreshOngoingTradesPanel()
             throws UserNotFoundException, TradeNotFoundException, IOException, AuthorizationException {
         this.setVisible(false);
@@ -60,6 +67,14 @@ public class TradePanel extends JPanel  {
         this.setVisible(true);
     }
 
+    /**
+     * Refreshes the tradeRequestsPanel
+     * @throws UserNotFoundException if the user is not found
+     * @throws TradeNotFoundException if the trade is not found
+     * @throws TradableItemNotFoundException if the tradable item is not found
+     * @throws IOException since we call managers in this class
+     * @throws AuthorizationException if the user does not have authorization
+     */
     public void refreshTradeRequestsPanel() throws UserNotFoundException, TradeNotFoundException,
             TradableItemNotFoundException, IOException, AuthorizationException {
         this.setVisible(false);

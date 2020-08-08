@@ -1,7 +1,7 @@
-unfreeze all for the requests using new method
+~~unfreeze all for the requests using new method~~
 
-freeze all that should be frozen using new method
+~~freeze all that should be frozen using new method~~
 
-fix panels and buttons selected on refresh
+~~fix panels and buttons selected on refresh~~
 
-accept all item requests
+~~accept all item requests~~
