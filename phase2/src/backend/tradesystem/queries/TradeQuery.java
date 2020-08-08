@@ -206,4 +206,9 @@ public class TradeQuery extends Manager {
         }
     }
 
+    public int getEditAmountLeft(String tradeId) throws TradeNotFoundException {
+        Trade t= getTrade(tradeId);
+        return (t.getMaxAllowedEdits() - t.getNumEdits()+1)/2;
+    }
+
 }

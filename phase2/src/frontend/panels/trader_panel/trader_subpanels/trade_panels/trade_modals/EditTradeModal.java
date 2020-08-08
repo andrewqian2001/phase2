@@ -177,11 +177,11 @@ public class EditTradeModal extends JDialog implements ActionListener {
 			otherTraderItems.setSelectedItem(otherTraderItemId.equals("") ? null : itemQuery.getName(otherTraderItemId));
 
 			meetingLocationInput.setText(tradeQuery.getMeetingLocation(tradeID));
-			availableEdits.setText("<html><pre>" + (tradeQuery.getMaxAllowedEdits(tradeID) + 1) / 2 + " Edit(s) Remaining</pre></html>");
+			availableEdits.setText("<html><pre>" + tradeQuery.getEditAmountLeft(tradeID) + " Edit(s) Remaining</pre></html>");
 
 		} catch (TradeNotFoundException | UserNotFoundException | TradableItemNotFoundException
-				| AuthorizationException tradeNotFoundException) {
-			tradeNotFoundException.printStackTrace();
+				| AuthorizationException e) {
+			e.printStackTrace();
 		}
 	}
 
