@@ -20,9 +20,9 @@ import java.util.Set;
  */
 public class Manager {
 
-    private final Database<User> userDatabase;
-    private final Database<TradableItem> tradableItemDatabase;
-    private final Database<Trade> tradeDatabase;
+    private final Database userDatabase;
+    private final Database tradableItemDatabase;
+    private final Database tradeDatabase;
 
 
     /**
@@ -31,9 +31,9 @@ public class Manager {
      * @throws IOException if something goes wrong with getting database
      */
     public Manager() throws IOException {
-        userDatabase = new Database<>(DatabaseFilePaths.USER.getFilePath());
-        tradableItemDatabase = new Database<>( DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
-        tradeDatabase = new Database<>(DatabaseFilePaths.TRADE.getFilePath());
+        userDatabase = new Database(DatabaseFilePaths.USER.getFilePath());
+        tradableItemDatabase = new Database( DatabaseFilePaths.TRADABLE_ITEM.getFilePath());
+        tradeDatabase = new Database(DatabaseFilePaths.TRADE.getFilePath());
     }
 
 
@@ -60,7 +60,7 @@ public class Manager {
      */
     protected User getUser(String id) throws UserNotFoundException {
         try {
-            return userDatabase.populate(id);
+            return (User) userDatabase.populate(id);
         } catch (EntryNotFoundException e) {
             throw new UserNotFoundException(id);
         }
@@ -75,7 +75,7 @@ public class Manager {
      */
     protected TradableItem getTradableItem(String id) throws TradableItemNotFoundException {
         try {
-            return tradableItemDatabase.populate(id);
+            return (TradableItem) tradableItemDatabase.populate(id);
         } catch (EntryNotFoundException e) {
             throw new TradableItemNotFoundException(id);
         }
@@ -91,7 +91,7 @@ public class Manager {
     protected Trade getTrade(String id) throws TradeNotFoundException {
         Trade trade;
         try {
-            trade = tradeDatabase.populate(id);
+            trade = (Trade) tradeDatabase.populate(id);
         } catch (EntryNotFoundException e) {
             throw new TradeNotFoundException(id);
         }
@@ -106,7 +106,7 @@ public class Manager {
      * @return the old user object if it exists, otherwise the new user object
      */
     protected User updateUserDatabase(User user) {
-        return userDatabase.update(user);
+        return (User) userDatabase.update(user);
     }
 
     /**
@@ -116,7 +116,7 @@ public class Manager {
      * @return the old trade object if it exists, otherwise the new trade object
      */
     protected Trade updateTradeDatabase(Trade trade) {
-        return tradeDatabase.update(trade);
+        return (Trade) tradeDatabase.update(trade);
     }
 
     /**
@@ -126,7 +126,7 @@ public class Manager {
      * @return the old TradableItem object if it exists, otherwise the new TradableItem object
      */
     protected TradableItem updateTradableItemDatabase(TradableItem item) {
-        return tradableItemDatabase.update(item);
+        return (TradableItem) tradableItemDatabase.update(item);
     }
 
     /**
