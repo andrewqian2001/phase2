@@ -152,21 +152,6 @@ public class Manager {
         return userDatabase.getItems().keySet();
     }
 
-    /**
-     * Return all trade ids
-     * @return all trade ids
-     */
-    public Set<String> getAllTrades(){
-        return tradeDatabase.getItems().keySet();
-    }
-
-    /**
-     * Return all tradable item ids
-     * @return all tradable item ids
-     */
-    public Set<String> getAllTradableItems(){
-        return tradableItemDatabase.getItems().keySet();
-    }
 
     /**
      * Deletes trade from the database
