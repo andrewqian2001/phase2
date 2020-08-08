@@ -28,18 +28,6 @@ public class TraderManager extends Manager {
         super();
     }
 
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath         the user database file path
-     * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath        the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public TraderManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
-    }
-
 
     /**
      * Makes this user request an item
@@ -78,7 +66,7 @@ public class TraderManager extends Manager {
             TradableItemNotFoundException {
         Trader trader = getTrader(traderId);
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
-        if (!getTradableItemDatabase().contains(itemId)) throw new TradableItemNotFoundException(itemId);
+        getTradableItem(itemId);
         if (!trader.getWishlist().contains(itemId)) {
             trader.getWishlist().add(itemId);
             updateUserDatabase(trader);
@@ -190,9 +178,9 @@ public class TraderManager extends Manager {
                     if (!isValid) {
                         firstTrader.getRequestedTrades().remove(i);
                         secondTrader.getRequestedTrades().remove(i);
-                        getTradeDatabase().delete(tradeID);
-                        getUserDatabase().update(firstTrader);
-                        getUserDatabase().update(secondTrader);
+                        deleteTrade(tradeID);
+                        updateUserDatabase(firstTrader);
+                        updateUserDatabase(secondTrader);
                     }
                 }
             } catch (EntryNotFoundException | AuthorizationException e) {
