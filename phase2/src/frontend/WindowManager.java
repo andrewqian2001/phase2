@@ -41,6 +41,8 @@ public class WindowManager extends JFrame {
 
     private String userId = "bad";
 
+    private String currentPanel = "";
+
     /**
      * This is where initial settings that affects the entire window is at
      *
@@ -83,8 +85,8 @@ public class WindowManager extends JFrame {
             if (userId.equals("bad")) return;
             if (loggedInUserId.equals("") || loginManager.getType(loggedInUserId).equals(UserTypes.TRADER)) {
                 userPanel = new TraderPanel(loggedInUserId, regular, bold, italic, boldItalic, infiltraded);
-                if(!((TraderPanel) userPanel).getCurrentPanel().equals(""))
-                    ((TraderPanel) userPanel).setCurrentPanel(((TraderPanel) userPanel).getCurrentPanel());
+                if(!this.currentPanel.equals(""))
+                    ((TraderPanel) userPanel).setCurrentPanel(this.currentPanel);
                 this.setContentPane(new ImagePanel(traderBg));
                 this.setContentPane(new ImagePanel(traderBg));
             } else {
@@ -108,6 +110,7 @@ public class WindowManager extends JFrame {
 
 
     private void privateLogout() {
+        this.currentPanel = ((TraderPanel) userPanel).getCurrentPanel();
         if (userPanel != null)
             this.remove(userPanel);
         this.setContentPane(new ImagePanel(loginBg));
