@@ -91,6 +91,8 @@ public class WindowManager extends JFrame {
                 this.setContentPane(new ImagePanel(traderBg));
             } else {
                 userPanel = new AdminPanel(loggedInUserId, regular, bold, italic, boldItalic);
+                if (!this.currentPanel.equals(""))
+                    ((AdminPanel) userPanel).setCurrentPanel(this.currentPanel);
                 this.setContentPane(new ImagePanel(adminBg));
             }
             this.add(userPanel, BorderLayout.CENTER);
@@ -110,7 +112,8 @@ public class WindowManager extends JFrame {
 
 
     private void privateLogout() {
-        this.currentPanel = ((TraderPanel) userPanel).getCurrentPanel();
+        this.currentPanel = userPanel instanceof TraderPanel ? ((TraderPanel) userPanel).getCurrentPanel() : ((AdminPanel) userPanel)
+                .getCurrentPanel();
         if (userPanel != null)
             this.remove(userPanel);
         this.setContentPane(new ImagePanel(loginBg));

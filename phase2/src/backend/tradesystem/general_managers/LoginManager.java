@@ -3,7 +3,6 @@ package backend.tradesystem.general_managers;
 
 import backend.DatabaseFilePaths;
 import backend.exceptions.*;
-import backend.models.Trade;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
@@ -13,7 +12,6 @@ import backend.tradesystem.UserTypes;
 
 import java.io.*;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.Set;
 
@@ -259,9 +257,10 @@ public class LoginManager extends Manager {
                 trader = getTrader(id);
                 trader.setTradeCount(0);
             }
-            catch (UserNotFoundException e){
+            catch (UserNotFoundException e) {
                 e.printStackTrace();
-            } catch (AuthorizationException e){
+            }
+            catch (AuthorizationException ignored){
 
             }
             updateUserDatabase(trader);
