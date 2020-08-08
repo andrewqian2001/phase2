@@ -111,7 +111,7 @@ public class WindowManager extends JFrame {
         ArrayList<File> file = new ArrayList<>();
         int i = 0;
         for (DatabaseFilePaths path : DatabaseFilePaths.values()) {
-            if (!path.isConfig()) continue;
+            if (path.isConfig()) continue;
             file.add(new File(path.getFilePath()));
             times.add(file.get(i).lastModified());
             i++;
