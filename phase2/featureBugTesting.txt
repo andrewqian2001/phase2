@@ -7,29 +7,11 @@ if there is something that is both on one person's wish list and the other's len
 In other words, when the user sees something they want to borrow,
 they can ask the program for a suggestion of what they could lend this user in return.
 
-Create a new type of account that allows a user to look at the various parts of the program
-without being able to trade or communicate with the admin user. This would be useful,
-if you ever wanted to set up the program as a demo for people to explore without creating an account and
-joining the trading community.
-
-Allow the admin user to adjust all of the threshold values,
-either from inside the program or by typing into a text file.
-
-Create another status for accounts besides frozen and unfrozen.
-For example, you can allow accounts to be taken down by the user for the duration of a vacation,
-when then will not be able to trade. You are only required to implement one additional account status.
-But if you want to implement four or more, it can count towards the next list.
 
 Allow users to enter their home city when creating an account,
 so that the system will only show them other users in the same city.
 
 Have the automated trade suggestion always return the most reasonable trade, even if it's not an exact match.
-
-Users who participate in trades should be able to create an account,
-log in with a user name and password, maintain a list of items that they are willing to
-lend and a list of items that they wish to borrow.
-They should also be able to browse the inventory,
-looking for items to add to their wish list.
 
 Users can lend items, borrow items, or trade items.
 However, they cannot borrow an item unless is it is part of a trade,
@@ -47,19 +29,11 @@ Therefore, at least one person does not confirm to the program that the transact
 A frozen account is one where you can log in and look for items, but you cannot arrange any transactions.
 A user who has been frozen can request that the administrative user unfreezes their account.
 
-A user can request that an item be added to their own list of available items,
-but an administrative user must review the item and decide whether or not it should actually be added.
-
-A user should be able to see the most recent three items that they traded in a one-way or two-way trade
-and their top three most frequent trading partners.
-
-Administrative users should be able to log in with a username and a password in order to confirm that a
-user account should be frozen (even though the system identifies for them which users to freeze),
-add new items to user's lists of available items, or change any of the threshhold values (example:
-how many more times must you lend items before you can borrow).
-
 In a previous paragraph, we said that a user must have lent (at least one) more item(s) than they have
 borrowed, in order to make a non-lending transaction. However, the administrative user should be able
 to change that to "at least two more items..." or "at least three..." etc.
 
 The initial administrative user should be able to add subsequent administrative users to the system.
+
+Allow the admin user to adjust all of the threshold values,
+either from inside the program or by typing into a text file.
