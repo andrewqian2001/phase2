@@ -9,7 +9,7 @@ import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
-import backend.tradesystem.SettingsManager;
+import backend.tradesystem.trader_managers.SettingsManager;
 import backend.tradesystem.queries.UserQuery;
 
 /**

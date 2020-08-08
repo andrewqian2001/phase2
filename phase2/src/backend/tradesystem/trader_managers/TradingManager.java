@@ -392,6 +392,7 @@ public class TradingManager extends Manager {
      */
     public void rescindOngoingTrade(String tradeID) throws
             TradeNotFoundException, UserNotFoundException, AuthorizationException, CannotTradeException {
+
         Trade trade = getTrade(tradeID);
         Trader firstTrader = getTrader(trade.getFirstUserId());
         Trader secondTrader = getTrader(trade.getSecondUserId());

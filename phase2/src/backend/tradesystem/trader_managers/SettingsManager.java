@@ -1,4 +1,4 @@
-package backend.tradesystem;
+package backend.tradesystem.trader_managers;
 
 import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
@@ -8,6 +8,7 @@ import backend.models.Report;
 import backend.models.users.Admin;
 import backend.models.users.Trader;
 import backend.models.users.User;
+import backend.tradesystem.Manager;
 
 import java.io.IOException;
 

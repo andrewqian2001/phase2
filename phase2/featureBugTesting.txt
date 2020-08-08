@@ -7,25 +7,4 @@ if there is something that is both on one person's wish list and the other's len
 In other words, when the user sees something they want to borrow,
 they can ask the program for a suggestion of what they could lend this user in return.
 
-
-Allow users to enter their home city when creating an account,
-so that the system will only show them other users in the same city.
-
 Have the automated trade suggestion always return the most reasonable trade, even if it's not an exact match.
-
-Users can lend items, borrow items, or trade items.
-However, they cannot borrow an item unless is it is part of a trade,
-or they have lent more items than they have borrowed.
-For example, everyone's first transaction must be lending, or trading.
-
-After the transaction has occurred in real life, the user should
-be able to log in and confirm that the transaction has been completed.
-A transaction means a one-way or two-way trade. There is a limit on the
-number of transactions any one person can conduct in one week, and a limit on how many
-transactions can be incomplete before the account is frozen. An incomplete transaction is
-one where two users agree to a one-way or two-way trade, but one of them does not show up.
-Therefore, at least one person does not confirm to the program that the transaction occurred, because it did not.
-
-In a previous paragraph, we said that a user must have lent (at least one) more item(s) than they have
-borrowed, in order to make a non-lending transaction. However, the administrative user should be able
-to change that to "at least two more items..." or "at least three..." etc.
