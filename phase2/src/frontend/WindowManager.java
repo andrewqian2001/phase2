@@ -14,6 +14,8 @@ import frontend.panels.login_panel.LoginPanel;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -136,6 +138,12 @@ public class WindowManager extends JFrame {
                 }
             }
         }, new Date(), 500);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent ignored) {
+                timer.cancel();
+            }
+        });
         this.setVisible(true);
     }
 
