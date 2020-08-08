@@ -9,6 +9,7 @@ import backend.models.Review;
 import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
+import backend.models.users.User;
 import backend.tradesystem.Manager;
 
 import java.io.IOException;
@@ -105,6 +106,7 @@ public class TraderManager extends Manager {
         if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         trader.getAvailableItems().remove(itemId);
         updateUserDatabase(trader);
+        removeInvalidWishlistItems();
         removeInvalidRequests();
         return traderId;
     }
@@ -135,25 +137,6 @@ public class TraderManager extends Manager {
         return review.getId();
     }
 
-    /**
-     * Remove a review
-     *
-     * @param userThatHasReview the user that needs to have a review removed
-     * @param reviewId          the review being removed
-     * @throws UserNotFoundException  if the user isn't found
-     * @throws AuthorizationException if the user isn't a trader
-     */
-    public void removeReview(String userThatHasReview, String reviewId) throws UserNotFoundException, AuthorizationException {
-        Trader trader = getTrader(userThatHasReview);
-        List<Review> reviews = trader.getReviews();
-        for (Review review : reviews) {
-            if (review.getId().equals(reviewId)) {
-                reviews.remove(review);
-                updateUserDatabase(trader);
-                return;
-            }
-        }
-    }
 
     private void removeInvalidRequests() throws UserNotFoundException {
         // Removes invalid trades
@@ -188,5 +171,35 @@ public class TraderManager extends Manager {
             }
         }
 
+    }
+
+    private void removeInvalidWishlistItems(){
+        // Removes invalid items
+        try {
+            for (String userId : getAllUsers()) {
+                User user = getUser(userId);
+                if (!(user instanceof Trader)){
+                    continue;
+                }
+                Trader someTrader = (Trader) user;
+                for (int i = someTrader.getAvailableItems().size() - 1; i >= 0; i--) {
+                    try {
+                        getTradableItem(someTrader.getAvailableItems().get(i));
+                    } catch (TradableItemNotFoundException ignored) {
+                        someTrader.getAvailableItems().remove(i);
+                    }
+                }
+                for (int i = someTrader.getWishlist().size() - 1; i >= 0; i--) {
+                    try {
+                        getTradableItem(someTrader.getWishlist().get(i));
+                    } catch (TradableItemNotFoundException ignored) {
+                        someTrader.getWishlist().remove(i);
+                    }
+                }
+                updateUserDatabase(someTrader);
+            }
+        } catch (UserNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
