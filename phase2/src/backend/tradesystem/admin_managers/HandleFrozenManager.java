@@ -1,5 +1,6 @@
 package backend.tradesystem.admin_managers;
 
+import backend.exceptions.AuthorizationException;
 import backend.exceptions.EntryNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.models.users.Trader;
@@ -9,11 +10,13 @@ import backend.tradesystem.Manager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Handles anything relating to freezing a user
  */
 public class HandleFrozenManager extends Manager {
+
     /**
      * Initialize the objects to get items from databases
      *
@@ -21,18 +24,6 @@ public class HandleFrozenManager extends Manager {
      */
     public HandleFrozenManager() throws IOException {
         super();
-    }
-
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath         the user database file path
-     * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath        the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public HandleFrozenManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
     }
 
     /**
@@ -70,10 +61,17 @@ public class HandleFrozenManager extends Manager {
      */
     public ArrayList<String> getAllUnfreezeRequests() {
         ArrayList<String> result = new ArrayList<>();
-        HashMap<String, User> items = getUserDatabase().getItems();
-        for (String userId : items.keySet())
-            if (items.get(userId).isUnfrozenRequested())
-                result.add(userId);
+        Set<String> items = getAllUsers();
+        for (String userId : items) {
+            try {
+                if (getTrader(userId).isUnfrozenRequested())
+                    result.add(userId);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            } catch (AuthorizationException e){
+
+            }
+        }
         return result;
     }
 
@@ -84,9 +82,14 @@ public class HandleFrozenManager extends Manager {
      */
     public ArrayList<String> getShouldBeFrozen() {
         ArrayList<String> freezable = new ArrayList<>();
-        HashMap<String, User> items = getUserDatabase().getItems();
-        for (String userId : items.keySet()) {
-            User user = items.get(userId);
+        Set<String> items = getAllUsers();
+        for (String userId : items) {
+            User user = null;
+            try {
+                user = getUser(userId);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
             if (user instanceof Trader && ((Trader) user).hasSurpassedIncompleteTradeLimit()) {
                 freezable.add(userId);
             }
