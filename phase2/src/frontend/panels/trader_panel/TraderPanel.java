@@ -202,7 +202,6 @@ public class TraderPanel extends JPanel implements ActionListener {
         logoutButton = new JButton();
         if (!infiltraded) {
             logoutButton.setText("Logout");
-            logoutButton.setName("Logout");
             logoutButton.setFont(boldItalic.deriveFont(25f));
             logoutButton.setForeground(Color.WHITE);
             logoutButton.setBackground(RED);
@@ -212,6 +211,7 @@ public class TraderPanel extends JPanel implements ActionListener {
             logoutButton.setOpaque(false);
             logoutButton.setBackground(CURRENT);
         }
+        logoutButton.setName("Logout");
         logoutButton.setBorderPainted(false);
         gbc.gridy = 8;
         menuContainer.add(logoutButton, gbc);
