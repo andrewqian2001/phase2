@@ -15,6 +15,7 @@ import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * Used for logging in and registering, as well as any setup like changing global settings
@@ -33,19 +34,6 @@ public class LoginManager extends Manager {
         TRADER_PROPERTY_FILE_PATH = DatabaseFilePaths.TRADER_CONFIG.getFilePath();
     }
 
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath           the user database file path
-     * @param tradableItemFilePath   the tradable item database file path
-     * @param tradeFilePath          the trade database file path
-     * @param traderPropertyFilePath the path for the trader properties file
-     * @throws IOException issues with getting the file path
-     */
-    public LoginManager(String userFilePath, String tradableItemFilePath, String tradeFilePath, String traderPropertyFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
-        this.TRADER_PROPERTY_FILE_PATH = traderPropertyFilePath;
-    }
 
     /**
      * Registers a user
@@ -241,36 +229,42 @@ public class LoginManager extends Manager {
         int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
         int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
         int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
-        HashMap<String, User> users = getUserDatabase().getItems();
+        Set<String> users = getAllUsers();
 
-        for (String user : users.keySet()) {
-            User populatedUser = users.get(user);
+        for (String user : users) {
+            User populatedUser = null;
+            try {
+                populatedUser = getUser(user);
+            } catch (UserNotFoundException e) {
+                e.printStackTrace();
+            }
             if (populatedUser instanceof Trader) {
                 Trader t = (Trader) populatedUser;
                 t.setLimit(TraderProperties.TRADE_LIMIT, defaultTradeLimit);
                 t.setLimit(TraderProperties.INCOMPLETE_TRADE_LIM, defaultIncompleteTradeLim);
                 t.setLimit(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW, defaultMinimumAmountNeededToBorrow);
             }
+            updateUserDatabase(populatedUser);
         }
-        getUserDatabase().save(users);
     }
 
     /**
      * Refreshes the trade count of all the traders (sets the trade count to 0)
      */
     private void refreshTradeCount() {
-        try {
-            HashMap<String, User> users = getUserDatabase().getItems();
-            for (String id : users.keySet()) {
-                if (getType(id).equals(UserTypes.TRADER)) {
-                    Trader trader = (Trader) users.get(id);
-                    trader.setTradeCount(0);
-                    users.put(trader.getId(), trader);
-                }
+        Set<String> users = getAllUsers();
+        for (String id : users) {
+            Trader trader = null;
+            try {
+                trader = getTrader(id);
+                trader.setTradeCount(0);
             }
-            getUserDatabase().save(users);
-        } catch (FileNotFoundException | UserNotFoundException e) {
-            e.printStackTrace();
+            catch (UserNotFoundException e){
+                e.printStackTrace();
+            } catch (AuthorizationException e){
+
+            }
+            updateUserDatabase(trader);
         }
     }
 
