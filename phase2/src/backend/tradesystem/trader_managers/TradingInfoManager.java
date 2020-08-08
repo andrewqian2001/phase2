@@ -135,7 +135,6 @@ public class TradingInfoManager extends Manager {
     public List<String> getRecentTradeItems(String traderId) throws AuthorizationException, TradeNotFoundException,
             UserNotFoundException {
         Trader trader = getTrader(traderId);
-        if (trader.isFrozen()) throw new AuthorizationException("Frozen account");
         List<String> completedTrades = trader.getCompletedTrades();
         Map<String, Boolean> used = new HashMap<>();
         List<String> recentTradeItems = new ArrayList<>();
