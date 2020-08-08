@@ -136,6 +136,22 @@ public class TraderPanel extends JPanel implements ActionListener {
     public void setCurrentPanel(String panelName) {
         this.currentPanel = panelName;
         cardLayout.show(menuPanelContainer, panelName);
+        for (Component button : menuContainer.getComponents()) {
+            if (button instanceof JButton) {
+                if (!button.equals(logoutButton)) {
+                    button.setEnabled(true);
+                    ((JButton) button).setOpaque(false);
+                } if (((JButton) button).getName().equals(panelName)) {
+                    ((JButton) button).setEnabled(false);
+                    ((JButton) button).setOpaque(true);
+                    ((JButton) button).setUI(new MetalButtonUI() {
+                        protected Color getDisabledTextColor() {
+                            return Color.BLACK;
+                        }
+                    });
+                }
+            }
+        }
     }
 
     private String[] getMenuTitles(boolean isFrozen, boolean isIdle) {
@@ -178,6 +194,7 @@ public class TraderPanel extends JPanel implements ActionListener {
         logoutButton = new JButton();
         if(!infiltraded) {
             logoutButton.setText("Logout");
+            logoutButton.setName("Logout");
             logoutButton.setFont(boldItalic.deriveFont(25f));
             logoutButton.setForeground(Color.WHITE);
             logoutButton.setBackground(RED);
@@ -195,6 +212,7 @@ public class TraderPanel extends JPanel implements ActionListener {
     private void createPanelButton(String title, int gridy, Font regular) {
         JButton panelButton = new JButton(title);
         panelButton.setHorizontalAlignment(SwingConstants.LEFT);
+        panelButton.setName(title);
         panelButton.setFont(regular.deriveFont(30f));
         panelButton.setForeground(Color.BLACK);
         panelButton.setBackground(CURRENT);
@@ -253,20 +271,6 @@ public class TraderPanel extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         setCurrentPanel(e.getActionCommand());
-        for (Component button : menuContainer.getComponents()) {
-            if (button instanceof JButton && !button.equals(logoutButton)) {
-                button.setEnabled(true);
-                ((JButton) button).setOpaque(false);
-            }
-        }
-        ((JButton) e.getSource()).setEnabled(false);
-        ((JButton) e.getSource()).setOpaque(true);
-        ((JButton) e.getSource()).setUI(new MetalButtonUI() {
-            protected Color getDisabledTextColor() {
-                return Color.BLACK;
-            }
-        });
-
         menuContainer.repaint();
     }
 }
