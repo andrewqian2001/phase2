@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * For getting info about a specific user
+ * For getting info about a specific user or users in general
  */
 public class UserQuery extends Manager {
     /**
