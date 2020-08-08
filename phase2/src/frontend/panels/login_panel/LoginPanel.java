@@ -18,14 +18,12 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import backend.exceptions.AuthorizationException;
 import backend.exceptions.BadPasswordException;
 import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserAlreadyExistsException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.general_managers.LoginManager;
-import backend.tradesystem.trader_managers.TraderManager;
 import frontend.WindowManager;
 
 /**
@@ -37,7 +35,6 @@ public class LoginPanel extends JPanel implements ActionListener {
     protected JPasswordField passwordInput;
     protected JButton loginButton, registerButton, demoButton;
     private final LoginManager loginManager = new LoginManager();
-    private final TraderManager traderManager = new TraderManager();
 
     /**
      * New login panel

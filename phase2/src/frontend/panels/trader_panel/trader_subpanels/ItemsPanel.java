@@ -9,7 +9,6 @@ import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
 import backend.tradesystem.trader_managers.TraderManager;
-import backend.tradesystem.trader_managers.TradingInfoManager;
 import frontend.components.*;
 
 import java.awt.*;
@@ -36,8 +35,6 @@ public class ItemsPanel extends JPanel {
 
 
     private final TraderManager traderManager = new TraderManager();
-
-    private final TradingInfoManager infoManager = new TradingInfoManager();
 
     private final ItemQuery itemQuery = new ItemQuery();
     private final UserQuery userQuery = new UserQuery();

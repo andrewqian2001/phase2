@@ -32,7 +32,6 @@ import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.suggestion_strategies.Suggestion;
 import backend.tradesystem.queries.ItemQuery;
 import backend.tradesystem.queries.UserQuery;
-import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 
 /**
@@ -65,7 +64,6 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
     private final ItemQuery itemQuery = new ItemQuery();
 
     private final TradingManager tradeManager = new TradingManager();
-    private final TradingInfoManager infoManager = new TradingInfoManager();
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 

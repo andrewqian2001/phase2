@@ -50,6 +50,8 @@ public class TraderPanel extends JPanel implements ActionListener {
     private final Color GRAY = new Color(75, 75, 75);
     private final Color RED = new Color(219, 58, 52);
 
+    private String currentPanel = "";
+
     /**
      * Making a new trader panel
      *
@@ -123,6 +125,17 @@ public class TraderPanel extends JPanel implements ActionListener {
         this.add(menuContainer, BorderLayout.WEST);
         this.add(menuPanelContainer, BorderLayout.CENTER);
 
+        this.currentPanel = menuTitles[0];
+
+    }
+
+    public String getCurrentPanel() {
+        return this.currentPanel;
+    }
+
+    public void setCurrentPanel(String panelName) {
+        this.currentPanel = panelName;
+        cardLayout.show(menuPanelContainer, panelName);
     }
 
     private String[] getMenuTitles(boolean isFrozen, boolean isIdle) {
@@ -239,7 +252,7 @@ public class TraderPanel extends JPanel implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        cardLayout.show(menuPanelContainer, e.getActionCommand());
+        setCurrentPanel(e.getActionCommand());
         for (Component button : menuContainer.getComponents()) {
             if (button instanceof JButton && !button.equals(logoutButton)) {
                 button.setEnabled(true);
