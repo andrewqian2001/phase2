@@ -10,6 +10,7 @@ import backend.tradesystem.Manager;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -59,20 +60,45 @@ public class HandleFrozenManager extends Manager {
      *
      * @return a list of all user ids that requested to be unfrozen
      */
-    public ArrayList<String> getAllUnfreezeRequests() {
-        ArrayList<String> result = new ArrayList<>();
+    public List<String> getAllUnfreezeRequests() {
+        List<String> result = new ArrayList<>();
         Set<String> items = getAllUsers();
         for (String userId : items) {
             try {
                 if (getTrader(userId).isUnfrozenRequested())
                     result.add(userId);
-            } catch (UserNotFoundException e) {
+            } catch (UserNotFoundException | AuthorizationException e) {
                 e.printStackTrace();
-            } catch (AuthorizationException e){
-
             }
         }
         return result;
+    }
+
+    /**
+     * Unfreezes all from requests
+     */
+    public void unfreezeAllFromRequests(){
+        List<String> requests = getAllUnfreezeRequests();
+        for (String userId: requests){
+            try {
+                Trader trader = getTrader(userId);
+                trader.setFrozen(false);
+                updateUserDatabase(trader);
+            } catch (UserNotFoundException | AuthorizationException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void freezeAllShouldBeFrozen(){
+        for (String userId: getShouldBeFrozen()){
+            try {
+                Trader trader = getTrader(userId);
+                trader.setFrozen(true);
+                updateUserDatabase(trader);
+            } catch (UserNotFoundException | AuthorizationException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -80,8 +106,8 @@ public class HandleFrozenManager extends Manager {
      *
      * @return true if the user should be frozen, false otherwise
      */
-    public ArrayList<String> getShouldBeFrozen() {
-        ArrayList<String> freezable = new ArrayList<>();
+    public List<String> getShouldBeFrozen() {
+        List<String> freezable = new ArrayList<>();
         Set<String> items = getAllUsers();
         for (String userId : items) {
             User user = null;
@@ -90,7 +116,7 @@ public class HandleFrozenManager extends Manager {
             } catch (UserNotFoundException e) {
                 e.printStackTrace();
             }
-            if (user instanceof Trader && ((Trader) user).hasSurpassedIncompleteTradeLimit()) {
+            if (user instanceof Trader && !user.isFrozen() && ((Trader) user).hasSurpassedIncompleteTradeLimit()) {
                 freezable.add(userId);
             }
         }

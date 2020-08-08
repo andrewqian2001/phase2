@@ -366,7 +366,7 @@ public class OverviewPanel extends JPanel {
     }
 
     private void getAllUnFreezeRequests() {
-        ArrayList<String> unFreezeRequests = frozenManager.getAllUnfreezeRequests();
+        List<String> unFreezeRequests = frozenManager.getAllUnfreezeRequests();
         if (unFreezeRequests.size() == 0) {
             unFreezeRequestsContainer = new JPanel();
             unFreezeRequestsContainer.setBackground(bg);
@@ -442,7 +442,7 @@ public class OverviewPanel extends JPanel {
     }
 
     private void getAllToBeFrozenUsers() {
-        ArrayList<String> tobeFrozenList = frozenManager.getShouldBeFrozen();
+        List<String> tobeFrozenList = frozenManager.getShouldBeFrozen();
         if (tobeFrozenList.size() == 0) {
             freezeTradersContainer = new JPanel();
             freezeTradersContainer.setBackground(bg);
