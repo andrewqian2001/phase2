@@ -23,6 +23,7 @@ public class TradeDetailsModal extends JDialog {
 	private final Color gray = new Color(196, 196, 196);
 
 	private final String tradeID;
+	private String traderName, otherTraderName;
 	private final boolean showAvailableEdits;
 	private final boolean isTraderFirstUser;
 
@@ -59,6 +60,13 @@ public class TradeDetailsModal extends JDialog {
 		this.regular = regular;
 		this.bold = bold;
 		this.italic = italic;
+		if (isTraderFirstUser) {
+			traderName = userQuery.getUsername(tradeQuery.getFirstUserId(tradeID));
+			otherTraderName = userQuery.getUsername(tradeQuery.getSecondUserId(tradeID));
+		} else {
+			traderName = userQuery.getUsername(tradeQuery.getSecondUserId(tradeID));
+			otherTraderName = userQuery.getUsername(tradeQuery.getFirstUserId(tradeID));
+		}
 
 		this.setTitle("Trade Details");
 		this.setSize(new Dimension(800, showAvailableEdits ? 550 : 500));
@@ -72,14 +80,11 @@ public class TradeDetailsModal extends JDialog {
 		this.setVisible(true);
 	}
 
-	private JPanel setTradeDetailsPanel() throws TradeNotFoundException, UserNotFoundException,
-			TradableItemNotFoundException {
+	private JPanel setTradeDetailsPanel() throws TradeNotFoundException, TradableItemNotFoundException {
 		JPanel tradeDetailsPanel = new JPanel();
 		tradeDetailsPanel.setPreferredSize(new Dimension(800, showAvailableEdits ? 550 : 500));
 		tradeDetailsPanel.setBackground(bg);
 
-		tradeDetailsPanel.add(setOtherTraderNameTitle());
-		tradeDetailsPanel.add(setOtherTraderDetailsName());
 		tradeDetailsPanel.add(setTraderItemTitle());
 		tradeDetailsPanel.add(setTraderItemRequestName());
 		tradeDetailsPanel.add(setOtherTraderItemTitle());
@@ -100,35 +105,8 @@ public class TradeDetailsModal extends JDialog {
 		return tradeDetailsPanel;
 	}
 
-	private JLabel setOtherTraderNameTitle() {
-		JLabel otherTraderNameTitle = new JLabel("Trader Username:");
-		otherTraderNameTitle.setFont(italic.deriveFont(20f));
-		otherTraderNameTitle.setPreferredSize(new Dimension(290, 50));
-		otherTraderNameTitle.setOpaque(false);
-		otherTraderNameTitle.setForeground(Color.WHITE);
-
-		return otherTraderNameTitle;
-	}
-
-	private JLabel setOtherTraderDetailsName() throws TradeNotFoundException, UserNotFoundException {
-		String otherTraderName;
-
-		if (isTraderFirstUser)
-			otherTraderName = userQuery.getUsername(tradeQuery.getSecondUserId(tradeID));
-		else
-			otherTraderName = userQuery.getUsername(tradeQuery.getFirstUserId(tradeID));
-
-		JLabel otherTraderDetailsName = new JLabel("<html><pre>" + otherTraderName + "</pre></html>");
-		otherTraderDetailsName.setFont(italic.deriveFont(20f));
-		otherTraderDetailsName.setPreferredSize(new Dimension(400, 50));
-		otherTraderDetailsName.setOpaque(false);
-		otherTraderDetailsName.setForeground(Color.WHITE);
-
-		return otherTraderDetailsName;
-	}
-
 	private JLabel setTraderItemTitle() {
-		JLabel traderItemTitle = new JLabel("Item from your Inventory:");
+		JLabel traderItemTitle = new JLabel("Item from " + traderName + ":");
 		traderItemTitle.setFont(italic.deriveFont(20f));
 		traderItemTitle.setPreferredSize(new Dimension(290, 50));
 		traderItemTitle.setOpaque(false);
@@ -138,7 +116,7 @@ public class TradeDetailsModal extends JDialog {
 	}
 
 	private JLabel setOtherTraderItemTitle() {
-		JLabel otherTraderItemTitle = new JLabel("Item from their Inventory:");
+		JLabel otherTraderItemTitle = new JLabel("Item from " + otherTraderName + ":");
 		otherTraderItemTitle.setFont(italic.deriveFont(20f));
 		otherTraderItemTitle.setPreferredSize(new Dimension(290, 50));
 		otherTraderItemTitle.setOpaque(false);
