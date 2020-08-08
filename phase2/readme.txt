@@ -102,3 +102,9 @@ This section of the GUI consists of:
     4. Entering idle mode. Idle mode is a mode in which you become unable to trade, or be sent trade requests.
     5. Reporting a trader. If some trader has conducted a serious offense, we encourage you to submit a report. All admins
        see this report, and can decide on a course of action given the information in the report.
+
+
+Admin usage:
+
+UNDOING ONGOING TRADES:
+An admin can decide to undo an ongoing trade. This removes the trade and returns the items back to their original holders.
