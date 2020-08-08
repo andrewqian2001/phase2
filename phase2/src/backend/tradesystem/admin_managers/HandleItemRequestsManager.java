@@ -25,17 +25,6 @@ public class HandleItemRequestsManager extends Manager {
         super();
     }
 
-    /**
-     * Making the database objects with set file paths
-     *
-     * @param userFilePath         the user database file path
-     * @param tradableItemFilePath the tradable item database file path
-     * @param tradeFilePath        the trade database file path
-     * @throws IOException issues with getting the file path
-     */
-    public HandleItemRequestsManager(String userFilePath, String tradableItemFilePath, String tradeFilePath) throws IOException {
-        super(userFilePath, tradableItemFilePath, tradeFilePath);
-    }
 
     /**
      * Gets a hashmap of trader ids to an arraylist of their requested item ids
@@ -45,7 +34,7 @@ public class HandleItemRequestsManager extends Manager {
     public HashMap<String, List<String>> getAllItemRequests() {
         HashMap<String, List<String>> allItems = new HashMap<>();
 
-        for (String userId : getUserDatabase().getItems().keySet()) {
+        for (String userId : getAllUsers()) {
             try {
                 if (getUser(userId) instanceof Trader) {
                     // Get requested item IDs
