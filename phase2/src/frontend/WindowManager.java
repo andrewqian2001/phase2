@@ -111,12 +111,13 @@ public class WindowManager extends JFrame {
         ArrayList<File> file = new ArrayList<>();
         int i = 0;
         for (DatabaseFilePaths path : DatabaseFilePaths.values()) {
-            if (!path.isConfig()) return;
+            if (!path.isConfig()) continue;
             file.add(new File(path.getFilePath()));
             times.add(file.get(i).lastModified());
             i++;
         }
-        new Timer().schedule(new TimerTask() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 for (int i = 0; i < times.size(); i++) {
