@@ -7,7 +7,6 @@ import backend.models.users.Trader;
 import backend.tradesystem.Manager;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 

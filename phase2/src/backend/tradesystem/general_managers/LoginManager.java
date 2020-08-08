@@ -85,10 +85,9 @@ public class LoginManager extends Manager {
      * @param username username of user
      * @param password password of user
      * @return the user id of the logged in user
-     * @throws IOException           issues with getting database files
      * @throws UserNotFoundException could not find the user
      */
-    public String login(String username, String password) throws UserNotFoundException, IOException {
+    public String login(String username, String password) throws UserNotFoundException {
         String userId = getUserByUsername(username);
         User user = getUser(userId);
         if (!user.getPassword().equals(password)) throw new UserNotFoundException();

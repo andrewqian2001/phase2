@@ -9,7 +9,6 @@ import backend.tradesystem.Manager;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -71,7 +70,7 @@ public class HandleFrozenManager extends Manager {
                     result.add(userId);
             } catch (UserNotFoundException e) {
                 e.printStackTrace();
-            } catch (AuthorizationException e){
+            } catch (AuthorizationException ignored){
 
             }
         }
