@@ -91,24 +91,7 @@ public class LoginManager extends Manager {
         }
     }
 
-    private void updateAllTraderDefaults() throws IOException {
 
-        int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
-        int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
-        int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
-        HashMap<String, User> users = getUserDatabase().getItems();
-
-        for (String user : users.keySet()) {
-            User populatedUser = users.get(user);
-            if (populatedUser instanceof Trader) {
-                Trader t = (Trader) populatedUser;
-                t.setLimit(TraderProperties.TRADE_LIMIT, defaultTradeLimit);
-                t.setLimit(TraderProperties.INCOMPLETE_TRADE_LIM, defaultIncompleteTradeLim);
-                t.setLimit(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW, defaultMinimumAmountNeededToBorrow);
-            }
-        }
-        getUserDatabase().save(users);
-    }
 
     /**
      * Ensuring user credentials is correct and returns the user id
@@ -130,7 +113,6 @@ public class LoginManager extends Manager {
                 System.out.println("Couldn't reset trade limits");
             }
         }
-        updateAllTraderDefaults();
         return user.getId();
     }
 
@@ -284,6 +266,25 @@ public class LoginManager extends Manager {
         properties.store(writer, "");
         reader.close();
         writer.close();
+        updateAllTraderDefaults();
+    }
+    private void updateAllTraderDefaults() throws IOException {
+
+        int defaultTradeLimit = getProperty(TraderProperties.TRADE_LIMIT);
+        int defaultIncompleteTradeLim = getProperty(TraderProperties.INCOMPLETE_TRADE_LIM);
+        int defaultMinimumAmountNeededToBorrow = getProperty(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW);
+        HashMap<String, User> users = getUserDatabase().getItems();
+
+        for (String user : users.keySet()) {
+            User populatedUser = users.get(user);
+            if (populatedUser instanceof Trader) {
+                Trader t = (Trader) populatedUser;
+                t.setLimit(TraderProperties.TRADE_LIMIT, defaultTradeLimit);
+                t.setLimit(TraderProperties.INCOMPLETE_TRADE_LIM, defaultIncompleteTradeLim);
+                t.setLimit(TraderProperties.MINIMUM_AMOUNT_NEEDED_TO_BORROW, defaultMinimumAmountNeededToBorrow);
+            }
+        }
+        getUserDatabase().save(users);
     }
 
     /**
