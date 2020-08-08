@@ -109,32 +109,6 @@ public class Manager {
         return trade;
     }
 
-    /**
-     * Gets the user database
-     *
-     * @return the user database
-     */
-    protected Database<User> getUserDatabase() {
-        return userDatabase;
-    }
-
-    /**
-     * Gets the tradable item database
-     *
-     * @return the tradable item database
-     */
-    protected Database<TradableItem> getTradableItemDatabase() {
-        return tradableItemDatabase;
-    }
-
-    /**
-     * Gets the trade database
-     *
-     * @return trade database
-     */
-    protected Database<Trade> getTradeDatabase() {
-        return tradeDatabase;
-    }
 
     /**
      * updates the user database
@@ -186,7 +160,23 @@ public class Manager {
      * @return all user ids
      */
     public Set<String> getAllUsers() {
-        return getUserDatabase().getItems().keySet();
+        return userDatabase.getItems().keySet();
+    }
+
+    /**
+     * Return all trade ids
+     * @return all trade ids
+     */
+    public Set<String> getAllTrades(){
+        return tradeDatabase.getItems().keySet();
+    }
+
+    /**
+     * Return all tradable item ids
+     * @return all tradable item ids
+     */
+    public Set<String> getAllTradableItems(){
+        return tradableItemDatabase.getItems().keySet();
     }
 
 
