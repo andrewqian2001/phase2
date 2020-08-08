@@ -206,6 +206,12 @@ public class TradeQuery extends Manager {
         }
     }
 
+    /**
+     * Gets the amount of edits left for this trade for each user
+     * @param tradeId the id of the trade
+     * @return the amount of edits left for this trade for each user
+     * @throws TradeNotFoundException if the trade could not be found
+     */
     public int getEditAmountLeft(String tradeId) throws TradeNotFoundException {
         Trade t= getTrade(tradeId);
         return (t.getMaxAllowedEdits() - t.getNumEdits()+1)/2;
