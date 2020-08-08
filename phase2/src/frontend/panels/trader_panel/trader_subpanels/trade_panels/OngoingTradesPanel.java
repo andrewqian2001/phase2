@@ -75,7 +75,6 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
      * @throws IOException if database files aren't found
      * @throws UserNotFoundException if the trader isn't found
      * @throws AuthorizationException if the trader isn't allowed to access this
-     * @throws TradeNotFoundException if the trade isn't found
      */
     public OngoingTradesPanel(String trader, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
@@ -106,7 +105,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     }
 
     private JScrollPane setOngoingTradesScrollPane()
-            throws UserNotFoundException, AuthorizationException, TradeNotFoundException, IOException {
+            throws UserNotFoundException, AuthorizationException, TradeNotFoundException {
         JScrollPane ongoingTradesScrollPane = new JScrollPane();
 
         JPanel ongoingTradesContainer = setOngoingTradesContainer();
@@ -120,7 +119,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
     }
 
     private JPanel setOngoingTradesContainer()
-            throws UserNotFoundException, AuthorizationException, TradeNotFoundException, IOException {
+            throws UserNotFoundException, AuthorizationException, TradeNotFoundException {
         JPanel ongoingTradesContainer = new JPanel();
 
         List<String> acceptedTrades = trader.equals("") ? new ArrayList<>() : userQuery.getAcceptedTrades(trader);
@@ -370,7 +369,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         try {
             JDialog newTradeModal = new AddNewTradeModal(trader, suggested, regular, bold, italic, boldItalic);
             newTradeModal.setVisible(true);
-        } catch (IOException | UserNotFoundException | TradableItemNotFoundException | AuthorizationException e1) {
+        } catch (IOException | UserNotFoundException | TradableItemNotFoundException e1) {
             e1.printStackTrace();
         }
 
