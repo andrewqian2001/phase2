@@ -514,13 +514,12 @@ public class EditTradeModal extends JDialog implements ActionListener {
 				String thisTraderOffer = "";
 
 				if (traderItems.getSelectedItem() != null) {
-					thisTraderOffer = userQuery.getAvailableItems(trader).get(traderItems.getSelectedIndex());
+					thisTraderOffer = userQuery.getAvailableItems(trader).get(traderItems.getSelectedIndex() - 1);
 				}
 
 				String thatTraderOffer = "";
 				if (otherTraderItems.getSelectedItem() != null) {
-					thatTraderOffer = userQuery.getAvailableItems(tradeQuery.getFirstUserId(tradeID))
-							.get(otherTraderItems.getSelectedIndex());
+					thatTraderOffer = userQuery.getAvailableItems(tradeQuery.getFirstUserId(tradeID)).get(otherTraderItems.getSelectedIndex() - 1);
 				}
 				tradeManager.counterTradeOffer(trader, tradeID, firstMeeting, secondMeeting,
 						meetingLocationInput.getText(), thisTraderOffer, thatTraderOffer, messageInput.getText());
