@@ -2,7 +2,7 @@ package frontend;
 
 import backend.DatabaseFilePaths;
 import backend.exceptions.*;
-import backend.tradesystem.SettingsManager;
+import backend.tradesystem.trader_managers.SettingsManager;
 import backend.tradesystem.TraderProperties;
 import backend.tradesystem.UserTypes;
 import backend.tradesystem.admin_managers.HandleFrozenManager;
@@ -19,7 +19,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * This class is not used in production and is only used to have an example interface full of users
