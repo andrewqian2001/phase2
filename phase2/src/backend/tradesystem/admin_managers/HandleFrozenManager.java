@@ -49,6 +49,8 @@ public class HandleFrozenManager extends Manager {
         try {
             User user = getUser(userID);
             user.setFrozen(freezeStatus);
+            if (!freezeStatus)
+                user.setUnfrozenRequested(false);
             updateUserDatabase(user);
         } catch (EntryNotFoundException e) {
             throw new UserNotFoundException(userID);
