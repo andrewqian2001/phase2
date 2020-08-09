@@ -29,6 +29,7 @@ INITIAL TRADERS:
 
 
 To run the program, run the Main class in src -> frontend -> Main.
+You can also run the .jar file provided
 
 
 THE TRADING PROCESS:
@@ -108,6 +109,10 @@ Admin usage:
 
 UNDOING ONGOING TRADES:
 An admin can decide to undo an ongoing trade. This removes the trade and returns the items back to their original holders.
+
+INFILTRADE:
+An admin can search for traders and then "infiltrade" an account. This lets them take control of a user and do all the actions
+the user could normally be able to do. This gives admin a greater ability to control user actions.
 
 
 
