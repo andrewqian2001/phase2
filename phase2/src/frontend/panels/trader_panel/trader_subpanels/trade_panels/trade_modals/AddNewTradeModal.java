@@ -76,10 +76,9 @@ public class AddNewTradeModal extends JDialog implements ActionListener {
      * @throws IOException issues with getting database files
      * @throws UserNotFoundException if the user isn't found
      * @throws TradableItemNotFoundException if the item isn't found
-     * @throws AuthorizationException if the user isn't allowed to access this
      */
     public AddNewTradeModal(String trader, String[] suggested, Font regular, Font bold, Font italic, Font boldItalic)
-            throws IOException, UserNotFoundException, TradableItemNotFoundException, AuthorizationException {
+            throws IOException, UserNotFoundException, TradableItemNotFoundException {
 
         this.trader = trader;
         this.suggested = suggested;
