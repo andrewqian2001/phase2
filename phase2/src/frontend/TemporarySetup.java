@@ -29,8 +29,8 @@ public class TemporarySetup {
      * Used to set up users
      */
     public TemporarySetup() {
-        debugSetup();
-//        regularSetup();
+        //debugSetup();
+        regularSetup();
     }
 
     private void debugSetup(){

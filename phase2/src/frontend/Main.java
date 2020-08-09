@@ -8,7 +8,7 @@ import javax.swing.UIManager;
 public class Main {
     public static void main(String[] args) {
         try {
-             new TemporarySetup();
+             //new TemporarySetup();
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             WindowManager windowManager = new WindowManager();
             windowManager.run();
