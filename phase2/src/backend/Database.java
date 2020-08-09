@@ -89,10 +89,10 @@ public class Database implements Serializable {
     }
 
     /**
-     * whether the database contains the id
+     * Return true if the database contains the id
      *
      * @param id the id being checked
-     * @return whether the database contains the id
+     * @return true if the database contains the id
      */
     public boolean contains(String id) {
         try {
@@ -104,9 +104,9 @@ public class Database implements Serializable {
     }
 
     /**
-     * list of items in the database file
+     * Return a hashmap of items in the database file
      *
-     * @return all the items in the file
+     * @return a hashmap of items in the database file
      */
     public HashMap<String, Idable> getItems() {
         if (!new File(this.FILE_PATH).exists()) {
@@ -131,7 +131,7 @@ public class Database implements Serializable {
     }
 
     /**
-     * Overwrites the file and saves something new to it
+     * Overwrites the file and saves a new hashmap to it
      *
      * @param items the items that are being saved to the file
      * @throws FileNotFoundException if the file doesn't exist

@@ -11,3 +11,5 @@
 ~~Make it so that when click reject on an un-freeze request, the un-freeze request button of the trader who requested the unfreeze becomes usable again (cause right now it stays greyed out)~~
 
 ~~Make admin "view trade details" when viewing ongoing trades more clear when saying whose item is whose's~~
+
+Make trade message in trade detail bigger so that you can see the full message cause right now it cuts off
