@@ -29,7 +29,6 @@ INITIAL TRADERS:
 
 
 To run the program, run the Main class in src -> frontend -> Main.
-You can also run the .jar file provided
 
 
 THE TRADING PROCESS:
