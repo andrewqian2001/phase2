@@ -8,7 +8,9 @@ import javax.swing.UIManager;
 public class Main {
     public static void main(String[] args) {
         try {
-//              new TemporarySetup();
+            // This should be uncommented, running this will reset all the database files with a fresh new copy
+            // new TemporarySetup();
+
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             WindowManager windowManager = new WindowManager();
             windowManager.run();
