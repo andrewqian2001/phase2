@@ -108,3 +108,13 @@ Admin usage:
 
 UNDOING ONGOING TRADES:
 An admin can decide to undo an ongoing trade. This removes the trade and returns the items back to their original holders.
+
+
+
+
+
+Citations:
+
+All code is referenced from oracle documentation, and any other code that was directly taken from or used as
+inspiration has been attributed in the classes that use them.
+
