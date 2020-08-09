@@ -30,6 +30,10 @@ INITIAL TRADERS:
 
 To run the program, run the Main class in src -> frontend -> Main.
 
+A note:
+Running the GUI may sometimes appear flickering, that's because every time there is any update,
+the GUI refreshes to show the latest version.
+
 
 THE TRADING PROCESS:
     1. Register (or login with) a user, request items in the user, and accept items in the admin
