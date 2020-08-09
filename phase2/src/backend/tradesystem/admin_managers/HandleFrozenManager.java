@@ -92,6 +92,10 @@ public class HandleFrozenManager extends Manager {
             }
         }
     }
+
+    /**
+     * Freezes all users who should be frozen
+     */
     public void freezeAllShouldBeFrozen(){
         for (String userId: getShouldBeFrozen()){
             try {

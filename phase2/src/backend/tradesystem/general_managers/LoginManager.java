@@ -150,7 +150,6 @@ public class LoginManager extends Manager {
     }
 
 
-
     /**
      * Tries to refresh the trade count of all traders (this only happens every week).
      */

@@ -23,7 +23,7 @@ public class TradeQuery extends Manager {
 
 
     /**
-     * The message along with the trade offer
+     * Get the message along with the trade offer
      *
      * @param tradeId The id of the trade which is being checked
      * @return the message
@@ -34,7 +34,7 @@ public class TradeQuery extends Manager {
     }
 
     /**
-     * if first meeting is confirmed by the first user
+     * if the first meeting is confirmed by the first user
      *
      * @param tradeId The id of the trade which is being checked
      * @return if the user that initialized the trade confirmed the first meeting
@@ -185,9 +185,9 @@ public class TradeQuery extends Manager {
     }
 
     /**
-     * Gets the amount of edits left for this trade for each user
+     * Gets the amount of edits left for this trade for the next user who can trade
      * @param tradeId the id of the trade
-     * @return the amount of edits left for this trade for each user
+     * @return the amount of edits left for this trade for the next user who can trade
      * @throws TradeNotFoundException if the trade could not be found
      */
     public int getEditAmountLeft(String tradeId) throws TradeNotFoundException {

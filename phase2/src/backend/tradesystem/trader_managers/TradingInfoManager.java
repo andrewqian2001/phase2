@@ -5,8 +5,7 @@ import backend.models.TradableItem;
 import backend.models.Trade;
 import backend.models.users.Trader;
 import backend.tradesystem.Manager;
-import backend.tradesystem.suggestion_strategies.SuggestLendStrategy;
-import backend.tradesystem.suggestion_strategies.SuggestTradeStrategy;
+import backend.tradesystem.suggestion_strategies.SuggestionStrategy;
 
 import java.io.IOException;
 import java.util.*;
@@ -166,7 +165,7 @@ public class TradingInfoManager extends Manager {
      * @throws UserNotFoundException  if the user can not be found
      * @throws AuthorizationException if the user is frozen
      */
-    public String[] suggestLend(String traderId, boolean inCity, SuggestLendStrategy strategy) throws
+    public String[] suggestLend(String traderId, boolean inCity, SuggestionStrategy strategy) throws
             UserNotFoundException, AuthorizationException {
         return strategy.suggestLend(traderId, inCity);
     }
@@ -182,7 +181,7 @@ public class TradingInfoManager extends Manager {
      * @throws UserNotFoundException  bad trader ids
      * @throws AuthorizationException can't suggest because user is not a trader or is frozen
      */
-    public String[] suggestTrade(String traderId, boolean inCity, SuggestTradeStrategy strategy) throws
+    public String[] suggestTrade(String traderId, boolean inCity, SuggestionStrategy strategy) throws
             UserNotFoundException, AuthorizationException {
         return strategy.suggestTrade(traderId, inCity);
     }
