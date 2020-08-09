@@ -70,6 +70,7 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
      * @throws IOException if database files aren't found
      * @throws UserNotFoundException if the trader isn't found
      * @throws AuthorizationException if the trader isn't allowed to access this
+     * @throws TradeNotFoundException if a trade could not be found
      */
     public OngoingTradesPanel(String trader, Font regular, Font bold, Font italic, Font boldItalic)
             throws IOException, UserNotFoundException, AuthorizationException, TradeNotFoundException {
