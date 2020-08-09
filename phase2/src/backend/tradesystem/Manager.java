@@ -130,7 +130,7 @@ public class Manager {
     }
 
     /**
-     * Gets a user by username, this runs in *n* time complexity
+     * Gets a user by username
      *
      * @param username username of the User
      * @return the user id

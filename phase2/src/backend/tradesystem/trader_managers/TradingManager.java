@@ -88,7 +88,7 @@ public class TradingManager extends Manager {
     /**
      * For accepting a trade request
      *
-     * @param traderId the trader confirming the meeting
+     * @param traderId the trader accepting the request
      * @param tradeId  the trade id
      * @return true if the request was accepted
      * @throws TradeNotFoundException if the trade wasn't found
@@ -380,9 +380,10 @@ public class TradingManager extends Manager {
     }
 
     /**
-     * If the first meeting of a trade is not accepted yet, the trade can still be cancelled
+     * Undos an ongoing, accepted trade by removing it from the databse and returning the items back to their respective
+     * users.
      * This method only should be used carefully since rescinding an ongoing trade after the real life trade has
-     * happened has dire consequences (scamming is able to happen)
+     * happened has dire consequences.
      *
      * @param tradeID the id of the trade to undo
      * @throws TradeNotFoundException trade doesn't exist in the user's accepted trades

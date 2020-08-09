@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * Handles anything about getting info on trading and on traders, but this does not handle trading itself
+ * Handles anything about getting info on trading and tradable items, but this does not handle trading itself
  */
 public class TradingInfoManager extends Manager {
     /**
@@ -84,8 +84,8 @@ public class TradingInfoManager extends Manager {
      * Return the 3 most frequent traders that this trader has traded with.
      *
      * @param traderId the trader being checked for
-     * @return a Trader array list of the 3 most frequently traded with Traders
-     * @throws AuthorizationException trader is not allowed to know the frequent traders
+     * @return a Trader list of the 3 most frequently traded with Traders
+     * @throws AuthorizationException if the traderid does not represent a trader
      * @throws UserNotFoundException  user not found
      * @throws TradeNotFoundException trade not found
      */
