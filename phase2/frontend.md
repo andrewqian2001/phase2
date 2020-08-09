@@ -12,4 +12,4 @@
 
 ~~Make admin "view trade details" when viewing ongoing trades more clear when saying whose item is whose's~~
 
-Make trade message in trade detail bigger so that you can see the full message cause right now it cuts off
+~~Make trade message in trade detail bigger so that you can see the full message cause right now it cuts off~~

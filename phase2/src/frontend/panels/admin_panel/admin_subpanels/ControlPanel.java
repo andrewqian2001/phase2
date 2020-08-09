@@ -202,7 +202,7 @@ public class ControlPanel extends JPanel implements ActionListener {
         ongoingTradesContainer.setBorder(null);
 
         for (String tradeID : acceptedTrades) {
-            JPanel ongoingTradePanel = createOngoingTradePanel(tradeID, bold, regular, italic, boldItalic);
+            JPanel ongoingTradePanel = createOngoingTradePanel(tradeID, regular, bold, italic, boldItalic);
             ongoingTradesContainer.add(ongoingTradePanel);
         }
 

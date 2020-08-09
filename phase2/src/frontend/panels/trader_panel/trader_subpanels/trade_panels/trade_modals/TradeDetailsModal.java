@@ -70,7 +70,7 @@ public class TradeDetailsModal extends JDialog {
 		}
 
 		this.setTitle("Trade Details");
-		this.setSize(new Dimension(800, showAvailableEdits ? 550 : 500));
+		this.setSize(new Dimension(800, showAvailableEdits ? 650 : 600));
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
 
@@ -247,14 +247,17 @@ public class TradeDetailsModal extends JDialog {
 		return messageTitle;
 	}
 
-	private JLabel setMessageBody() {
-		JLabel messageBody = new JLabel();
+	private JTextArea setMessageBody() {
+		JTextArea messageBody = new JTextArea();
 		messageBody.setFont(regular.deriveFont(20f));
-		messageBody.setPreferredSize(new Dimension(690, 50));
-		messageBody.setHorizontalAlignment(JLabel.CENTER);
+		messageBody.setPreferredSize(new Dimension(690, 150));
 		messageBody.setOpaque(true);
+		messageBody.setEditable(false);
 		messageBody.setBackground(gray);
 		messageBody.setForeground(Color.BLACK);
+		messageBody.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		messageBody.setLineWrap(true);
+		messageBody.setWrapStyleWord(true);
 
 		try {
 			messageBody.setText(tradeQuery.getMessage(tradeID));
