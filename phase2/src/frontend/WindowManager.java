@@ -17,6 +17,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,12 +51,10 @@ public class WindowManager extends JFrame {
      * @throws FontFormatException if the font is bad
      */
     public WindowManager() throws IOException, FontFormatException {
-        regular = Font.createFont(Font.TRUETYPE_FONT,
-                getClass().getResourceAsStream("./fonts/IBMPlexSans-Regular.ttf"));
-        bold = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Bold.ttf"));
-        italic = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("./fonts/IBMPlexSans-Italic.ttf"));
-        boldItalic = Font.createFont(Font.TRUETYPE_FONT,
-                getClass().getResourceAsStream("./fonts/IBMPlexSans-BoldItalic.ttf"));
+        regular = Font.createFont(Font.TRUETYPE_FONT, new File("./src/frontend/fonts/IBMPlexSans-Regular.ttf"));
+        bold = Font.createFont(Font.TRUETYPE_FONT, new File("./src/frontend/fonts/IBMPlexSans-Bold.ttf"));
+        italic = Font.createFont(Font.TRUETYPE_FONT, new File("./src/frontend/fonts/IBMPlexSans-Italic.ttf"));
+        boldItalic = Font.createFont(Font.TRUETYPE_FONT, new File("./src/frontend/fonts/IBMPlexSans-BoldItalic.ttf"));
         loginPanel = new LoginPanel(regular, bold, italic, boldItalic);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
