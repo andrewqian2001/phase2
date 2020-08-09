@@ -29,10 +29,7 @@ import backend.exceptions.TradeNotFoundException;
 import backend.exceptions.UserNotFoundException;
 import backend.tradesystem.queries.TradeQuery;
 import backend.tradesystem.queries.UserQuery;
-import backend.tradesystem.suggestion_strategies.ExactWishlistSuggestion;
-import backend.tradesystem.suggestion_strategies.SimilarWishlistSuggestion;
-import backend.tradesystem.suggestion_strategies.SuggestLendStrategy;
-import backend.tradesystem.suggestion_strategies.SuggestTradeStrategy;
+import backend.tradesystem.suggestion_strategies.*;
 import backend.tradesystem.trader_managers.TradingInfoManager;
 import backend.tradesystem.trader_managers.TradingManager;
 import frontend.panels.trader_panel.trader_subpanels.trade_panels.trade_modals.AddNewTradeModal;
@@ -60,10 +57,8 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd yyyy HH:mm", new Locale("en", "US"));
 
-    private final SuggestLendStrategy normalSuggestLendStrategy = new ExactWishlistSuggestion();
-    private final SuggestTradeStrategy normalSuggestTradeStrategy = new ExactWishlistSuggestion();
-    private final SuggestLendStrategy similarSuggestLendStrategy = new SimilarWishlistSuggestion();
-    private final SuggestTradeStrategy similarSuggestTradeStrategy = new SimilarWishlistSuggestion();
+    private final SuggestionStrategy normalSuggestionStrategy = new ExactWishlistSuggestion();
+    private final SuggestionStrategy similarSuggestionStrategy = new SimilarWishlistSuggestion();
 
     /**
      * For making a panel to show ongoing trades
@@ -346,15 +341,15 @@ public class OngoingTradesPanel extends JPanel implements ActionListener {
         String[] suggested = null;
         try {
             if (isSuggestedLend) {
-                suggested = infoManager.suggestLend(trader, true, normalSuggestLendStrategy);
+                suggested = infoManager.suggestLend(trader, true, normalSuggestionStrategy);
                 if (suggested == null){
-                    suggested = infoManager.suggestLend(trader, true, similarSuggestLendStrategy);
+                    suggested = infoManager.suggestLend(trader, true, similarSuggestionStrategy);
                 }
             }
             else if (isSuggestedTrade) {
-                suggested = infoManager.suggestTrade(trader, true, normalSuggestTradeStrategy);
+                suggested = infoManager.suggestTrade(trader, true, normalSuggestionStrategy);
                 if (suggested == null) {
-                    suggested = infoManager.suggestTrade(trader, true, similarSuggestTradeStrategy);
+                    suggested = infoManager.suggestTrade(trader, true, similarSuggestionStrategy);
                 }
             }
         } catch (UserNotFoundException | AuthorizationException e1) {

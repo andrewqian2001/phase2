@@ -14,7 +14,7 @@ import java.util.List;
  * A suggestion strategy which can be used to suggest trades where the items traded are similar (not the same) to items
  * in each trader's wishlist, so each trader will be more or less content with what they will receive
  */
-public class SimilarWishlistSuggestion extends Manager implements SuggestTradeStrategy, SuggestLendStrategy {
+public class SimilarWishlistSuggestion extends Manager implements SuggestionStrategy {
 
 
 

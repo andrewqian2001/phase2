@@ -14,7 +14,7 @@ import java.util.List;
  *  A suggestion strategy which can be used to return suggestions that are exactly what each trader wants, according
  *  to their wishlist
  */
-public class ExactWishlistSuggestion extends Manager implements SuggestLendStrategy, SuggestTradeStrategy{
+public class ExactWishlistSuggestion extends Manager implements SuggestionStrategy{
 
 
     /**

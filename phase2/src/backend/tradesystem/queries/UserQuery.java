@@ -28,7 +28,7 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * a user's username
+     * Gets a given user's username
      *
      * @param userId The id of the user being checked
      * @return the user's username
@@ -39,7 +39,7 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * a user's password
+     * Gets a given user's password
      *
      * @param userId The id of the user being checked
      * @return the user's password
@@ -50,7 +50,7 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * a user's current frozen status
+     * Gets a given user's current frozen status
      *
      * @param userId The id of the user being checked
      * @return if the user is frozen
@@ -61,7 +61,7 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * if a user requested to be unfrozen
+     * Return true if a given user requested to be unfrozen
      *
      * @param userId The id of the user being checked
      * @return if the user requested to be unfrozen
@@ -73,7 +73,7 @@ public class UserQuery extends Manager {
 
 
     /**
-     * Gets all reviews of a trader
+     * Gets all reviews of a given trader
      * It is returned in the form of [fromUserId, toUserId, message, rating, reportId] for each element in the list
      *
      * @param traderId The id of the trader being checked
@@ -93,7 +93,7 @@ public class UserQuery extends Manager {
 
 
     /**
-     * the city of a trader
+     * Return the city of a given trader
      *
      * @param traderId The id of the trader being checked
      * @return city of the trader
@@ -105,7 +105,7 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * if a user is idle
+     * Return true if the given user is idle
      *
      * @param traderId The id of the trader being checked
      * @return if the user is idle
@@ -131,7 +131,7 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * list of available items a trader has
+     * Return a list of available items a given trader has
      *
      * @param traderId The id of the trader being checked
      * @return list of available items the trader has
@@ -145,7 +145,7 @@ public class UserQuery extends Manager {
 
 
     /**
-     * list of items a trader requested to borrow/trade
+     * Return a list of items a given trader requested to borrow/trade
      *
      * @param traderId The id of the trader being checked
      * @return list of items the trader requested to borrow/trade
@@ -158,7 +158,7 @@ public class UserQuery extends Manager {
 
 
     /**
-     * list of trades accepted by a trader
+     * Return a list of trades accepted by a given trader
      *
      * @param traderId The id of the trader being checked
      * @return list of trades accepted by the trader
@@ -171,7 +171,7 @@ public class UserQuery extends Manager {
 
 
     /**
-     * list of trades requested by a trader
+     * Return a list of trades requested by a given trader
      *
      * @param traderId The id of the trader being checked
      * @return list of trades requested by the trader
@@ -184,7 +184,7 @@ public class UserQuery extends Manager {
 
 
     /**
-     * total number of items borrowed by a trader
+     * Return the total number of items borrowed by a given trader
      *
      * @param traderId The id of the trader being checked
      * @return total number of items borrowed by the trader
@@ -196,7 +196,7 @@ public class UserQuery extends Manager {
     }
 
     /**
-     * total number of items lent by a trader
+     * Return the total number of items lent by a given trader
      *
      * @param traderId The id of the trader being checked
      * @return total number of items lent by the trader

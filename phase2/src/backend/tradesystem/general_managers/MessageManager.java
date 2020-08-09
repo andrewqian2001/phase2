@@ -72,7 +72,7 @@ public class MessageManager extends Manager {
      * Get all messages received by a user
      *
      * @param userId the user being checked for
-     * @return user to messages
+     * @return a hashmap from user to messages
      * @throws UserNotFoundException if the user isn't found
      */
     public HashMap<String, List<String>> getMessages(String userId) throws UserNotFoundException {

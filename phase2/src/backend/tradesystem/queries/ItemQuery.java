@@ -20,7 +20,7 @@ public class ItemQuery extends Manager {
     }
 
     /**
-     * name of the item
+     * Get the name of the item
      *
      * @param itemId The id of the item being checked
      * @return name of the item
@@ -31,7 +31,7 @@ public class ItemQuery extends Manager {
     }
 
     /**
-     * description of the item
+     * Get the description of the item
      *
      * @param itemId The id of the item being checked
      * @return description of the item
